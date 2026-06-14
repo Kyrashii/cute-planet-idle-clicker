@@ -45,6 +45,7 @@ export interface FloatingText {
   y: number;
   text: string;
   type: "click" | "star-click" | "level" | "heart" | "star" | "moon-click";
+  createdAt?: number;
 }
 
 export interface GameState {

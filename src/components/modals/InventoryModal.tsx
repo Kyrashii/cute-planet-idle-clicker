@@ -330,13 +330,15 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
                       ["star_pink", "acc_flower_crown", "moon_sakura"].every(id => unlockedCosmetics.includes(id)) ? "🌸" : "",
                       ["star_cyber", "acc_space_glasses", "moon_cyber"].every(id => unlockedCosmetics.includes(id)) ? "⚡" : "",
                       ["star_gold", "acc_star_crown", "moon_gold"].every(id => unlockedCosmetics.includes(id)) ? "👑" : "",
-                      ["star_ghostly", "frame_ghost", "moon_ghost"].every(id => unlockedCosmetics.includes(id)) ? "👻" : ""
+                      ["star_ghostly", "frame_ghost", "moon_ghost"].every(id => unlockedCosmetics.includes(id)) ? "👻" : "",
+                      ["star_butterfly", "acc_butterfly_wings", "frame_butterfly", "moon_butterfly"].every(id => unlockedCosmetics.includes(id)) ? "🦋" : ""
                     ].filter(Boolean).length > 0 ? (
                       "Aktiv: " + [
                         ["star_pink", "acc_flower_crown", "moon_sakura"].every(id => unlockedCosmetics.includes(id)) ? "Sakura" : "",
                         ["star_cyber", "acc_space_glasses", "moon_cyber"].every(id => unlockedCosmetics.includes(id)) ? "Cyber" : "",
                         ["star_gold", "acc_star_crown", "moon_gold"].every(id => unlockedCosmetics.includes(id)) ? "Gold" : "",
-                        ["star_ghostly", "frame_ghost", "moon_ghost"].every(id => unlockedCosmetics.includes(id)) ? "Spuk" : ""
+                        ["star_ghostly", "frame_ghost", "moon_ghost"].every(id => unlockedCosmetics.includes(id)) ? "Spuk" : "",
+                        ["star_butterfly", "acc_butterfly_wings", "frame_butterfly", "moon_butterfly"].every(id => unlockedCosmetics.includes(id)) ? "Schmetterling" : ""
                       ].filter(Boolean).join(", ")
                     ) : "Keine Sets voll"}
                   </span>
@@ -512,6 +514,46 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
                       </p>
                       <p className="text-[10px] text-purple-200/90 font-mono mt-1.5 bg-purple-950/25 p-1.5 rounded-lg border border-purple-500/10">
                         🎁 Vorteil: <strong className="text-purple-300 font-extrabold">Stärkerer Nacht-Ertrag</strong>
+                      </p>
+                    </div>
+                  );
+                })()}
+
+                {/* BUTTERFLY / SCHMETTERLING SET */}
+                {(() => {
+                  const items = [
+                    { id: "star_butterfly", name: "Hauch 🦋" },
+                    { id: "acc_butterfly_wings", name: "Flügel 🦋" },
+                    { id: "frame_butterfly", name: "Garten 🦋" },
+                    { id: "moon_butterfly", name: "Traum 🦋" }
+                  ];
+                  const unlockedCount = items.filter(it => unlockedCosmetics.includes(it.id)).length;
+                  const complete = unlockedCount === 4;
+                  return (
+                    <div className={`p-2.5 rounded-2xl border transition-all md:col-span-2 ${
+                      complete 
+                        ? "bg-pink-500/10 border-pink-500/40" 
+                        : isNight ? "bg-black/20 border-purple-950/40 opacity-75" : "bg-white/50 border-gray-200 opacity-80"
+                    }`}>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black text-pink-300 flex items-center gap-1.5">
+                          🦋 Schmetterlings-Set <span className="text-[10px] opacity-75 font-medium">({unlockedCount}/4)</span>
+                        </span>
+                        {complete && (
+                          <span className="text-[8.5px] uppercase font-black bg-pink-500/25 text-pink-300 px-1.5 py-0.2 rounded border border-pink-400/30">
+                            Aktiv
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[10px] font-bold text-slate-300 mt-1 leading-tight">
+                        Teile: {items.map((it, i) => (
+                          <span key={it.id} className={unlockedCosmetics.includes(it.id) ? "text-pink-300" : "opacity-40"}>
+                            {it.name}{i < 3 ? ", " : ""}
+                          </span>
+                        ))}
+                      </p>
+                      <p className="text-[10px] text-pink-200/90 font-mono mt-1.5 bg-pink-950/25 p-1.5 rounded-lg border border-pink-500/10">
+                        🎁 Vorteil: <strong className="text-pink-300 font-extrabold">+15% Alles-Ertrag &amp; +25% Erfahrung</strong>
                       </p>
                     </div>
                   );

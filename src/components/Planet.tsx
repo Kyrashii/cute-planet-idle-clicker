@@ -45,7 +45,8 @@ const STAR_STYLES: Record<string, { fill: string; border: string; glow: string; 
   ghostly: { fill: "fill-indigo-200", border: "text-indigo-400", glow: "rgba(129, 140, 248, 0.6)", ping: "bg-indigo-300", extraClass: "opacity-80 animate-pulse" },
   toxic: { fill: "fill-lime-300", border: "text-lime-500", glow: "rgba(132, 204, 22, 0.6)", ping: "bg-lime-400" },
   lava: { fill: "fill-orange-400", border: "text-red-500", glow: "rgba(239, 68, 68, 0.7)", ping: "bg-orange-500", extraClass: "animate-pulse" },
-  candy: { fill: "fill-fuchsia-200", border: "text-pink-400", glow: "rgba(232, 121, 249, 0.6)", ping: "bg-pink-300" }
+  candy: { fill: "fill-fuchsia-200", border: "text-pink-400", glow: "rgba(232, 121, 249, 0.6)", ping: "bg-pink-300" },
+  butterfly: { fill: "fill-pink-350", border: "text-amber-300", glow: "rgba(232, 121, 249, 0.7)", ping: "bg-fuchsia-400", extraClass: "animate-pulse" }
 };
 
 // Visual themes for the planet according to level
@@ -307,6 +308,12 @@ const getMoonSkinGraphic = (skin: string) => {
         element: <span className="text-sm select-none animate-bounce">👻</span>,
         shadow: "0 0 6px rgba(241, 245, 249, 0.8)",
         pingBg: "bg-slate-300/25"
+      };
+    case "butterfly":
+      return {
+        element: <span className="text-sm select-none animate-pulse">🦋</span>,
+        shadow: "0 0 8px rgba(244, 114, 182, 0.9)",
+        pingBg: "bg-pink-400/35"
       };
     case "classic":
     default:
@@ -627,6 +634,24 @@ export const Planet: React.FC<PlanetProps> = ({
             <path d="M 52,24 C 44,20 40,5 28,10 C 34,22 45,28 50,28" fill="#f43f5e" stroke="#881337" strokeWidth="3" strokeLinejoin="round" filter="drop-shadow(0 0 3px rgba(244, 63, 94, 0.8))" />
             {/* Right glowing neon red horn */}
             <path d="M 148,24 C 156,20 160,5 172,10 C 166,22 155,28 150,28" fill="#f43f5e" stroke="#881337" strokeWidth="3" strokeLinejoin="round" filter="drop-shadow(0 0 3px rgba(244, 63, 94, 0.8))" />
+          </g>
+        );
+      case "butterfly_wings":
+        return (
+          <g id="accessory-butterfly-wings" className="pointer-events-none">
+            {/* Left side wing */}
+            <path d="M 50,75 C 10,40 -10,80 30,110 C 15,130 35,145 50,115" fill="#e879f9" stroke="#2d1e38" strokeWidth="2.5" opacity="0.9" />
+            <path d="M 45,85 C 20,65 10,90 32,105" fill="#f472b6" opacity="0.8" />
+            
+            {/* Right side wing */}
+            <path d="M 150,75 C 190,40 210,80 170,110 C 185,130 165,145 150,115" fill="#e879f9" stroke="#2d1e38" strokeWidth="2.5" opacity="0.9" />
+            <path d="M 155,85 C 180,65 190,90 168,105" fill="#f472b6" opacity="0.8" />
+
+            {/* A cute little butterfly antennae/head set in the center of the head */}
+            <path d="M 94,18 Q 90,0 86,-4 M 106,18 Q 110,0 114,-4" fill="none" stroke="#2d1e38" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="86" cy="-4" r="2" fill="#d946ef" />
+            <circle cx="114" cy="-4" r="2" fill="#d946ef" />
+            <path d="M 85,22 Q 100,10 115,22" fill="none" stroke="#d946ef" strokeWidth="3" />
           </g>
         );
       default:

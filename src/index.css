@@ -488,6 +488,34 @@ body.active-frame-valentines [class*="rounded-3"]:not([class*="rounded-3xl\/"]):
   pointer-events: none !important;
 }
 
+/* 12. Butterfly Garden Frame Style */
+body.active-frame-butterfly .modal-frame-target,
+body.active-frame-butterfly [class*="rounded-3"]:not([class*="rounded-3xl\/"]):not(button):not(input) {
+  border-color: #d946ef !important;
+  box-shadow: 0 0 25px rgba(217, 70, 239, 0.5) !important;
+  position: relative !important;
+}
+body.active-frame-butterfly .modal-frame-target::before,
+body.active-frame-butterfly [class*="rounded-3"]:not([class*="rounded-3xl\/"]):not(button):not(input)::before {
+  content: "🦋" !important;
+  position: absolute !important;
+  top: -8px !important;
+  left: 12px !important;
+  font-size: 18px !important;
+  z-index: 55 !important;
+  pointer-events: none !important;
+}
+body.active-frame-butterfly .modal-frame-target::after,
+body.active-frame-butterfly [class*="rounded-3"]:not([class*="rounded-3xl\/"]):not(button):not(input)::after {
+  content: "🌸" !important;
+  position: absolute !important;
+  top: -8px !important;
+  right: 12px !important;
+  font-size: 18px !important;
+  z-index: 55 !important;
+  pointer-events: none !important;
+}
+
 /* Custom rainbow star color shifting animation */
 @keyframes rainbow-shift {
   0% { fill: #fca5a5; stroke: #f43f5e; color: #f43f5e; }

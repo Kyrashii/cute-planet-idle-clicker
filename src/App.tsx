@@ -70,6 +70,20 @@ import { ActionButtons } from "./components/ActionButtons";
 // Static level bounds (significantly increased to slow down progression)
 const EXP_PER_LEVEL = [0, 1500, 5000, 18000, 60000, 220000, 850000, 3200000, 12000000, 45000000];
 
+const isObjEqual = (a: Record<string, any> | undefined, b: Record<string, any> | undefined): boolean => {
+  if (!a || !b) return a === b;
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+  return keysA.every((k) => a[k] === b[k]);
+};
+
+const isArrEqual = (a: any[] | undefined, b: any[] | undefined): boolean => {
+  if (!a || !b) return a === b;
+  if (a.length !== b.length) return false;
+  return a.every((v, i) => v === b[i]);
+};
+
 export default function App() {
   // Loaded state guards
   const [isLoaded, setIsLoaded] = useState(false);
@@ -111,6 +125,24 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("cute_planet_low_memory", isLowMemory.toString());
   }, [isLowMemory]);
+
+  // Centralized cleanup loop for floating texts to eliminate heavy setTimeout cascade overhead
+  useEffect(() => {
+    const sweepInterval = setInterval(() => {
+      setFloatingTexts((prev) => {
+        if (prev.length === 0) return prev;
+        const now = Date.now();
+        const next = prev.filter((p) => {
+          const age = now - (p.createdAt || 0);
+          const limit = p.type === "level" ? 4000 : 1200;
+          return age < limit;
+        });
+        if (next.length === prev.length) return prev;
+        return next;
+      });
+    }, 200);
+    return () => clearInterval(sweepInterval);
+  }, []);
 
   // Check for prefers-reduced-motion media query
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(false);
@@ -563,8 +595,9 @@ export default function App() {
           setTotalLifeEarned(ws.totalLifeEarned);
           setStarsCount(ws.starsCount);
           setMoonsCount(ws.moonsCount || 0);
-          setPurchasedAnimals(ws.purchasedAnimals);
-          setPurchasedUpgrades(ws.purchasedUpgrades);
+          
+          setPurchasedAnimals((prev) => isObjEqual(prev, ws.purchasedAnimals) ? prev : ws.purchasedAnimals);
+          setPurchasedUpgrades((prev) => isArrEqual(prev, ws.purchasedUpgrades) ? prev : ws.purchasedUpgrades);
           setPlanetLevel(ws.planetLevel);
           setPlanetExp(ws.planetExp);
           setClicksCount(ws.clicksCount);
@@ -575,15 +608,38 @@ export default function App() {
           setActiveEvent(ws.activeEvent);
           setEventTimeRemaining(ws.eventTimeRemaining);
           setPrestigeCount(ws.prestigeCount || 0);
-          setConstellations(ws.constellations || {});
+          
+          setConstellations((prevOrder) => isObjEqual(prevOrder, ws.constellations) ? prevOrder : (ws.constellations || {}));
           if (ws.glitterDust !== undefined) setGlitterDust(ws.glitterDust);
-          if (ws.cosmeticRarityLevels) setCosmeticRarityLevels(ws.cosmeticRarityLevels);
+          if (ws.cosmeticRarityLevels) setCosmeticRarityLevels((prev) => isObjEqual(prev, ws.cosmeticRarityLevels) ? prev : ws.cosmeticRarityLevels);
           if (ws.activeEventDecision !== undefined) setActiveEventDecision(ws.activeEventDecision);
-          if (ws.unlockedCosmetics !== undefined) setUnlockedCosmetics(ws.unlockedCosmetics);
+          if (ws.unlockedCosmetics !== undefined) setUnlockedCosmetics((prev) => isArrEqual(prev, ws.unlockedCosmetics) ? prev : ws.unlockedCosmetics);
           if (ws.shootingStarsCount !== undefined) setShootingStarsCount(ws.shootingStarsCount);
 
-          setCalculations(data.calculations);
-          setAchievements(data.achievements);
+          setCalculations((prevCalculations: any) => {
+            if (
+              prevCalculations.totalLps === data.calculations.totalLps &&
+              prevCalculations.clickPower === data.calculations.clickPower &&
+              prevCalculations.totalAnimalsCount === data.calculations.totalAnimalsCount &&
+              prevCalculations.starPowerPerStar === data.calculations.starPowerPerStar &&
+              prevCalculations.totalStarsLps === data.calculations.totalStarsLps &&
+              prevCalculations.totalAnimalsLps === data.calculations.totalAnimalsLps &&
+              prevCalculations.researchedUpgradesCount === data.calculations.researchedUpgradesCount
+            ) {
+              return prevCalculations;
+            }
+            return data.calculations;
+          });
+
+          setAchievements((prev) => {
+            const prevUnlocked = prev.filter(a => a.unlocked).length;
+            const nextUnlocked = data.achievements.filter((a: any) => a.unlocked).length;
+            if (prevUnlocked === nextUnlocked && prev.length === data.achievements.length) {
+              return prev;
+            }
+            return data.achievements;
+          });
+          
           setIsLoaded(true);
           break;
         }
@@ -611,6 +667,7 @@ export default function App() {
                 y: ry,
                 text: `+${formatCompactNumber(data.reward)} ✧`,
                 type: "star-click",
+                createdAt: Date.now(),
               },
             ];
             if (next.length > 15) {
@@ -618,10 +675,6 @@ export default function App() {
             }
             return next;
           });
-
-          setTimeout(() => {
-            setFloatingTexts((prev) => prev.filter((pt) => pt.id !== pId));
-          }, 1200);
           break;
         }
         case "MOON_TRIGGER": {
@@ -647,6 +700,7 @@ export default function App() {
                 y: ry,
                 text: `+${formatCompactNumber(data.reward)} 🌙`,
                 type: "moon-click",
+                createdAt: Date.now(),
               },
             ];
             if (next.length > 25) {
@@ -654,10 +708,6 @@ export default function App() {
             }
             return next;
           });
-
-          setTimeout(() => {
-            setFloatingTexts((prev) => prev.filter((pt) => pt.id !== pId));
-          }, 1200);
           break;
         }
         case "LEVEL_UP": {
@@ -674,6 +724,7 @@ export default function App() {
                 y: 30,
                 text: `PLANET EVOLUTION: Lv. ${data.level}! ✨`,
                 type: "level",
+                createdAt: Date.now(),
               },
             ];
             if (next.length > 15) {
@@ -681,10 +732,6 @@ export default function App() {
             }
             return next;
           });
-
-          setTimeout(() => {
-            setFloatingTexts((prev) => prev.filter((p) => p.id !== pId));
-          }, 3000);
           break;
         }
         case "EVENT_TRIGGER": {
@@ -707,6 +754,7 @@ export default function App() {
                 y: 50 + (Math.random() * 40 - 20),
                 text: data.text,
                 type: "level",
+                createdAt: Date.now(),
               },
             ];
             if (next.length > 15) {
@@ -714,10 +762,6 @@ export default function App() {
             }
             return next;
           });
-          
-          setTimeout(() => {
-            setFloatingTexts((prev) => prev.filter((p) => p.id !== pId));
-          }, 4000);
           break;
         }
         default:
@@ -862,6 +906,7 @@ export default function App() {
               y: 60,
               text: "✨ Uguu-Magie erweckt! +1.000.000 💖 ✨",
               type: "level",
+              createdAt: Date.now(),
             },
             {
               id: textId + 2,
@@ -869,12 +914,9 @@ export default function App() {
               y: 110,
               text: "⭐ +2 Sterne, Tiere & +10% Schlummerglas! 🏺 ⭐",
               type: "level",
+              createdAt: Date.now(),
             }
           ]);
-          
-          setTimeout(() => {
-            setFloatingTexts((prev) => prev.filter((p) => p.id !== textId + 1 && p.id !== textId + 2));
-          }, 2500);
 
           playLevelUp();
           inputBuffer = "";
@@ -1184,6 +1226,7 @@ export default function App() {
           y,
           text: `+${formatCompactNumber(actualClickLife)}`,
           type: "click",
+          createdAt: Date.now(),
         },
       ];
       if (next.length > 15) {
@@ -1191,10 +1234,6 @@ export default function App() {
       }
       return next;
     });
-
-    setTimeout(() => {
-      setFloatingTexts((prev) => prev.filter((pt) => pt.id !== pId));
-    }, 1200);
   };
 
   // Custom particle spawner for general events
@@ -1212,6 +1251,7 @@ export default function App() {
           y: ry,
           text: txt,
           type: pType,
+          createdAt: Date.now(),
         },
       ];
       if (next.length > 15) {
@@ -1219,10 +1259,6 @@ export default function App() {
       }
       return next;
     });
-
-    setTimeout(() => {
-      setFloatingTexts((prev) => prev.filter((p) => p.id !== pId));
-    }, 1200);
   };
 
   // Click Sound Toggle helper
@@ -1286,6 +1322,7 @@ export default function App() {
           y: -80,
           text: "🌙 Mond erschaffen! 🌙",
           type: "level",
+          createdAt: Date.now(),
         },
       ]);
     }

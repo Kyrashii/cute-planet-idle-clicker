@@ -858,6 +858,54 @@ export const COSMETIC_ITEMS: CosmeticItem[] = [
     emoji: "👻",
     description: "A cute floating ghost moon saying a shy hello to your planet.",
     germanDescription: "Ein süßer kleiner Geist, der neugierig um deinen Planeten spukt."
+  },
+  {
+    id: "star_butterfly",
+    name: "Butterfly Whispers",
+    germanName: "🦋 Schmetterlings-Hauch",
+    type: "star_color",
+    value: "butterfly",
+    rarity: "legendary",
+    rarityGerman: "Legendär",
+    emoji: "🦋",
+    description: "Your auto-click stars glow with a fluttering pink and cyan butterfly dust aura.",
+    germanDescription: "Deine Autoclicker-Sterne hinterlassen einen funkelnden Schweif aus Schmetterlingsflügeln."
+  },
+  {
+    id: "acc_butterfly_wings",
+    name: "Butterfly Wings",
+    germanName: "🦋 Schmetterlings-Flügel",
+    type: "planet_accessory",
+    value: "butterfly_wings",
+    rarity: "legendary",
+    rarityGerman: "Legendär",
+    emoji: "🦋",
+    description: "Two glowing, animated butterfly wings on the sides of your planet.",
+    germanDescription: "Zwei majestätische, leuchtende Schmetterlingsflügel, die an den Seiten deines Planeten schlagen."
+  },
+  {
+    id: "frame_butterfly",
+    name: "Butterfly Garden",
+    germanName: "🦋 Schmetterlings-Garten",
+    type: "frame_style",
+    value: "butterfly",
+    rarity: "legendary",
+    rarityGerman: "Legendär",
+    emoji: "🦋",
+    description: "Cute fluttering blue and purple butterflies nesting on blooming flowers in your corners.",
+    germanDescription: "Zierliche, im Wind schwebende Schmetterlinge und zarte Ranken an deinem Bildschirmrand."
+  },
+  {
+    id: "moon_butterfly",
+    name: "Butterfly Dream",
+    germanName: "🦋 Schmetterlings-Traum",
+    type: "moon_skin",
+    value: "butterfly",
+    rarity: "legendary",
+    rarityGerman: "Legendär",
+    emoji: "🦋",
+    description: "A gorgeous mythical monarch butterfly carrying glowing gold dust in orbit.",
+    germanDescription: "Ein seltener, schillernder Monarchfalter, der den Sternenstaub auf seiner Umlaufbahn verteilt."
   }
 ];
 

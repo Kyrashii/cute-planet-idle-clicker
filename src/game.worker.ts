@@ -79,6 +79,7 @@ function getLpsAndStats() {
   let cyberSetComplete = false;
   let goldSetComplete = false;
   let ghostSetComplete = false;
+  let butterflySetComplete = false;
 
   if (hasSetBonusSet && state.unlockedCosmetics) {
     const list = state.unlockedCosmetics || [];
@@ -86,6 +87,7 @@ function getLpsAndStats() {
     cyberSetComplete = ["star_cyber", "acc_space_glasses", "moon_cyber"].every(id => list.includes(id));
     goldSetComplete = ["star_gold", "acc_star_crown", "moon_gold"].every(id => list.includes(id));
     ghostSetComplete = ["star_ghostly", "frame_ghost", "moon_ghost"].every(id => list.includes(id));
+    butterflySetComplete = ["star_butterfly", "acc_butterfly_wings", "frame_butterfly", "moon_butterfly"].every(id => list.includes(id));
   }
 
   // Upgrades specifications check
@@ -131,6 +133,11 @@ function getLpsAndStats() {
   if (purchasedUpgrades.includes("upg-xp-5")) xpMultiplier += 1.0;
   if (purchasedUpgrades.includes("upg-star-magnetic")) xpMultiplier += 1.0;
   if (purchasedUpgrades.includes("upg-cosmic-eternity")) xpMultiplier *= 3.0;
+
+  // Schmetterling Set complete (+25% XP-Multiplikator)
+  if (butterflySetComplete) {
+    xpMultiplier += 0.25;
+  }
 
   // Constellation Level Helpers
   const constellKuschelLevel = state.constellations?.kuschel || 0;
@@ -292,6 +299,11 @@ function getLpsAndStats() {
   // Gold Set complete (+5% alles!)
   if (goldSetComplete) {
     totalLps *= 1.05;
+  }
+
+  // Schmetterling Set complete (+15% Alles-Generierung!)
+  if (butterflySetComplete) {
+    totalLps *= 1.15;
   }
 
   // ✨ RARITY UPGRADE BONUS CHECK
