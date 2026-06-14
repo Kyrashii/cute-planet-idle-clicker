@@ -1007,6 +1007,33 @@ export const Planet: React.FC<PlanetProps> = ({
           {/* Render Active Cosmetic Accessory */}
           {renderAccessory()}
 
+            {/* Sparkles or halo */}
+{!usingPlanetImage && level >= 5 && (
+  <g transform="translate(100,20) scale(0.85)" className="animate-bounce">
+    <path
+      d="M 0,-15 L 3,-5 L 13,-5 L 5,2 L 8,12 L 0,6 L -8,12 L -5,2 L -13,-5 L -3,-5 Z"
+      fill="#fef08a"
+    />
+  </g>
+)}
+
+{/* Glowing Planetary Rings for Theme 4, 5+ */}
+{!usingPlanetImage && theme.hasRings && (
+  <path
+    d="M -15,100 C -15,125 215,125 215,100 C 215,90 200,85 170,82 C 145,80 55,80 30,82 C 0,85 -15,90 -15,100 Z"
+    fill="none"
+    stroke="#fed7aa"
+    strokeWidth="7"
+    strokeLinecap="round"
+    opacity="0.75"
+    transform="rotate(-12 100 100)"
+    className="pointer-events-none"
+  />
+)}
+</svg>
+</motion.div>
+</div>
+      
       {/* Floating Sparkly Text Particles */}
       <div className="absolute inset-0 pointer-events-none z-30">
         <AnimatePresence>
