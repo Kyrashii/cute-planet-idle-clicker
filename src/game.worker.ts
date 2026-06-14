@@ -20,7 +20,7 @@ interface WorkerState {
   secondsPlayed: number;
   isNight: boolean;
   cycleProgress: number;
-  activeEvent: "meteors" | "aurora" | "shooting_stars" | "supernova" | null;
+  activeEvent: "meteors" | "aurora" | "shooting_stars" | "supernova" | "black_hole" | null;
   activeEventDecision: "sammeln" | "erforschen" | "zerlegen" | "ignorieren" | null;
   eventTimeRemaining: number;
   prestigeCount: number;
@@ -30,6 +30,7 @@ interface WorkerState {
   cosmeticRarityLevels: Record<string, string>;
   glitterDust: number;
   shootingStarsCount: number;
+  blackHoleSize?: number;
 }
 
 // Default initial state
@@ -56,6 +57,7 @@ let state: WorkerState = {
   cosmeticRarityLevels: {},
   glitterDust: 0,
   shootingStarsCount: 0,
+  blackHoleSize: 1,
 };
 
 // Timers refs
@@ -561,6 +563,7 @@ function broadcastStateUpdate(forceRecalculateAchievements = false) {
       cosmeticRarityLevels: state.cosmeticRarityLevels || {},
       glitterDust: state.glitterDust || 0,
       shootingStarsCount: state.shootingStarsCount || 0,
+      blackHoleSize: state.blackHoleSize || 1,
     },
     calculations: {
       ...calculations,
@@ -651,7 +654,10 @@ function startTimers() {
     if (state.eventTimeRemaining <= 0) {
       if (state.activeEvent === null) {
         // Start random event
-        const eventPool: ("meteors" | "aurora" | "shooting_stars" | "supernova")[] = ["meteors", "aurora", "shooting_stars", "supernova"];
+        const eventPool: ("meteors" | "aurora" | "shooting_stars" | "supernova" | "black_hole")[] = ["meteors", "aurora", "shooting_stars", "supernova"];
+        if ((state.prestigeCount || 0) >= 5) {
+          eventPool.push("black_hole");
+        }
         const chosen = eventPool[Math.floor(Math.random() * eventPool.length)];
         state.activeEvent = chosen;
         state.activeEventDecision = "ignorieren";
@@ -864,6 +870,7 @@ addEventListener("message", (e) => {
         cosmeticRarityLevels: {},
         glitterDust: 0,
         shootingStarsCount: 0,
+        blackHoleSize: 1,
       };
       broadcastStateUpdate(true);
       break;
@@ -991,6 +998,185 @@ addEventListener("message", (e) => {
     case "UPDATE_SHOOTING_STARS": {
       state.shootingStarsCount = data.count;
       broadcastStateUpdate();
+      break;
+    }
+    case "BLACK_HOLE_GAMBLE": {
+      const { sacrificeType } = data;
+      let cost = 0;
+      let ok = false;
+      if (sacrificeType === "life") {
+        // Sacrifice 50% of life, minimum 10 million
+        cost = Math.floor(state.life * 0.50);
+        if (cost < 10000000) cost = 10000000;
+        if (state.life >= cost) {
+          state.life -= cost;
+          ok = true;
+        }
+      } else if (sacrificeType === "stars") {
+        // Sacrifice 25% of stars, minimum 10
+        cost = Math.ceil(state.starsCount * 0.25);
+        if (cost < 10) cost = 10;
+        if (state.starsCount >= cost) {
+          state.starsCount -= cost;
+          ok = true;
+        }
+      } else if (sacrificeType === "dust") {
+        // Sacrifice 50% of glitter dust, minimum 10
+        cost = Math.ceil((state.glitterDust || 0) * 0.50);
+        if (cost < 10) cost = 10;
+        if ((state.glitterDust || 0) >= cost) {
+          state.glitterDust -= cost;
+          ok = true;
+        }
+      }
+
+      if (ok) {
+        // Roll outcome with equal 10% chance
+        const roll = Math.floor(Math.random() * 10);
+        let titleGerman = "";
+        let textGerman = "";
+        let type: "good" | "bad" = "good";
+
+        const stats = getLpsAndStats();
+        const baseLps = stats.totalStarsLps || 100;
+        const holeMultiplier = 1 + ((state.blackHoleSize || 1) - 1) * 0.25;
+
+        switch (roll) {
+          // --- GOOD OUTCOMES (0, 1, 2, 3, 4) ---
+          case 0: { // RIESIGER BONUS
+            type = "good";
+            titleGerman = "Singularitäts-Segen 🌌";
+            if (sacrificeType === "life") {
+              const reward = Math.floor(baseLps * 12000 * holeMultiplier);
+              state.life += reward;
+              state.totalLifeEarned += reward;
+              textGerman = `Das Schwarze Loch spuckt einen gewaltigen Lebensschwarm aus! Du erhältst +${reward.toLocaleString("de-DE")} 💖 Leben!`;
+            } else if (sacrificeType === "stars") {
+              const reward = Math.floor(50 * holeMultiplier);
+              state.starsCount += reward;
+              textGerman = `Eine stellare Explosion schleudert Edelsteine heraus! Du erhältst +${reward} ⭐ Sterne!`;
+            } else {
+              const reward = Math.floor(40 * holeMultiplier);
+              state.glitterDust += reward;
+              textGerman = `Ein Regen aus reinem Kristallstaub bricht aus! Du erhältst +${reward} 💫 Kosmischen Glitzerstaub!`;
+            }
+            break;
+          }
+          case 1: { // SELTENES COSMETIC
+            type = "good";
+            titleGerman = "Kosmischer Fund 🎁";
+            const allPossible = [
+              "star_pink", "acc_flower_crown", "moon_sakura",
+              "star_cyber", "acc_space_glasses", "moon_cyber",
+              "star_gold", "acc_star_crown", "moon_gold",
+              "star_ghostly", "frame_ghost", "moon_ghost",
+              "star_butterfly", "acc_butterfly_wings", "frame_butterfly", "moon_butterfly"
+            ];
+            const locked = allPossible.filter(id => !state.unlockedCosmetics.includes(id));
+            if (locked.length > 0) {
+              const chosenCosmeticId = locked[Math.floor(Math.random() * locked.length)];
+              state.unlockedCosmetics.push(chosenCosmeticId);
+              textGerman = `Ein schwebendes Artefakt nähert sich aus der dunklen Zone! Du schaltetest ein seltenes Cosmetic frei: "${chosenCosmeticId.replace(/_/g, " ").toUpperCase()}"! 🎨`;
+            } else {
+              const fallbackDust = Math.floor(75 * holeMultiplier);
+              state.glitterDust += fallbackDust;
+              textGerman = `Da du bereits alle Kosmetika besitzt, erstrahlt der Fund in reinem Glitzerstaub! Du erhältst +${fallbackDust} 💫 Glitzerstaub!`;
+            }
+            break;
+          }
+          case 2: { // PRESTIGE-WÄHRUNG
+            type = "good";
+            titleGerman = "Quanten-Aufstieg 🎖️";
+            state.prestigeCount = (state.prestigeCount || 0) + 1;
+            textGerman = "Eine geheimnisvolle Hyperdimension faltet sich! Du erhältst +1 dauerhaftes Prestige-Level OHNE dein aktuelles Spiel zurückzusetzen!";
+            break;
+          }
+          case 3: { // EVENT SOFORT STARTEN
+            type = "good";
+            titleGerman = "Akkretions-Ausbruch 💥";
+            state.activeEvent = "supernova";
+            state.activeEventDecision = "ignorieren";
+            state.eventTimeRemaining = 180;
+            textGerman = "Das Schwarze Loch destabilisiert sich und bricht in einer Supernova aus! Ein 180-sekündiges kosmisches Event hat sofort begonnen!";
+            break;
+          }
+          case 4: { // SCHWARZES LOCH WIRD GRÖSSER & SPEICHERT BONUS
+            type = "good";
+            titleGerman = "Singularitäts-Wachstum 📈";
+            state.blackHoleSize = (state.blackHoleSize || 1) + 1;
+            textGerman = `Das Schwarze Loch verschlingt deine Opfergabe vollständig und dehnt seinen Ereignishorizont aus! Es wächst auf Stufe ${state.blackHoleSize}. Zukünftige gute Belohnungen steigen dauerhaft um +25%!`;
+            break;
+          }
+
+          // --- BAD OUTCOMES (5, 6, 7, 8, 9) ---
+          case 5: { // NICHTS PASSIERT
+            type = "bad";
+            titleGerman = "Ewiges Schweigen 🧘";
+            textGerman = "Das Schwarze Loch absorbiert deine Opfergabe lautlos. Nichts passiert. Nur die eisige Kälte des ewigen Nichts vibriert im Raum...";
+            break;
+          }
+          case 6: { // KATASTROPHALE VERLANGSAMUNG
+            type = "bad";
+            titleGerman = "Zeitdilatation ⏳";
+            const starsLoss = Math.min(5, state.starsCount);
+            state.starsCount -= starsLoss;
+            const dustLoss = Math.min(10, state.glitterDust);
+            state.glitterDust -= dustLoss;
+            textGerman = `Eine massive Gravitationswelle verzerrt deine planetare Schwerkraft! Du verlierst zusätzlich ${starsLoss} Sterne und ${dustLoss} Glitzerstaub!`;
+            break;
+          }
+          case 7: { // LEBENS-ABSORPTION
+            type = "bad";
+            titleGerman = "Materie-Verschlingung 🌀";
+            const lifeLoss = Math.floor(state.life * 0.15);
+            state.life -= lifeLoss;
+            textGerman = `Der Gravitationsstrudel ergreift deinen Planeten! Er saugt zusätzlich ${lifeLoss.toLocaleString("de-DE")} 💖 Leben direkt aus deiner Planetenkruste!`;
+            break;
+          }
+          case 8: { // STERNE-VERLUST
+            type = "bad";
+            titleGerman = "Sternen-Vakuum ✨";
+            const sLoss = Math.min(8, state.starsCount);
+            state.starsCount -= sLoss;
+            textGerman = `Die unbarmherzige Anziehungskraft bricht Sterne aus ihrer Kreisbahn! ${sLoss} Sterne stürzen unaufhaltsam in den Abgrund der Singularität.`;
+            break;
+          }
+          case 9: { // SCHWARZES LOCH SCHRUMPFT
+            type = "bad";
+            titleGerman = "Vakuum-Erosion 📉";
+            const previousSize = state.blackHoleSize || 1;
+            const newSize = Math.max(1, previousSize - 1);
+            state.blackHoleSize = newSize;
+            
+            const lifeDrain = Math.floor(state.life * 0.05);
+            state.life -= lifeDrain;
+            
+            if (previousSize > 1) {
+              textGerman = `Das Schwarze Loch kollabiert unter seiner eigenen Last und schrumpft zurück auf Stufe ${newSize}! Du verlierst zudem ${lifeDrain.toLocaleString("de-DE")} 💖 Leben.`;
+            } else {
+              textGerman = `Das Schwarze Loch spuckt antimaterische Störstrahlung aus! Es kann nicht weiter schrumpfen, aber du verlierst zusätzliche ${lifeDrain.toLocaleString("de-DE")} 💖 Leben.`;
+            }
+            break;
+          }
+        }
+
+        postMessage({
+          type: "BLACK_HOLE_GAMBLE_RESULT",
+          success: true,
+          roll,
+          outcomeType: type,
+          title: titleGerman,
+          text: textGerman,
+        });
+
+        broadcastStateUpdate(true);
+      } else {
+        postMessage({
+          type: "BLACK_HOLE_GAMBLE_RESULT",
+          success: false,
+          error: "Nicht genügend Ressourcen für diese Opfergabe!",
+        });
+      }
       break;
     }
     case "CLEANUP": {

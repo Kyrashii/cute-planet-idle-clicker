@@ -29,6 +29,7 @@ export interface CloudSaveData {
   constellations?: Record<string, number>;
   glitterDust?: number;
   cosmeticRarityLevels?: Record<string, string>;
+  blackHoleSize?: number;
   createdAt?: any; // Timestamp or string
   updatedAt?: any; // Timestamp or string
 }
@@ -159,6 +160,7 @@ export function useFirebaseSync() {
         constellations: localSave.constellations || {},
         glitterDust: Number(localSave.glitterDust || 0),
         cosmeticRarityLevels: localSave.cosmeticRarityLevels || {},
+        blackHoleSize: Number(localSave.blackHoleSize || 1),
         createdAt: resolvedCreatedAt,
         updatedAt: creationTime,
       };
@@ -286,6 +288,7 @@ export function useFirebaseSync() {
         constellations: (state as any).constellations || {},
         glitterDust: Number((state as any).glitterDust || 0),
         cosmeticRarityLevels: (state as any).cosmeticRarityLevels || {},
+        blackHoleSize: Number((state as any).blackHoleSize || 1),
         createdAt: resolvedCreatedAt,
         updatedAt: serverTimestamp(),
       };

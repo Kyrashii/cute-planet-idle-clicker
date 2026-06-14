@@ -1,10 +1,15 @@
 import React from "react";
 
 interface ActiveEventBannerProps {
-  activeEvent: "meteors" | "aurora" | "shooting_stars" | "supernova" | null;
+  activeEvent: "meteors" | "aurora" | "shooting_stars" | "supernova" | "black_hole" | null;
   activeEventDecision: "sammeln" | "erforschen" | "zerlegen" | "ignorieren" | null;
   eventTimeRemaining: number;
   onSelectDecision: (decision: "sammeln" | "erforschen" | "zerlegen" | "ignorieren") => void;
+  life?: number;
+  starsCount?: number;
+  glitterDust?: number;
+  blackHoleSize?: number;
+  onGamble?: (sacrificeType: "life" | "stars" | "dust") => void;
 }
 
 export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = ({
@@ -12,6 +17,11 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = ({
   activeEventDecision,
   eventTimeRemaining,
   onSelectDecision,
+  life = 0,
+  starsCount = 0,
+  glitterDust = 0,
+  blackHoleSize = 1,
+  onGamble,
 }) => {
   return (
     <section className={`w-full max-w-2xl p-5 rounded-3xl border-3 flex flex-col gap-4.5 transition-all duration-500 shadow-lg relative overflow-hidden ${
@@ -22,11 +32,180 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = ({
             ? "bg-gradient-to-br from-teal-950/95 via-purple-950/95 to-slate-950 border-teal-400/80 text-teal-100 shadow-teal-400/10"
             : activeEvent === "shooting_stars"
               ? "bg-gradient-to-br from-cyan-950/95 via-blue-950/95 to-slate-950 border-cyan-400/80 text-cyan-100 shadow-cyan-400/10"
-              : "bg-gradient-to-br from-amber-950/95 via-yellow-950/95 to-slate-950 border-amber-400/80 text-amber-100 shadow-amber-400/10"
+              : activeEvent === "black_hole"
+                ? "bg-gradient-to-br from-[#0c051a]/95 via-[#180d38]/95 to-black border-purple-600/90 text-purple-100 shadow-[0_0_30px_rgba(147,51,234,0.3)]"
+                : "bg-gradient-to-br from-amber-950/95 via-yellow-950/95 to-slate-950 border-amber-400/80 text-amber-100 shadow-amber-400/10"
         : "bg-[#110e28]/85 border-[#caa5fe]/45 text-[#ab9fd2] shadow-inner"
     }`}>
       {activeEvent ? (
-        <div className="flex flex-col gap-4 w-full">
+        activeEvent === "black_hole" ? (
+          <div id="active-event-black-hole" className="flex flex-col gap-4 w-full text-left">
+            {/* Header section with Details */}
+            <div className="flex items-start gap-4 w-full">
+              <div className="text-5xl shrink-0 select-none animate-pulse mt-1">
+                🕳️
+              </div>
+              <div className="flex-grow min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[9px] uppercase font-black tracking-widest px-2.5 py-0.5 rounded-full bg-purple-600 text-white border border-black/30 font-mono shadow-sm leading-none animate-pulse">
+                    GEFÄHRLICHE SINGULARITÄT AKTIV
+                  </span>
+                  <span className="font-mono text-[9px] font-black opacity-80 uppercase tracking-wider bg-black/30 px-2 py-0.5 rounded border border-white/5">
+                    Kollaps in: {Math.floor(eventTimeRemaining / 60)}:{(eventTimeRemaining % 60).toString().padStart(2, "0")}
+                  </span>
+                  <span className="font-mono text-[9px] font-black text-purple-300 tracking-wider bg-purple-950/40 px-2 py-0.5 rounded border border-purple-500/20">
+                    Größe: St. {blackHoleSize} (+{(blackHoleSize - 1) * 25}% Bonus)
+                  </span>
+                </div>
+                <h4 className="font-sans font-black text-base uppercase mt-1.5 tracking-wide text-purple-200">
+                  Das Schwarze Loch ruft nach Opfern...
+                </h4>
+                <p className="text-[11px] font-medium opacity-90 leading-relaxed mt-1 max-w-xl text-purple-200/80">
+                  Am Ereignishorizont krümmt sich alles! Du kannst dem Schwarzen Loch Ressourcen opfern, um ein geheimnisvolles Quantenergebnis auszulösen. Aber Vorsicht: Es herrscht eine exakte 50/50-Chance zwischen Segen und katastrophaler Zerstörung!
+                </p>
+              </div>
+            </div>
+
+            {/* Interactive Sacrifice / Risk Panel */}
+            <div className="bg-black/45 p-4 rounded-2xl border border-purple-500/20 flex flex-col gap-3.5">
+              <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                <span className="text-[10px] font-black text-purple-300 uppercase tracking-wider flex items-center gap-1.5 animate-pulse">
+                  <span>⚠️</span> RISKANTES ENDGAME-SYSTEM (SPIELBARE OPFERGABEN):
+                </span>
+                <span className="text-[9px] font-bold text-gray-400">
+                  Kann jederzeit ignoriert werden!
+                </span>
+              </div>
+
+              {/* Warnmeldung */}
+              <div className="text-[9.5px] font-bold text-rose-300/90 leading-relaxed bg-red-950/20 border border-red-500/20 p-2.5 rounded-xl">
+                💥 <strong>WARNUNG:</strong> Jede Opfergabe zieht die Ressourcen unwiderruflich ab! Die 10 möglichen Ergebnisse sind zu gleichen Teilen (je 10% Chance) aufgeteilt: 5 grandiose Boni (z.B. Prestige, riesiger Bonus, seltene Cosmetics) vs. 5 herbe Verluste (z.B. Ressourcenverlust, Zeitdilatation oder Schrumpfung).
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-1">
+                {/* Option 1: LEBEN OPFERN */}
+                {(() => {
+                  const costVal = Math.floor(life * 0.50);
+                  const actualCost = costVal < 10000000 ? 10000000 : costVal;
+                  const canAfford = life >= actualCost;
+                  return (
+                    <button
+                      id="btn-sacrifice-life"
+                      disabled={!canAfford}
+                      onClick={() => onGamble && onGamble("life")}
+                      className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all ${
+                        canAfford
+                          ? "bg-purple-950/30 border-purple-500/40 hover:bg-purple-900/40 hover:border-purple-400 active:scale-98 cursor-pointer text-white shadow shadow-purple-500/5 group"
+                          : "bg-black/40 border-white/5 opacity-50 cursor-not-allowed text-gray-500"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between w-full text-[11px] font-black text-rose-400 uppercase">
+                        <span>💖 Leben opfern</span>
+                        <span className="text-[9px] font-normal bg-rose-500/20 px-1.5 py-0.5 rounded text-rose-300">50%</span>
+                      </div>
+                      {canAfford ? (
+                        <div className="text-[10px] font-bold mt-1 text-purple-200">
+                          Gib: <span className="font-mono text-white">{(actualCost / 1000000).toLocaleString("de-DE", {maximumFractionDigits: 1})} Mio.</span>
+                        </div>
+                      ) : (
+                        <div className="text-[9.5px] font-semibold mt-1 text-slate-500">
+                          Min. benötigt: 10M Leben
+                        </div>
+                      )}
+                      <span className="text-[8px] font-bold opacity-75 leading-tight mt-0.5 text-slate-300 group-hover:text-white">
+                        Gewinne RIESIGE Mengen Leben, Cosmetics oder Prestige!
+                      </span>
+                    </button>
+                  );
+                })()}
+
+                {/* Option 2: STERNE OPFERN */}
+                {(() => {
+                  const costVal = Math.ceil(starsCount * 0.25);
+                  const actualCost = costVal < 10 ? 10 : costVal;
+                  const canAfford = starsCount >= actualCost;
+                  return (
+                    <button
+                      id="btn-sacrifice-stars"
+                      disabled={!canAfford}
+                      onClick={() => onGamble && onGamble("stars")}
+                      className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all ${
+                        canAfford
+                          ? "bg-purple-950/30 border-purple-500/40 hover:bg-purple-900/40 hover:border-purple-400 active:scale-98 cursor-pointer text-white shadow shadow-purple-500/5 group"
+                          : "bg-black/40 border-white/5 opacity-50 cursor-not-allowed text-gray-500"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between w-full text-[11px] font-black text-amber-300 uppercase">
+                        <span>⭐ Sterne opfern</span>
+                        <span className="text-[9px] font-normal bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-200">25%</span>
+                      </div>
+                      {canAfford ? (
+                        <div className="text-[10px] font-bold mt-1 text-purple-200">
+                          Gib: <span className="font-mono text-white">{actualCost} Sterne</span>
+                        </div>
+                      ) : (
+                        <div className="text-[9.5px] font-semibold mt-1 text-slate-500">
+                          Min. benötigt: 10 Sterne
+                        </div>
+                      )}
+                      <span className="text-[8px] font-bold opacity-75 leading-tight mt-0.5 text-slate-300 group-hover:text-white">
+                        Erhalt gewaltige Sternensalven, seltene Skins o.ä.!
+                      </span>
+                    </button>
+                  );
+                })()}
+
+                {/* Option 3: STERNENSCHNUPPEN/DUST OPFERN */}
+                {(() => {
+                  const costVal = Math.ceil(glitterDust * 0.50);
+                  const actualCost = costVal < 10 ? 10 : costVal;
+                  const canAfford = glitterDust >= actualCost;
+                  return (
+                    <button
+                      id="btn-sacrifice-dust"
+                      disabled={!canAfford}
+                      onClick={() => onGamble && onGamble("dust")}
+                      className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all ${
+                        canAfford
+                          ? "bg-purple-950/30 border-purple-500/40 hover:bg-purple-900/40 hover:border-purple-400 active:scale-98 cursor-pointer text-white shadow shadow-purple-500/5 group"
+                          : "bg-black/40 border-white/5 opacity-50 cursor-not-allowed text-gray-500"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between w-full text-[11px] font-black text-cyan-300 uppercase">
+                        <span>💫 Staub opfern</span>
+                        <span className="text-[9px] font-normal bg-cyan-400/20 px-1.5 py-0.5 rounded text-cyan-200">50%</span>
+                      </div>
+                      {canAfford ? (
+                        <div className="text-[10px] font-bold mt-1 text-purple-200">
+                          Gib: <span className="font-mono text-white">{actualCost} Staub</span>
+                        </div>
+                      ) : (
+                        <div className="text-[9.5px] font-semibold mt-1 text-slate-500">
+                          Min. benötigt: 10 Staub
+                        </div>
+                      )}
+                      <span className="text-[8px] font-bold opacity-75 leading-tight mt-0.5 text-slate-300 group-hover:text-white">
+                        Konvertiere Staub in legendäre Aufstiege oder Wachstum!
+                      </span>
+                    </button>
+                  );
+                })()}
+              </div>
+
+              <div className="flex justify-between items-center text-[9px] font-mono select-none text-slate-400 mt-1 border-t border-white/5 pt-2">
+                <span>* Du kannst dieses Ereignis komplett gefahrlos ignorieren und verstreichen lassen!</span>
+                <button
+                  id="btn-blackhole-ignore"
+                  onClick={() => onSelectDecision("ignorieren")}
+                  className="bg-purple-900/40 hover:bg-purple-800 font-mono text-[9.5px] px-2.5 py-1 rounded text-purple-200 border border-purple-700/40 transition cursor-pointer"
+                >
+                  🧘 Ignorieren
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4 w-full">
           {/* Header section with Details */}
           <div className="flex items-start gap-3.5 w-full text-left">
             <div className="text-4xl shrink-0 select-none animate-bounce mt-1">
@@ -176,6 +355,7 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = ({
             )}
           </div>
         </div>
+        )
       ) : (
         <div className="flex items-center justify-between w-full text-center sm:text-left">
           <div className="flex items-center gap-3">

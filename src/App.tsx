@@ -215,6 +215,14 @@ export default function App() {
   const [claimedMissionIds, setClaimedMissionIds] = useState<string[]>([]);
   const [missionsCooldownEnd, setMissionsCooldownEnd] = useState<number | null>(null);
   const [prestigeCount, setPrestigeCount] = useState<number>(0);
+  const [blackHoleSize, setBlackHoleSize] = useState<number>(1);
+  const [blackHoleResult, setBlackHoleResult] = useState<{
+    show: boolean;
+    title: string;
+    text: string;
+    success: boolean;
+    outcomeType?: "good" | "bad";
+  } | null>(null);
 
   // Modals Visibility
   const [showMissionsModal, setShowMissionsModal] = useState<boolean>(false);
@@ -537,6 +545,7 @@ export default function App() {
         if (data.constellations) setConstellations(data.constellations);
         if (data.glitterDust !== undefined) setGlitterDust(data.glitterDust);
         if (data.cosmeticRarityLevels) setCosmeticRarityLevels(data.cosmeticRarityLevels);
+        if (data.blackHoleSize !== undefined) setBlackHoleSize(data.blackHoleSize || 1);
       }
     };
     window.addEventListener("firebase-load-state", handleFirebaseLoad);
@@ -608,6 +617,7 @@ export default function App() {
           setActiveEvent(ws.activeEvent);
           setEventTimeRemaining(ws.eventTimeRemaining);
           setPrestigeCount(ws.prestigeCount || 0);
+          if (ws.blackHoleSize !== undefined) setBlackHoleSize(ws.blackHoleSize || 1);
           
           setConstellations((prevOrder) => isObjEqual(prevOrder, ws.constellations) ? prevOrder : (ws.constellations || {}));
           if (ws.glitterDust !== undefined) setGlitterDust(ws.glitterDust);
@@ -764,6 +774,32 @@ export default function App() {
           });
           break;
         }
+        case "BLACK_HOLE_GAMBLE_RESULT": {
+          if (data.success) {
+            if (data.outcomeType === "good") {
+              playLevelUp();
+            } else {
+              playPop();
+            }
+            setBlackHoleResult({
+              show: true,
+              title: data.title,
+              text: data.text,
+              success: true,
+              outcomeType: data.outcomeType,
+            });
+          } else {
+            playPop();
+            setBlackHoleResult({
+              show: true,
+              title: "Fehler beim Opfern ⚠️",
+              text: data.error || "Nicht genügend Ressourcen!",
+              success: false,
+              outcomeType: "bad",
+            });
+          }
+          break;
+        }
         default:
           break;
       }
@@ -785,7 +821,7 @@ export default function App() {
   const [achievementSearch, setAchievementSearch] = useState<string>("");
 
   // Cosmic Event System States
-  const [activeEvent, setActiveEvent] = useState<"meteors" | "aurora" | "shooting_stars" | "supernova" | null>(null);
+  const [activeEvent, setActiveEvent] = useState<"meteors" | "aurora" | "shooting_stars" | "supernova" | "black_hole" | null>(null);
   const [activeEventDecision, setActiveEventDecision] = useState<"sammeln" | "erforschen" | "zerlegen" | "ignorieren" | null>(null);
   const [eventTimeRemaining, setEventTimeRemaining] = useState<number>(120);
 
@@ -793,6 +829,13 @@ export default function App() {
     workerRef.current?.postMessage({
       type: "SET_EVENT_DECISION",
       decision,
+    });
+  };
+
+  const handleBlackHoleGamble = (sacrificeType: "life" | "stars" | "dust") => {
+    workerRef.current?.postMessage({
+      type: "BLACK_HOLE_GAMBLE",
+      sacrificeType,
     });
   };
 
@@ -971,6 +1014,7 @@ export default function App() {
       constellations,
       glitterDust,
       cosmeticRarityLevels,
+      blackHoleSize,
     };
   }, [
     isLoaded,
@@ -995,6 +1039,7 @@ export default function App() {
     claimedMissionIds,
     missionsCooldownEnd,
     prestigeCount,
+    blackHoleSize,
     offlineSeconds,
     offlineLpsRate,
     offlineEarnedLife,
@@ -1037,6 +1082,7 @@ export default function App() {
           constellations: s.constellations,
           glitterDust: s.glitterDust,
           cosmeticRarityLevels: s.cosmeticRarityLevels,
+          blackHoleSize: s.blackHoleSize,
           lastSavedAt: Date.now(),
         };
         localStorage.setItem("cute_planet_save", JSON.stringify(stateToSave));
@@ -1096,6 +1142,7 @@ export default function App() {
           constellations: s.constellations,
           glitterDust: s.glitterDust,
           cosmeticRarityLevels: s.cosmeticRarityLevels,
+          blackHoleSize: s.blackHoleSize,
           lastSavedAt: Date.now(),
         };
 
@@ -1563,6 +1610,11 @@ export default function App() {
           activeEventDecision={activeEventDecision}
           eventTimeRemaining={eventTimeRemaining}
           onSelectDecision={handleSelectEventDecision}
+          life={life}
+          starsCount={starsCount}
+          glitterDust={glitterDust}
+          blackHoleSize={blackHoleSize}
+          onGamble={handleBlackHoleGamble}
         />
 
         {/* Dynamic Day/Night Cycle Indicator and Bonus Panel */}

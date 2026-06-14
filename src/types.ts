@@ -71,4 +71,5 @@ export interface GameState {
   moonsCount?: number;
   constellations?: Record<string, number>; // constellationId -> level (0 if unpurchased)
   glitterDust?: number;
+  blackHoleSize?: number;
 }
