@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net: Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper Primitives
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Schema Validation Helper for Game Save entity
+    function isValidSave(data) {
+      return data.userId is string &&
+             data.userId == request.auth.uid;
+    }
+
+    // Schema Validation Helper for Leaderboard Entry entity
+    function isValidLeaderboard(data) {
+      return data.userId is string &&
+             data.userId == request.auth.uid &&
+             data.userName is string &&
+             data.userName.size() <= 128 &&
+             data.totalLifeEarned is number;
+    }
+
+    // Match rules for user saves collection
+    match /saves/{userId} {
+      allow get: if isOwner(userId) && isValidId(userId);
+      
+      allow create: if isOwner(userId) &&
+                       isValidId(userId) &&
+                       isValidSave(incoming());
+
+      allow update: if isOwner(userId) &&
+                       isValidId(userId) &&
+                       isValidSave(incoming());
+
+      allow delete: if isOwner(userId) && isValidId(userId);
+    }
+
+    // Match rules for public leaderboard collection
+    match /leaderboard/{userId} {
+      allow read: if isSignedIn();
+      
+      allow create: if isOwner(userId) &&
+                       isValidId(userId) &&
+                       isValidLeaderboard(incoming());
+
+      allow update: if isOwner(userId) &&
+                       isValidId(userId) &&
+                       isValidLeaderboard(incoming());
+
+      allow delete: if isOwner(userId) && isValidId(userId);
+    }
+  }
+}

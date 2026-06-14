@@ -1,0 +1,133 @@
+{
+  "entities": {
+    "save": {
+      "title": "GameSave",
+      "description": "Stores user incremental game save state",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Unique identifier of the matching authenticated user"
+        },
+        "life": {
+          "type": "number",
+          "description": "Current balance of life/energy accumulated"
+        },
+        "totalLifeEarned": {
+          "type": "number",
+          "description": "Total life/energy accumulated historically"
+        },
+        "starsCount": {
+          "type": "number",
+          "description": "Number of flying auto-clicking stars owned"
+        },
+        "purchasedAnimals": {
+          "type": "object",
+          "description": "Key-value pair of animal species to count"
+        },
+        "purchasedUpgrades": {
+          "type": "array",
+          "description": "List of technologies or purchased perks researched"
+        },
+        "planetLevel": {
+          "type": "number",
+          "description": "Current evolution level of the planet"
+        },
+        "planetExp": {
+          "type": "number",
+          "description": "Current experience points of the planet"
+        },
+        "clicksCount": {
+          "type": "number",
+          "description": "Total manual clicks performed on the planet"
+        },
+        "starClicksTriggered": {
+          "type": "number",
+          "description": "Total auto-clicks triggered by stars"
+        },
+        "secondsPlayed": {
+          "type": "number",
+          "description": "Total seconds spent playing"
+        },
+        "prestigeCount": {
+          "type": "number",
+          "description": "Prestige reset count of the player"
+        },
+        "moonsCount": {
+          "type": "number",
+          "description": "Number of merged small moons"
+        },
+        "activeMoonSkin": {
+          "type": "string",
+          "description": "Currently activated moon appearance skin"
+        },
+        "glitterDust": {
+          "type": "number",
+          "description": "Glitter dust currency obtained from duplicates"
+        },
+        "cosmeticRarityLevels": {
+          "type": "object",
+          "description": "User upgrades of cosmetics rarity levels mapping id to upgraded value"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this save was first initiated"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when progress was last synced"
+        }
+      },
+      "required": [
+        "userId",
+        "life",
+        "totalLifeEarned"
+      ]
+    },
+    "leaderboard": {
+      "title": "LeaderboardEntry",
+      "description": "Public leaderboard record mapping user's total life earned to display name",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Unique identifier of the matching authenticated user"
+        },
+        "userName": {
+          "type": "string",
+          "description": "Display name or masked identification for public ranking lists"
+        },
+        "totalLifeEarned": {
+          "type": "number",
+          "description": "Total life/energy accumulated historically"
+        },
+        "prestigeCount": {
+          "type": "number",
+          "description": "Prestige reset count of the player"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this record was updated"
+        }
+      },
+      "required": [
+        "userId",
+        "userName",
+        "totalLifeEarned"
+      ]
+    }
+  },
+  "firestore": {
+    "/saves/{userId}": {
+      "schema": "save",
+      "description": "Stores user progress securely by authenticating user ID"
+    },
+    "/leaderboard/{userId}": {
+      "schema": "leaderboard",
+      "description": "Stores user leaderboard score publicly readable by everyone, but writably guarded by matching user identification"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Cute Planet Idle Clicker",
+  "description": "Ein niedliches Idle Clicker-Spiel in Pastellfarben. Klicke auf den süßen Planeten, um Leben zu erschaffen, süße Tiere zu kaufen und Sterne um den Planeten kreisen zu lassen.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
