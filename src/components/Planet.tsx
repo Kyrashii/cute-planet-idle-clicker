@@ -340,7 +340,6 @@ export const Planet: React.FC<PlanetProps> = ({
     setImageError(false);
   }, [level]);
 
-  const usingPlanetImage = Boolean(theme.image && !imageError);
   // Select theme based on level
   const theme = useMemo(() => {
     return (
@@ -349,6 +348,8 @@ export const Planet: React.FC<PlanetProps> = ({
       ) || PLANET_THEMES[PLANET_THEMES.length - 1]
     );
   }, [level]);
+
+  const usingPlanetImage = Boolean(theme.image && !imageError);
 
   // Generate orbit arrays for stars
   const orbits = useMemo(() => {
