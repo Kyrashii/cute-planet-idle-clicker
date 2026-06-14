@@ -12,7 +12,9 @@ const isAiStudio =
   typeof window !== "undefined" &&
   (window.location.hostname.includes("run.app") ||
     window.location.hostname.includes("google.com") ||
-    window.location.hostname.includes("aistudio"));
+    window.location.hostname.includes("aistudio") ||
+    window.location.hostname.includes("vercel.app") ||
+    window.location.hostname.includes("cute-planet-idle-clicker.vercel.app"));
 
 const dbId = isAiStudio
   ? (firebaseConfig as any).firestoreDatabaseId || (firebaseConfig as any).databaseId
