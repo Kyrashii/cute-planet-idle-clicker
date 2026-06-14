@@ -868,7 +868,7 @@ addEventListener("message", (e) => {
       state.clicksCount = 0;
       state.starClicksTriggered = 0;
       state.moonsCount = 0;
-      // Note: We preserve state.constellations to make them permanent progress material!
+      state.constellations = {};
       broadcastStateUpdate(true);
       break;
     }

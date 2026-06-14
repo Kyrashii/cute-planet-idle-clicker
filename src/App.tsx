@@ -276,7 +276,14 @@ export default function App() {
     
     const updatedClaimed = [...claimedMissionIds, missionId];
     setClaimedMissionIds(updatedClaimed);
-    setShootingStarsCount((prev) => prev + actualReward);
+    setShootingStarsCount((prev) => {
+      const nextCount = prev + actualReward;
+      workerRef.current?.postMessage({
+        type: "UPDATE_SHOOTING_STARS",
+        count: nextCount,
+      });
+      return nextCount;
+    });
 
     const pId = nextParticleId.current++;
     setFloatingTexts((prev) => [
@@ -323,7 +330,14 @@ export default function App() {
 
   const handleOpenShootingStar = (cosmetic: any, alreadyUnlocked: boolean, refundAmt: number) => {
     playTick();
-    setShootingStarsCount((prev) => Math.max(0, prev - 1));
+    setShootingStarsCount((prev) => {
+      const nextCount = Math.max(0, prev - 1);
+      workerRef.current?.postMessage({
+        type: "UPDATE_SHOOTING_STARS",
+        count: nextCount,
+      });
+      return nextCount;
+    });
 
     if (alreadyUnlocked) {
       if (workerRef.current) {
@@ -1347,7 +1361,14 @@ export default function App() {
     });
 
     // Award 1x Star Shooting Lootbox
-    setShootingStarsCount((prev) => prev + 1);
+    setShootingStarsCount((prev) => {
+      const nextCount = prev + 1;
+      workerRef.current?.postMessage({
+        type: "UPDATE_SHOOTING_STARS",
+        count: nextCount,
+      });
+      return nextCount;
+    });
 
     // Close the dialogue
     setShowPrestigeModal(false);
