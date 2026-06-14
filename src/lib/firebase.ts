@@ -7,7 +7,18 @@ import firebaseConfig from "../../firebase-applet-config.json";
 const app = initializeApp(firebaseConfig);
 
 // Extract references
-export const db = getFirestore(app, (firebaseConfig as any).firestoreDatabaseId || (firebaseConfig as any).databaseId);
+// Detect if running in Google AI Studio preview environment
+const isAiStudio =
+  typeof window !== "undefined" &&
+  (window.location.hostname.includes("run.app") ||
+    window.location.hostname.includes("google.com") ||
+    window.location.hostname.includes("aistudio"));
+
+const dbId = isAiStudio
+  ? (firebaseConfig as any).firestoreDatabaseId || (firebaseConfig as any).databaseId
+  : undefined;
+
+export const db = dbId ? getFirestore(app, dbId) : getFirestore(app);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
