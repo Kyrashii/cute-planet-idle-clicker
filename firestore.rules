@@ -1,76 +1,91 @@
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
+import { INITIAL_ANIMALS } from "../data";
 
-    // Global Safety Net: Default Deny
-    match /{document=**} {
-      allow read, write: if false;
-    }
+export function calculateOfflineLps(savedState: any): number {
+  if (!savedState) return 0;
+  const purchasedAnimals = savedState.purchasedAnimals || {};
+  const purchasedUpgrades = savedState.purchasedUpgrades || [];
+  const starsCount = savedState.starsCount || 0;
+  const prestigeCount = savedState.prestigeCount || 0;
+  const isNight = savedState.isNight ?? true;
 
-    // Helper Primitives
-    function isValidId(id) {
-      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
-    }
+  const upgradesSpecs = {
+    bunnyBoost: purchasedUpgrades.includes("upg-bunny-1"),
+    chickBoost: purchasedUpgrades.includes("upg-chick-1"),
+    catBoost: purchasedUpgrades.includes("upg-cat-1"),
+    frogBoost: purchasedUpgrades.includes("upg-frog-1"),
+    koalaBoost: purchasedUpgrades.includes("upg-koala-1"),
+    pandaBoost: purchasedUpgrades.includes("upg-panda-1"),
+    unicornBoost: purchasedUpgrades.includes("upg-unicorn-1"),
+    globalAnimalsBoost: purchasedUpgrades.includes("upg-global-1"),
+    
+    starGlow: purchasedUpgrades.includes("upg-star-glow"),
+    starPulse: purchasedUpgrades.includes("upg-star-pulse"),
+    starSupercharger: purchasedUpgrades.includes("upg-star-supercharger"),
+    starMagnetic: purchasedUpgrades.includes("upg-star-magnetic"),
+    clickMultiplier: purchasedUpgrades.includes("upg-click-multiplier"),
+    click1: purchasedUpgrades.includes("upg-click-1"),
+    click2: purchasedUpgrades.includes("upg-click-2"),
+    click3: purchasedUpgrades.includes("upg-click-3"),
+    click4: purchasedUpgrades.includes("upg-click-4"),
+    click5: purchasedUpgrades.includes("upg-click-5"),
+  };
 
-    function isSignedIn() {
-      return request.auth != null;
-    }
+  // Calculate Star Autoclick Power
+  let rawClickPower = 1;
+  if (upgradesSpecs.click1) rawClickPower += 1;
+  if (upgradesSpecs.click2) rawClickPower += 5;
+  if (upgradesSpecs.click3) rawClickPower += 25;
+  if (upgradesSpecs.click4) rawClickPower += 150;
+  if (upgradesSpecs.click5) rawClickPower += 1000;
+  if (upgradesSpecs.clickMultiplier) rawClickPower *= 2;
 
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
-    }
-
-    function incoming() {
-      return request.resource.data;
-    }
-
-    function existing() {
-      return resource.data;
-    }
-
-    // Schema Validation Helper for Game Save entity
-    function isValidSave(data) {
-      return data.userId is string &&
-             data.userId == request.auth.uid;
-    }
-
-    // Schema Validation Helper for Leaderboard Entry entity
-    function isValidLeaderboard(data) {
-      return data.userId is string &&
-             data.userId == request.auth.uid &&
-             data.userName is string &&
-             data.userName.size() <= 128 &&
-             data.totalLifeEarned is number;
-    }
-
-    // Match rules for user saves collection
-    match /saves/{userId} {
-      allow get: if isOwner(userId) && isValidId(userId);
-      
-      allow create: if isOwner(userId) &&
-                       isValidId(userId) &&
-                       isValidSave(incoming());
-
-      allow update: if isOwner(userId) &&
-                       isValidId(userId) &&
-                       isValidSave(incoming());
-
-      allow delete: if isOwner(userId) && isValidId(userId);
-    }
-
-    // Match rules for public leaderboard collection
-    match /leaderboard/{userId} {
-      allow read: if isSignedIn();
-      
-      allow create: if isOwner(userId) &&
-                       isValidId(userId) &&
-                       isValidLeaderboard(incoming());
-
-      allow update: if isOwner(userId) &&
-                       isValidId(userId) &&
-                       isValidLeaderboard(incoming());
-
-      allow delete: if isOwner(userId) && isValidId(userId);
-    }
+  let starPowerPerStar = 1.0;
+  if (upgradesSpecs.starGlow) starPowerPerStar += 1.0;
+  if (upgradesSpecs.starPulse) starPowerPerStar += 5.0;
+  const clickBonus = (rawClickPower - 1) * 0.20;
+  starPowerPerStar += clickBonus;
+  if (upgradesSpecs.starSupercharger) starPowerPerStar *= 2.0;
+  if (isNight) {
+    starPowerPerStar = starPowerPerStar * 1.5;
   }
+
+  const moonsCount = savedState.moonsCount || 0;
+
+  // Prestige multiplier (10% bonus per Prestige level, ALWAYS active for all!)
+  const prestigeMultiplier = 1 + prestigeCount * 0.10;
+
+  // Apply prestige bonus to star power
+  starPowerPerStar *= prestigeMultiplier;
+
+  const totalStarsLps = starsCount * starPowerPerStar;
+
+  // Calculate Animal LPS
+  let totalAnimalsLps = 0;
+  
+  INITIAL_ANIMALS.forEach((def) => {
+    let multiplier = 1.0;
+    if (def.id === "bunny" && upgradesSpecs.bunnyBoost) multiplier *= 2.0;
+    if (def.id === "chick" && upgradesSpecs.chickBoost) multiplier *= 2.0;
+    if (def.id === "cat" && upgradesSpecs.catBoost) multiplier *= 2.0;
+    if (def.id === "frog" && upgradesSpecs.frogBoost) multiplier *= 2.0;
+    if (def.id === "koala" && upgradesSpecs.koalaBoost) multiplier *= 2.0;
+    if (def.id === "panda" && upgradesSpecs.pandaBoost) multiplier *= 2.0;
+    if (def.id === "unicorn" && upgradesSpecs.unicornBoost) multiplier *= 2.0;
+    if (upgradesSpecs.globalAnimalsBoost) multiplier *= 1.5;
+    const quantity = purchasedAnimals[def.id] || 0;
+    totalAnimalsLps += quantity * def.baseLps * multiplier * prestigeMultiplier;
+  });
+
+  const flatMoonLps = moonsCount * 15000 * prestigeMultiplier;
+
+  let totalLps = totalAnimalsLps + totalStarsLps + flatMoonLps;
+  if (purchasedUpgrades.includes("upg-nexus-core")) {
+    totalLps *= 1.40;
+  }
+
+  if (moonsCount > 0) {
+    totalLps *= (1.0 + moonsCount * 1.50);
+  }
+
+  return totalLps;
 }
