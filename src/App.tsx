@@ -39,6 +39,7 @@ import {
 
 import { STATIC_UPGRADES } from "./data/upgrades";
 import { ResetDialog } from "./components/modals/ResetDialog";
+import { CheatEventModal } from "./components/modals/CheatEventModal";
 import { TutorialModal } from "./components/modals/TutorialModal";
 import { UpgradesModal } from "./components/modals/UpgradesModal";
 import { AnimalsModal } from "./components/modals/AnimalsModal";
@@ -814,6 +815,7 @@ export default function App() {
 
   // Game stats tracking (hydrated by worker)
   const [showResetDialog, setShowResetDialog] = useState<boolean>(false);
+  const [showCheatEventModal, setShowCheatEventModal] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(true);
   const [showUpgradesModal, setShowUpgradesModal] = useState<boolean>(false);
   const [showAchievementsModal, setShowAchievementsModal] = useState<boolean>(false);
@@ -913,6 +915,9 @@ export default function App() {
             type: "CHIPS_CHEAT",
           });
 
+          // Open the cosmic event selector cheat modal
+          setShowCheatEventModal(true);
+
           // Add 10% (1800s) to the sleep/slummer jar
           const currentState = autoSaveStateRef.current || {};
           const currentOfflineSecs = currentState.offlineSeconds || 0;
@@ -947,7 +952,7 @@ export default function App() {
               id: textId + 1,
               x: 10,
               y: 60,
-              text: "✨ Uguu-Magie erweckt! +1.000.000 💖 ✨",
+              text: "✨ Uguu-Magie erweckt: +5 Prestige! 👑 ✨",
               type: "level",
               createdAt: Date.now(),
             },
@@ -955,7 +960,7 @@ export default function App() {
               id: textId + 2,
               x: 0,
               y: 110,
-              text: "⭐ +2 Sterne, Tiere & +10% Schlummerglas! 🏺 ⭐",
+              text: "💖 +1.000.000, ⭐ +2, Tiere & +10% Glas! ⭐",
               type: "level",
               createdAt: Date.now(),
             }
@@ -1704,6 +1709,17 @@ export default function App() {
         onCancel={() => setShowResetDialog(false)}
       />
 
+      <CheatEventModal
+        isOpen={showCheatEventModal}
+        onSelectEvent={(event) => {
+          workerRef.current?.postMessage({
+            type: "FORCE_TRIGGER_EVENT",
+            event,
+          });
+        }}
+        onClose={() => setShowCheatEventModal(false)}
+      />
+
       <UpgradesModal
         isOpen={showUpgradesModal}
         onClose={() => setShowUpgradesModal(false)}
@@ -1968,6 +1984,62 @@ export default function App() {
               </p>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Black Hole Result Dialog */}
+      <AnimatePresence>
+        {blackHoleResult && blackHoleResult.show && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 15 }}
+              id="blackhole-result-dialog"
+              className={`w-full max-w-md p-6 rounded-3xl border-3 shadow-[0_0_50px_rgba(147,51,234,0.4)] text-center relative overflow-hidden transition-all ${
+                blackHoleResult.outcomeType === "good"
+                  ? "bg-gradient-to-b from-[#1c0d3a] via-[#0d0722] to-black border-purple-500 text-purple-100"
+                  : "bg-gradient-to-b from-[#1a070e] via-[#0c0307] to-black border-rose-800 text-rose-100"
+              }`}
+            >
+              {/* Spinning/pulsing decorative backdrop glows */}
+              <div className="absolute -top-24 -left-24 w-48 h-48 rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-24 -right-24 w-48 h-48 rounded-full bg-rose-600/10 blur-3xl pointer-events-none" />
+
+              <div className="w-20 h-20 mx-auto rounded-full bg-black/60 border border-purple-500/50 flex items-center justify-center text-4xl mb-4 shadow-[0_0_20px_rgba(147,51,234,0.3)] animate-pulse relative">
+                {blackHoleResult.outcomeType === "good" ? "✨" : "🕳️"}
+                <span className="absolute inset-0 rounded-full border border-purple-400 animate-ping opacity-25"></span>
+              </div>
+
+              <span className={`font-mono text-[9px] uppercase tracking-widest px-2.5 py-0.5 rounded-full border leading-none shadow-sm ${
+                blackHoleResult.outcomeType === "good"
+                  ? "bg-[#180d38]/60 border-purple-500/30 text-purple-300"
+                  : "bg-[#1a070e]/60 border-rose-800/30 text-rose-300"
+              }`}>
+                {blackHoleResult.outcomeType === "good" ? "🌌 Kosmischer Segen" : "🌀 Gravitativer Verlust"}
+              </span>
+
+              <h3 className="font-sans font-black text-lg uppercase mt-3 tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-200 via-white to-rose-300">
+                {blackHoleResult.title}
+              </h3>
+
+              <p className="text-xs font-semibold leading-relaxed mt-3 px-2 text-slate-300">
+                {blackHoleResult.text}
+              </p>
+
+              <button
+                id="btn-close-blackhole-result"
+                onClick={() => setBlackHoleResult(null)}
+                className={`mt-6 w-full py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition cursor-pointer select-none border shadow-md active:scale-98 ${
+                  blackHoleResult.outcomeType === "good"
+                    ? "bg-purple-900/50 border-purple-400/50 hover:bg-purple-800 text-purple-100 shadow-purple-500/10"
+                    : "bg-rose-950/45 border-rose-700/50 hover:bg-rose-900 text-rose-100 shadow-rose-950/15"
+                }`}
+              >
+                Ereignishorizont verlassen
+              </button>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 

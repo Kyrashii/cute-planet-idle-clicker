@@ -79,7 +79,7 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = ({
 
               {/* Warnmeldung */}
               <div className="text-[9.5px] font-bold text-rose-300/90 leading-relaxed bg-red-950/20 border border-red-500/20 p-2.5 rounded-xl">
-                💥 <strong>WARNUNG:</strong> Jede Opfergabe zieht die Ressourcen unwiderruflich ab! Die 10 möglichen Ergebnisse sind zu gleichen Teilen (je 10% Chance) aufgeteilt: 5 grandiose Boni (z.B. Prestige, riesiger Bonus, seltene Cosmetics) vs. 5 herbe Verluste (z.B. Ressourcenverlust, Zeitdilatation oder Schrumpfung).
+                💥 <strong>WARNUNG:</strong> Jede Opfergabe zieht die Ressourcen unwiderruflich ab! Die 20 möglichen Ergebnisse sind zu gleichen Teilen (je 5% Chance) aufgeteilt: 10 grandiose Boni (z.B. Prestige, kostenloser Trabant-Mond, riesige Kisten, seltene Cosmetics oder Staub) vs. 10 herbe Verluste (z.B. Ressourcenverlust, Schwerkraft-Paralyse, Verlust von Tieren oder Trabanten).
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-1">
@@ -323,10 +323,10 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = ({
                   <span>💎</span> Zerlegen
                 </div>
                 <p className="text-[9.5px] opacity-80 leading-tight">
-                  {activeEvent === "meteors" && "2% Klick-Chance auf Lootboxen!"}
-                  {activeEvent === "aurora" && "15% Klick-Chance auf Glitzerstaub!"}
-                  {activeEvent === "shooting_stars" && "Chance auf herabregnende Boxen!"}
-                  {activeEvent === "supernova" && "4% Chance auf Beute & Glitzerstaub!"}
+                  {activeEvent === "meteors" && "10% Klick-Chance auf Glitzerstaub! (+2 ✨)"}
+                  {activeEvent === "aurora" && "15% Klick-Chance auf Glitzerstaub! (+2 ✨)"}
+                  {activeEvent === "shooting_stars" && "10% Klick-Chance auf Glitzerstaub! (+2 ✨)"}
+                  {activeEvent === "supernova" && "15% Klick-Chance auf Glitzerstaub! (+5 ✨)"}
                 </p>
               </button>
 
