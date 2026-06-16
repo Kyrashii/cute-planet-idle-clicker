@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Heart,
@@ -54,6 +54,7 @@ import { CosmicHUD } from "./components/CosmicHUD";
 import { ActiveEventBanner } from "./components/ActiveEventBanner";
 import { DayNightIndicator } from "./components/DayNightIndicator";
 import { ActionButtons } from "./data/ActionButtons";
+import { FloatingTexts } from "./components/FloatingTexts";
 
 // Static level bounds (significantly increased to slow down progression)
 const EXP_PER_LEVEL = [0, 1500, 5000, 18000, 60000, 220000, 850000, 3200000, 12000000, 45000000, 160000000, 550000000, 1800000000, 6000000000, 20000000000, 65000000000, 200000000000, 600000000000, 1800000000000, 5000000000000];
@@ -246,33 +247,27 @@ export default function App() {
   const [offlineLpsRate, setOfflineLpsRate] = useState<number>(0);
   const [offlineEarnedLife, setOfflineEarnedLife] = useState<number>(0);
 
-  const handleClaimOfflineEarnings = (earnedLife: number) => {
-    // Satisfying tick and level up-like sound
+  const handleClaimOfflineEarnings = useCallback((earnedLife: number) => {
     playBuy();
 
-    const updatedLife = life + earnedLife;
-    const updatedTotalLife = totalLifeEarned + earnedLife;
+    setLife((prevLife) => {
+      const updatedLife = prevLife + earnedLife;
+      setTotalLifeEarned((prevTotal) => {
+        const updatedTotalLife = prevTotal + earnedLife;
+        workerRef.current?.postMessage({
+          type: "INIT",
+          savedState: { life: updatedLife, totalLifeEarned: updatedTotalLife },
+        });
+        return updatedTotalLife;
+      });
+      return updatedLife;
+    });
 
-    setLife(updatedLife);
-    setTotalLifeEarned(updatedTotalLife);
-
-    // Reset offline progress states to empty
     setOfflineSeconds(0);
     setOfflineLpsRate(0);
     setOfflineEarnedLife(0);
-
-    // Sync to worker
-    workerRef.current?.postMessage({
-      type: "INIT",
-      savedState: {
-        life: updatedLife,
-        totalLifeEarned: updatedTotalLife,
-      }
-    });
-
-    // Close modal
     setShowOfflineModal(false);
-  };
+  }, []);
 
   useEffect(() => {
     if (isLoaded && !offlineCheckedRef.current) {
@@ -312,55 +307,49 @@ export default function App() {
     }
   }, [isLoaded]);
 
-  const handleClaimMissionReward = (missionId: string, starsReward: number) => {
-    if (claimedMissionIds.includes(missionId)) return;
-    playTick();
-    
-    // Check Sakura Set Bonus (+20% Mission-Rewards)
-    const hasSetBonusSet = purchasedUpgrades.includes("upg-glitter-set");
-    const sakuraSetComplete = hasSetBonusSet && ["star_pink", "acc_flower_crown", "moon_sakura"].every((id) => unlockedCosmetics.includes(id));
-    
-    let actualReward = starsReward;
-    if (sakuraSetComplete) {
-      actualReward = Math.ceil(starsReward * 1.20);
-    }
-    
-    const updatedClaimed = [...claimedMissionIds, missionId];
-    setClaimedMissionIds(updatedClaimed);
-    setShootingStarsCount((prev) => {
-      const nextCount = prev + actualReward;
-      workerRef.current?.postMessage({
-        type: "UPDATE_SHOOTING_STARS",
-        count: nextCount,
+  const handleClaimMissionReward = useCallback((missionId: string, starsReward: number) => {
+    setClaimedMissionIds((prevClaimed) => {
+      if (prevClaimed.includes(missionId)) return prevClaimed;
+      playTick();
+
+      const hasSetBonusSet = purchasedUpgrades.includes("upg-glitter-set");
+      const sakuraSetComplete = hasSetBonusSet && ["star_pink", "acc_flower_crown", "moon_sakura"].every((id) => unlockedCosmetics.includes(id));
+      const actualReward = sakuraSetComplete ? Math.ceil(starsReward * 1.20) : starsReward;
+
+      const updatedClaimed = [...prevClaimed, missionId];
+
+      setShootingStarsCount((prev) => {
+        const nextCount = prev + actualReward;
+        workerRef.current?.postMessage({ type: "UPDATE_SHOOTING_STARS", count: nextCount });
+        return nextCount;
       });
-      return nextCount;
+
+      const pId = nextParticleId.current++;
+      setFloatingTexts((prev) => [
+        ...prev,
+        {
+          id: pId,
+          x: 100,
+          y: 100,
+          text: sakuraSetComplete
+            ? `+${actualReward} 🌠 Sternschnuppe (🌸 +20% Set-Bonus)`
+            : `+${actualReward} 🌠 Sternschnuppe!`,
+          type: "star",
+          createdAt: Date.now(),
+        },
+      ]);
+
+      const currentMissions = generateMissionsForSet(missionSetNumber);
+      const allClaimedNow = currentMissions.every((m) => updatedClaimed.includes(m.id));
+      if (allClaimedNow) {
+        const isFrosch = activeZodiacId === "frosch";
+        const cooldownMs = isFrosch ? 2 * 60 * 1000 : 5 * 60 * 1000;
+        setMissionsCooldownEnd(Date.now() + cooldownMs);
+      }
+
+      return updatedClaimed;
     });
-
-    const pId = nextParticleId.current++;
-    setFloatingTexts((prev) => [
-      ...prev,
-      {
-        id: pId,
-        x: 100,
-        y: 100,
-        text: sakuraSetComplete 
-          ? `+${actualReward} 🌠 Sternschnuppe (🌸 +20% Set-Bonus)` 
-          : `+${actualReward} 🌠 Sternschnuppe!`,
-        type: "star",
-      },
-    ]);
-
-    // Check if ALL 3 missions of this set are now claimed
-    const currentMissions = generateMissionsForSet(missionSetNumber);
-    const allClaimedNow = currentMissions.every((m) => updatedClaimed.includes(m.id));
-    if (allClaimedNow) {
-      // 5-minute cooldown starts! Frosch (frog) zodiac increases mission cooldown speed by 2.5x (cooldown is only 2 minutes instead of 5!)
-      const isFrosch = activeZodiacId === "frosch";
-      const cooldownMs = isFrosch ? 2 * 60 * 1000 : 5 * 60 * 1000;
-      const cooldownEnd = Date.now() + cooldownMs;
-      setMissionsCooldownEnd(cooldownEnd);
-    }
-  };
+  }, [purchasedUpgrades, unlockedCosmetics, missionSetNumber, activeZodiacId]);
 
   // Check and progress mission set on cooldown end
   useEffect(() => {
@@ -380,106 +369,54 @@ export default function App() {
     return () => clearInterval(interval);
   }, [missionsCooldownEnd]);
 
-  const handleOpenShootingStar = (cosmetic: any, alreadyUnlocked: boolean, refundAmt: number) => {
+  const handleOpenShootingStar = useCallback((cosmetic: any, alreadyUnlocked: boolean, refundAmt: number) => {
     playTick();
     setShootingStarsCount((prev) => {
       const nextCount = Math.max(0, prev - 1);
-      workerRef.current?.postMessage({
-        type: "UPDATE_SHOOTING_STARS",
-        count: nextCount,
-      });
+      workerRef.current?.postMessage({ type: "UPDATE_SHOOTING_STARS", count: nextCount });
       return nextCount;
     });
 
     if (alreadyUnlocked) {
-      if (workerRef.current) {
-        workerRef.current.postMessage({
-          type: "ADD_GLITTER_DUST",
-          amount: refundAmt,
-        });
-      }
-
+      workerRef.current?.postMessage({ type: "ADD_GLITTER_DUST", amount: refundAmt });
       const pId = nextParticleId.current++;
       setFloatingTexts((prev) => [
         ...prev,
-        {
-          id: pId,
-          x: 110,
-          y: 110,
-          text: `+${refundAmt} Glitzerstaub! ✨`,
-          type: "star-click",
-        },
+        { id: pId, x: 110, y: 110, text: `+${refundAmt} Glitzerstaub! ✨`, type: "star-click", createdAt: Date.now() },
       ]);
     } else {
-      if (workerRef.current) {
-        workerRef.current.postMessage({
-          type: "UNLOCK_COSMETIC_LOOTBOX",
-          cosmeticId: cosmetic.id,
-        });
-      }
+      workerRef.current?.postMessage({ type: "UNLOCK_COSMETIC_LOOTBOX", cosmeticId: cosmetic.id });
       setUnlockedCosmetics((prev) => [...prev, cosmetic.id]);
     }
-  };
+  }, []);
 
-  const handleApplyCosmetic = (id: string, type: "star_color" | "planet_accessory" | "frame_style" | "moon_skin") => {
+  const handleApplyCosmetic = useCallback((id: string, type: "star_color" | "planet_accessory" | "frame_style" | "moon_skin") => {
     playTick();
-    if (type === "star_color") {
-      setActiveStarColor(id);
-    } else if (type === "planet_accessory") {
-      setActiveAccessory(id);
-    } else if (type === "frame_style") {
-      setActiveFrame(id);
-    } else if (type === "moon_skin") {
-      setActiveMoonSkin(id);
-    }
-  };
+    if (type === "star_color") setActiveStarColor(id);
+    else if (type === "planet_accessory") setActiveAccessory(id);
+    else if (type === "frame_style") setActiveFrame(id);
+    else if (type === "moon_skin") setActiveMoonSkin(id);
+  }, []);
 
-  const handleUnlockCosmeticDirect = (cosmeticId: string, cost: number) => {
+  const handleUnlockCosmeticDirect = useCallback((cosmeticId: string, cost: number) => {
     playTick();
-    if (workerRef.current) {
-      workerRef.current.postMessage({
-        type: "UNLOCK_COSMETIC_DIRECT",
-        cosmeticId,
-        cost,
-      });
+    workerRef.current?.postMessage({ type: "UNLOCK_COSMETIC_DIRECT", cosmeticId, cost });
+    const pId = nextParticleId.current++;
+    setFloatingTexts((prev) => [
+      ...prev,
+      { id: pId, x: 120, y: 90, text: `Freigeschaltet! ✨`, type: "star-click", createdAt: Date.now() },
+    ]);
+  }, []);
 
-      const pId = nextParticleId.current++;
-      setFloatingTexts((prev) => [
-        ...prev,
-        {
-          id: pId,
-          x: 120,
-          y: 90,
-          text: `Freigeschaltet! ✨`,
-          type: "star-click",
-        },
-      ]);
-    }
-  };
-
-  const handleUpgradeCosmeticRarity = (cosmeticId: string, targetRarity: string, cost: number) => {
+  const handleUpgradeCosmeticRarity = useCallback((cosmeticId: string, targetRarity: string, cost: number) => {
     playTick();
-    if (workerRef.current) {
-      workerRef.current.postMessage({
-        type: "UPGRADE_COSMETIC_RARITY",
-        cosmeticId,
-        targetRarity,
-        cost,
-      });
-
-      const pId = nextParticleId.current++;
-      setFloatingTexts((prev) => [
-        ...prev,
-        {
-          id: pId,
-          x: 125,
-          y: 95,
-          text: `Höhere Seltenheit! 👑 (+5% Boost)`,
-          type: "star-click",
-        },
-      ]);
-    }
-  };
+    workerRef.current?.postMessage({ type: "UPGRADE_COSMETIC_RARITY", cosmeticId, targetRarity, cost });
+    const pId = nextParticleId.current++;
+    setFloatingTexts((prev) => [
+      ...prev,
+      { id: pId, x: 125, y: 95, text: `Höhere Seltenheit! 👑 (+5% Boost)`, type: "star-click", createdAt: Date.now() },
+    ]);
+  }, []);
 
   // Destructure calculation stats for ease of rendering in the TSX layout
   const upgradesSpecs = calculations.upgradesSpecs;
@@ -662,14 +599,16 @@ export default function App() {
             return data.calculations;
           });
 
-          setAchievements((prev) => {
-            const prevUnlocked = prev.filter(a => a.unlocked).length;
-            const nextUnlocked = data.achievements.filter((a: any) => a.unlocked).length;
-            if (prevUnlocked === nextUnlocked && prev.length === data.achievements.length) {
-              return prev;
-            }
-            return data.achievements;
-          });
+          if (data.achievements !== undefined) {
+            setAchievements((prev) => {
+              const prevUnlocked = prev.filter(a => a.unlocked).length;
+              const nextUnlocked = data.achievements.filter((a: any) => a.unlocked).length;
+              if (prevUnlocked === nextUnlocked && prev.length === data.achievements.length) {
+                return prev;
+              }
+              return data.achievements;
+            });
+          }
           
           setIsLoaded(true);
           break;
@@ -858,19 +797,19 @@ export default function App() {
   const [activeEventDecision, setActiveEventDecision] = useState<"sammeln" | "erforschen" | "zerlegen" | "ignorieren" | null>(null);
   const [eventTimeRemaining, setEventTimeRemaining] = useState<number>(120);
 
-  const handleSelectEventDecision = (decision: "sammeln" | "erforschen" | "zerlegen" | "ignorieren") => {
+  const handleSelectEventDecision = useCallback((decision: "sammeln" | "erforschen" | "zerlegen" | "ignorieren") => {
     workerRef.current?.postMessage({
       type: "SET_EVENT_DECISION",
       decision,
     });
-  };
+  }, []);
 
-  const handleBlackHoleGamble = (sacrificeType: "life" | "stars" | "dust") => {
+  const handleBlackHoleGamble = useCallback((sacrificeType: "life" | "stars" | "dust") => {
     workerRef.current?.postMessage({
       type: "BLACK_HOLE_GAMBLE",
       sacrificeType,
     });
-  };
+  }, []);
 
   // Load static music volumes and configurations
   useEffect(() => {
@@ -1245,16 +1184,6 @@ export default function App() {
   // ----------------------------------------------------
   const animalDefs = INITIAL_ANIMALS;
 
-  const purchasedAnimalsList = useMemo(() => {
-    return animalDefs
-      .filter((def) => (purchasedAnimals[def.id] || 0) > 0)
-      .map((def) => ({
-        id: def.id,
-        emoji: def.emoji,
-        germanName: def.germanName,
-      }));
-  }, [purchasedAnimals, animalDefs]);
-
   // Distribute companions randomly staying clear of planet center
   const backgroundCompanions = useMemo(() => {
     const list: { id: string; emoji: string; x: number; y: number; delay: number; scale: number; speed: number }[] = [];
@@ -1302,19 +1231,14 @@ export default function App() {
   }, [purchasedAnimals, animalDefs, isLowMemory]);
 
   // Planet Click Event Handler
-  const handlePlanetClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handlePlanetClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     playPop();
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left - 20;
     const y = e.clientY - rect.top - 20;
 
-    workerRef.current?.postMessage({
-      type: "CLICK",
-      x,
-      y,
-    });
+    workerRef.current?.postMessage({ type: "CLICK", x, y });
 
-    // Predict & render floating text instantly for absolute zero click lag/latency
     const isKatze = activeZodiacId === "katze";
     const critChance = isKatze ? 0.20 : 0.05;
     const isCrit = Math.random() < critChance;
@@ -1329,52 +1253,39 @@ export default function App() {
           id: pId,
           x,
           y,
-          text: isCrit 
-            ? `+${formatCompactNumber(actualClickLife)} CRIT! ✨` 
+          text: isCrit
+            ? `+${formatCompactNumber(actualClickLife)} CRIT! ✨`
             : `+${formatCompactNumber(actualClickLife)}`,
           type: isCrit ? "crit-click" : "click",
           createdAt: Date.now(),
         },
       ];
-      if (next.length > 15) {
-        return next.slice(next.length - 15);
-      }
-      return next;
+      return next.length > 15 ? next.slice(next.length - 15) : next;
     });
-  };
+  }, [activeZodiacId, clickPower, clickMultiplierForEvents]);
 
-  // Custom particle spawner for general events
-  const handleSpawningText = (txt: string, pType: "heart" | "click") => {
+  const handleSpawningText = useCallback((txt: string, pType: "heart" | "click") => {
     const rx = 50 + Math.random() * 150;
     const ry = 40 + Math.random() * 50;
     const pId = nextParticleId.current++;
-
     setFloatingTexts((prev) => {
       const next = [
         ...prev,
-        {
-          id: pId,
-          x: rx,
-          y: ry,
-          text: txt,
-          type: pType,
-          createdAt: Date.now(),
-        },
+        { id: pId, x: rx, y: ry, text: txt, type: pType, createdAt: Date.now() },
       ];
-      if (next.length > 15) {
-        return next.slice(next.length - 15);
-      }
-      return next;
+      return next.length > 15 ? next.slice(next.length - 15) : next;
     });
-  };
+  }, []);
 
   // Click Sound Toggle helper
-  const handleToggleMute = () => {
-    const targetState = !isMutedState;
-    setMuted(targetState);
-    setIsMutedState(targetState);
-    localStorage.setItem("cute_planet_muted", String(targetState));
-  };
+  const handleToggleMute = useCallback(() => {
+    setIsMutedState((prev) => {
+      const next = !prev;
+      setMuted(next);
+      localStorage.setItem("cute_planet_muted", String(next));
+      return next;
+    });
+  }, []);
 
   // Buy cute star
   const starCost = useMemo(() => {
@@ -1393,112 +1304,63 @@ export default function App() {
     return limit;
   }, [purchasedUpgrades]);
 
-  const handleBuyStar = () => {
+  const handleBuyStar = useCallback(() => {
     if (life < starCost) return;
-    
     playBuy();
-    workerRef.current?.postMessage({
-      type: "BUY_STAR",
-      cost: starCost,
-    });
-  };
+    workerRef.current?.postMessage({ type: "BUY_STAR", cost: starCost });
+  }, [life, starCost]);
 
-  const handleInvestConstellation = (constellationId: string, starsCost: number, moonsCost: number) => {
+  const handleInvestConstellation = useCallback((constellationId: string, starsCost: number, moonsCost: number) => {
     playBuy();
-    workerRef.current?.postMessage({
-      type: "INVEST_CONSTELLATION",
-      constellationId,
-      starsCost,
-      moonsCost,
-    });
-  };
+    workerRef.current?.postMessage({ type: "INVEST_CONSTELLATION", constellationId, starsCost, moonsCost });
+  }, []);
 
-  const handleCraftItem = (recipeId: string, count: number = 1) => {
+  const handleCraftItem = useCallback((recipeId: string, count: number = 1) => {
     playUpgrade();
-    workerRef.current?.postMessage({
-      type: "CRAFT_ITEM",
-      recipeId,
-      count,
-    });
-  };
+    workerRef.current?.postMessage({ type: "CRAFT_ITEM", recipeId, count });
+  }, []);
 
-  const handleUseCraftedItem = (itemId: string, count: number = 1) => {
+  const handleUseCraftedItem = useCallback((itemId: string, count: number = 1) => {
     playPop();
-    workerRef.current?.postMessage({
-      type: "USE_CRAFTED_ITEM",
-      itemId,
-      count,
-    });
-  };
+    workerRef.current?.postMessage({ type: "USE_CRAFTED_ITEM", itemId, count });
+  }, []);
 
-  const handleSelectZodiac = (zodiacId: string) => {
+  const handleSelectZodiac = useCallback((zodiacId: string) => {
     playPop();
-    workerRef.current?.postMessage({
-      type: "SET_ZODIAC",
-      zodiacId,
-    });
-  };
+    workerRef.current?.postMessage({ type: "SET_ZODIAC", zodiacId });
+  }, []);
 
-  const handleMergeMoons = () => {
+  const handleMergeMoons = useCallback(() => {
     if (starsCount >= 50 && moonsCount < maxMoons) {
-      workerRef.current?.postMessage({
-        type: "MERGE_MOONS",
-      });
+      workerRef.current?.postMessage({ type: "MERGE_MOONS" });
       playBuy();
-      
       const textId = Date.now();
       setFloatingTexts((prev) => [
         ...prev,
-        {
-          id: textId,
-          x: 0,
-          y: -80,
-          text: "🌙 Mond erschaffen! 🌙",
-          type: "level",
-          createdAt: Date.now(),
-        },
+        { id: textId, x: 0, y: -80, text: "🌙 Mond erschaffen! 🌙", type: "level", createdAt: Date.now() },
       ]);
     }
-  };
+  }, [starsCount, moonsCount, maxMoons]);
 
-  // Purchase Cute Animal Species
-  const handleBuyAnimal = (animalId: string, cost: number, countToBuy: number) => {
+  const handleBuyAnimal = useCallback((animalId: string, cost: number, countToBuy: number) => {
     if (life < cost) return;
-
     playBuy();
-    workerRef.current?.postMessage({
-      type: "BUY_ANIMAL",
-      animalId,
-      cost,
-      countToBuy,
-    });
-  };
+    workerRef.current?.postMessage({ type: "BUY_ANIMAL", animalId, cost, countToBuy });
+  }, [life]);
 
-  // Batch purchase upgrades
-  const handleBuyUpgradesBatch = (list: { id: string; cost: number; isGlitter: boolean }[]) => {
+  const handleBuyUpgradesBatch = useCallback((list: { id: string; cost: number; isGlitter: boolean }[]) => {
     if (list.length === 0) return;
-
     playUpgrade();
-    workerRef.current?.postMessage({
-      type: "BUY_UPGRADES_BATCH",
-      upgradesList: list,
-    });
-  };
+    workerRef.current?.postMessage({ type: "BUY_UPGRADES_BATCH", upgradesList: list });
+  }, []);
 
-  // Dynamic cost list of upgrades
   const staticUpgrades = STATIC_UPGRADES;
 
-  // Helper to handle buying upgrades
-  const handleBuyUpgrade = (id: string, cost: number) => {
+  const handleBuyUpgrade = useCallback((id: string, cost: number) => {
     if (life < cost || purchasedUpgrades.includes(id)) return;
-
     playUpgrade();
-    workerRef.current?.postMessage({
-      type: "BUY_UPGRADE",
-      id,
-      cost,
-    });
-  };
+    workerRef.current?.postMessage({ type: "BUY_UPGRADE", id, cost });
+  }, [life, purchasedUpgrades]);
 
   // Full Game hard Reset trigger
   const handleGameReset = () => {
@@ -1520,34 +1382,17 @@ export default function App() {
     setShowResetDialog(false);
   };
 
-  // Cosmic Prestige reset mechanism
-  const handleConfirmPrestige = () => {
-    // Guard against premature triggers, unless doing a Galaxy Voyage (planetLevel >= 20)
-    if (planetLevel < 20 && life < getPrestigeRequirement(prestigeCount)) {
-      return;
-    }
-
-    // Satisfying sound effect
+  const handleConfirmPrestige = useCallback(() => {
+    if (planetLevel < 20 && life < getPrestigeRequirement(prestigeCount)) return;
     playLevelUp();
-
-    // Reset game state elements through the web worker
-    workerRef.current?.postMessage({
-      type: "PRESTIGE",
-    });
-
-    // Award 1x Star Shooting Lootbox
+    workerRef.current?.postMessage({ type: "PRESTIGE" });
     setShootingStarsCount((prev) => {
       const nextCount = prev + 1;
-      workerRef.current?.postMessage({
-        type: "UPDATE_SHOOTING_STARS",
-        count: nextCount,
-      });
+      workerRef.current?.postMessage({ type: "UPDATE_SHOOTING_STARS", count: nextCount });
       return nextCount;
     });
-
-    // Close the dialogue
     setShowPrestigeModal(false);
-  };
+  }, [planetLevel, life, prestigeCount]);
 
   // Helper to view time played beautifully
   const formatTimePlayed = (totalSeconds: number) => {
@@ -1561,6 +1406,20 @@ export default function App() {
     parts.push(`${secs} Sek.`);
     return parts.join(" ");
   };
+
+  // Stable modal openers — defined once so memoized children never see new refs
+  const openPrestigeModal = useCallback(() => setShowPrestigeModal(true), []);
+  const openOfflineModal = useCallback(() => setShowOfflineModal(true), []);
+  const openZodiacModal = useCallback(() => setShowZodiacModal(true), []);
+  const openAnimalsModal = useCallback(() => setShowAnimalsModal(true), []);
+  const openCraftingModal = useCallback(() => setShowCraftingModal(true), []);
+  const openStarsModal = useCallback(() => setShowStarsModal(true), []);
+  const openUpgradesModal = useCallback(() => setShowUpgradesModal(true), []);
+  const openAchievementsModal = useCallback(() => setShowAchievementsModal(true), []);
+  const openStatsModal = useCallback(() => setShowStatsModal(true), []);
+  const openMissionsModal = useCallback(() => setShowMissionsModal(true), []);
+  const openInventoryModal = useCallback(() => setShowInventoryModal(true), []);
+  const closeTutorial = useCallback(() => setShowTutorial(false), []);
 
   if (!isLoaded) {
     return (
@@ -1655,7 +1514,7 @@ export default function App() {
           totalLps={totalLps}
           starsCount={starsCount}
           prestigeCount={prestigeCount}
-          onShowPrestige={() => setShowPrestigeModal(true)}
+          onShowPrestige={openPrestigeModal}
         />
 
         {/* Cosmic Event Alert / Notification Panel - Displays countdown or active event state dynamically with glowing animations */}
@@ -1677,30 +1536,38 @@ export default function App() {
           cycleProgress={cycleProgress}
           offlineEarnedLife={offlineEarnedLife}
           offlineSeconds={offlineSeconds}
-          onOpenOfflineModal={() => setShowOfflineModal(true)}
+          onOpenOfflineModal={openOfflineModal}
         />
 
         {/* Huge Interactive Planet Canvas: No overflow bounds, stars and animals float freely! */}
         <section className="relative group w-full max-w-3xl flex flex-col items-center justify-center py-4">
-          <Planet
-            level={planetLevel}
-            life={life}
-            planetExp={planetExp}
-            planetExpNeeded={planetExpNeeded}
-            starsCount={starsCount}
-            moonsCount={moonsCount || 0}
-            starPowerMultiplier={starPowerPerStar}
-            onPlanetClick={handlePlanetClick}
-            floatingTexts={floatingTexts}
-            purchasedAnimalsList={purchasedAnimalsList}
-            isNight={isNightStyle}
-            activeStarColor={activeStarColor}
-            activeAccessory={activeAccessory}
-            activeMoonSkin={activeMoonSkin}
-            isLowMemory={isLowMemory}
-            activeZodiacId={activeZodiacId}
-            onOpenZodiacModal={() => setShowZodiacModal(true)}
-          />
+          {/* Wrapper shrinks to planet content width so FloatingTexts' inset-0 aligns with click coords */}
+          <div className="relative">
+            <Planet
+              level={planetLevel}
+              planetExp={planetExp}
+              planetExpNeeded={planetExpNeeded}
+              starsCount={starsCount}
+              moonsCount={moonsCount || 0}
+              starPowerMultiplier={starPowerPerStar}
+              onPlanetClick={handlePlanetClick}
+              isNight={isNightStyle}
+              activeStarColor={activeStarColor}
+              activeAccessory={activeAccessory}
+              activeMoonSkin={activeMoonSkin}
+              isLowMemory={isLowMemory}
+              activeZodiacId={activeZodiacId}
+              onOpenZodiacModal={openZodiacModal}
+            />
+
+            {/* Floating click/star/level text particles — sibling overlay anchored to planet bounds */}
+            <FloatingTexts
+              floatingTexts={floatingTexts}
+              isLowMemory={isLowMemory}
+              isNight={isNightStyle}
+              activeStarColor={activeStarColor}
+            />
+          </div>
 
           {/* Subtitle technical decoration lines */}
           <div className="mt-4 flex justify-center opacity-60 font-mono text-[9.5px] sm:text-[11px] font-bold text-rose-300/40 tracking-wide pointer-events-none">
@@ -1710,14 +1577,14 @@ export default function App() {
 
         {/* Beautiful Tactile Floating Buttons to open their corresponding modal window */}
         <ActionButtons
-          onShowAnimals={() => setShowAnimalsModal(true)}
-          onShowCrafting={() => setShowCraftingModal(true)}
-          onShowStars={() => setShowStarsModal(true)}
-          onShowUpgrades={() => setShowUpgradesModal(true)}
-          onShowAchievements={() => setShowAchievementsModal(true)}
-          onShowStats={() => setShowStatsModal(true)}
-          onShowMissions={() => setShowMissionsModal(true)}
-          onShowInventory={() => setShowInventoryModal(true)}
+          onShowAnimals={openAnimalsModal}
+          onShowCrafting={openCraftingModal}
+          onShowStars={openStarsModal}
+          onShowUpgrades={openUpgradesModal}
+          onShowAchievements={openAchievementsModal}
+          onShowStats={openStatsModal}
+          onShowMissions={openMissionsModal}
+          onShowInventory={openInventoryModal}
           disableAnimations={disableAnimations}
           isNightStyle={isNightStyle}
           totalAnimalsCount={totalAnimalsCount}

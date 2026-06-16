@@ -573,20 +573,22 @@ let cachedAchievementsObj: any[] = [];
 let lastAchievementsCalcTime = 0;
 
 // State Broadcaster
-function broadcastStateUpdate(forceRecalculateAchievements = false) {
-  const calculations = getLpsAndStats();
-  
+// cachedStats: pre-computed getLpsAndStats() from the calling tick (avoids a second call)
+function broadcastStateUpdate(forceRecalculateAchievements = false, cachedStats?: ReturnType<typeof getLpsAndStats>) {
+  const calculations = cachedStats ?? getLpsAndStats();
+
   // Throttle achievements calculation to once every 1250ms unless forced by a buy/click event
   const now = Date.now();
+  let freshAchievements: any[] | undefined;
   if (forceRecalculateAchievements || cachedAchievementsObj.length === 0 || now - lastAchievementsCalcTime > 1250) {
     cachedAchievementsObj = generateAchievements();
     lastAchievementsCalcTime = now;
+    freshAchievements = cachedAchievementsObj;
   }
-  
-  const achievements = cachedAchievementsObj;
-  const unlockedAchievementsCount = achievements.filter((a: any) => a.isUnlocked).length;
 
-  postMessage({
+  const unlockedAchievementsCount = cachedAchievementsObj.filter((a: any) => a.isUnlocked).length;
+
+  const msg: any = {
     type: "STATE_UPDATE",
     state: {
       life: state.life,
@@ -620,8 +622,11 @@ function broadcastStateUpdate(forceRecalculateAchievements = false) {
       ...calculations,
       unlockedAchievementsCount,
     },
-    achievements,
-  });
+  };
+  if (freshAchievements !== undefined) {
+    msg.achievements = freshAchievements;
+  }
+  postMessage(msg);
 }
 
 // ---------------------------------------------------------------------------
@@ -638,7 +643,7 @@ function startTimers() {
       state.life += increment;
       state.totalLifeEarned += increment;
     }
-    broadcastStateUpdate();
+    broadcastStateUpdate(false, stats);
   }, 250);
 
   // 2. Seconds played ticker (every 1000ms)

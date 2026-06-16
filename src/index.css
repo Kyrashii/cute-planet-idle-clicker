@@ -542,3 +542,24 @@ body.active-frame-butterfly [class*="rounded-3"]:not([class*="rounded-3xl\/"]):n
 .animate-rainbow-star {
   animation: rainbow-shift 3.5s linear infinite !important;
 }
+
+@keyframes companion-drift {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  25%  { transform: translate(var(--dx), calc(var(--dy) * -1)) rotate(var(--rot)); }
+  75%  { transform: translate(calc(var(--dx) * -0.6), var(--dy)) rotate(calc(var(--rot) * -1)); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+@keyframes companion-bob {
+  0%, 100% { transform: scaleY(1) scaleX(1); }
+  40%       { transform: scaleY(0.8) scaleX(1.2); }
+  70%       { transform: scaleY(1.15) scaleX(0.88); }
+}
+.companion-outer {
+  position: absolute;
+  animation: companion-drift var(--drift-dur) ease-in-out infinite;
+  animation-delay: var(--drift-delay);
+}
+.companion-inner {
+  animation: companion-bob var(--bob-dur) ease-in-out infinite;
+  animation-delay: var(--bob-delay);
+}
