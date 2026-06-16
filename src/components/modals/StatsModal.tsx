@@ -41,7 +41,7 @@ export const StatsModal: React.FC<StatsModalProps> = ({
       <motion.div
         initial={{ scale: 0.95, opacity: 0, y: 15 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="modal-frame-target bg-[#1a163a]/95 backdrop-blur-md border-3 border-teal-300 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-3.5xl"
+        className="modal-frame-target bg-[#1a163a]/95 border-3 border-teal-300 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-3.5xl"
       >
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b-3 border-teal-300/60 bg-gradient-to-r from-[#10192e] via-[#12233c] to-[#10192e] flex items-center justify-between shrink-0">
