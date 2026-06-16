@@ -6,7 +6,7 @@ interface EventBackgroundsProps {
   isLowMemory: boolean;
 }
 
-export const EventBackgrounds: React.FC<EventBackgroundsProps> = ({
+export const EventBackgrounds: React.FC<EventBackgroundsProps> = React.memo(({
   activeEvent,
   isLowMemory,
 }) => {
@@ -102,4 +102,5 @@ export const EventBackgrounds: React.FC<EventBackgroundsProps> = ({
       )}
     </>
   );
-};
+});
+EventBackgrounds.displayName = "EventBackgrounds";

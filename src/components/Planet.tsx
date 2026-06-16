@@ -328,7 +328,7 @@ const getMoonSkinGraphic = (skin: string) => {
   }
 };
 
-export const Planet: React.FC<PlanetProps> = ({
+export const Planet: React.FC<PlanetProps> = React.memo(({
   level,
   planetExp,
   planetExpNeeded,
@@ -1210,4 +1210,5 @@ export const Planet: React.FC<PlanetProps> = ({
       </div>
     </div>
   );
-};
+});
+Planet.displayName = "Planet";

@@ -27,7 +27,7 @@ interface InventoryModalProps {
 
   // Crafted items
   craftedItems?: Record<string, number>;
-  onUseCraftedItem?: (itemId: string) => void;
+  onUseCraftedItem?: (itemId: string, count: number) => void;
   zodiac?: string;
   onSelectZodiac?: (zodiacId: string) => void;
 }
@@ -632,20 +632,40 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
 
                     <div className="mt-3.5 space-y-2">
                       <div className="text-[10.5px] font-mono leading-none text-purple-300">
-                        Besitz: <strong className="text-white font-extrabold bg-[#1d173c] px-2 py-0.5 rounded-md border border-purple-400/20">{qty}x</strong>
+                        Besitz: <strong className="text-white font-extrabold bg-[#1d173c]/80 px-2 py-0.5 rounded-md border border-purple-400/20">{qty}x</strong>
                       </div>
                       
-                      <button
-                        onClick={() => canActivate && onUseCraftedItem?.(item.id)}
-                        disabled={!canActivate}
-                        className={`w-full py-2 rounded-xl text-[10px] font-black uppercase tracking-wider text-white transition-all ${
-                          canActivate
-                            ? "bg-gradient-to-r from-emerald-505 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-md cursor-pointer active:scale-[0.98] border-2 border-green-400"
-                            : "bg-slate-800/80 border border-[#b4a9cc]/10 text-slate-500 cursor-not-allowed select-none"
-                        }`}
-                      >
-                        {canActivate ? "Aktivieren ✨" : "Keine Exemplare"}
-                      </button>
+                      {!canActivate ? (
+                        <button
+                          disabled
+                          className="w-full py-2 rounded-xl text-[10px] font-black uppercase bg-slate-800/80 border border-[#b4a9cc]/10 text-slate-500 cursor-not-allowed select-none"
+                        >
+                          Keine Exemplare
+                        </button>
+                      ) : qty > 1 ? (
+                        <div className="flex gap-1.5">
+                          <button
+                            onClick={() => onUseCraftedItem?.(item.id, 1)}
+                            className="flex-1 py-2 rounded-xl text-[10px] font-black uppercase text-white transition-all bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-sm cursor-pointer active:scale-[0.98] border border-green-400"
+                          >
+                            1x Öffnen
+                          </button>
+                          <button
+                            onClick={() => onUseCraftedItem?.(item.id, qty)}
+                            className="flex-1 py-2 rounded-xl text-[10px] font-black uppercase text-white transition-all bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 shadow-sm cursor-pointer active:scale-[0.98] border border-teal-400"
+                            title={`Öffnet alle ${qty} Exemplare auf einmal`}
+                          >
+                            Alle ({qty}x)
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => onUseCraftedItem?.(item.id, 1)}
+                          className="w-full py-2 rounded-xl text-[10px] font-black uppercase text-white transition-all bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-md cursor-pointer active:scale-[0.98] border border-green-450"
+                        >
+                          1x Öffnen ✨
+                        </button>
+                      )}
                     </div>
                   </div>
                 );

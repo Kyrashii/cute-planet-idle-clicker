@@ -611,6 +611,7 @@ function broadcastStateUpdate(forceRecalculateAchievements = false) {
       shootingStarsCount: state.shootingStarsCount || 0,
       blackHoleSize: state.blackHoleSize || 1,
       craftedItems: state.craftedItems || {},
+      zodiac: state.zodiac || "katze",
     },
     calculations: {
       ...calculations,
@@ -906,25 +907,26 @@ addEventListener("message", (e) => {
       break;
     }
     case "CRAFT_ITEM": {
-      const { recipeId } = data;
+      const { recipeId, count: rawCount } = data;
+      const count = Math.max(1, Number(rawCount || 1));
       const recipe = CRAFTING_RECIPES.find((r) => r.id === recipeId);
       if (!recipe) break;
 
       const { life: reqLife, stars: reqStars, moons: reqMoons, glitter: reqGlitter, lootboxes: reqLootboxes, items: reqItems } = recipe.ingredients;
 
-      // Check affordability
+      // Check affordability for specified quantity
       let canCraft = true;
-      if (reqLife && state.life < reqLife) canCraft = false;
-      if (reqStars && state.starsCount < reqStars) canCraft = false;
-      if (reqMoons && state.moonsCount < reqMoons) canCraft = false;
-      if (reqGlitter && state.glitterDust < reqGlitter) canCraft = false;
-      if (reqLootboxes && state.shootingStarsCount < reqLootboxes) canCraft = false;
+      if (reqLife && state.life < reqLife * count) canCraft = false;
+      if (reqStars && state.starsCount < reqStars * count) canCraft = false;
+      if (reqMoons && state.moonsCount < reqMoons * count) canCraft = false;
+      if (reqGlitter && state.glitterDust < reqGlitter * count) canCraft = false;
+      if (reqLootboxes && state.shootingStarsCount < reqLootboxes * count) canCraft = false;
 
       if (reqItems) {
         if (!state.craftedItems) state.craftedItems = {};
         for (const [itemId, qty] of Object.entries(reqItems)) {
           const owned = state.craftedItems[itemId] || 0;
-          if (owned < qty) {
+          if (owned < qty * count) {
             canCraft = false;
             break;
           }
@@ -933,26 +935,27 @@ addEventListener("message", (e) => {
 
       if (canCraft) {
         // Subtract resources
-        if (reqLife) state.life -= reqLife;
-        if (reqStars) state.starsCount -= reqStars;
-        if (reqMoons) state.moonsCount -= reqMoons;
-        if (reqGlitter) state.glitterDust -= reqGlitter;
-        if (reqLootboxes) state.shootingStarsCount -= reqLootboxes;
+        if (reqLife) state.life -= reqLife * count;
+        if (reqStars) state.starsCount -= reqStars * count;
+        if (reqMoons) state.moonsCount -= reqMoons * count;
+        if (reqGlitter) state.glitterDust -= reqGlitter * count;
+        if (reqLootboxes) state.shootingStarsCount -= reqLootboxes * count;
 
         if (reqItems) {
           for (const [itemId, qty] of Object.entries(reqItems)) {
-            state.craftedItems[itemId] = (state.craftedItems[itemId] || 0) - qty;
+            state.craftedItems[itemId] = (state.craftedItems[itemId] || 0) - (qty * count);
           }
         }
 
         // Add crafted item
         if (!state.craftedItems) state.craftedItems = {};
         const resultId = recipe.result.id;
-        state.craftedItems[resultId] = (state.craftedItems[resultId] || 0) + recipe.result.quantity;
+        const totalQty = recipe.result.quantity * count;
+        state.craftedItems[resultId] = (state.craftedItems[resultId] || 0) + totalQty;
 
         postMessage({
           type: "COSMETIC_FOUND",
-          text: `Erfolgreich hergestellt: ${recipe.result.quantity}x ${recipe.result.name} ${recipe.result.emoji}! 🔨`,
+          text: `Erfolgreich hergestellt: ${totalQty}x ${recipe.result.name} ${recipe.result.emoji}! 🔨`,
         });
 
         broadcastStateUpdate(true);
@@ -960,218 +963,299 @@ addEventListener("message", (e) => {
       break;
     }
     case "USE_CRAFTED_ITEM": {
-      const { itemId } = data;
+      const { itemId, count: requestedCount } = data;
       if (!state.craftedItems) state.craftedItems = {};
       const qty = state.craftedItems[itemId] || 0;
-      if (qty <= 0) break;
+      const count = Math.min(requestedCount || 1, qty);
+      if (count <= 0) break;
 
-      // Deduct item
-      state.craftedItems[itemId] = qty - 1;
+      // Deduct items
+      state.craftedItems[itemId] = qty - count;
 
-      // Handle item effects
-      if (itemId === "use_silver_schnuppe") {
-        state.shootingStarsCount = (state.shootingStarsCount || 0) + 6;
-        postMessage({ type: "COSMETIC_FOUND", text: "Silberne Schnuppe aktiviert: +6 Lootboxen erhalten! 🌠" });
-      }
-      else if (itemId === "use_deko_box") {
-        const allCosmetics = COSMETIC_ITEMS.map((c) => c.id);
-        const locked = allCosmetics.filter((id) => !state.unlockedCosmetics.includes(id));
-        if (locked.length > 0) {
-          const rolled = locked[Math.floor(Math.random() * locked.length)];
-          state.unlockedCosmetics.push(rolled);
-          const cosmeticObj = COSMETIC_ITEMS.find((c) => c.id === rolled);
-          postMessage({
-            type: "COSMETIC_FOUND",
-            text: `Freigeschaltet: ${cosmeticObj?.germanName || rolled} ${cosmeticObj?.emoji || ""}! 🎁`,
-          });
-        } else {
-          state.glitterDust = (state.glitterDust || 0) + 35;
-          postMessage({
-            type: "COSMETIC_FOUND",
-            text: `Recht des Besitzers: +35 Glitzerstaub erstattet! ✨`,
-          });
+      // Initialize accumulated rewards
+      let lifeGained = 0;
+      let starsGained = 0;
+      let moonsGained = 0;
+      let glitterGained = 0;
+      let lootboxesGained = 0;
+      let xpGained = 0;
+      let prestigeGained = 0;
+      let unlockedCosmeticsList: { id: string; name: string; emoji: string; duplicateRefund: boolean }[] = [];
+      let animalsSpawned: Record<string, number> = {};
+      let eventsTriggered: string[] = [];
+
+      // Determine item's name/emoji for summary
+      const recipe = CRAFTING_RECIPES.find((r) => r.result.id === itemId);
+      const itemName = recipe?.result.name || "Kreations-Gegenstand";
+      const itemEmoji = recipe?.result.emoji || "🔮";
+
+      for (let step = 0; step < count; step++) {
+        if (itemId === "use_silver_schnuppe") {
+          state.shootingStarsCount = (state.shootingStarsCount || 0) + 6;
+          lootboxesGained += 6;
         }
-      }
-      else if (itemId === "use_moon_blessing") {
-        state.glitterDust = (state.glitterDust || 0) + 120;
-        state.life += 25000000;
-        state.totalLifeEarned += 25000000;
-        state.starsCount += 5;
-        postMessage({ type: "COSMETIC_FOUND", text: "Mondsegen gewirkt: +120 Glitzerstaub, +25M Leben, +5 Sterne! 🌙" });
-      }
-      else if (itemId === "use_gold_schnuppe") {
-        state.shootingStarsCount = (state.shootingStarsCount || 0) + 15;
-        state.glitterDust = (state.glitterDust || 0) + 200;
-        postMessage({ type: "COSMETIC_FOUND", text: "Goldene Schnuppe verglüht: +15 Lootboxen & +200 Glitzerstaub! 💫" });
-      }
-      else if (itemId === "use_trig_supernova") {
-        state.activeEvent = "supernova";
-        state.eventTimeRemaining = 120;
-        state.activeEventDecision = null;
-        postMessage({ type: "COSMETIC_FOUND", text: "Supernova-Event ausgelöst! Schau gen Himmel! 💥" });
-      }
-      else if (itemId === "use_trig_aurora") {
-        state.activeEvent = "aurora";
-        state.eventTimeRemaining = 120;
-        state.activeEventDecision = null;
-        postMessage({ type: "COSMETIC_FOUND", text: "Aurora-Event ausgelöst! Der Himmel ergrünt! 🌌" });
-      }
-      else if (itemId === "use_trig_meteor") {
-        state.activeEvent = "meteors";
-        state.eventTimeRemaining = 120;
-        state.activeEventDecision = null;
-        postMessage({ type: "COSMETIC_FOUND", text: "Meteoritenschauer herbeigerufen! ☄️" });
-      }
-      else if (itemId === "use_trig_stars") {
-        state.activeEvent = "shooting_stars";
-        state.eventTimeRemaining = 120;
-        state.activeEventDecision = null;
-        postMessage({ type: "COSMETIC_FOUND", text: "Mondnacht-Sternschnuppen-Schauer bricht los! 🌠" });
-      }
-      else if (itemId === "use_trig_blackhole") {
-        state.activeEvent = "black_hole";
-        state.eventTimeRemaining = 120;
-        state.activeEventDecision = null;
-        postMessage({ type: "COSMETIC_FOUND", text: "Ein Schwarzes Loch krümmt die lokale Matrix! 🕳️" });
-      }
-      else if (itemId === "use_prisma_boxes") {
-        state.shootingStarsCount = (state.shootingStarsCount || 0) + 3;
-        postMessage({ type: "COSMETIC_FOUND", text: "Prisma zersplittert: +3 Lootboxen erhalten! 💎" });
-      }
-      else if (itemId === "use_prestige_amulet") {
-        state.prestigeCount = (state.prestigeCount || 0) + 1;
-        postMessage({ type: "COSMETIC_FOUND", text: "Dimensionssprung! Prestige +1 erhalten, ganz ohne Ressourcenverlust! 👑" });
-      }
-      else if (itemId === "use_giga_life") {
-        state.life += 150000000;
-        state.totalLifeEarned += 150000000;
-        postMessage({ type: "COSMETIC_FOUND", text: "Lebensessenz explodiert: +150.000.000 Leben hinzugewonnen! 🧪" });
-      }
-      else if (itemId === "use_peach_bless") {
-        state.life += 5000000;
-        state.totalLifeEarned += 5000000;
-        state.starsCount += 15;
-        postMessage({ type: "COSMETIC_FOUND", text: "Kirschblüten-Segen verströmt: +5M Leben, +15 Sterne! 🌸" });
-      }
-      else if (itemId === "use_animal_cookies") {
-        let spawned = 0;
-        for (const animalId of Object.keys(state.purchasedAnimals)) {
-          if (state.purchasedAnimals[animalId] > 0) {
-            state.purchasedAnimals[animalId] += 1;
-            spawned += 1;
+        else if (itemId === "use_deko_box") {
+          const allCosmetics = COSMETIC_ITEMS.map((c) => c.id);
+          const locked = allCosmetics.filter((id) => !state.unlockedCosmetics.includes(id));
+          if (locked.length > 0) {
+            const rolled = locked[Math.floor(Math.random() * locked.length)];
+            state.unlockedCosmetics.push(rolled);
+            const cosmeticObj = COSMETIC_ITEMS.find((c) => c.id === rolled);
+            unlockedCosmeticsList.push({
+              id: rolled,
+              name: cosmeticObj?.germanName || rolled,
+              emoji: cosmeticObj?.emoji || "🎁",
+              duplicateRefund: false
+            });
+          } else {
+            state.glitterDust = (state.glitterDust || 0) + 35;
+            glitterGained += 35;
+            unlockedCosmeticsList.push({
+              id: `refund_glitter_35_${step}`,
+              name: "Glitzerstaub-Erstattung",
+              emoji: "✨",
+              duplicateRefund: true
+            });
           }
         }
-        postMessage({ type: "COSMETIC_FOUND", text: `Premium-Snack verspeist: +1 von all deinen ${spawned} Tierarten! 🍪` });
-      }
-      else if (itemId === "use_nebula_coffer") {
-        state.shootingStarsCount = (state.shootingStarsCount || 0) + 2;
-        state.life += 120000;
-        state.totalLifeEarned += 120000;
-        postMessage({ type: "COSMETIC_FOUND", text: "Nebelbeutel geöffnet: +2 Lootboxen und +120.000 Leben! ☁️" });
-      }
-      else if (itemId === "use_star_shards") {
-        state.starsCount += 12;
-        postMessage({ type: "COSMETIC_FOUND", text: "Kiste gesprengt: +12 funkelnde Sterne gerufen! ⭐" });
-      }
-      else if (itemId === "use_glitter_fountain") {
-        state.glitterDust = (state.glitterDust || 0) + 85;
-        postMessage({ type: "COSMETIC_FOUND", text: "Brunnen sprudelt: +85 Glitzerstaub geschöpft! ✨" });
-      }
-      else if (itemId === "use_xp_capsule") {
-        addPlanetExp(15000);
-        postMessage({ type: "COSMETIC_FOUND", text: "Planeten-EP Kapsel verdaut: +15.000 Erfahrungspunkte! 💊" });
-      }
-      else if (itemId === "use_solar_flare_box") {
-        state.life += 30000000;
-        state.totalLifeEarned += 30000000;
-        state.shootingStarsCount = (state.shootingStarsCount || 0) + 4;
-        postMessage({ type: "COSMETIC_FOUND", text: "Solarer Ausbruch: +30M Leben, +4 Lootboxen! 💥" });
-      }
-      else if (itemId === "use_grav_shifter") {
-        state.starsCount += 30;
-        postMessage({ type: "COSMETIC_FOUND", text: "Schwerkraft verzerrt: +30 kreisende Sterne gerufen! 🌀" });
-      }
-      else if (itemId === "use_time_booster") {
-        const stats = getLpsAndStats();
-        const earnings = stats.totalLps * 7200;
-        state.life += earnings;
-        state.totalLifeEarned += earnings;
-        postMessage({ type: "COSMETIC_FOUND", text: `Tempus-Segen gewirkt: +${formatCompactNumber(earnings)} Leben (2 Stunden Ertrag)! ⏳` });
-      }
-      else if (itemId === "use_luck_amulet") {
-        const epicLegend = COSMETIC_ITEMS.filter((c) => c.rarity === "epic" || c.rarity === "legendary");
-        const epLocked = epicLegend.filter((c) => !state.unlockedCosmetics.includes(c.id));
-        if (epLocked.length > 0) {
-          const rolled = epLocked[Math.floor(Math.random() * epLocked.length)];
-          state.unlockedCosmetics.push(rolled.id);
-          postMessage({
-            type: "COSMETIC_FOUND",
-            text: `Glückliche Fügung: ${rolled.germanName} ${rolled.emoji} erhalten! 🧿`,
-          });
-        } else {
-          state.glitterDust = (state.glitterDust || 0) + 100;
-          postMessage({
-            type: "COSMETIC_FOUND",
-            text: `Vollendeter Geschmack: +100 Glitzerstaub ✨ bar erstattet!`,
-          });
+        else if (itemId === "use_moon_blessing") {
+          state.glitterDust = (state.glitterDust || 0) + 120;
+          state.life += 25000000;
+          state.totalLifeEarned += 25000000;
+          state.starsCount += 5;
+          glitterGained += 120;
+          lifeGained += 25000000;
+          starsGained += 5;
+        }
+        else if (itemId === "use_gold_schnuppe") {
+          state.shootingStarsCount = (state.shootingStarsCount || 0) + 15;
+          state.glitterDust = (state.glitterDust || 0) + 200;
+          lootboxesGained += 15;
+          glitterGained += 200;
+        }
+        else if (itemId === "use_trig_supernova") {
+          state.activeEvent = "supernova";
+          state.eventTimeRemaining = 120;
+          state.activeEventDecision = null;
+          if (!eventsTriggered.includes("Goldene Supernova 💥")) {
+            eventsTriggered.push("Goldene Supernova 💥");
+          }
+        }
+        else if (itemId === "use_trig_aurora") {
+          state.activeEvent = "aurora";
+          state.eventTimeRemaining = 120;
+          state.activeEventDecision = null;
+          if (!eventsTriggered.includes("Aurora Borealis 🌌")) {
+            eventsTriggered.push("Aurora Borealis 🌌");
+          }
+        }
+        else if (itemId === "use_trig_meteor") {
+          state.activeEvent = "meteors";
+          state.eventTimeRemaining = 120;
+          state.activeEventDecision = null;
+          if (!eventsTriggered.includes("Meteoritenschauer ☄️")) {
+            eventsTriggered.push("Meteoritenschauer ☄️");
+          }
+        }
+        else if (itemId === "use_trig_stars") {
+          state.activeEvent = "shooting_stars";
+          state.eventTimeRemaining = 120;
+          state.activeEventDecision = null;
+          if (!eventsTriggered.includes("Mondnacht-Sternschnuppen 🌠")) {
+            eventsTriggered.push("Mondnacht-Sternschnuppen 🌠");
+          }
+        }
+        else if (itemId === "use_trig_blackhole") {
+          state.activeEvent = "black_hole";
+          state.eventTimeRemaining = 120;
+          state.activeEventDecision = null;
+          if (!eventsTriggered.includes("Schwarzes Loch 🕳️")) {
+            eventsTriggered.push("Schwarzes Loch 🕳️");
+          }
+        }
+        else if (itemId === "use_prisma_boxes") {
+          state.shootingStarsCount = (state.shootingStarsCount || 0) + 3;
+          lootboxesGained += 3;
+        }
+        else if (itemId === "use_prestige_amulet") {
+          state.prestigeCount = (state.prestigeCount || 0) + 1;
+          prestigeGained += 1;
+        }
+        else if (itemId === "use_giga_life") {
+          state.life += 150000000;
+          state.totalLifeEarned += 150000000;
+          lifeGained += 150000000;
+        }
+        else if (itemId === "use_peach_bless") {
+          state.life += 5000000;
+          state.totalLifeEarned += 5000000;
+          state.starsCount += 15;
+          lifeGained += 5000000;
+          starsGained += 15;
+        }
+        else if (itemId === "use_animal_cookies") {
+          if (state.purchasedAnimals) {
+            for (const animalId of Object.keys(state.purchasedAnimals)) {
+              if (state.purchasedAnimals[animalId] > 0) {
+                state.purchasedAnimals[animalId] += 1;
+                animalsSpawned[animalId] = (animalsSpawned[animalId] || 0) + 1;
+              }
+            }
+          }
+        }
+        else if (itemId === "use_nebula_coffer") {
+          state.shootingStarsCount = (state.shootingStarsCount || 0) + 2;
+          state.life += 120000;
+          state.totalLifeEarned += 120000;
+          lootboxesGained += 2;
+          lifeGained += 120000;
+        }
+        else if (itemId === "use_star_shards") {
+          state.starsCount += 12;
+          starsGained += 12;
+        }
+        else if (itemId === "use_glitter_fountain") {
+          state.glitterDust = (state.glitterDust || 0) + 85;
+          glitterGained += 85;
+        }
+        else if (itemId === "use_xp_capsule") {
+          addPlanetExp(15000);
+          xpGained += 15000;
+        }
+        else if (itemId === "use_solar_flare_box") {
+          state.life += 30000000;
+          state.totalLifeEarned += 30000000;
+          state.shootingStarsCount = (state.shootingStarsCount || 0) + 4;
+          lifeGained += 30000000;
+          lootboxesGained += 4;
+        }
+        else if (itemId === "use_grav_shifter") {
+          state.starsCount += 30;
+          starsGained += 30;
+        }
+        else if (itemId === "use_time_booster") {
+          const stats = getLpsAndStats();
+          const earnings = stats.totalLps * 7200;
+          state.life += earnings;
+          state.totalLifeEarned += earnings;
+          lifeGained += earnings;
+        }
+        else if (itemId === "use_luck_amulet") {
+          const epicLegend = COSMETIC_ITEMS.filter((c) => c.rarity === "epic" || c.rarity === "legendary");
+          const epLocked = epicLegend.filter((c) => !state.unlockedCosmetics.includes(c.id));
+          if (epLocked.length > 0) {
+            const rolled = epLocked[Math.floor(Math.random() * epLocked.length)];
+            state.unlockedCosmetics.push(rolled.id);
+            unlockedCosmeticsList.push({
+              id: rolled.id,
+              name: rolled.germanName || rolled.id,
+              emoji: rolled.emoji || "🧿",
+              duplicateRefund: false
+            });
+          } else {
+            state.glitterDust = (state.glitterDust || 0) + 100;
+            glitterGained += 100;
+            unlockedCosmeticsList.push({
+              id: `refund_glitter_100_${step}`,
+              name: "Premium-Glitzerstaub-Erstattung",
+              emoji: "✨",
+              duplicateRefund: true
+            });
+          }
+        }
+        else if (itemId === "use_starlight_elixir") {
+          state.life += 1000000;
+          state.totalLifeEarned += 1000000;
+          state.starsCount += 5;
+          lifeGained += 1000000;
+          starsGained += 5;
+        }
+        else if (itemId === "use_moon_dust_bag") {
+          state.life += 30000;
+          state.totalLifeEarned += 30000;
+          state.glitterDust = (state.glitterDust || 0) + 15;
+          lifeGained += 30000;
+          glitterGained += 15;
+        }
+        else if (itemId === "use_core_drill") {
+          state.life += 50050000;
+          state.totalLifeEarned += 50050000;
+          state.shootingStarsCount = (state.shootingStarsCount || 0) + 3;
+          lifeGained += 50050000;
+          lootboxesGained += 3;
+        }
+        else if (itemId === "use_glitter_bomb") {
+          state.glitterDust = (state.glitterDust || 0) + 50;
+          glitterGained += 50;
+        }
+        else if (itemId === "use_phoenix_feather") {
+          state.life += 10000000;
+          state.totalLifeEarned += 10000000;
+          state.glitterDust = (state.glitterDust || 0) + 25;
+          lifeGained += 10000000;
+          glitterGained += 25;
+        }
+        else if (itemId === "use_cosmic_compass") {
+          state.shootingStarsCount = (state.shootingStarsCount || 0) + 8;
+          lootboxesGained += 8;
+        }
+        else if (itemId === "use_gravity_tea") {
+          state.starsCount += 15;
+          state.life += 15000000;
+          state.totalLifeEarned += 15000000;
+          starsGained += 15;
+          lifeGained += 15000000;
+        }
+        else if (itemId === "use_wormhole_drive") {
+          state.shootingStarsCount = (state.shootingStarsCount || 0) + 12;
+          state.glitterDust = (state.glitterDust || 0) + 50;
+          lootboxesGained += 12;
+          glitterGained += 50;
+        }
+        else if (itemId === "use_nebula_honey") {
+          state.life += 2500000;
+          state.totalLifeEarned += 2500000;
+          state.starsCount += 10;
+          lifeGained += 2500000;
+          starsGained += 10;
+        }
+        else if (itemId === "use_chrono_pendant") {
+          const stats = getLpsAndStats();
+          const earnings = stats.totalLps * 5 * 3600;
+          state.life += earnings;
+          state.totalLifeEarned += earnings;
+          lifeGained += earnings;
         }
       }
-      else if (itemId === "use_starlight_elixir") {
-        state.life += 1000000;
-        state.totalLifeEarned += 1000000;
-        state.starsCount += 5;
-        postMessage({ type: "COSMETIC_FOUND", text: "Trank getrunken: +1.000.000 Leben, +5 Sterne! 🍹" });
+
+      // Format custom notifications or log triggers
+      let summaryText = "";
+      if (count === 1) {
+        summaryText = `${itemEmoji} ${itemName} geöffnet!`;
+      } else {
+        summaryText = `${count}x ${itemEmoji} ${itemName} geöffnet!`;
       }
-      else if (itemId === "use_moon_dust_bag") {
-        state.life += 30000;
-        state.totalLifeEarned += 30000;
-        state.glitterDust = (state.glitterDust || 0) + 15;
-        postMessage({ type: "COSMETIC_FOUND", text: "Mondbeutel geleert: +30.000 Leben und +15 Glitzerstaub! 💰" });
-      }
-      else if (itemId === "use_core_drill") {
-        state.life += 50050000;
-        state.totalLifeEarned += 50050000;
-        state.shootingStarsCount = (state.shootingStarsCount || 0) + 3;
-        postMessage({ type: "COSMETIC_FOUND", text: "Erdkern gespalten: +50M Leben, +3 Lootboxen! 🌋" });
-      }
-      else if (itemId === "use_glitter_bomb") {
-        state.glitterDust = (state.glitterDust || 0) + 50;
-        postMessage({ type: "COSMETIC_FOUND", text: "Glitzerbombe hochgegangen: +50 Glitzerstaub ✨! 💣" });
-      }
-      else if (itemId === "use_phoenix_feather") {
-        state.life += 10000000;
-        state.totalLifeEarned += 10000000;
-        state.glitterDust = (state.glitterDust || 0) + 25;
-        postMessage({ type: "COSMETIC_FOUND", text: "Asche der Wiedergeburt: +10.000.000 Leben, +25 Glitzerstaub! 🪶" });
-      }
-      else if (itemId === "use_cosmic_compass") {
-        state.shootingStarsCount = (state.shootingStarsCount || 0) + 8;
-        postMessage({ type: "COSMETIC_FOUND", text: "Kompass eingenordet: +8 Lootboxen (Sternschnuppen) verbürgt! 🧭" });
-      }
-      else if (itemId === "use_gravity_tea") {
-        state.starsCount += 15;
-        state.life += 15000000;
-        state.totalLifeEarned += 15000000;
-        postMessage({ type: "COSMETIC_FOUND", text: "Tee geschlürft: +15 Sterne, +15.000.000 Leben gepumpt! 🍵" });
-      }
-      else if (itemId === "use_wormhole_drive") {
-        state.shootingStarsCount = (state.shootingStarsCount || 0) + 12;
-        state.glitterDust = (state.glitterDust || 0) + 50;
-        postMessage({ type: "COSMETIC_FOUND", text: "Wurmloch-Treiber: +12 Lootboxen und +50 Glitzerstaub! ⚙️" });
-      }
-      else if (itemId === "use_nebula_honey") {
-        state.life += 2500000;
-        state.totalLifeEarned += 2500000;
-        state.starsCount += 10;
-        postMessage({ type: "COSMETIC_FOUND", text: "Sirup geschleckt: +2.500.000 Leben, +10 Sterne! 🍯" });
-      }
-      else if (itemId === "use_chrono_pendant") {
-        const stats = getLpsAndStats();
-        const earnings = stats.totalLps * 5 * 3600;
-        state.life += earnings;
-        state.totalLifeEarned += earnings;
-        postMessage({ type: "COSMETIC_FOUND", text: `Zeitsprung (5 Stunden): Sagenhafte +${formatCompactNumber(earnings)} Leben erhalten! ⏱️` });
-      }
+
+      postMessage({
+        type: "CRAFTED_ITEMS_OPENED",
+        itemId,
+        itemName,
+        itemEmoji,
+        count,
+        rewards: {
+          lifeGained,
+          starsGained,
+          moonsGained,
+          glitterGained,
+          lootboxesGained,
+          xpGained,
+          prestigeGained,
+          unlockedCosmeticsList,
+          animalsSpawned,
+          eventsTriggered,
+        },
+        text: summaryText
+      });
 
       broadcastStateUpdate(true);
       break;
@@ -1201,6 +1285,8 @@ addEventListener("message", (e) => {
         glitterDust: 0,
         shootingStarsCount: 0,
         blackHoleSize: 1,
+        craftedItems: {},
+        zodiac: "katze",
       };
       broadcastStateUpdate(true);
       break;

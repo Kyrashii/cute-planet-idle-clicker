@@ -13,7 +13,7 @@ interface CraftingModalProps {
   glitterDust: number;
   shootingStarsCount: number;
   craftedItems: Record<string, number>;
-  onCraftItem: (recipeId: string) => void;
+  onCraftItem: (recipeId: string, count?: number) => void;
   formatCompactNumber: (num: number) => string;
 }
 
@@ -35,8 +35,14 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
     CRAFTING_RECIPES.find((r) => r.category === "materials")?.id || CRAFTING_RECIPES[0].id
   );
   const [searchTerm, setSearchTerm] = useState("");
+  const [craftAmount, setCraftAmount] = useState<number>(1);
 
   if (!isOpen) return null;
+
+  const handleSelectRecipe = (id: string) => {
+    setSelectedRecipeId(id);
+    setCraftAmount(1);
+  };
 
   // Filter recipes based on search and category
   const filteredRecipes = CRAFTING_RECIPES.filter((recipe) => {
@@ -68,7 +74,58 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
     return true;
   };
 
+  const checkCanCraftQuantity = (recipe: Recipe, amount: number): boolean => {
+    const { life: reqLife, stars: reqStars, moons: reqMoons, glitter: reqGlitter, lootboxes: reqLootboxes, items: reqItems } = recipe.ingredients;
+
+    if (reqLife && life < reqLife * amount) return false;
+    if (reqStars && starsCount < reqStars * amount) return false;
+    if (reqMoons && moonsCount < reqMoons * amount) return false;
+    if (reqGlitter && glitterDust < reqGlitter * amount) return false;
+    if (reqLootboxes && shootingStarsCount < reqLootboxes * amount) return false;
+
+    if (reqItems) {
+      for (const [itemId, qty] of Object.entries(reqItems)) {
+        const owned = craftedItems[itemId] || 0;
+        if (owned < qty * amount) return false;
+      }
+    }
+
+    return true;
+  };
+
+  const getMaxCraftableValue = (recipe: Recipe): number => {
+    const { life: reqLife, stars: reqStars, moons: reqMoons, glitter: reqGlitter, lootboxes: reqLootboxes, items: reqItems } = recipe.ingredients;
+    let maxCount = Infinity;
+
+    if (reqLife) {
+      maxCount = Math.min(maxCount, Math.floor(life / reqLife));
+    }
+    if (reqStars) {
+      maxCount = Math.min(maxCount, Math.floor(starsCount / reqStars));
+    }
+    if (reqMoons) {
+      maxCount = Math.min(maxCount, Math.floor(moonsCount / reqMoons));
+    }
+    if (reqGlitter) {
+      maxCount = Math.min(maxCount, Math.floor(glitterDust / reqGlitter));
+    }
+    if (reqLootboxes) {
+      maxCount = Math.min(maxCount, Math.floor(shootingStarsCount / reqLootboxes));
+    }
+
+    if (reqItems) {
+      for (const [itemId, qty] of Object.entries(reqItems)) {
+        const owned = craftedItems[itemId] || 0;
+        maxCount = Math.min(maxCount, Math.floor(owned / qty));
+      }
+    }
+
+    return maxCount === Infinity ? 0 : maxCount;
+  };
+
   const selectedCanCraft = checkCanCraft(selectedRecipe);
+  const selectedCanCraftQuantity = checkCanCraftQuantity(selectedRecipe, craftAmount);
+  const maxCraftableCount = getMaxCraftableValue(selectedRecipe);
 
   // Helper to fetch item name by ID
   const getItemNameById = (id: string): string => {
@@ -157,7 +214,7 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
                 onClick={() => {
                   setSelectedCategory("materials");
                   const first = CRAFTING_RECIPES.find((r) => r.category === "materials");
-                  if (first) setSelectedRecipeId(first.id);
+                  if (first) handleSelectRecipe(first.id);
                 }}
                 className={`flex-1 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1 transition-all cursor-pointer ${
                   selectedCategory === "materials"
@@ -171,7 +228,7 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
                 onClick={() => {
                   setSelectedCategory("consumables");
                   const first = CRAFTING_RECIPES.find((r) => r.category === "consumables");
-                  if (first) setSelectedRecipeId(first.id);
+                  if (first) handleSelectRecipe(first.id);
                 }}
                 className={`flex-1 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1 transition-all cursor-pointer ${
                   selectedCategory === "consumables"
@@ -206,7 +263,7 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
                 return (
                   <div
                     key={recipe.id}
-                    onClick={() => setSelectedRecipeId(recipe.id)}
+                    onClick={() => handleSelectRecipe(recipe.id)}
                     className={`p-2.5 rounded-2xl border transition-all cursor-pointer flex items-center gap-2 relative ${
                       isSelected
                         ? isNight 
@@ -366,6 +423,44 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
                   </div>
                 </div>
 
+                {/* Quantity Selection */}
+                <div className={`p-3 rounded-2xl border flex items-center justify-between ${
+                  isNight ? "bg-black/25 border-purple-500/10" : "bg-white border-amber-200"
+                }`}>
+                  <span className={`text-[10px] uppercase font-black tracking-wider ${isNight ? "text-[#a298cb]" : "text-slate-600"} font-mono`}>
+                    🏭 Anzahl herstellen:
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      disabled={craftAmount <= 1}
+                      onClick={() => setCraftAmount(prev => Math.max(1, prev - 1))}
+                      className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs border transition-all active:scale-95 ${
+                        craftAmount <= 1
+                          ? isNight ? "opacity-30 border-purple-800 text-purple-400 select-none cursor-not-allowed" : "opacity-30 border-amber-200 text-amber-950 cursor-not-allowed select-none"
+                          : isNight ? "bg-[#201c40]/80 border-purple-400/40 text-purple-200 hover:bg-[#2c265d] hover:border-purple-300/60 cursor-pointer" : "bg-amber-100/60 border-amber-300 text-amber-900 hover:bg-amber-100 cursor-pointer"
+                      }`}
+                    >
+                      －
+                    </button>
+                    <span className="font-mono text-sm font-black w-6 text-center select-none">
+                      {craftAmount}
+                    </span>
+                    <button
+                      type="button"
+                      disabled={craftAmount >= Math.max(1, maxCraftableCount)}
+                      onClick={() => setCraftAmount(prev => prev + 1)}
+                      className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs border transition-all active:scale-95 ${
+                        craftAmount >= Math.max(1, maxCraftableCount)
+                          ? isNight ? "opacity-30 border-purple-800 text-purple-400 select-none cursor-not-allowed" : "opacity-30 border-amber-200 text-amber-950 cursor-not-allowed select-none"
+                          : isNight ? "bg-[#201c40]/80 border-purple-400/40 text-purple-200 hover:bg-[#2c265d] hover:border-purple-300/60 cursor-pointer" : "bg-amber-100/60 border-amber-300 text-amber-900 hover:bg-amber-100 cursor-pointer"
+                      }`}
+                    >
+                      ＋
+                    </button>
+                  </div>
+                </div>
+
                 {/* Inventory / Crafted details */}
                 <div className="text-center font-semibold text-[10.5px] font-mono text-[#a59bcb]">
                   Bereits im Besitz: <strong className="text-white bg-purple-900/40 border border-purple-500/10 px-2 py-0.2 rounded-full ml-1">
@@ -375,16 +470,16 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
 
                 {/* Crafting Button */}
                 <button
-                  onClick={() => selectedCanCraft && onCraftItem(selectedRecipe.id)}
-                  disabled={!selectedCanCraft}
+                  onClick={() => selectedCanCraftQuantity && onCraftItem(selectedRecipe.id, craftAmount)}
+                  disabled={!selectedCanCraftQuantity}
                   className={`w-full py-4 rounded-2.5xl font-sans font-black text-xs uppercase tracking-widest cursor-pointer shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 border-2 ${
-                    selectedCanCraft
+                    selectedCanCraftQuantity
                       ? "bg-gradient-to-r from-amber-450 via-orange-500 to-pink-500 hover:from-amber-500 hover:via-orange-600 hover:to-pink-600 text-white border-yellow-300 shadow-amber-300/10"
                       : "bg-[#18152e] border-purple-500/10 text-slate-500 cursor-not-allowed"
                   }`}
                 >
-                  <Hammer className={`w-4 h-4 ${selectedCanCraft ? "animate-bounce" : ""}`} />
-                  {selectedCanCraft ? `${selectedRecipe.result.quantity}x herstellen!` : "Schmiede gesperrt"}
+                  <Hammer className={`w-4 h-4 ${selectedCanCraftQuantity ? "animate-bounce" : ""}`} />
+                  {selectedCanCraftQuantity ? `${selectedRecipe.result.quantity * craftAmount}x herstellen!` : "Schmiede gesperrt"}
                 </button>
 
               </div>

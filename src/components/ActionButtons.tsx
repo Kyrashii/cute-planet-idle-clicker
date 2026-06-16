@@ -21,7 +21,7 @@ interface ActionButtonsProps {
   activeConstellationsCount: number;
 }
 
-export const ActionButtons: React.FC<ActionButtonsProps> = ({
+export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(({
   onShowAnimals,
   onShowCrafting,
   onShowStars,
@@ -199,4 +199,5 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
       </button>
     </section>
   );
-};
+});
+ActionButtons.displayName = "ActionButtons";

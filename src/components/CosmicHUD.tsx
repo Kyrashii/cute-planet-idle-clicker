@@ -11,7 +11,7 @@ interface CosmicHUDProps {
   onShowPrestige: () => void;
 }
 
-export const CosmicHUD: React.FC<CosmicHUDProps> = ({
+export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(({
   isNightStyle,
   life,
   totalLps,
@@ -73,4 +73,5 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = ({
       </button>
     </section>
   );
-};
+});
+CosmicHUD.displayName = "CosmicHUD";

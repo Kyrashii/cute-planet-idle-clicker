@@ -12,7 +12,7 @@ interface ActiveEventBannerProps {
   onGamble?: (sacrificeType: "life" | "stars" | "dust") => void;
 }
 
-export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = ({
+export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(({
   activeEvent,
   activeEventDecision,
   eventTimeRemaining,
@@ -374,5 +374,6 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = ({
       )}
     </section>
   );
-};
+});
+ActiveEventBanner.displayName = "ActiveEventBanner";
 

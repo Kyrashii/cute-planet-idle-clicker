@@ -15,7 +15,7 @@ interface BackgroundCompanionsProps {
   companions: Companion[];
 }
 
-export const BackgroundCompanions: React.FC<BackgroundCompanionsProps> = ({ companions }) => {
+export const BackgroundCompanions: React.FC<BackgroundCompanionsProps> = React.memo(({ companions }) => {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden select-none z-0">
       {companions.map((comp) => (
@@ -59,4 +59,5 @@ export const BackgroundCompanions: React.FC<BackgroundCompanionsProps> = ({ comp
       ))}
     </div>
   );
-};
+});
+BackgroundCompanions.displayName = "BackgroundCompanions";

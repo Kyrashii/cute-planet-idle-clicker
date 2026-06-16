@@ -38,30 +38,15 @@ import {
 } from "./utils/audio";
 
 import { STATIC_UPGRADES } from "./data/upgrades";
-import { ResetDialog } from "./components/modals/ResetDialog";
-import { CheatEventModal } from "./components/modals/CheatEventModal";
-import { TutorialModal } from "./components/modals/TutorialModal";
-import { UpgradesModal } from "./components/modals/UpgradesModal";
-import { AnimalsModal } from "./components/modals/AnimalsModal";
-import { StarsModal } from "./components/modals/StarsModal";
-import { StatsModal } from "./components/modals/StatsModal";
-import { AchievementsModal } from "./components/modals/AchievementsModal";
-import { MusicSettingsModal } from "./components/modals/MusicSettingsModal";
 import { useFirebaseSync } from "./hooks/useFirebaseSync";
-import { CloudSyncModal } from "./components/modals/CloudSyncModal";
-import { SyncConflictDialog } from "./components/modals/SyncConflictDialog";
 import { Cloud, Trophy } from "lucide-react";
-import { MissionsModal } from "./components/modals/MissionsModal";
-import { InventoryModal } from "./components/modals/InventoryModal";
-import { ZodiacModal } from "./components/modals/ZodiacModal";
-import { PrestigeModal } from "./components/modals/PrestigeModal";
-import { OfflineEarningsModal } from "./components/modals/OfflineEarningsModal";
-import { LeaderboardModal } from "./components/modals/LeaderboardModal";
-import { CraftingModal } from "./components/modals/CraftingModal";
 import { calculateOfflineLps } from "./utils/offline";
 import { generateMissionsForSet } from "./data/missions";
+import { TutorialModal } from "./components/modals/TutorialModal";
 
 // Modularized UI Components
+import { CosmicHeader } from "./components/CosmicHeader";
+import { GameModalsContainer } from "./components/GameModalsContainer";
 import { BackgroundCompanions } from "./components/BackgroundCompanions";
 import { EventBackgrounds } from "./components/EventBackgrounds";
 import { CosmicHUD } from "./components/CosmicHUD";
@@ -234,6 +219,25 @@ export default function App() {
   const [showPrestigeModal, setShowPrestigeModal] = useState<boolean>(false);
   const [showZodiacModal, setShowZodiacModal] = useState<boolean>(false);
   
+  const [openingResult, setOpeningResult] = useState<{
+    itemId: string;
+    itemName: string;
+    itemEmoji: string;
+    count: number;
+    rewards: {
+      lifeGained: number;
+      starsGained: number;
+      moonsGained: number;
+      glitterGained: number;
+      lootboxesGained: number;
+      xpGained: number;
+      prestigeGained: number;
+      unlockedCosmeticsList: { id: string; name: string; emoji: string; duplicateRefund: boolean }[];
+      animalsSpawned: Record<string, number>;
+      eventsTriggered: string[];
+    };
+  } | null>(null);
+
   // Offline Progress States
   const [showOfflineModal, setShowOfflineModal] = useState<boolean>(false);
   const [offlineSeconds, setOfflineSeconds] = useState<number>(0);
@@ -783,6 +787,17 @@ export default function App() {
               return next.slice(next.length - 15);
             }
             return next;
+          });
+          break;
+        }
+        case "CRAFTED_ITEMS_OPENED": {
+          playLevelUp();
+          setOpeningResult({
+            itemId: data.itemId,
+            itemName: data.itemName,
+            itemEmoji: data.itemEmoji,
+            count: data.count,
+            rewards: data.rewards,
           });
           break;
         }
@@ -1384,19 +1399,21 @@ export default function App() {
     });
   };
 
-  const handleCraftItem = (recipeId: string) => {
+  const handleCraftItem = (recipeId: string, count: number = 1) => {
     playUpgrade();
     workerRef.current?.postMessage({
       type: "CRAFT_ITEM",
       recipeId,
+      count,
     });
   };
 
-  const handleUseCraftedItem = (itemId: string) => {
+  const handleUseCraftedItem = (itemId: string, count: number = 1) => {
     playPop();
     workerRef.current?.postMessage({
       type: "USE_CRAFTED_ITEM",
       itemId,
+      count,
     });
   };
 
@@ -1540,109 +1557,20 @@ export default function App() {
       <EventBackgrounds activeEvent={activeEvent} isLowMemory={isLowMemory} />
 
       {/* 1. Header Area with Soft Pastel Colors */}
-      <header className={`sticky top-0 z-20 backdrop-blur-md py-4 px-4 sm:px-6 shadow-md transition-all duration-500 border-b-4 ${
-        isNightStyle ? "bg-[#110e26]/85 border-[#caa5fe]/50 text-[#ffeef4]" : ""
-      } ${showTutorial ? "blur-md pointer-events-none select-none" : ""}`}>
-        <div className="max-w-6xl mx-auto flex items-center justify-between relative z-10">
-          
-          {/* Logo Title area */}
-          <div className="flex items-center gap-2">
-            <motion.span
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-              className="text-2xl sm:text-3xl select-none"
-            >
-              🪐
-            </motion.span>
-            <div>
-              <h1 className={`font-sans font-black uppercase tracking-[0.12em] text-sm sm:text-base flex items-center gap-2 ${
-                isNightStyle ? "text-[#ffeef4]" : ""
-              }`}>
-                Pastell-Kosmos <span className="text-[#100d23] text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#caa5fe] border-2 border-[#100d23] hidden sm:inline-block leading-none uppercase shadow-[2px_2px_0px_#100d23]">Idle Game</span>
-              </h1>
-              <p className={`text-[10px] sm:text-xs font-bold mt-0.5 ${
-                isNightStyle ? "text-[#ab9fd2]" : ""
-              }`}>Belebe deinen süßen Begleiter</p>
-            </div>
-          </div>
-
-          {/* Core Quick stats & Utility buttons */}
-          <div className="flex items-center gap-2 sm:gap-4">
-            
-            {/* Lifepoints summary */}
-            <div className={`px-4 py-1.5 rounded-xl flex flex-col items-end shadow-sm border-2 transition-colors duration-500 ${
-              isNightStyle ? "bg-[#191533] border-[#ff9db8]/60 text-[#ffeef4]" : ""
-            }`}>
-              <span className={`text-[9px] uppercase font-mono font-black tracking-wider leading-none ${
-                isNightStyle ? "text-[#ff9db8]" : ""
-              }`}>Erspieltes Leben</span>
-              <span className="font-mono text-xs sm:text-sm font-black mt-0.5" title={Math.floor(life).toLocaleString("de-DE")}>
-                {formatCompactNumber(life)} 💖
-              </span>
-            </div>
-
-            {/* Quiet Mute Switch */}
-            <button
-              onClick={handleToggleMute}
-              className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-[#caa5fe]/50 bg-[#16132f] hover:bg-[#201b44] text-[#ffeef4]"
-              title={isMutedState ? "Ton einschalten" : "Ton stummschalten"}
-            >
-              {isMutedState ? <VolumeX className="w-4 h-4 text-rose-350" /> : <Volume2 className="w-4 h-4 text-[#ff9db8] animate-pulse" />}
-            </button>
-
-            {/* Soundtrack Settings Window trigger */}
-            <button
-              onClick={() => setShowMusicSettingsModal(true)}
-              className="group p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-[#caa5fe]/50 bg-[#16132f] hover:bg-[#201b44] text-[#ffeef4]"
-              title="Sound & Einstellungen öffnen"
-              id="header_lofi_music_btn"
-            >
-              <Settings className="w-4 h-4 text-[#caa5fe] transition-transform duration-500 group-hover:rotate-90" />
-            </button>
-
-            {/* Cloud Sync/Storage toggle */}
-            <button
-              onClick={() => setShowCloudSyncModal(true)}
-              className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer relative border-[#caa5fe]/50 bg-[#16132f] hover:bg-[#201b44] text-[#ffeef4]"
-              title="Cloud Backup & Synchronisation öffnen"
-              id="header_cloud_sync_btn"
-            >
-              <Cloud className="w-4 h-4 text-sky-400" />
-              {user && (
-                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 border border-black rounded-full animate-pulse" />
-              )}
-            </button>
-
-            {/* Global Leaderboard trigger */}
-            <button
-              onClick={() => setShowLeaderboardModal(true)}
-              className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-[#caa5fe]/50 bg-[#16132f] hover:bg-[#201b44] text-[#ffeef4]"
-              title="Globale Bestenliste öffnen"
-              id="header_leaderboard_btn"
-            >
-              <Trophy className="w-4 h-4 text-amber-400" />
-            </button>
-
-            {/* Quick Tutorial drawer toggle */}
-            <button
-              onClick={() => setShowTutorial((prev) => !prev)}
-              className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-[#caa5fe]/50 bg-[#16132f] hover:bg-[#201b44] text-[#ffeef4]"
-              title="Anleitung"
-            >
-              <Info className="w-4 h-4 text-[#caa5fe]" />
-            </button>
-
-            {/* Reset check trigger */}
-            <button
-              onClick={() => setShowResetDialog(true)}
-              className="p-2.5 rounded-xl border-2 active:scale-92 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-[#ff9db8]/50 bg-red-950/40 hover:bg-red-900/40 text-red-300"
-              title="Spiel zurücksetzen"
-            >
-              <RotateCcw className="w-4 h-4 text-red-400" />
-            </button>
-          </div>
-        </div>
-      </header>
+      <CosmicHeader
+        isNightStyle={isNightStyle}
+        showTutorial={showTutorial}
+        life={life}
+        isMutedState={isMutedState}
+        user={user}
+        handleToggleMute={handleToggleMute}
+        setShowMusicSettingsModal={setShowMusicSettingsModal}
+        setShowCloudSyncModal={setShowCloudSyncModal}
+        setShowLeaderboardModal={setShowLeaderboardModal}
+        setShowTutorial={setShowTutorial}
+        setShowResetDialog={setShowResetDialog}
+        formatCompactNumber={formatCompactNumber}
+      />
 
       {/* 2. Immersive Centered Master View (Planet takes center stage with plenty of room around it) */}
       <main className={`flex-grow w-full max-w-4xl mx-auto px-4 py-6 flex flex-col items-center justify-center gap-5 relative z-10 transition-all duration-500 ${
@@ -1732,11 +1660,13 @@ export default function App() {
         />
       </main>
 
-      <TutorialModal
-        isOpen={showTutorial}
-        onClose={() => setShowTutorial(false)}
-        isNight={isNightStyle}
-      />
+      {showTutorial && (
+        <TutorialModal
+          isOpen={showTutorial}
+          onClose={() => setShowTutorial(false)}
+          isNight={isNightStyle}
+        />
+      )}
 
       {/* 4. Footer credits with minimalist elements */}
       <footer className={`border-t-4 py-5 px-4 text-center text-[11px] mt-10 transition-colors duration-500 ${
@@ -1755,271 +1685,123 @@ export default function App() {
         </div>
       </footer>
 
-      <ResetDialog
-        isOpen={showResetDialog}
-        onConfirm={handleGameReset}
-        onCancel={() => setShowResetDialog(false)}
-      />
-
-      <CheatEventModal
-        isOpen={showCheatEventModal}
-        onSelectEvent={(event) => {
-          workerRef.current?.postMessage({
-            type: "FORCE_TRIGGER_EVENT",
-            event,
-          });
-        }}
-        onClose={() => setShowCheatEventModal(false)}
-      />
-
-      <UpgradesModal
-        isOpen={showUpgradesModal}
-        onClose={() => setShowUpgradesModal(false)}
+      <GameModalsContainer
+        showResetDialog={showResetDialog}
+        setShowResetDialog={setShowResetDialog}
+        showCheatEventModal={showCheatEventModal}
+        setShowCheatEventModal={setShowCheatEventModal}
+        showUpgradesModal={showUpgradesModal}
+        setShowUpgradesModal={setShowUpgradesModal}
+        showAnimalsModal={showAnimalsModal}
+        setShowAnimalsModal={setShowAnimalsModal}
+        showStarsModal={showStarsModal}
+        setShowStarsModal={setShowStarsModal}
+        showCraftingModal={showCraftingModal}
+        setShowCraftingModal={setShowCraftingModal}
+        showStatsModal={showStatsModal}
+        setShowStatsModal={setShowStatsModal}
+        showOfflineModal={showOfflineModal}
+        setShowOfflineModal={setShowOfflineModal}
+        showAchievementsModal={showAchievementsModal}
+        setShowAchievementsModal={setShowAchievementsModal}
+        showMusicSettingsModal={showMusicSettingsModal}
+        setShowMusicSettingsModal={setShowMusicSettingsModal}
+        showCloudSyncModal={showCloudSyncModal}
+        setShowCloudSyncModal={setShowCloudSyncModal}
+        showConflictDialog={showConflictDialog}
+        setShowConflictDialog={setShowConflictDialog}
+        showMissionsModal={showMissionsModal}
+        setShowMissionsModal={setShowMissionsModal}
+        openingResult={openingResult}
+        setOpeningResult={setOpeningResult}
+        showInventoryModal={showInventoryModal}
+        setShowInventoryModal={setShowInventoryModal}
+        showZodiacModal={showZodiacModal}
+        setShowZodiacModal={setShowZodiacModal}
+        showLeaderboardModal={showLeaderboardModal}
+        setShowLeaderboardModal={setShowLeaderboardModal}
+        showPrestigeModal={showPrestigeModal}
+        setShowPrestigeModal={setShowPrestigeModal}
+        handleGameReset={handleGameReset}
+        workerRef={workerRef}
+        handleBuyUpgrade={handleBuyUpgrade}
+        handleBuyUpgradesBatch={handleBuyUpgradesBatch}
+        handleBuyAnimal={handleBuyAnimal}
+        handleBuyStar={handleBuyStar}
+        handleMergeMoons={handleMergeMoons}
+        handleInvestConstellation={handleInvestConstellation}
+        handleCraftItem={handleCraftItem}
+        handleClaimOfflineEarnings={handleClaimOfflineEarnings}
+        handleClaimMissionReward={handleClaimMissionReward}
+        handleOpenShootingStar={handleOpenShootingStar}
+        handleApplyCosmetic={handleApplyCosmetic}
+        handleUnlockCosmeticDirect={handleUnlockCosmeticDirect}
+        handleUpgradeCosmeticRarity={handleUpgradeCosmeticRarity}
+        handleUseCraftedItem={handleUseCraftedItem}
+        handleSelectZodiac={handleSelectZodiac}
+        handleConfirmPrestige={handleConfirmPrestige}
         life={life}
         glitterDust={glitterDust}
         totalLps={totalLps}
         purchasedUpgrades={purchasedUpgrades}
-        staticUpgrades={staticUpgrades}
-        onBuyUpgrade={handleBuyUpgrade}
-        onBuyUpgradesBatch={handleBuyUpgradesBatch}
-        formatCompactNumber={formatCompactNumber}
-      />
-
-      <AnimalsModal
-        isOpen={showAnimalsModal}
-        onClose={() => setShowAnimalsModal(false)}
-        life={life}
+        staticUpgrades={STATIC_UPGRADES}
         totalAnimalsLps={totalAnimalsLps}
         purchasedAnimals={purchasedAnimals}
-        animalDefs={INITIAL_ANIMALS}
-        onBuyAnimal={handleBuyAnimal}
-        calculateCost={calculateCost}
-        formatCompactNumber={formatCompactNumber}
-        upgradesSpecs={upgradesSpecs}
-      />
-
-      <StarsModal
-        isOpen={showStarsModal}
-        onClose={() => setShowStarsModal(false)}
-        life={life}
         starsCount={starsCount}
         starPowerPerStar={starPowerPerStar}
         starClicksTriggered={starClicksTriggered}
-        onBuyStar={handleBuyStar}
         starCost={starCost}
         totalStarsLps={totalStarsLps}
-        formatCompactNumber={formatCompactNumber}
         moonsCount={moonsCount}
-        onMergeMoons={handleMergeMoons}
         prestigeCount={prestigeCount}
         maxMoons={maxMoons}
         constellations={constellations}
-        onInvestConstellation={handleInvestConstellation}
-      />
-
-      <CraftingModal
-        isOpen={showCraftingModal}
-        onClose={() => setShowCraftingModal(false)}
-        isNight={isNightStyle}
-        life={life}
-        starsCount={starsCount}
-        moonsCount={moonsCount}
-        glitterDust={glitterDust}
+        isNightStyle={isNightStyle}
         shootingStarsCount={shootingStarsCount}
         craftedItems={craftedItems}
-        onCraftItem={handleCraftItem}
-        formatCompactNumber={formatCompactNumber}
-      />
-
-      <StatsModal
-        isOpen={showStatsModal}
-        onClose={() => setShowStatsModal(false)}
         totalLifeEarned={totalLifeEarned}
         clicksCount={clicksCount}
-        totalStarsLps={totalStarsLps}
         secondsPlayed={secondsPlayed}
-        purchasedAnimals={purchasedAnimals}
-        starsCount={starsCount}
         planetLevel={planetLevel}
-        totalLps={totalLps}
-        prestigeCount={prestigeCount}
+        planetExp={planetExp}
         formatCompactNumber={formatCompactNumber}
         formatTimePlayed={formatTimePlayed}
-      />
-
-      <OfflineEarningsModal
-        isOpen={showOfflineModal}
-        onClose={() => setShowOfflineModal(false)}
-        secondsAway={offlineSeconds}
-        offlineLps={offlineLpsRate}
-        earnedLife={offlineEarnedLife}
-        prestigeCount={prestigeCount}
-        onClaim={handleClaimOfflineEarnings}
-        formatCompactNumber={formatCompactNumber}
-        isNight={isNightStyle}
-      />
-
-      <AchievementsModal
-        isOpen={showAchievementsModal}
-        onClose={() => setShowAchievementsModal(false)}
-        isNight={isNightStyle}
+        offlineSeconds={offlineSeconds}
+        offlineLpsRate={offlineLpsRate}
+        offlineEarnedLife={offlineEarnedLife}
         achievements={achievements}
         unlockedAchievementsCount={unlockedAchievementsCount}
         achievementCategoryFilter={achievementCategoryFilter}
         setAchievementCategoryFilter={setAchievementCategoryFilter}
         achievementSearch={achievementSearch}
         setAchievementSearch={setAchievementSearch}
-        life={life}
-        formatCompactNumber={formatCompactNumber}
         playUpgrade={playUpgrade}
-      />
-
-      <MusicSettingsModal
-        isOpen={showMusicSettingsModal}
-        onClose={() => setShowMusicSettingsModal(false)}
-        isNight={isNightStyle}
         musicStyleState={musicStyleState}
         setMusicStyleState={setMusicStyleState}
         isLowMemory={isLowMemory}
         setIsLowMemory={setIsLowMemory}
-      />
-
-      <CloudSyncModal
-        isOpen={showCloudSyncModal}
-        onClose={() => setShowCloudSyncModal(false)}
         user={user}
         authLoading={authLoading}
         syncing={syncing}
         lastSynced={lastSynced}
-        onLogin={loginWithGoogle}
-        onLogout={logout}
-        onForceSave={() => {
-          saveStateToCloud({
-            life,
-            totalLifeEarned,
-            starsCount,
-            purchasedAnimals,
-            purchasedUpgrades,
-            planetLevel,
-            planetExp,
-            clicksCount,
-            starClicksTriggered,
-            secondsPlayed,
-            unlockedCosmetics,
-            activeStarColor,
-            activeAccessory,
-            activeFrame,
-            activeMoonSkin,
-            shootingStarsCount,
-            missionSetNumber,
-            claimedMissionIds,
-            missionsCooldownEnd,
-            prestigeCount,
-            moonsCount,
-            constellations,
-          });
-        }}
-        onForceLoad={() => {
-          if (cloudSaveFound) {
-            triggerCloudStateLoad(cloudSaveFound);
-          }
-        }}
-        localStats={{
-          life,
-          totalLifeEarned,
-          planetLevel,
-          secondsPlayed,
-          prestigeCount,
-          moonsCount,
-          purchasedUpgrades,
-        }}
-        cloudStats={cloudSaveFound}
-      />
-
-      <SyncConflictDialog
-        isOpen={showConflictDialog}
-        cloudData={cloudSaveFound}
-        localData={{
-          life,
-          planetLevel,
-          secondsPlayed,
-          prestigeCount,
-          moonsCount,
-          purchasedUpgrades,
-        }}
-        onKeepLocal={() => {
-          forceLocalOverwriteCloud();
-          setShowConflictDialog(false);
-        }}
-        onKeepCloud={() => {
-          if (cloudSaveFound) {
-            triggerCloudStateLoad(cloudSaveFound);
-          }
-          setShowConflictDialog(false);
-        }}
-      />
-
-      <MissionsModal
-        isOpen={showMissionsModal}
-        onClose={() => setShowMissionsModal(false)}
-        isNight={isNightStyle}
-        clicksCount={clicksCount}
+        loginWithGoogle={loginWithGoogle}
+        logout={logout}
+        saveStateToCloud={saveStateToCloud}
+        cloudSaveFound={cloudSaveFound}
+        triggerCloudStateLoad={triggerCloudStateLoad}
+        forceLocalOverwriteCloud={forceLocalOverwriteCloud}
         totalAnimalsCount={totalAnimalsCount}
-        starsCount={starsCount}
         missionSetNumber={missionSetNumber}
         claimedMissionIds={claimedMissionIds}
         missionsCooldownEnd={missionsCooldownEnd}
-        onClaimReward={handleClaimMissionReward}
         activeFrame={activeFrame}
-        unlockedCosmetics={unlockedCosmetics}
-        purchasedUpgrades={purchasedUpgrades}
-      />
-
-      <InventoryModal
-        isOpen={showInventoryModal}
-        onClose={() => setShowInventoryModal(false)}
-        isNight={isNightStyle}
-        zodiac={activeZodiacId}
-        shootingStarsCount={shootingStarsCount}
         unlockedCosmetics={unlockedCosmetics}
         activeStarColor={activeStarColor}
         activeAccessory={activeAccessory}
-        activeFrame={activeFrame}
         activeMoonSkin={activeMoonSkin}
-        onOpenShootingStar={handleOpenShootingStar}
-        onApplyCosmetic={handleApplyCosmetic}
-        glitterDust={glitterDust}
-        purchasedUpgrades={purchasedUpgrades}
+        activeZodiacId={activeZodiacId}
         cosmeticRarityLevels={cosmeticRarityLevels}
-        onUnlockCosmeticDirect={handleUnlockCosmeticDirect}
-        onUpgradeCosmeticRarity={handleUpgradeCosmeticRarity}
-        craftedItems={craftedItems}
-        onUseCraftedItem={handleUseCraftedItem}
-        onSelectZodiac={handleSelectZodiac}
-      />
-
-      <ZodiacModal
-        isOpen={showZodiacModal}
-        onClose={() => setShowZodiacModal(false)}
-        isNight={isNightStyle}
-        activeZodiacId={activeZodiacId || "katze"}
-      />
-
-      <LeaderboardModal
-        isOpen={showLeaderboardModal}
-        onClose={() => setShowLeaderboardModal(false)}
-        currentUserId={user?.uid}
-        formatCompactNumber={formatCompactNumber}
-      />
-
-      <PrestigeModal
-        isOpen={showPrestigeModal}
-        onClose={() => setShowPrestigeModal(false)}
-        isNight={isNightStyle}
-        life={life}
-        prestigeCount={prestigeCount}
-        onPrestigeConfirm={handleConfirmPrestige}
-        formatCompactNumber={formatCompactNumber}
+        upgradesSpecs={upgradesSpecs}
       />
 
       {/* Dynamic Autosave Toast Indicator */}

@@ -10,7 +10,7 @@ interface DayNightIndicatorProps {
   onOpenOfflineModal: () => void;
 }
 
-export const DayNightIndicator: React.FC<DayNightIndicatorProps> = ({
+export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(({
   isNight,
   cycleProgress,
   offlineEarnedLife,
@@ -115,4 +115,5 @@ export const DayNightIndicator: React.FC<DayNightIndicatorProps> = ({
       </div>
     </div>
   );
-};
+});
+DayNightIndicator.displayName = "DayNightIndicator";
