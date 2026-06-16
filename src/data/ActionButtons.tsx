@@ -50,15 +50,15 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(({
           disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
         } ${
           isNightStyle
-            ? "border-[#ff9db8] bg-gradient-to-br from-[#2d1a33] via-[#1d1022] to-[#25122a] hover:from-[#3e2546] hover:to-[#311938] text-[#ffeef4] shadow-[4px_4px_0px_#ff9db8]"
-            : "border-[#ff9db8] bg-gradient-to-br from-[#2d1a33] via-[#1d1022] to-[#25122a] hover:from-[#3e2546] hover:to-[#311938] text-[#ffeef4]"
+            ? "border-cosmic-pink bg-gradient-to-br from-[#2d1a33] via-[#1d1022] to-[#25122a] hover:from-[#3e2546] hover:to-[#311938] text-cosmic-text shadow-[4px_4px_0px_var(--color-cosmic-pink)]"
+            : "border-cosmic-pink bg-gradient-to-br from-[#2d1a33] via-[#1d1022] to-[#25122a] hover:from-[#3e2546] hover:to-[#311938] text-cosmic-text"
         }`}
       >
         <div className={`text-3xl filter drop-shadow-sm mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}>🐾</div>
         <span className={`text-[11px] uppercase tracking-wider text-center leading-normal ${isNightStyle ? "text-[#ffcbdc]" : "text-[#ffcbdc]"}`}>Tiere züchten</span>
         
         {/* Dynamic badge indicator count */}
-        <span className="absolute -top-1.5 -right-1.5 bg-[#f15e75] text-white font-mono font-black text-[9px] h-5 px-1.5 rounded-full flex items-center justify-center border-2 border-[#ff9db8] shadow-sm">
+        <span className="absolute -top-1.5 -right-1.5 bg-[#f15e75] text-white font-mono font-black text-[9px] h-5 px-1.5 rounded-full flex items-center justify-center border-2 border-cosmic-pink shadow-sm">
           {totalAnimalsCount}
         </span>
       </button>
@@ -70,8 +70,8 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(({
           disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
         } ${
           isNightStyle
-            ? "border-orange-400 bg-gradient-to-br from-[#3b1a10] via-[#210e08] to-[#2b1008] hover:from-[#4d251d] hover:to-[#3f1c14] text-[#ffeef4] shadow-[4px_4px_0px_rgba(251,146,60,0.8)]"
-            : "border-orange-400 bg-gradient-to-br from-[#3b1a10] via-[#210e08] to-[#2b1008] hover:from-[#4d251d] hover:to-[#3f1c14] text-[#ffeef4]"
+            ? "border-orange-400 bg-gradient-to-br from-[#3b1a10] via-[#210e08] to-[#2b1008] hover:from-[#4d251d] hover:to-[#3f1c14] text-cosmic-text shadow-[4px_4px_0px_rgba(251,146,60,0.8)]"
+            : "border-orange-400 bg-gradient-to-br from-[#3b1a10] via-[#210e08] to-[#2b1008] hover:from-[#4d251d] hover:to-[#3f1c14] text-cosmic-text"
         }`}
       >
         <div className={`text-3xl filter drop-shadow-sm mb-1 ${disableAnimations ? "" : "group-hover:animate-pulse"}`}>🔨</div>
@@ -89,8 +89,8 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(({
           disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
         } ${
           isNightStyle
-            ? "border-amber-300 bg-gradient-to-br from-[#302720] via-[#1f1813] to-[#261d16] hover:from-[#43362a] hover:to-[#35281d] text-[#ffeef4] shadow-[4px_4px_0px_rgba(251,191,36,0.8)]"
-            : "border-amber-300 bg-gradient-to-br from-[#302720] via-[#1f1813] to-[#261d16] hover:from-[#43362a] hover:to-[#35281d] text-[#ffeef4]"
+            ? "border-amber-300 bg-gradient-to-br from-[#302720] via-[#1f1813] to-[#261d16] hover:from-[#43362a] hover:to-[#35281d] text-cosmic-text shadow-[4px_4px_0px_rgba(251,191,36,0.8)]"
+            : "border-amber-300 bg-gradient-to-br from-[#302720] via-[#1f1813] to-[#261d16] hover:from-[#43362a] hover:to-[#35281d] text-cosmic-text"
         }`}
       >
         <div className={`text-3xl filter drop-shadow-[0_1px_2px_rgba(251,191,36,0.3)] mb-1 ${disableAnimations ? "" : "group-hover:animate-spin"}`} style={disableAnimations ? {} : { animationDuration: '3s' }}>⭐</div>
@@ -108,14 +108,14 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(({
           disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
         } ${
           isNightStyle
-            ? "border-[#caa5fe] bg-gradient-to-br from-[#1b1c3b] via-[#101127] to-[#151631] hover:from-[#292a54] hover:to-[#1e1f42] text-[#ffeef4] shadow-[4px_4px_0px_#caa5fe]"
-            : "border-[#caa5fe] bg-gradient-to-br from-[#1b1c3b] via-[#101127] to-[#151631] hover:from-[#292a54] hover:to-[#1e1f42] text-[#ffeef4]"
+            ? "border-cosmic-accent bg-gradient-to-br from-[#1b1c3b] via-[#101127] to-[#151631] hover:from-[#292a54] hover:to-[#1e1f42] text-cosmic-text shadow-[4px_4px_0px_var(--color-cosmic-accent)]"
+            : "border-cosmic-accent bg-gradient-to-br from-[#1b1c3b] via-[#101127] to-[#151631] hover:from-[#292a54] hover:to-[#1e1f42] text-cosmic-text"
         }`}
       >
         <div className={`text-3xl filter drop-shadow-sm mb-1 ${disableAnimations ? "" : "group-hover:animate-pulse"}`}>🔬</div>
         <span className={`text-[11px] uppercase tracking-wider text-center leading-normal ${isNightStyle ? "text-[#d4c3ff]" : "text-[#d4c3ff]"}`}>Forschung</span>
         
-        <span className="absolute -top-1.5 -right-1.5 bg-purple-500 text-white font-mono font-black text-[9px] h-5 px-1.5 rounded-full flex items-center justify-center border-2 border-[#caa5fe] shadow-sm">
+        <span className="absolute -top-1.5 -right-1.5 bg-purple-500 text-white font-mono font-black text-[9px] h-5 px-1.5 rounded-full flex items-center justify-center border-2 border-cosmic-accent shadow-sm">
           {researchedUpgradesCount}
         </span>
       </button>
@@ -127,8 +127,8 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(({
           disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
         } ${
           isNightStyle
-            ? "border-amber-305 bg-gradient-to-br from-[#2a1d13] via-[#18110b] to-[#251910] hover:from-[#3f2a1c] hover:to-[#312015] text-[#ffeef4] shadow-[4px_4px_0px_#f59e0b]"
-            : "border-amber-305 bg-gradient-to-br from-[#2a1d13] via-[#18110b] to-[#251910] hover:from-[#3f2a1c] hover:to-[#312015] text-[#ffeef4]"
+            ? "border-amber-305 bg-gradient-to-br from-[#2a1d13] via-[#18110b] to-[#251910] hover:from-[#3f2a1c] hover:to-[#312015] text-cosmic-text shadow-[4px_4px_0px_#f59e0b]"
+            : "border-amber-305 bg-gradient-to-br from-[#2a1d13] via-[#18110b] to-[#251910] hover:from-[#3f2a1c] hover:to-[#312015] text-cosmic-text"
         }`}
       >
         <div className={`text-3xl filter drop-shadow-sm mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}>🏆</div>
@@ -146,8 +146,8 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(({
           disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
         } ${
           isNightStyle
-            ? "border-teal-350 bg-gradient-to-br from-[#14282e] via-[#0b181c] to-[#0f2125] hover:from-[#213b43] hover:to-[#162a2f] text-[#ffeef4] shadow-[4px_4px_0px_rgba(20,184,166,0.8)]"
-            : "border-teal-350 bg-gradient-to-br from-[#14282e] via-[#0b181c] to-[#0f2125] hover:from-[#213b43] hover:to-[#162a2f] text-[#ffeef4]"
+            ? "border-teal-350 bg-gradient-to-br from-[#14282e] via-[#0b181c] to-[#0f2125] hover:from-[#213b43] hover:to-[#162a2f] text-cosmic-text shadow-[4px_4px_0px_rgba(20,184,166,0.8)]"
+            : "border-teal-350 bg-gradient-to-br from-[#14282e] via-[#0b181c] to-[#0f2125] hover:from-[#213b43] hover:to-[#162a2f] text-cosmic-text"
         }`}
       >
         <div className={`text-3xl filter drop-shadow-sm mb-1 ${disableAnimations ? "" : "group-hover:rotate-12 transition-transform"}`}>📊</div>
@@ -165,8 +165,8 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(({
           disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
         } ${
           isNightStyle
-            ? "border-fuchsia-300 bg-gradient-to-br from-[#2f1839] via-[#1c0c23] to-[#240f2b] hover:from-[#3e2546] hover:to-[#311938] text-[#ffeef4] shadow-[4px_4px_0px_#e879f9]"
-            : "border-fuchsia-300 bg-gradient-to-br from-[#2f1839] via-[#1c0c23] to-[#240f2b] hover:from-[#3e2546] hover:to-[#311938] text-[#ffeef4]"
+            ? "border-fuchsia-300 bg-gradient-to-br from-[#2f1839] via-[#1c0c23] to-[#240f2b] hover:from-[#3e2546] hover:to-[#311938] text-cosmic-text shadow-[4px_4px_0px_#e879f9]"
+            : "border-fuchsia-300 bg-gradient-to-br from-[#2f1839] via-[#1c0c23] to-[#240f2b] hover:from-[#3e2546] hover:to-[#311938] text-cosmic-text"
         }`}
       >
         <div className={`text-3xl filter drop-shadow-sm mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}>🌌</div>
@@ -186,8 +186,8 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(({
           disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
         } ${
           isNightStyle
-            ? "border-amber-300 bg-gradient-to-br from-[#3b2e1f] via-[#241b12] to-[#2c1e14] text-[#ffeef4] shadow-[4px_4px_0px_#f59e0b]"
-            : "border-amber-300 bg-gradient-to-br from-[#3b2e1f] via-[#241b12] to-[#2c1e14] text-[#ffeef4]"
+            ? "border-amber-300 bg-gradient-to-br from-[#3b2e1f] via-[#241b12] to-[#2c1e14] text-cosmic-text shadow-[4px_4px_0px_#f59e0b]"
+            : "border-amber-300 bg-gradient-to-br from-[#3b2e1f] via-[#241b12] to-[#2c1e14] text-cosmic-text"
         }`}
       >
         <div className={`text-3xl filter drop-shadow-sm mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}>🎒</div>

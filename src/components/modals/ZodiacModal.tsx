@@ -47,7 +47,7 @@ export const ZodiacModal: React.FC<ZodiacModalProps> = ({
         exit={{ scale: 0.95, opacity: 0 }}
         className={`relative w-full max-w-md overflow-hidden rounded-3.5xl border-3 shadow-2xl p-6 ${
           isNight
-            ? "bg-[#181333]/95 border-[#caa5fe]/70 text-[#ffeef4]"
+            ? "bg-[#181333]/95 border-cosmic-accent/70 text-cosmic-text"
             : "bg-amber-50/98 border-amber-300 text-slate-800"
         }`}
       >
@@ -56,7 +56,7 @@ export const ZodiacModal: React.FC<ZodiacModalProps> = ({
           onClick={onClose}
           className={`absolute top-4 right-4 p-1.5 rounded-full border transition-transform active:scale-90 hover:rotate-90 cursor-pointer ${
             isNight
-              ? "border-[#caa5fe]/20 hover:border-[#caa5fe] text-purple-200"
+              ? "border-cosmic-accent/20 hover:border-cosmic-accent text-purple-200"
               : "border-amber-300 hover:border-amber-500 text-amber-950"
           }`}
         >
@@ -77,7 +77,7 @@ export const ZodiacModal: React.FC<ZodiacModalProps> = ({
 
           {/* Zodiac Image block */}
           <div className="mt-5 mb-5 relative group">
-            <div className={`absolute -inset-1 rounded-3.5xl bg-gradient-to-r ${isNight ? "from-purple-500 to-[#caa5fe]" : "from-amber-400 to-amber-500"} opacity-35 blur-md`}></div>
+            <div className={`absolute -inset-1 rounded-3.5xl bg-gradient-to-r ${isNight ? "from-purple-500 to-cosmic-accent" : "from-amber-400 to-amber-500"} opacity-35 blur-md`}></div>
             <div className={`relative p-3.5 rounded-3.5xl border-2 overflow-hidden flex items-center justify-center ${
               isNight ? "bg-[#0b081a]/90 border-purple-500/20" : "bg-white border-amber-200"
             }`}>
@@ -110,7 +110,7 @@ export const ZodiacModal: React.FC<ZodiacModalProps> = ({
             <div className={`h-px my-3 ${isNight ? "bg-purple-800/45" : "bg-amber-100"}`} />
 
             <div className="flex items-center gap-1.5 font-sans font-black text-xs">
-              <Sparkles className={`w-4 h-4 ${isNight ? "text-[#caa5fe] animate-pulse" : "text-amber-600"}`} />
+              <Sparkles className={`w-4 h-4 ${isNight ? "text-cosmic-accent animate-pulse" : "text-amber-600"}`} />
               <span>Abrechnungs-Effekt:</span>
               <span className={isNight ? "text-amber-300 font-extrabold" : "text-amber-900 font-extrabold"}>
                 {zodiac.bonusDesc}

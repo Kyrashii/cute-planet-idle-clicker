@@ -1,15 +1,29 @@
 @import "tailwindcss";
 
 @theme {
+  /* Day / shell palette — used by body background, scrollbar, artistic-* classes */
   --color-brand-bg: #FFF5F8;
   --color-brand-brown: #6D4C41;
   --color-brand-pink: #FFD1DC;
   --color-brand-yellow: #FFF9C4;
+
+  /* Night / cosmic palette — used by all game UI components */
+  --color-cosmic-bg: #100d23;          /* deepest background */
+  --color-cosmic-surface: #1b1935;     /* card / panel surface */
+  --color-cosmic-surface-mid: #201d43; /* elevated surface */
+  --color-cosmic-surface-hover: #252148; /* hover state */
+  --color-cosmic-border: #2d1e38;      /* subtle border / divider */
+  --color-cosmic-accent: #caa5fe;      /* lavender — primary accent */
+  --color-cosmic-accent-muted: #ab9fd2; /* secondary / muted accent */
+  --color-cosmic-text: #ffeef4;        /* primary text on dark */
+  --color-cosmic-text-muted: #b2b1da;  /* muted / caption text */
+  --color-cosmic-pink: #ff9db8;        /* pink highlight / numbers */
+  --color-cosmic-yellow: #fef08a;      /* warm yellow / star accents */
 }
 
 body {
-  background-color: #FFF5F8;
-  color: #6D4C41;
+  background-color: var(--color-brand-bg);
+  color: var(--color-brand-brown);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
@@ -20,13 +34,13 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #FFF5F8;
+  background: var(--color-brand-bg);
   border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #FFD1DC;
-  border: 2px solid #FFF5F8;
+  background: var(--color-brand-pink);
+  border: 2px solid var(--color-brand-bg);
   border-radius: 8px;
 }
 
@@ -37,7 +51,7 @@ body {
 /* Base custom utility classes for Artistic Flair theme */
 .artistic-card {
   background-color: #ffffff;
-  border: 3px solid #FFD1DC;
+  border: 3px solid var(--color-brand-pink);
   border-radius: 20px;
   box-shadow: 5px 5px 0px rgba(109, 76, 65, 0.15);
   transition: all 0.2s ease-in-out;
@@ -49,10 +63,10 @@ body {
 }
 
 .artistic-btn-primary {
-  background-color: #FFF9C4;
-  border: 2.5px solid #6D4C41;
-  color: #6D4C41;
-  box-shadow: 3px 3px 0px #6D4C41;
+  background-color: var(--color-brand-yellow);
+  border: 2.5px solid var(--color-brand-brown);
+  color: var(--color-brand-brown);
+  box-shadow: 3px 3px 0px var(--color-brand-brown);
   border-radius: 12px;
   font-weight: 800;
   transition: all 0.15s ease-in-out;
@@ -61,27 +75,27 @@ body {
 .artistic-btn-primary:hover:not(:disabled) {
   background-color: #fffbdf;
   transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px #6D4C41;
+  box-shadow: 4px 4px 0px var(--color-brand-brown);
 }
 
 .artistic-btn-primary:active:not(:disabled) {
   transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px #6D4C41;
+  box-shadow: 1px 1px 0px var(--color-brand-brown);
 }
 
 .artistic-btn-secondary {
   background-color: #ffffff;
-  border: 2px solid #FFD1DC;
-  color: #6D4C41;
-  box-shadow: 3px 3px 0px #FFD1DC;
+  border: 2px solid var(--color-brand-pink);
+  color: var(--color-brand-brown);
+  box-shadow: 3px 3px 0px var(--color-brand-pink);
   border-radius: 12px;
   font-weight: 700;
   transition: all 0.15s ease-in-out;
 }
 
 .artistic-btn-secondary:hover {
-  background-color: #FFF5F8;
-  box-shadow: 4px 4px 0px #FFD1DC;
+  background-color: var(--color-brand-bg);
+  box-shadow: 4px 4px 0px var(--color-brand-pink);
 }
 
 .artistic-title {
@@ -89,7 +103,7 @@ body {
   font-weight: 950;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: #6D4C41;
+  color: var(--color-brand-brown);
 }
 
 /* Custom Border Frames for game windows/modals */

@@ -21,13 +21,13 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({
         animate={{ scale: 1, opacity: 1, y: 0 }}
         className={`modal-frame-target max-w-md w-full border-3 rounded-3.5xl p-6 sm:p-8 relative flex flex-col items-center text-center gap-5 shadow-2xl transition-all duration-500 selection:bg-transparent ${
           isNight 
-            ? "bg-[#1b1738]/95 border-[#caa5fe] text-[#ffeef4] shadow-[0_0_30px_rgba(202,165,254,0.15)]" 
+            ? "bg-[#1b1738]/95 border-cosmic-accent text-cosmic-text shadow-[0_0_30px_rgba(202,165,254,0.15)]" 
             : "bg-amber-50/95 border-amber-300 text-slate-800 shadow-[0_0_30px_rgba(217,119,6,0.1)]"
         }`}
       >
         {/* Cute floating icon badge */}
         <div className={`w-16 h-16 rounded-2.5xl flex items-center justify-center text-4xl shadow-inner select-none animate-bounce ${
-          isNight ? "bg-[#252048] border-2 border-[#caa5fe]/50" : "bg-amber-100 border-2 border-amber-300"
+          isNight ? "bg-[#252048] border-2 border-cosmic-accent/50" : "bg-amber-100 border-2 border-amber-300"
         }`}>
           🌸
         </div>
@@ -44,7 +44,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({
             Willkommen in deinem niedlichen Pastell-Kosmos!
           </h5>
           <p className={`font-sans text-[11px] sm:text-xs mt-3.5 leading-relaxed font-semibold ${
-            isNight ? "text-[#ab9fd2]" : "text-slate-700"
+            isNight ? "text-cosmic-accent-muted" : "text-slate-700"
           }`}>
             Tippe auf den <b>niedlichen Planeten</b> im Zentrum, um <b>Leben (💖)</b> zu sammeln und EXP für seine Evolution zu generieren. 
             <br /><br />

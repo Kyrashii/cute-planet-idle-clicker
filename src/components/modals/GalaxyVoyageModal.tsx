@@ -60,13 +60,13 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = ({
         }}
       >
         {/* Dark warm glowing backdrop overlay over the image to guarantee readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0e0c1f]/95 via-[#0e0c1f]/70 to-[#0e0c1f]/25 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-cosmic-bg/95 via-cosmic-bg/70 to-cosmic-bg/25 pointer-events-none" />
 
         {/* Floating sparkles */}
-        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 animate-pulse text-[#ff9db8] select-none text-2xl">
+        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 animate-pulse text-cosmic-pink select-none text-2xl">
           ✨
         </div>
-        <div className="absolute top-8 left-6 sm:top-12 sm:left-12 text-[#caa5fe] select-none text-xl animate-bounce" style={{ animationDuration: "4s" }}>
+        <div className="absolute top-8 left-6 sm:top-12 sm:left-12 text-cosmic-accent select-none text-xl animate-bounce" style={{ animationDuration: "4s" }}>
           🪐
         </div>
 
@@ -78,54 +78,54 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = ({
             <motion.div 
               animate={{ y: [0, -4, 0] }}
               transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-              className="px-4 py-1.5 rounded-full bg-[#ff9db8]/20 border border-[#ff9db8]/40 flex items-center gap-1.5 shadow-[0_0_15px_rgba(255,157,184,0.1)] mb-2"
+              className="px-4 py-1.5 rounded-full bg-cosmic-pink/20 border border-cosmic-pink/40 flex items-center gap-1.5 shadow-[0_0_15px_rgba(255,157,184,0.1)] mb-2"
             >
-              <Rocket className="w-3.5 h-3.5 text-[#ff9db8]" />
+              <Rocket className="w-3.5 h-3.5 text-cosmic-pink" />
               <span className="text-[10px] font-mono font-black uppercase tracking-[0.2em] text-[#ffcbdc]">
                 Evolutionäre Vollendung
               </span>
             </motion.div>
             
-            <h1 className="font-sans font-black uppercase text-2xl sm:text-4xl tracking-widest text-[#ffeef4] stroke-pink drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-              Galaxiereise <span className="text-[#ff9db8]">bereit!</span>
+            <h1 className="font-sans font-black uppercase text-2xl sm:text-4xl tracking-widest text-cosmic-text stroke-pink drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+              Galaxiereise <span className="text-cosmic-pink">bereit!</span>
             </h1>
-            <p className="font-mono text-[10px] sm:text-xs text-[#caa5fe] font-black tracking-wider uppercase opacity-90 mt-1">
+            <p className="font-mono text-[10px] sm:text-xs text-cosmic-accent font-black tracking-wider uppercase opacity-90 mt-1">
               Planet Level 20 erreicht • Bereit für den nächsten Kosmos
             </p>
           </div>
 
           {/* Mini Cute Story Section */}
-          <div className="bg-[#120f26]/85 border-2 border-[#ff9db8]/30 p-4 sm:p-6 rounded-[2rem] max-w-xl w-full shadow-[0_4px_30px_rgba(0,0,0,0.4)] backdrop-blur-sm self-center">
+          <div className="bg-[#120f26]/85 border-2 border-cosmic-pink/30 p-4 sm:p-6 rounded-[2rem] max-w-xl w-full shadow-[0_4px_30px_rgba(0,0,0,0.4)] backdrop-blur-sm self-center">
             <div className="flex justify-center mb-2.5 text-rose-300">
-              <Heart className="w-5 h-5 fill-rose-300/30 animate-pulse text-[#ff9db8]" />
+              <Heart className="w-5 h-5 fill-rose-300/30 animate-pulse text-cosmic-pink" />
             </div>
-            <p className="font-sans font-semibold text-xs sm:text-sm leading-relaxed text-[#ffeef4] italic">
+            <p className="font-sans font-semibold text-xs sm:text-sm leading-relaxed text-cosmic-text italic">
               "{selectStory}"
             </p>
           </div>
 
           {/* Reward Summary Badges */}
           <div className="grid grid-cols-3 gap-2.5 max-w-lg w-full">
-            <div className="p-2 w-full bg-[#181333]/90 border border-[#caa5fe]/40 rounded-xl flex items-center gap-2 justify-center">
+            <div className="p-2 w-full bg-[#181333]/90 border border-cosmic-accent/40 rounded-xl flex items-center gap-2 justify-center">
               <Award className="w-4 h-4 text-[#ffcbdc] shrink-0" />
               <div className="text-left">
-                <span className="block text-[8px] font-mono leading-none font-bold text-[#ab9fd2] uppercase">Prestige</span>
-                <span className="text-[10px] sm:text-xs font-black font-sans text-[#ff9db8] shrink-0">+{prestigeCount + 1}</span>
+                <span className="block text-[8px] font-mono leading-none font-bold text-cosmic-accent-muted uppercase">Prestige</span>
+                <span className="text-[10px] sm:text-xs font-black font-sans text-cosmic-pink shrink-0">+{prestigeCount + 1}</span>
               </div>
             </div>
             
-            <div className="p-2 w-full bg-[#181333]/90 border border-[#caa5fe]/40 rounded-xl flex items-center gap-2 justify-center">
+            <div className="p-2 w-full bg-[#181333]/90 border border-cosmic-accent/40 rounded-xl flex items-center gap-2 justify-center">
               <Gift className="w-4 h-4 text-amber-300 shrink-0" />
               <div className="text-left">
-                <span className="block text-[8px] font-mono leading-none font-bold text-[#ab9fd2] uppercase">Bonus Truhe</span>
+                <span className="block text-[8px] font-mono leading-none font-bold text-cosmic-accent-muted uppercase">Bonus Truhe</span>
                 <span className="text-[10px] sm:text-xs font-black font-sans text-amber-300 shrink-0">1x Box</span>
               </div>
             </div>
 
-            <div className="p-2 w-full bg-[#181333]/90 border border-[#caa5fe]/40 rounded-xl flex items-center gap-2 justify-center">
+            <div className="p-2 w-full bg-[#181333]/90 border border-cosmic-accent/40 rounded-xl flex items-center gap-2 justify-center">
               <Sparkles className="w-4 h-4 text-fuchsia-300 shrink-0" />
               <div className="text-left">
-                <span className="block text-[8px] font-mono leading-none font-bold text-[#ab9fd2] uppercase">Währung</span>
+                <span className="block text-[8px] font-mono leading-none font-bold text-cosmic-accent-muted uppercase">Währung</span>
                 <span className="text-[10px] sm:text-xs font-black font-sans text-fuchsia-350 shrink-0">1x Splitter 🌌</span>
               </div>
             </div>
@@ -136,13 +136,13 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = ({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onConfirmVoyage}
-            className="w-full max-w-md py-4 sm:py-5 rounded-3xl bg-gradient-to-r from-[#ff9db8] via-[#caa5fe] to-[#ff9db8] text-[#100d23] hover:text-[#0b0818] font-sans font-black text-xs sm:text-sm uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(255,157,184,0.4)] border border-[#ffcbdc] hover:shadow-[0_0_40px_rgba(202,165,254,0.6)] cursor-pointer transition-all duration-300 flex items-center justify-center gap-2"
+            className="w-full max-w-md py-4 sm:py-5 rounded-3xl bg-gradient-to-r from-cosmic-pink via-cosmic-accent to-cosmic-pink text-cosmic-bg hover:text-[#0b0818] font-sans font-black text-xs sm:text-sm uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(255,157,184,0.4)] border border-[#ffcbdc] hover:shadow-[0_0_40px_rgba(202,165,254,0.6)] cursor-pointer transition-all duration-300 flex items-center justify-center gap-2"
           >
             <Compass className="w-4 h-4 animate-spin" style={{ animationDuration: "5s" }} />
             <span>Jetzt Galaxiereise antreten! 🚀</span>
           </motion.button>
 
-          <p className="font-mono text-[9px] text-[#ab9fd2]/70 uppercase tracking-widest font-bold">
+          <p className="font-mono text-[9px] text-cosmic-accent-muted/70 uppercase tracking-widest font-bold">
             Hinweis: Setzt Leben, LPS, Tiere & Planetenstufe für dauerhaften Bonus zurück.
           </p>
 

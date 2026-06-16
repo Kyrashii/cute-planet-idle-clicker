@@ -50,7 +50,7 @@ export const EventBackgrounds: React.FC<EventBackgroundsProps> = React.memo(({
               repeat: Infinity,
               ease: "easeInOut"
             }}
-            className="absolute inset-0 bg-gradient-to-r from-teal-400/20 via-[#ff9db8]/15 to-emerald-400/20 blur-3xl mix-blend-screen"
+            className="absolute inset-0 bg-gradient-to-r from-teal-400/20 via-cosmic-pink/15 to-emerald-400/20 blur-3xl mix-blend-screen"
             style={{ backgroundSize: "300% 300%" }}
           />
         </div>

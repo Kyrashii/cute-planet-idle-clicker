@@ -1564,7 +1564,7 @@ export default function App() {
 
   if (!isLoaded) {
     return (
-      <div className="fixed inset-0 bg-[#0e0c1f] flex flex-col items-center justify-center text-[#ffeef4] z-50 overflow-hidden select-none">
+      <div className="fixed inset-0 bg-cosmic-bg flex flex-col items-center justify-center text-cosmic-text z-50 overflow-hidden select-none">
         {/* Soft elegant ambient background nebula */}
         <div className="absolute inset-0 bg-radial-gradient from-[#22174d]/40 via-transparent to-transparent opacity-80 pointer-events-none" />
         
@@ -1579,7 +1579,7 @@ export default function App() {
               rotate: { repeat: Infinity, duration: 15, ease: "linear" },
               scale: { repeat: Infinity, duration: 3, ease: "easeInOut" }
             }}
-            className="w-24 h-24 rounded-full border-4 border-dashed border-[#caa5fe]/50 flex items-center justify-center relative shadow-[0_0_40px_rgba(202,165,254,0.15)]"
+            className="w-24 h-24 rounded-full border-4 border-dashed border-cosmic-accent/50 flex items-center justify-center relative shadow-[0_0_40px_rgba(202,165,254,0.15)]"
           >
             <span className="text-4xl">🪐</span>
           </motion.div>
@@ -1590,20 +1590,20 @@ export default function App() {
             transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
             className="absolute inset-0"
           >
-            <div className="absolute -top-1 left-1/2 -ml-2.5 w-5 h-5 rounded-full bg-[#ff9db8] border-2 border-[#100d23] shadow-[0_0_12px_#ff9db8]" />
+            <div className="absolute -top-1 left-1/2 -ml-2.5 w-5 h-5 rounded-full bg-cosmic-pink border-2 border-cosmic-bg shadow-[0_0_12px_var(--color-cosmic-pink)]" />
           </motion.div>
         </div>
 
         {/* Loading text typography with beautiful tracking and sizes */}
-        <h2 className="font-sans font-black uppercase tracking-[0.25em] text-sm text-[#caa5fe] leading-none mb-2">
+        <h2 className="font-sans font-black uppercase tracking-[0.25em] text-sm text-cosmic-accent leading-none mb-2">
           Pastell-Kosmos
         </h2>
-        <div className="flex items-center gap-1.5 text-xs text-[#ab9fd2] font-semibold font-mono">
+        <div className="flex items-center gap-1.5 text-xs text-cosmic-accent-muted font-semibold font-mono">
           <span>Sterne werden geordnet</span>
           <span className="flex gap-0.5">
-            <motion.span animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0 }} className="w-1.5 h-1.5 bg-[#caa5fe] rounded-full" />
-            <motion.span animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.3 }} className="w-1.5 h-1.5 bg-[#caa5fe] rounded-full" />
-            <motion.span animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.6 }} className="w-1.5 h-1.5 bg-[#caa5fe] rounded-full" />
+            <motion.span animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0 }} className="w-1.5 h-1.5 bg-cosmic-accent rounded-full" />
+            <motion.span animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.3 }} className="w-1.5 h-1.5 bg-cosmic-accent rounded-full" />
+            <motion.span animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.6 }} className="w-1.5 h-1.5 bg-cosmic-accent rounded-full" />
           </span>
         </div>
       </div>
@@ -1614,7 +1614,7 @@ export default function App() {
     <>
       <div className={`min-h-screen relative overflow-hidden transition-all duration-1000 ease-in-out flex flex-col font-sans scroll-smooth ${
         isNightStyle 
-          ? "bg-gradient-to-b from-[#100d23] via-[#1b1535] to-[#0b0818] text-[#ffeef4] selection:bg-[#ff9db8] selection:text-[#100d23]" 
+          ? "bg-gradient-to-b from-cosmic-bg via-[#1b1535] to-[#0b0818] text-cosmic-text selection:bg-cosmic-pink selection:text-cosmic-bg" 
           : ""
       } ${
         planetLevel >= 20 ? "pointer-events-none select-none blur-md" : ""
@@ -1740,17 +1740,13 @@ export default function App() {
       )}
 
       {/* 4. Footer credits with minimalist elements */}
-      <footer className={`border-t-4 py-5 px-4 text-center text-[11px] mt-10 transition-colors duration-500 ${
-        isNightStyle ? "bg-[#110e26]/95 border-[#caa5fe]/50 text-[#ab9fd2]" : "bg-[#110e26]/95 border-[#caa5fe]/50 text-[#ab9fd2]"
-      }`}>
+      <footer className="border-t-4 py-5 px-4 text-center text-[11px] mt-10 transition-colors duration-500 bg-cosmic-bg/95 border-cosmic-accent/50 text-cosmic-accent-muted">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 font-semibold relative z-10">
           <p>
             Mit viel Liebe gemacht in Pastellfarben. Spielstand speichert sich automatisch im Browser.
           </p>
           <div className="flex items-center gap-2">
-            <span className={`px-2.5 py-0.5 rounded-md border-2 font-mono font-black text-[10px] ${
-              isNightStyle ? "bg-[#211a43] border-[#caa5fe] text-white" : "bg-[#211a43] border-[#caa5fe] text-white"
-            }`}>Ver. 1.0.6</span>
+            <span className="px-2.5 py-0.5 rounded-md border-2 font-mono font-black text-[10px] bg-cosmic-surface-mid border-cosmic-accent text-white">Ver. 1.0.6</span>
             <span className="text-[#f15e75] animate-pulse">💖</span>
           </div>
         </div>
@@ -1885,7 +1881,7 @@ export default function App() {
             className={`fixed bottom-6 right-6 z-[60] flex items-center gap-3 px-4 py-3 rounded-2xl border-2 shadow-2xl backdrop-blur-md transition-colors ${
               autosaveNotification.success
                 ? "bg-[#163a24]/90 border-emerald-400 text-emerald-100"
-                : "bg-[#2c1328]/90 border-[#ff9db8] text-rose-100"
+                : "bg-[#2c1328]/90 border-cosmic-pink text-rose-100"
             }`}
           >
             {autosaveNotification.success ? (
@@ -1901,7 +1897,7 @@ export default function App() {
               <p className="font-sans font-black text-xs leading-none">
                 {autosaveNotification.success ? "AUTOMATISCH GESPEICHERT" : "AUTO-SPEICHERUNG..."}
               </p>
-              <p className="font-mono text-[9px] text-[#ab9fd2] mt-0.5">
+              <p className="font-mono text-[9px] text-cosmic-accent-muted mt-0.5">
                 {autosaveNotification.text}
               </p>
             </div>

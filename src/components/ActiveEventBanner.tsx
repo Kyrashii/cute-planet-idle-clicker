@@ -35,7 +35,7 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(({
               : activeEvent === "black_hole"
                 ? "bg-gradient-to-br from-[#0c051a]/95 via-[#180d38]/95 to-black border-purple-600/90 text-purple-100 shadow-[0_0_30px_rgba(147,51,234,0.3)]"
                 : "bg-gradient-to-br from-amber-950/95 via-yellow-950/95 to-slate-950 border-amber-400/80 text-amber-100 shadow-amber-400/10"
-        : "bg-[#110e28]/85 border-[#caa5fe]/45 text-[#ab9fd2] shadow-inner"
+        : "bg-[#110e28]/85 border-cosmic-accent/45 text-cosmic-accent-muted shadow-inner"
     }`}>
       {activeEvent ? (
         activeEvent === "black_hole" ? (

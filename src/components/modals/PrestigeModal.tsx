@@ -36,13 +36,13 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = ({
       <motion.div
         initial={{ scale: 0.95, opacity: 0, y: 15 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className={`modal-frame-target flex flex-col max-w-md w-full shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-[#ffeef4] relative ${
-          isNight ? "bg-[#181333]/95 border-[#caa5fe]" : "bg-amber-50 border-amber-400 text-slate-800"
+        className={`modal-frame-target flex flex-col max-w-md w-full shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
+          isNight ? "bg-[#181333]/95 border-cosmic-accent" : "bg-amber-50 border-amber-400 text-slate-800"
         }`}
       >
         {/* Header */}
         <div className={`p-4 sm:p-5 border-b-3 flex items-center justify-between shrink-0 transition-colors duration-500 ${
-          isNight ? "border-[#caa5fe]/40 bg-[#0d0a20]" : "border-amber-300 bg-amber-100 text-[#2c1d0a]"
+          isNight ? "border-cosmic-accent/40 bg-[#0d0a20]" : "border-amber-300 bg-amber-100 text-[#2c1d0a]"
         }`}>
           <div className="flex items-center gap-2.5">
             <span className="text-3xl select-none animate-bounce" style={{ animationDuration: "3s" }}>🎖️</span>
@@ -58,7 +58,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = ({
           <button
             onClick={onClose}
             className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
-              isNight ? "bg-[#1b1937] border-2 border-[#caa5fe] text-purple-200 hover:bg-[#252148]" : "bg-white border-2 border-amber-450 text-amber-900 hover:bg-amber-100"
+              isNight ? "bg-[#1b1937] border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover" : "bg-white border-2 border-amber-450 text-amber-900 hover:bg-amber-100"
             }`}
           >
             ✕
@@ -69,14 +69,14 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = ({
         <div className="p-4 sm:p-6 overflow-y-auto max-h-[70vh] space-y-5">
           {/* Status Display Card */}
           <div className={`p-4 rounded-3xl border-2 text-center relative overflow-hidden transition-all ${
-            isNight ? "bg-[#120f26]/80 border-[#caa5fe]/20" : "bg-amber-100/40 border-amber-200"
+            isNight ? "bg-[#120f26]/80 border-cosmic-accent/20" : "bg-amber-100/40 border-amber-200"
           }`}>
             <span className="text-4xl block mb-2 select-none">👑</span>
             <h5 className="font-sans font-extrabold text-xs uppercase tracking-wider text-amber-400">
               Aktueller Prestige-Zustand
             </h5>
             <p className="font-mono text-xl font-black mt-1">Stufe {prestigeCount}</p>
-            <p className={`text-[10px] font-bold mt-1 opacity-75 ${isNight ? "text-[#ab9fd2]" : "text-slate-600"}`}>
+            <p className={`text-[10px] font-bold mt-1 opacity-75 ${isNight ? "text-cosmic-accent-muted" : "text-slate-600"}`}>
               Permanenter Bonus: <strong className="text-amber-300">+{prestigeCount * 10}%</strong> alle Lebenseinkommen
             </p>
           </div>
@@ -87,7 +87,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = ({
               Über das Prestige-System
             </h6>
             <div className={`p-3.5 rounded-2xl border text-xs leading-relaxed space-y-2 font-semibold ${
-              isNight ? "bg-[#201c40]/30 border-[#caa5fe]/15 text-purple-100" : "bg-white border-amber-100 text-slate-700"
+              isNight ? "bg-[#201c40]/30 border-cosmic-accent/15 text-purple-100" : "bg-white border-amber-100 text-slate-700"
             }`}>
               <div className="flex gap-2">
                 <span className="text-amber-400">✦</span>
@@ -130,13 +130,13 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = ({
                 initial={{ width: 0 }}
                 animate={{ width: `${progressPercent}%` }}
                 transition={{ duration: 1 }}
-                className="h-full bg-gradient-to-r from-[#ab9fd2] via-[#caa5fe] to-amber-300 rounded-full"
+                className="h-full bg-gradient-to-r from-cosmic-accent-muted via-cosmic-accent to-amber-300 rounded-full"
               />
               {canPrestige && (
                 <div className="absolute inset-0 bg-[#ffffff1c] animate-pulse" />
               )}
             </div>
-            <p className="text-[9px] text-[#ab9fd2] font-semibold text-center italic">
+            <p className="text-[9px] text-cosmic-accent-muted font-semibold text-center italic">
               {canPrestige 
                 ? "Bereit für den Aufstieg in den unendlichen Kosmos! ✨" 
                 : `Sammle noch ${formatCompactNumber(PRESTIGE_REQUIREMENT - life)} Leben für das Prestige.`
@@ -147,7 +147,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = ({
 
         {/* Actions Footer */}
         <div className={`p-4 border-t-2 flex flex-col gap-2 transition-colors duration-500 shrink-0 ${
-          isNight ? "border-[#caa5fe]/20 bg-[#0d0a20]" : "border-amber-200 bg-amber-50"
+          isNight ? "border-cosmic-accent/20 bg-[#0d0a20]" : "border-amber-200 bg-amber-50"
         }`}>
           {canPrestige ? (
             <button
@@ -169,7 +169,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = ({
           <button
             onClick={onClose}
             className={`w-full py-2 rounded-xl text-center font-sans font-extrabold text-[10px] uppercase tracking-wider transition-all cursor-pointer ${
-              isNight ? "hover:bg-purple-950/20 text-[#ab9fd2] hover:text-white" : "hover:bg-slate-200/40 text-slate-500"
+              isNight ? "hover:bg-purple-950/20 text-cosmic-accent-muted hover:text-white" : "hover:bg-slate-200/40 text-slate-500"
             }`}
           >
             Zurück zum Planeten

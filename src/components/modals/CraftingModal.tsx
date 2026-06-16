@@ -145,13 +145,13 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
       <motion.div
         initial={{ scale: 0.95, opacity: 0, y: 15 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className={`modal-frame-target flex flex-col max-w-4xl w-full h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-[#ffeef4] relative ${
-          isNight ? "bg-[#14102d]/95 border-[#caa5fe]" : "bg-amber-50/95 border-amber-450 text-slate-800"
+        className={`modal-frame-target flex flex-col max-w-4xl w-full h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
+          isNight ? "bg-[#14102d]/95 border-cosmic-accent" : "bg-amber-50/95 border-amber-450 text-slate-800"
         }`}
       >
         {/* Header */}
         <div className={`p-4 sm:p-5 border-b-3 flex items-center justify-between shrink-0 transition-colors duration-500 ${
-          isNight ? "border-[#caa5fe]/45 bg-[#0a081e]" : "border-amber-300 bg-amber-100 text-[#2c1d0a]"
+          isNight ? "border-cosmic-accent/45 bg-[#0a081e]" : "border-amber-300 bg-amber-100 text-[#2c1d0a]"
         }`}>
           <div className="flex items-center gap-2.5">
             <span className="text-3xl select-none animate-pulse">🔨</span>
@@ -167,7 +167,7 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
           <button
             onClick={onClose}
             className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
-              isNight ? "bg-[#1a1738] border-2 border-[#caa5fe] text-purple-200 hover:bg-[#252148]" : "bg-white border-2 border-amber-450 text-amber-900 hover:bg-amber-100"
+              isNight ? "bg-[#1a1738] border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover" : "bg-white border-2 border-amber-450 text-amber-900 hover:bg-amber-100"
             }`}
           >
             ✕
@@ -205,7 +205,7 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
           
           {/* Left Pane: Recipes List */}
           <div className={`w-full sm:w-[45%] flex flex-col border-r-2 ${
-            isNight ? "border-[#caa5fe]/20" : "border-amber-205"
+            isNight ? "border-cosmic-accent/20" : "border-amber-205"
           }`}>
             
             {/* Category selection */}
@@ -267,7 +267,7 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
                     className={`p-2.5 rounded-2xl border transition-all cursor-pointer flex items-center gap-2 relative ${
                       isSelected
                         ? isNight 
-                          ? "bg-purple-500/20 border-[#caa5fe]" 
+                          ? "bg-purple-500/20 border-cosmic-accent" 
                           : "bg-amber-100 border-amber-450 scale-[1.01]"
                         : isNight
                           ? "bg-[#110e2d]/65 border-purple-950/40 hover:bg-[#18143c]"
@@ -279,7 +279,7 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
                     </span>
                     <div className="min-w-0 flex-grow select-none">
                       <h6 className={`font-sans font-black text-[11px] leading-tight truncate ${
-                        isNight ? "text-[#ffeef4]" : "text-slate-800"
+                        isNight ? "text-cosmic-text" : "text-slate-800"
                       }`}>
                         {recipe.result.name}
                       </h6>

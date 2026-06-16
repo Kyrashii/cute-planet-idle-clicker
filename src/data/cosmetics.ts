@@ -925,7 +925,7 @@ export const RARITY_STYLES = {
   epic: {
     text: "text-purple-300",
     bg: "bg-purple-500/15",
-    border: "border-[#caa5fe]/50",
+    border: "border-cosmic-accent/50",
     name: "Episch"
   },
   legendary: {

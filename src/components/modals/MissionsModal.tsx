@@ -84,10 +84,10 @@ export const MissionsModal: React.FC<MissionsModalProps> = ({
       <motion.div
         initial={{ scale: 0.95, opacity: 0, y: 15 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className={`modal-frame-target flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-[#ffeef4] bg-[#181435]/95 border-[#caa5fe]`}
+        className={`modal-frame-target flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text bg-[#181435]/95 border-cosmic-accent`}
       >
         {/* Header */}
-        <div className={`p-4 sm:p-5 border-b-3 flex items-center justify-between shrink-0 transition-colors duration-500 border-[#caa5fe]/40 bg-[#0e0b23]`}>
+        <div className={`p-4 sm:p-5 border-b-3 flex items-center justify-between shrink-0 transition-colors duration-500 border-cosmic-accent/40 bg-[#0e0b23]`}>
           <div className="flex items-center gap-2.5">
             <span className="text-3xl select-none animate-pulse">🌌</span>
             <div>
@@ -101,7 +101,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer bg-[#1a1738] border-2 border-[#caa5fe] text-purple-200 hover:bg-[#252148]`}
+            className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer bg-[#1a1738] border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover`}
           >
             ✕
           </button>
@@ -110,15 +110,15 @@ export const MissionsModal: React.FC<MissionsModalProps> = ({
         {/* Cooldown Screen UI */}
         {isCooldownActive ? (
           <div className="p-6 overflow-y-auto flex-grow flex flex-col items-center justify-center py-10 space-y-6">
-            <div className="w-21 h-21 rounded-full bg-purple-500/15 border-2 border-[#caa5fe]/40 flex items-center justify-center text-4xl animate-pulse select-none shadow-[0_0_24px_rgba(202,165,254,0.35)]">
+            <div className="w-21 h-21 rounded-full bg-purple-500/15 border-2 border-cosmic-accent/40 flex items-center justify-center text-4xl animate-pulse select-none shadow-[0_0_24px_rgba(202,165,254,0.35)]">
               🌠
             </div>
             
             <div className="text-center space-y-1 px-4">
-              <span className="text-[10px] font-mono font-black uppercase text-[#caa5fe] tracking-widest bg-[#caa5fe]/10 border border-[#caa5fe]/30 px-3 py-1 rounded-full inline-block">
+              <span className="text-[10px] font-mono font-black uppercase text-cosmic-accent tracking-widest bg-cosmic-accent/10 border border-cosmic-accent/30 px-3 py-1 rounded-full inline-block">
                 Sternen-Aufladung
               </span>
-              <h4 className="font-sans font-black text-md text-[#ffeef4] uppercase tracking-wide mt-3.5">
+              <h4 className="font-sans font-black text-md text-cosmic-text uppercase tracking-wide mt-3.5">
                 Nächste Aufgaben laden...
               </h4>
               <p className="text-[11px] font-bold text-[#b4addd] max-w-sm mx-auto leading-relaxed">
@@ -127,8 +127,8 @@ export const MissionsModal: React.FC<MissionsModalProps> = ({
             </div>
 
             {/* Live Countdown Display */}
-            <div className="bg-gradient-to-r from-[#14102c] to-[#211a43] border-2 border-[#caa5fe]/40 rounded-3xl px-12 py-5 shadow-lg text-center flex flex-col items-center justify-center">
-              <span className="text-[9.5px] font-mono font-black uppercase text-[#ab9fd2] tracking-wider block">
+            <div className="bg-gradient-to-r from-[#14102c] to-cosmic-surface-mid border-2 border-cosmic-accent/40 rounded-3xl px-12 py-5 shadow-lg text-center flex flex-col items-center justify-center">
+              <span className="text-[9.5px] font-mono font-black uppercase text-cosmic-accent-muted tracking-wider block">
                 Umlaufzeit verbleibend:
               </span>
               <span className="font-mono font-black text-3xl sm:text-4xl text-yellow-300 tracking-widest mt-1 block select-none">
@@ -138,9 +138,9 @@ export const MissionsModal: React.FC<MissionsModalProps> = ({
 
             {/* Progress Visualizer bar */}
             <div className="w-full max-w-xs space-y-1.5 flex flex-col items-center">
-              <div className="w-full h-3 rounded-full overflow-hidden p-0.5 border bg-[#090715] border-[#ab9fd2]/25">
+              <div className="w-full h-3 rounded-full overflow-hidden p-0.5 border bg-[#090715] border-cosmic-accent-muted/25">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#caa5fe] to-[#ff9db8] h-3"
+                  className="h-full rounded-full bg-gradient-to-r from-cosmic-accent to-cosmic-pink h-3"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -152,8 +152,8 @@ export const MissionsModal: React.FC<MissionsModalProps> = ({
         ) : (
           /* Normal Missions List UI */
           <div className="p-4 sm:p-6 overflow-y-auto flex-grow space-y-4">
-            <p className="text-[11px] sm:text-xs leading-relaxed text-center font-bold px-3 py-2.5 rounded-2xl text-[#caa5fe] bg-[#221c48]/55 border border-[#caa5fe]/20">
-              Löse diese schnuckeligen Aufgaben, um wertvolle <strong className="text-[#caa5fe] font-black underline decoration-pink-300">Sternschnuppen (Lootboxen)</strong> zu verdienen! Öffne sie im Inventar für exklusive Farben, Accessoires und Fensterrahmen! 🌠
+            <p className="text-[11px] sm:text-xs leading-relaxed text-center font-bold px-3 py-2.5 rounded-2xl text-cosmic-accent bg-[#221c48]/55 border border-cosmic-accent/20">
+              Löse diese schnuckeligen Aufgaben, um wertvolle <strong className="text-cosmic-accent font-black underline decoration-pink-300">Sternschnuppen (Lootboxen)</strong> zu verdienen! Öffne sie im Inventar für exklusive Farben, Accessoires und Fensterrahmen! 🌠
             </p>
 
             {sakuraSetComplete && (
@@ -185,7 +185,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = ({
                         ? "bg-[#14122d]/40 border-green-500/20 opacity-50"
                         : isDone
                           ? "bg-gradient-to-r from-[#201d4a] to-[#271d49] border-green-400/80 shadow-[0_4px_12px_rgba(74,222,128,0.15)]"
-                          : "bg-[#201d43]/50 border-[#caa5fe]/20 hover:bg-[#201d43]/70"
+                          : "bg-cosmic-surface-mid/50 border-cosmic-accent/20 hover:bg-cosmic-surface-mid/70"
                     }`}
                   >
                     {/* Status Overlay Ribbon for Claimed */}
@@ -202,15 +202,15 @@ export const MissionsModal: React.FC<MissionsModalProps> = ({
                             ? "bg-gray-800/10 border-gray-600/20"
                             : isDone
                               ? "bg-green-500/15 border-green-400 text-green-400"
-                              : "bg-[#1b1935] border-[#caa5fe]"
+                              : "bg-cosmic-surface border-cosmic-accent"
                         }`}>
                           {mission.type === "clicks" ? "👆" : mission.type === "animals" ? "🐶" : "⭐"}
                         </div>
                         <div>
-                          <h5 className="font-sans font-black text-xs sm:text-xs leading-none text-[#ffeef4]">
+                          <h5 className="font-sans font-black text-xs sm:text-xs leading-none text-cosmic-text">
                             {mission.germanTitle}
                           </h5>
-                          <p className="font-sans text-[10.5px] mt-1 font-bold leading-tight text-[#ab9fd2]">
+                          <p className="font-sans text-[10.5px] mt-1 font-bold leading-tight text-cosmic-accent-muted">
                             {mission.germanDescription}
                           </p>
                         </div>
@@ -218,7 +218,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = ({
 
                       {!isClaimed && (
                         <div className="flex flex-col items-end shrink-0 select-none">
-                          <span className="text-[9px] font-mono uppercase text-[#caa5fe] font-black tracking-wide font-bold">Belohnung:</span>
+                          <span className="text-[9px] font-mono uppercase text-cosmic-accent font-black tracking-wide font-bold">Belohnung:</span>
                           <span className="font-sans font-black text-xs text-amber-300 flex items-center gap-1 mt-0.5 filter drop-shadow-[0_1px_3px_rgba(245,158,11,0.2)]">
                             {sakuraSetComplete ? (
                               <>
@@ -244,7 +244,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = ({
                             {percent}%
                           </span>
                         </div>
-                        <div className="w-full h-2.5 rounded-full overflow-hidden p-0.5 border bg-[#13112b] border-[#caa5fe]/20">
+                        <div className="w-full h-2.5 rounded-full overflow-hidden p-0.5 border bg-[#13112b] border-cosmic-accent/20">
                           <div
                             className={`h-full rounded-full transition-all duration-300 ${
                               isDone 

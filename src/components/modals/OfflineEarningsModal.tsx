@@ -50,8 +50,8 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = ({
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 30 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className={`modal-frame-target flex flex-col max-w-sm w-full shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-[#ffeef4] relative ${
-          isNight ? "bg-[#181333]/95 border-[#caa5fe]" : "bg-amber-50 border-amber-400 text-slate-800"
+        className={`modal-frame-target flex flex-col max-w-sm w-full shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
+          isNight ? "bg-[#181333]/95 border-cosmic-accent" : "bg-amber-50 border-amber-400 text-slate-800"
         }`}
       >
         {/* Subtle glowing sparks in background */}
@@ -59,7 +59,7 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = ({
 
         {/* Header */}
         <div className={`p-4 sm:p-5 border-b-3 flex items-center gap-3 shrink-0 transition-colors duration-500 ${
-          isNight ? "border-[#caa5fe]/40 bg-[#0d0a20]" : "border-amber-300 bg-amber-100 text-[#2c1d0a]"
+          isNight ? "border-cosmic-accent/40 bg-[#0d0a20]" : "border-amber-300 bg-amber-100 text-[#2c1d0a]"
         }`}>
           <span className="text-3xl select-none animate-pulse">😴💤</span>
           <div>
@@ -91,7 +91,7 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = ({
           {/* Stats details */}
           <div className="space-y-2">
             <div className={`flex justify-between items-center text-xs p-2.5 rounded-2xl border ${
-              isNight ? "bg-slate-900/45 border-[#caa5fe]/10" : "bg-white border-amber-100"
+              isNight ? "bg-slate-900/45 border-cosmic-accent/10" : "bg-white border-amber-100"
             }`}>
               <span className="flex items-center gap-1.5 font-bold text-gray-500 text-[11px]">
                 <Clock className="w-3.5 h-3.5 text-pink-400" />
@@ -103,7 +103,7 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = ({
             </div>
 
             <div className={`flex justify-between items-center text-xs p-2.5 rounded-2xl border ${
-              isNight ? "bg-slate-900/45 border-[#caa5fe]/10" : "bg-white border-amber-100"
+              isNight ? "bg-slate-900/45 border-cosmic-accent/10" : "bg-white border-amber-100"
             }`}>
               <span className="flex items-center gap-1.5 font-bold text-gray-500 text-[11px]">
                 <Flame className="w-3.5 h-3.5 text-amber-400" />
@@ -139,7 +139,7 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = ({
 
         {/* Claim Action */}
         <div className={`p-4 border-t-2 flex flex-col transition-colors duration-500 shrink-0 ${
-          isNight ? "border-[#caa5fe]/20 bg-[#0d0a20]" : "border-amber-200 bg-amber-50"
+          isNight ? "border-cosmic-accent/20 bg-[#0d0a20]" : "border-amber-200 bg-amber-50"
         }`}>
           <button
             onClick={() => onClaim(earnedLife)}
