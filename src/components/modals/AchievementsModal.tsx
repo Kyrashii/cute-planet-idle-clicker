@@ -48,7 +48,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
       <motion.div
         initial={{ scale: 0.95, opacity: 0, y: 15 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className={`modal-frame-target flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl rounded-3xl overflow-hidden border-3 transition-colors duration-500 text-[#ffeef4] ${
+        className={`modal-frame-target flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl rounded-3xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text ${
           isNight ? "bg-[#181435]/95 border-amber-300" : "bg-amber-50/95 border-amber-400 text-slate-800"
         }`}
       >
@@ -70,7 +70,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
           <button
             onClick={onClose}
             className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
-              isNight ? "bg-[#1a1738] border-2 border-amber-300 text-amber-200 hover:bg-[#252148]" : "bg-white border-2 border-amber-450 text-amber-900 hover:bg-amber-100"
+              isNight ? "bg-[#1a1738] border-2 border-amber-300 text-amber-200 hover:bg-cosmic-surface-hover" : "bg-white border-2 border-amber-450 text-amber-900 hover:bg-amber-100"
             }`}
           >
             ✕
@@ -79,7 +79,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
 
         {/* Modal Sub-Header: Progress Dashboard Card */}
         <div className={`p-4 border-b shrink-0 flex flex-col sm:flex-row items-center justify-between gap-4 ${
-          isNight ? "bg-[#1c173c]/60 border-[#caa5fe]/10" : "bg-amber-100/30 border-amber-200"
+          isNight ? "bg-[#1c173c]/60 border-cosmic-accent/10" : "bg-amber-100/30 border-amber-200"
         }`}>
           <div className="w-full sm:w-auto flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border-2 border-amber-500 flex items-center justify-center text-2.5xl shadow-inner select-none shrink-0">
@@ -113,7 +113,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
 
         {/* Filters and Search Bar Container */}
         <div className={`p-3 shrink-0 flex flex-col gap-2.5 border-b ${
-          isNight ? "bg-[#13102a]/70 border-[#caa5fe]/15" : "bg-amber-50 border-amber-200"
+          isNight ? "bg-[#13102a]/70 border-cosmic-accent/15" : "bg-amber-50 border-amber-200"
         }`}>
           {/* Category tabs */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 select-none no-scrollbar">
@@ -138,7 +138,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                   achievementCategoryFilter === tab.id
                     ? "bg-amber-500 text-white border-amber-402 shadow-md scale-102"
                     : isNight
-                      ? "bg-[#1f1a44] border-[#caa5fe]/20 text-[#ab9fd2] hover:bg-[#282159]"
+                      ? "bg-[#1f1a44] border-cosmic-accent/20 text-cosmic-accent-muted hover:bg-[#282159]"
                       : "bg-white border-amber-300 text-amber-950 hover:bg-amber-100"
                 }`}
               >
@@ -157,7 +157,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
               onChange={(e) => setAchievementSearch(e.target.value)}
               className={`w-full px-4 py-2 pl-9 rounded-full text-xs font-semibold focus:outline-none border transition-all ${
                 isNight
-                  ? "bg-[#1a1738] border-[#caa5fe]/25 text-[#ffeef4] focus:border-amber-300"
+                  ? "bg-[#1a1738] border-cosmic-accent/25 text-cosmic-text focus:border-amber-300"
                   : "bg-white border-amber-300 text-slate-800 focus:border-amber-450"
               }`}
             />
@@ -192,7 +192,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
                         ? "bg-gradient-to-br from-[#271f49] to-[#120e2a] border-yellow-401/70 shadow-[3px_3px_0px_rgba(234,179,8,0.7)]"
                         : "bg-gradient-to-br from-amber-50 to-yellow-50/70 border-amber-400 text-amber-950 shadow-[3px_3px_0px_rgba(217,119,6,0.6)]"
                       : isNight
-                        ? "bg-[#1a1738]/40 border-[#caa5fe]/10 text-slate-500 opacity-60"
+                        ? "bg-[#1a1738]/40 border-cosmic-accent/10 text-slate-500 opacity-60"
                         : "bg-slate-100 border-slate-200 text-slate-400 opacity-70"
                   }`}
                 >
@@ -224,7 +224,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
 
                     <p className={`text-[10px] sm:text-[10.5px] font-semibold mt-0.5 leading-tight ${
                       ach.isUnlocked
-                        ? isNight ? "text-[#ab9fd2]" : "text-amber-800"
+                        ? isNight ? "text-cosmic-accent-muted" : "text-amber-800"
                         : "text-slate-500 dark:text-slate-500"
                     }`}>
                       {ach.description}
@@ -254,11 +254,11 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className={`p-3 border-t flex justify-between items-center text-[10px] text-[#ab9fd2] font-semibold px-5 ${
+        <div className={`p-3 border-t flex justify-between items-center text-[10px] text-cosmic-accent-muted font-semibold px-5 ${
           isNight ? "border-amber-300/40 bg-[#0c0a21]" : "border-amber-250 bg-amber-100 text-amber-950"
         }`}>
           <span>Erfolge freigeschaltet: <b className="text-amber-300 font-extrabold">{unlockedAchievementsCount} / {achievements.length}</b></span>
-          <span>Guthaben: <b className="text-[#ff9db8] font-extrabold">{formatCompactNumber(life)} 💖</b></span>
+          <span>Guthaben: <b className="text-cosmic-pink font-extrabold">{formatCompactNumber(life)} 💖</b></span>
         </div>
       </motion.div>
     </div>

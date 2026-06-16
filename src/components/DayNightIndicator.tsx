@@ -18,19 +18,19 @@ export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(({
   onOpenOfflineModal,
 }) => {
   return (
-    <div className="w-full max-w-2xl p-3.5 rounded-2.5xl flex flex-col md:flex-row items-center justify-between gap-3 border-2 shadow-md transition-all duration-500 bg-[#14102d]/90 border-[#caa5fe]/60 text-[#ffeef4]">
+    <div className="w-full max-w-2xl p-3.5 rounded-2.5xl flex flex-col md:flex-row items-center justify-between gap-3 border-2 shadow-md transition-all duration-500 bg-[#14102d]/90 border-cosmic-accent/60 text-cosmic-text">
       <div className="flex items-center gap-3">
         <div className="text-3xl select-none animate-pulse">
           {isNight ? "🌙" : "☀️"}
         </div>
         <div>
-          <h3 className="font-sans font-black text-xs uppercase tracking-wider flex items-center gap-1.5 leading-none text-[#ffeef4]">
+          <h3 className="font-sans font-black text-xs uppercase tracking-wider flex items-center gap-1.5 leading-none text-cosmic-text">
             {isNight ? "Nacht-Phase active" : "Tag-Phase active"}
-            <span className={`text-[8.5px] font-mono px-2.5 py-0.5 rounded-full border font-black uppercase leading-none ${isNight ? "text-[#caa5fe] border-[#caa5fe]/50 bg-[#caa5fe]/10" : "text-amber-300 border-amber-500/50 bg-amber-500/10"}`}>
+            <span className={`text-[8.5px] font-mono px-2.5 py-0.5 rounded-full border font-black uppercase leading-none ${isNight ? "text-cosmic-accent border-cosmic-accent/50 bg-cosmic-accent/10" : "text-amber-300 border-amber-500/50 bg-amber-500/10"}`}>
               {isNight ? "Stars +50% ✧" : "Klick +50% 👆"}
             </span>
           </h3>
-          <p className="text-[10px] sm:text-[10.5px] mt-1 font-semibold leading-snug text-[#ab9fd2]">
+          <p className="text-[10px] sm:text-[10.5px] mt-1 font-semibold leading-snug text-cosmic-accent-muted">
             {isNight 
               ? "Sterne leuchten prachtvoll und sammeln heute Nacht +50% Energie." 
               : "Der Planet erwacht! Deine händischen Klicks sind 1.5x stärker."}
@@ -88,11 +88,11 @@ export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(({
         </div>
 
         <div className="flex flex-col text-left">
-          <span className="text-[8.5px] uppercase font-mono font-black tracking-widest text-[#ab9fd2] leading-none">
+          <span className="text-[8.5px] uppercase font-mono font-black tracking-widest text-cosmic-accent-muted leading-none">
             Schlummer-Glas
           </span>
           <span className={`text-[10.5px] font-black leading-tight mt-0.5 flex items-center gap-1 ${
-            offlineEarnedLife > 0 ? "text-amber-300" : "text-[#ab9fd2]/50"
+            offlineEarnedLife > 0 ? "text-amber-300" : "text-cosmic-accent-muted/50"
           }`}>
             {offlineEarnedLife > 0 ? `+${formatCompactNumber(offlineEarnedLife)}` : "Leer"}
           </span>
@@ -101,13 +101,13 @@ export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(({
       
       {/* Cycle Progress Bar */}
       <div className="w-full md:w-32 flex flex-col items-end gap-1.5 shrink-0">
-        <div className="flex items-center justify-between w-full text-[9px] font-mono uppercase font-black tracking-wider leading-none text-[#ab9fd2]">
+        <div className="flex items-center justify-between w-full text-[9px] font-mono uppercase font-black tracking-wider leading-none text-cosmic-accent-muted">
           <span>Nächster Wechsel</span>
-          <span className="text-[#ffeef4]">{Math.ceil((100 - cycleProgress) / 100 * 60)}s</span>
+          <span className="text-cosmic-text">{Math.ceil((100 - cycleProgress) / 100 * 60)}s</span>
         </div>
-        <div className="w-full h-2 rounded-full overflow-hidden p-[1px] border bg-[#090715] border-[#ab9fd2]/30">
+        <div className="w-full h-2 rounded-full overflow-hidden p-[1px] border bg-[#090715] border-cosmic-accent-muted/30">
           <motion.div
-            className={`h-full rounded-full ${isNight ? "bg-gradient-to-r from-[#caa5fe] to-[#ff9db8]" : "bg-gradient-to-r from-yellow-400 to-amber-500"}`}
+            className={`h-full rounded-full ${isNight ? "bg-gradient-to-r from-cosmic-accent to-cosmic-pink" : "bg-gradient-to-r from-yellow-400 to-amber-500"}`}
             style={{ width: `${cycleProgress}%` }}
             transition={{ ease: "linear" }}
           />

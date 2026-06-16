@@ -58,7 +58,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = ({
         transition={{ type: "spring", damping: 25, stiffness: 220 }}
         className={`relative w-full max-w-lg overflow-y-auto max-h-[90vh] rounded-3.5xl border-3 shadow-2xl p-6 md:p-8 ${
           isNight
-            ? "bg-[#16122f]/98 border-[#caa5fe]/70 text-[#ffeef4] custom-scrollbar"
+            ? "bg-[#16122f]/98 border-cosmic-accent/70 text-cosmic-text custom-scrollbar"
             : "bg-amber-50/98 border-amber-300 text-slate-800 custom-scrollbar"
         }`}
       >
@@ -96,7 +96,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = ({
           </span>
 
           <h3 className={`font-sans font-black text-xl md:text-2xl mt-1 leading-snug tracking-tight ${
-            isNight ? "bg-gradient-to-r from-purple-200 via-[#caa5fe] to-pink-200 bg-clip-text text-transparent" : "text-amber-900"
+            isNight ? "bg-gradient-to-r from-purple-200 via-cosmic-accent to-pink-200 bg-clip-text text-transparent" : "text-amber-900"
           }`}>
             {count}x {itemName}
           </h3>
@@ -115,7 +115,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = ({
                 isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
               }`}>
                 <Heart className="w-5 h-5 text-rose-500 fill-rose-500/25 mb-1" />
-                <span className={`text-[9px] uppercase font-bold text-[#b2b1da] ${!isNight && "text-slate-500"}`}>Lebensenergie</span>
+                <span className={`text-[9px] uppercase font-bold text-cosmic-text-muted ${!isNight && "text-slate-500"}`}>Lebensenergie</span>
                 <span className="font-sans font-black text-sm text-rose-500">
                   +{formatCompactNumber(rewards.lifeGained)}
                 </span>
@@ -127,7 +127,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = ({
                 isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
               }`}>
                 <span className="text-lg filter drop-shadow mb-1">⭐</span>
-                <span className={`text-[9px] uppercase font-bold text-[#b2b1da] ${!isNight && "text-slate-500"}`}>Sterne</span>
+                <span className={`text-[9px] uppercase font-bold text-cosmic-text-muted ${!isNight && "text-slate-500"}`}>Sterne</span>
                 <span className="font-sans font-black text-sm text-yellow-500">
                   +{formatCompactNumber(rewards.starsGained)}
                 </span>
@@ -139,7 +139,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = ({
                 isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
               }`}>
                 <Sparkles className="w-5 h-5 text-pink-400 fill-pink-500/10 mb-1 animate-spin" style={{ animationDuration: "12s" }} />
-                <span className={`text-[9px] uppercase font-bold text-[#b2b1da] ${!isNight && "text-slate-500"}`}>Glitzerstaub</span>
+                <span className={`text-[9px] uppercase font-bold text-cosmic-text-muted ${!isNight && "text-slate-500"}`}>Glitzerstaub</span>
                 <span className="font-sans font-black text-sm text-pink-400">
                   +{formatCompactNumber(rewards.glitterGained)}
                 </span>
@@ -151,7 +151,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = ({
                 isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
               }`}>
                 <Gift className="w-5 h-5 text-indigo-400 mb-1" />
-                <span className={`text-[9px] uppercase font-bold text-[#b2b1da] ${!isNight && "text-slate-500"}`}>Schatullen</span>
+                <span className={`text-[9px] uppercase font-bold text-cosmic-text-muted ${!isNight && "text-slate-500"}`}>Schatullen</span>
                 <span className="font-sans font-black text-sm text-indigo-400">
                   +{rewards.lootboxesGained}
                 </span>
@@ -163,7 +163,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = ({
                 isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
               }`}>
                 <span className="text-lg mb-1">💊</span>
-                <span className={`text-[9px] uppercase font-bold text-[#b2b1da] ${!isNight && "text-slate-500"}`}>Wachstums-EP</span>
+                <span className={`text-[9px] uppercase font-bold text-cosmic-text-muted ${!isNight && "text-slate-500"}`}>Wachstums-EP</span>
                 <span className="font-sans font-black text-sm text-teal-400">
                   +{formatCompactNumber(rewards.xpGained)}
                 </span>
@@ -175,7 +175,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = ({
                 isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
               }`}>
                 <Trophy className="w-5 h-5 text-amber-500 mb-1" />
-                <span className={`text-[9px] uppercase font-bold text-[#b2b1da] ${!isNight && "text-slate-500"}`}>Prestige Level</span>
+                <span className={`text-[9px] uppercase font-bold text-cosmic-text-muted ${!isNight && "text-slate-500"}`}>Prestige Level</span>
                 <span className="font-sans font-black text-sm text-amber-500">
                   +{rewards.prestigeGained}
                 </span>

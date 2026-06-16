@@ -138,10 +138,10 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
       <motion.div
         initial={{ scale: 0.95, opacity: 0, y: 15 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="modal-frame-target bg-[#1a163a]/95 backdrop-blur-md rounded-3.5xl border-3 border-[#caa5fe] flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-[#ffeef4]"
+        className="modal-frame-target bg-[#1a163a]/95 backdrop-blur-md rounded-3.5xl border-3 border-cosmic-accent flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b-3 border-[#caa5fe]/60 bg-gradient-to-r from-[#171430] via-[#211a3d] to-[#171430] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b-3 border-cosmic-accent/60 bg-gradient-to-r from-[#171430] via-[#211a3d] to-[#171430] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-2xl select-none">
               {selectedAnimal ? selectedAnimal.emoji : "🐾"}
@@ -150,7 +150,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
               <span className="text-[10px] uppercase font-black tracking-wider text-purple-300 block">
                 {selectedAnimal ? "Detailansicht" : "Sanfte Tierzucht"}
               </span>
-              <h4 className="font-sans font-black text-[#ffeef4] text-sm uppercase tracking-wide">
+              <h4 className="font-sans font-black text-cosmic-text text-sm uppercase tracking-wide">
                 {selectedAnimal ? selectedAnimal.germanName : "Passive Lebensenergie gewinnen"}
               </h4>
             </div>
@@ -160,7 +160,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
               setSelectedAnimal(null);
               onClose();
             }}
-            className="w-8 h-8 rounded-full bg-[#1b1836] border-2 border-[#caa5fe] flex items-center justify-center font-bold text-lg text-white hover:bg-[#252148] active:scale-95 transition-all shadow-md cursor-pointer"
+            className="w-8 h-8 rounded-full bg-[#1b1836] border-2 border-cosmic-accent flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
           >
             ✕
           </button>
@@ -168,11 +168,11 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
 
         {/* Multi Buy and Smart Actions Toolbar - Show only if no animal selected */}
         {!selectedAnimal && (
-          <div className="p-3 bg-[#13112a]/90 border-b border-[#caa5fe]/30 flex flex-col gap-2 shrink-0 px-4 sm:px-5">
+          <div className="p-3 bg-[#13112a]/90 border-b border-cosmic-accent/30 flex flex-col gap-2 shrink-0 px-4 sm:px-5">
             {/* Purchase Amount Selection */}
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="text-[10px] font-bold text-[#b4a8e2] uppercase tracking-wider font-mono">Kauf-Menge:</span>
-              <div className="flex rounded-full bg-[#1c193b] border border-[#caa5fe]/40 p-0.5 shadow-sm">
+              <div className="flex rounded-full bg-[#1c193b] border border-cosmic-accent/40 p-0.5 shadow-sm">
                 {([1, 10, 25, "max"] as const).map((amt) => (
                   <button
                     key={amt}
@@ -235,7 +235,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
               {/* Back button */}
               <button
                 onClick={() => setSelectedAnimal(null)}
-                className="self-start mb-4 flex items-center gap-1.5 text-xs font-black text-purple-300 hover:text-white uppercase tracking-wider font-sans transition-all cursor-pointer bg-[#1e1a42] px-3.5 py-2 rounded-full border border-[#caa5fe]/30"
+                className="self-start mb-4 flex items-center gap-1.5 text-xs font-black text-purple-300 hover:text-white uppercase tracking-wider font-sans transition-all cursor-pointer bg-[#1e1a42] px-3.5 py-2 rounded-full border border-cosmic-accent/30"
               >
                 <span>← Zurück zur Übersicht</span>
               </button>
@@ -244,7 +244,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="w-40 h-40 rounded-3xl bg-[#1b1935] border-3 border-[#caa5fe] flex items-center justify-center shadow-lg relative shrink-0 overflow-hidden"
+                className="w-40 h-40 rounded-3xl bg-cosmic-surface border-3 border-cosmic-accent flex items-center justify-center shadow-lg relative shrink-0 overflow-hidden"
               >
                 {/* Ambient lighting backdrop */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/40 to-pink-900/20 opacity-60" />
@@ -261,14 +261,14 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
                   />
                 </motion.div>
                 {(purchasedAnimals[selectedAnimal.id] || 0) > 0 && (
-                  <span className="absolute top-2 right-2 bg-gradient-to-r from-[#f15e75] to-rose-600 text-white font-mono font-black text-xs px-2.5 py-1 rounded-full border-2 border-[#caa5fe] shadow-md animate-pulse z-20">
+                  <span className="absolute top-2 right-2 bg-gradient-to-r from-[#f15e75] to-rose-600 text-white font-mono font-black text-xs px-2.5 py-1 rounded-full border-2 border-cosmic-accent shadow-md animate-pulse z-20">
                     Bestand: {purchasedAnimals[selectedAnimal.id] || 0}
                   </span>
                 )}
               </motion.div>
 
               {/* Name & Title */}
-              <h4 className="text-xl sm:text-2xl font-black text-[#ffeef4] text-center mt-4 uppercase tracking-wide">
+              <h4 className="text-xl sm:text-2xl font-black text-cosmic-text text-center mt-4 uppercase tracking-wide">
                 {selectedAnimal.germanName}
               </h4>
               <p className="text-xs text-center text-[#d1cbeb] font-bold italic max-w-sm px-4 mt-1.5 leading-relaxed">
@@ -278,11 +278,11 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
               {/* Grid of statistics */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mt-5">
                 {/* Box 1: Einnahmen-Statistik */}
-                <div className="bg-[#201c46]/60 p-3.5 rounded-2xl border border-[#caa5fe]/30 flex flex-col justify-between">
+                <div className="bg-[#201c46]/60 p-3.5 rounded-2xl border border-cosmic-accent/30 flex flex-col justify-between">
                   <span className="text-[10px] uppercase font-black tracking-wider text-purple-300 block mb-2">📊 Produktion</span>
                   <div className="space-y-1.5">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-[#ab9fd2] font-semibold">Ertrag / Tier:</span>
+                      <span className="text-cosmic-accent-muted font-semibold">Ertrag / Tier:</span>
                       <span className="font-mono font-black text-rose-300">
                         +{formatCompactNumber(
                           selectedAnimal.baseLps *
@@ -298,10 +298,10 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-[#ab9fd2] font-semibold">Bestand:</span>
+                      <span className="text-cosmic-accent-muted font-semibold">Bestand:</span>
                       <span className="font-mono font-black text-white">{purchasedAnimals[selectedAnimal.id] || 0}x</span>
                     </div>
-                    <div className="border-t border-[#caa5fe]/20 my-1 pt-1.5 flex justify-between items-center text-xs">
+                    <div className="border-t border-cosmic-accent/20 my-1 pt-1.5 flex justify-between items-center text-xs">
                       <span className="text-pink-300 font-bold">Gesamtertrag:</span>
                       <span className="font-mono font-black text-pink-300">
                         +{formatCompactNumber(
@@ -322,7 +322,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
                 </div>
 
                 {/* Box 2: Upgrade-Bündnisse */}
-                <div className="bg-[#201c46]/60 p-3.5 rounded-2xl border border-[#caa5fe]/30 flex flex-col justify-between">
+                <div className="bg-[#201c46]/60 p-3.5 rounded-2xl border border-cosmic-accent/30 flex flex-col justify-between">
                   <span className="text-[10px] uppercase font-black tracking-wider text-purple-300 block mb-2">✨ Booster & Boni</span>
                   <div className="space-y-1.5 text-xs font-semibold">
                     {[
@@ -335,7 +335,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
                       { key: "unicorn", name: "Prisma-Glimmerhorn", active: upgradesSpecs.unicornBoost },
                     ].some((u) => u.key === selectedAnimal.id) ? (
                       <div className="flex justify-between items-center">
-                        <span className="text-[#ab9fd2] truncate mr-2">
+                        <span className="text-cosmic-accent-muted truncate mr-2">
                           {[
                             { key: "bunny", name: "Wattebausch-Schuhe" },
                             { key: "chick", name: "Luxus-Sternenkörner" },
@@ -375,13 +375,13 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
                         </span>
                       </div>
                     ) : (
-                      <div className="flex justify-between items-center text-[#ab9fd2]/70">
+                      <div className="flex justify-between items-center text-cosmic-accent-muted/70">
                         <span>Spezial-Booster:</span>
                         <span>Keine</span>
                       </div>
                     )}
                     <div className="flex justify-between items-center">
-                      <span className="text-[#ab9fd2]">Kosmische Segen:</span>
+                      <span className="text-cosmic-accent-muted">Kosmische Segen:</span>
                       <span
                         className={
                           upgradesSpecs.globalAnimalsBoost
@@ -392,7 +392,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
                         {upgradesSpecs.globalAnimalsBoost ? "Aktiv (x1.5) ✅" : "Nicht gekauft ❌"}
                       </span>
                     </div>
-                    <div className="border-t border-[#caa5fe]/20 my-1 pt-1.5 flex justify-between items-center">
+                    <div className="border-t border-cosmic-accent/20 my-1 pt-1.5 flex justify-between items-center">
                       <span className="text-indigo-300 font-bold">Aktiver Multiplikator:</span>
                       <span className="font-mono font-black text-indigo-300">
                         x
@@ -413,7 +413,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
               </div>
 
               {/* Quick Direct Bulk Buying Section inside detail view */}
-              <div className="bg-[#141230]/70 border-2 border-[#caa5fe]/30 p-3.5 rounded-2xl w-full mt-4 space-y-3">
+              <div className="bg-[#141230]/70 border-2 border-cosmic-accent/30 p-3.5 rounded-2xl w-full mt-4 space-y-3">
                 <span className="text-[10px] uppercase font-black tracking-wider text-[#b4a8e2] block">
                   🛒 Schneller Kauf im Detailfenster
                 </span>
@@ -429,12 +429,12 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
                         onClick={() => onBuyAnimal(selectedAnimal.id, cost1, 1)}
                         className={`p-2.5 rounded-xl border-2 flex flex-col items-center justify-center transition-all cursor-pointer ${
                           life >= cost1
-                            ? "bg-[#201c46] hover:bg-[#2b255e] border-[#caa5fe] text-white hover:scale-102 shadow-md active:scale-97"
-                            : "bg-[#18162e]/40 border-slate-700/30 text-[#ab9fd2]/40 cursor-not-allowed opacity-50"
+                            ? "bg-[#201c46] hover:bg-[#2b255e] border-cosmic-accent text-white hover:scale-102 shadow-md active:scale-97"
+                            : "bg-[#18162e]/40 border-slate-700/30 text-cosmic-accent-muted/40 cursor-not-allowed opacity-50"
                         }`}
                       >
                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Kaufe x1</span>
-                        <span className="text-[10px] font-mono font-black text-[#ff9db8] mt-0.5">
+                        <span className="text-[10px] font-mono font-black text-cosmic-pink mt-0.5">
                           {formatCompactNumber(cost1)} 💖
                         </span>
                       </button>
@@ -452,12 +452,12 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
                         onClick={() => onBuyAnimal(selectedAnimal.id, cost10, 10)}
                         className={`p-2.5 rounded-xl border-2 flex flex-col items-center justify-center transition-all cursor-pointer ${
                           life >= cost10
-                            ? "bg-[#201c46] hover:bg-[#2b255e] border-[#caa5fe] text-white hover:scale-102 shadow-md active:scale-97"
-                            : "bg-[#18162e]/40 border-slate-700/30 text-[#ab9fd2]/40 cursor-not-allowed opacity-50"
+                            ? "bg-[#201c46] hover:bg-[#2b255e] border-cosmic-accent text-white hover:scale-102 shadow-md active:scale-97"
+                            : "bg-[#18162e]/40 border-slate-700/30 text-cosmic-accent-muted/40 cursor-not-allowed opacity-50"
                         }`}
                       >
                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Kaufe x10</span>
-                        <span className="text-[10px] font-mono font-black text-[#ff9db8] mt-0.5">
+                        <span className="text-[10px] font-mono font-black text-cosmic-pink mt-0.5">
                           {formatCompactNumber(cost10)} 💖
                         </span>
                       </button>
@@ -475,12 +475,12 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
                         onClick={() => onBuyAnimal(selectedAnimal.id, cost25, 25)}
                         className={`p-2.5 rounded-xl border-2 flex flex-col items-center justify-center transition-all cursor-pointer ${
                           life >= cost25
-                            ? "bg-[#201c46] hover:bg-[#2b255e] border-[#caa5fe] text-white hover:scale-102 shadow-md active:scale-97"
-                            : "bg-[#18162e]/40 border-slate-700/30 text-[#ab9fd2]/40 cursor-not-allowed opacity-50"
+                            ? "bg-[#201c46] hover:bg-[#2b255e] border-cosmic-accent text-white hover:scale-102 shadow-md active:scale-97"
+                            : "bg-[#18162e]/40 border-slate-700/30 text-cosmic-accent-muted/40 cursor-not-allowed opacity-50"
                         }`}
                       >
                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Kaufe x25</span>
-                        <span className="text-[10px] font-mono font-black text-[#ff9db8] mt-0.5">
+                        <span className="text-[10px] font-mono font-black text-cosmic-pink mt-0.5">
                           {formatCompactNumber(cost25)} 💖
                         </span>
                       </button>
@@ -513,8 +513,8 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
                         onClick={() => onBuyAnimal(selectedAnimal.id, totalCostMax, countToBuyMax)}
                         className={`p-2.5 rounded-xl border-2 flex flex-col items-center justify-center transition-all cursor-pointer ${
                           life >= totalCostMax && countToBuyMax > 0
-                            ? "bg-gradient-to-r from-[#8b5cf6] to-[#ec4899] border-[#caa5fe] text-white hover:scale-102 shadow-md active:scale-97"
-                            : "bg-[#18162e]/40 border-slate-700/30 text-[#ab9fd2]/40 cursor-not-allowed opacity-50"
+                            ? "bg-gradient-to-r from-[#8b5cf6] to-[#ec4899] border-cosmic-accent text-white hover:scale-102 shadow-md active:scale-97"
+                            : "bg-[#18162e]/40 border-slate-700/30 text-cosmic-accent-muted/40 cursor-not-allowed opacity-50"
                         }`}
                       >
                         <span className="text-[9px] font-bold uppercase tracking-wide text-white">MAX (x{countToBuyMax})</span>
@@ -579,11 +579,11 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
                     key={animal.id}
                     onClick={() => setSelectedAnimal(animal)}
                     style={{ contentVisibility: "auto" } as React.CSSProperties}
-                    className="flex items-center justify-between p-3.5 rounded-3xl border-2 border-[#caa5fe]/35 bg-[#201d43]/55 hover:bg-[#201d43]/85 hover:border-[#caa5fe]/80 transition-all gap-4 group cursor-pointer"
+                    className="flex items-center justify-between p-3.5 rounded-3xl border-2 border-cosmic-accent/35 bg-cosmic-surface-mid/55 hover:bg-cosmic-surface-mid/85 hover:border-cosmic-accent/80 transition-all gap-4 group cursor-pointer"
                   >
                     {/* Animal visual thumbnail - SIZED UP */}
                     <div className="flex items-center gap-4 min-w-0 flex-grow">
-                      <div className="w-18 h-18 rounded-2xl bg-[#1b1935] border-2 border-[#caa5fe] flex items-center justify-center shadow-lg relative shrink-0">
+                      <div className="w-18 h-18 rounded-2xl bg-cosmic-surface border-2 border-cosmic-accent flex items-center justify-center shadow-lg relative shrink-0">
                         <AnimalImage
                           image={animal.image}
                           emoji={animal.emoji}
@@ -591,7 +591,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
                           emojiSizeClassName="text-4xl select-none"
                         />
                         {count > 0 && (
-                          <span className="absolute -top-1.5 -right-1.5 bg-[#f15e75] text-white font-mono font-black text-[9.5px] h-5.5 w-5.5 rounded-full flex items-center justify-center border-2 border-[#caa5fe] shadow-sm animate-pulse">
+                          <span className="absolute -top-1.5 -right-1.5 bg-[#f15e75] text-white font-mono font-black text-[9.5px] h-5.5 w-5.5 rounded-full flex items-center justify-center border-2 border-cosmic-accent shadow-sm animate-pulse">
                             {count}
                           </span>
                         )}
@@ -602,21 +602,21 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <h5 className="font-sans font-black text-sm sm:text-base text-[#ffeef4] truncate group-hover:text-[#caa5fe] transition-colors">
+                          <h5 className="font-sans font-black text-sm sm:text-base text-cosmic-text truncate group-hover:text-cosmic-accent transition-colors">
                             {animal.germanName}
                           </h5>
                           {count > 0 && (
-                            <span className="text-[10.5px] font-black text-[#ff9db8] font-sans italic truncate">
+                            <span className="text-[10.5px] font-black text-cosmic-pink font-sans italic truncate">
                               {count * lpsDisplay > 0 ? `(+${formatCompactNumber(count * lpsDisplay)}/s)` : ""}
                             </span>
                           )}
                         </div>
-                        <p className="font-sans text-[11px] font-semibold text-[#ab9fd2] leading-snug mt-0.5 line-clamp-1 group-hover:line-clamp-none transition-all">
+                        <p className="font-sans text-[11px] font-semibold text-cosmic-accent-muted leading-snug mt-0.5 line-clamp-1 group-hover:line-clamp-none transition-all">
                           {animal.germanDescription}
                         </p>
                         <div className="flex items-center gap-2 mt-1.5 text-[10px] font-mono font-black text-sky-300">
                           <span>Produziert: +{formatCompactNumber(lpsDisplay)} Leben/sek</span>
-                          <span className="text-purple-400 font-sans text-[9px] uppercase font-black tracking-wider group-hover:opacity-100 opacity-65 ml-auto shrink-0 bg-[#251e44] px-1.5 py-0.5 rounded border border-[#caa5fe]/20">
+                          <span className="text-purple-400 font-sans text-[9px] uppercase font-black tracking-wider group-hover:opacity-100 opacity-65 ml-auto shrink-0 bg-[#251e44] px-1.5 py-0.5 rounded border border-cosmic-accent/20">
                             Details 🔍
                           </span>
                         </div>
@@ -632,11 +632,11 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
                       }}
                       className={`px-3 py-2.5 sm:px-4 rounded-xl font-black flex flex-col items-center justify-center min-w-[98px] shrink-0 transition-all select-none border-2 cursor-pointer ${
                         hasMoney
-                          ? "bg-gradient-to-b from-[#24214e] to-[#12112b] text-[#ffeef4] border-[#caa5fe] hover:from-[#353174] hover:to-[#171638] hover:scale-103 shadow-[2.5px_2.5px_0px_#caa5fe] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#caa5fe]"
-                          : "bg-[#18162f]/80 text-[#ab9fd2]/40 border-[#caa5fe]/20 shadow-none cursor-not-allowed opacity-40 opacity-50"
+                          ? "bg-gradient-to-b from-[#24214e] to-[#12112b] text-cosmic-text border-cosmic-accent hover:from-[#353174] hover:to-[#171638] hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
+                          : "bg-[#18162f]/80 text-cosmic-accent-muted/40 border-cosmic-accent/20 shadow-none cursor-not-allowed opacity-40 opacity-50"
                       }`}
                     >
-                      <span className="text-[9px] uppercase font-mono tracking-wider font-extrabold text-[#ab9fd2]">
+                      <span className="text-[9px] uppercase font-mono tracking-wider font-extrabold text-cosmic-accent-muted">
                         Kaufe x{countToBuy}
                       </span>
                       <span
@@ -654,13 +654,13 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
         </div>
 
         {/* Modal Footer helper summary info */}
-        <div className="p-3 bg-[#13112a] border-t border-[#caa5fe]/40 flex justify-between items-center text-[10px] text-[#ab9fd2] font-semibold px-5 shrink-0">
+        <div className="p-3 bg-[#13112a] border-t border-cosmic-accent/40 flex justify-between items-center text-[10px] text-cosmic-accent-muted font-semibold px-5 shrink-0">
           <span>
-            Hintergrund-Einnahmen: <b className="text-[#ff9db8] font-black">+{formatCompactNumber(totalAnimalsLps)} 💖/s</b>
+            Hintergrund-Einnahmen: <b className="text-cosmic-pink font-black">+{formatCompactNumber(totalAnimalsLps)} 💖/s</b>
           </span>
           <span>
             Aktuelles Guthaben:{" "}
-            <b className="text-[#ff9db8]" title={Math.floor(life).toLocaleString("de-DE")}>
+            <b className="text-cosmic-pink" title={Math.floor(life).toLocaleString("de-DE")}>
               {formatCompactNumber(life)} 💖
             </b>
           </span>

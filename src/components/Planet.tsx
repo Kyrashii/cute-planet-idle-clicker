@@ -376,7 +376,7 @@ const getMoonSkinGraphic = (skin: string) => {
       };
     case "lavender":
       return {
-        element: <Moon className="w-4 h-4 fill-fuchsia-300 text-[#caa5fe] stroke-[1.2]" />,
+        element: <Moon className="w-4 h-4 fill-fuchsia-300 text-cosmic-accent stroke-[1.2]" />,
         shadow: "0 0 6px rgba(217, 70, 239, 0.8)",
         pingBg: "bg-purple-400/30"
       };
@@ -388,7 +388,7 @@ const getMoonSkinGraphic = (skin: string) => {
       };
     case "prism":
       return {
-        element: <Moon className="w-4 h-4 fill-transparent text-[#ff9db8] stroke-[2] animate-rainbow-star" />,
+        element: <Moon className="w-4 h-4 fill-transparent text-cosmic-pink stroke-[2] animate-rainbow-star" />,
         shadow: "0 0 8px rgba(236, 72, 153, 0.8)",
         pingBg: "bg-pink-400/30"
       };
@@ -540,10 +540,10 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
         return (
           <g id="accessory-cat-ears" className="pointer-events-none">
             {/* Left Ear */}
-            <path d="M 42,24 L 64,5 L 76,28 Z" fill="#ffd1dc" stroke="#2d1e38" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M 42,24 L 64,5 L 76,28 Z" fill="#ffd1dc" stroke="var(--color-cosmic-border)" strokeWidth="3" strokeLinejoin="round" />
             <path d="M 48,22 L 62,9 L 70,24 Z" fill="#fca5a5" />
             {/* Right Ear */}
-            <path d="M 158,24 L 136,5 L 124,28 Z" fill="#ffd1dc" stroke="#2d1e38" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M 158,24 L 136,5 L 124,28 Z" fill="#ffd1dc" stroke="var(--color-cosmic-border)" strokeWidth="3" strokeLinejoin="round" />
             <path d="M 152,22 L 138,9 L 130,24 Z" fill="#fca5a5" />
           </g>
         );
@@ -551,8 +551,8 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
         return (
           <g id="accessory-chef-hat" className="pointer-events-none">
             {/* Puffy chef hat sitting centered on top of head */}
-            <path d="M 75,25 Q 70,5 90,8 Q 100,-8 110,8 Q 130,5 125,25 Z" fill="#ffffff" stroke="#2d1e38" strokeWidth="3" strokeLinejoin="round" />
-            <rect x="80" y="22" width="40" height="8" rx="2" fill="#e2e8f0" stroke="#2d1e38" strokeWidth="2.5" />
+            <path d="M 75,25 Q 70,5 90,8 Q 100,-8 110,8 Q 130,5 125,25 Z" fill="#ffffff" stroke="var(--color-cosmic-border)" strokeWidth="3" strokeLinejoin="round" />
+            <rect x="80" y="22" width="40" height="8" rx="2" fill="#e2e8f0" stroke="var(--color-cosmic-border)" strokeWidth="2.5" />
           </g>
         );
       case "wizard_hat":
@@ -563,8 +563,8 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
             {/* Brim */}
             <ellipse cx="100" cy="22" rx="42" ry="6" fill="#1d4ed8" stroke="#1d1e2e" strokeWidth="3" />
             {/* Embedded glowing wizard stars */}
-            <path d="M 95,2 L 100,5 Q 100,2 105,2 Q 100,2 100,-1 Z" fill="#fef08a" transform="scale(0.8) translate(15, 10)" />
-            <path d="M 95,2 L 100,5 Q 100,2 105,2 Q 100,2 100,-1 Z" fill="#fef08a" transform="scale(0.6) translate(50, 15)" />
+            <path d="M 95,2 L 100,5 Q 100,2 105,2 Q 100,2 100,-1 Z" fill="var(--color-cosmic-yellow)" transform="scale(0.8) translate(15, 10)" />
+            <path d="M 95,2 L 100,5 Q 100,2 105,2 Q 100,2 100,-1 Z" fill="var(--color-cosmic-yellow)" transform="scale(0.6) translate(50, 15)" />
           </g>
         );
       case "angel_halo":
@@ -592,10 +592,10 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
         return (
           <g id="accessory-star-crown" className="pointer-events-none" transform="translate(0, 3)">
             {/* Gold crown with high-contrast jewels */}
-            <path d="M 75,22 L 80,8 L 92,15 L 100,3 L 108,15 L 120,8 L 125,22 Z" fill="#fbbf24" stroke="#2d1e38" strokeWidth="3" strokeLinejoin="round" />
-            <circle cx="80" cy="7" r="2.5" fill="#f43f5e" stroke="#2d1e38" strokeWidth="1" />
-            <circle cx="100" cy="2" r="2.5" fill="#3b82f6" stroke="#2d1e38" strokeWidth="1" />
-            <circle cx="120" cy="7" r="2.5" fill="#10b981" stroke="#2d1e38" strokeWidth="1" />
+            <path d="M 75,22 L 80,8 L 92,15 L 100,3 L 108,15 L 120,8 L 125,22 Z" fill="#fbbf24" stroke="var(--color-cosmic-border)" strokeWidth="3" strokeLinejoin="round" />
+            <circle cx="80" cy="7" r="2.5" fill="#f43f5e" stroke="var(--color-cosmic-border)" strokeWidth="1" />
+            <circle cx="100" cy="2" r="2.5" fill="#3b82f6" stroke="var(--color-cosmic-border)" strokeWidth="1" />
+            <circle cx="120" cy="7" r="2.5" fill="#10b981" stroke="var(--color-cosmic-border)" strokeWidth="1" />
             <rect x="83" y="17" width="34" height="3" rx="1" fill="#fff" opacity="0.7" />
           </g>
         );
@@ -603,14 +603,14 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
         return (
           <g id="accessory-detective-hat" className="pointer-events-none" transform="translate(0, 1)">
             {/* Main brown hat dome */}
-            <path d="M 65,22 C 65,2 135,2 135,22 Z" fill="#855843" stroke="#2d1e38" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M 65,22 C 65,2 135,2 135,22 Z" fill="#855843" stroke="var(--color-cosmic-border)" strokeWidth="3" strokeLinejoin="round" />
             {/* Front visor / peak */}
-            <path d="M 115,22 C 122,22 138,18 142,24 C 130,28 115,24 115,22 Z" fill="#694132" stroke="#2d1e38" strokeWidth="2.5" />
+            <path d="M 115,22 C 122,22 138,18 142,24 C 130,28 115,24 115,22 Z" fill="#694132" stroke="var(--color-cosmic-border)" strokeWidth="2.5" />
             {/* Back visor / peak */}
-            <path d="M 85,22 C 78,22 62,18 58,24 C 70,28 85,24 85,22 Z" fill="#694132" stroke="#2d1e38" strokeWidth="2.5" />
+            <path d="M 85,22 C 78,22 62,18 58,24 C 70,28 85,24 85,22 Z" fill="#694132" stroke="var(--color-cosmic-border)" strokeWidth="2.5" />
             {/* Detective tie ribbon */}
-            <rect x="94" y="10" width="12" height="13" fill="#e2e8f0" stroke="#2d1e38" strokeWidth="2" rx="1" />
-            <path d="M 97,23 L 94,32 L 106,32 L 103,23 Z" fill="#cbd5e1" stroke="#2d1e38" strokeWidth="2" />
+            <rect x="94" y="10" width="12" height="13" fill="#e2e8f0" stroke="var(--color-cosmic-border)" strokeWidth="2" rx="1" />
+            <path d="M 97,23 L 94,32 L 106,32 L 103,23 Z" fill="#cbd5e1" stroke="var(--color-cosmic-border)" strokeWidth="2" />
           </g>
         );
       case "flower_crown":
@@ -624,7 +624,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
               <circle cx="0" cy="5" r="4" fill="#f472b6" />
               <circle cx="-5" cy="0" r="4" fill="#f472b6" />
               <circle cx="5" cy="0" r="4" fill="#f472b6" />
-              <circle cx="0" cy="0" r="2.5" fill="#fef08a" />
+              <circle cx="0" cy="0" r="2.5" fill="var(--color-cosmic-yellow)" />
             </g>
             {/* Flower 2 - Middle Left */}
             <g transform="translate(86, 17) scale(0.75)">
@@ -632,7 +632,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
               <circle cx="0" cy="5" r="4" fill="#fff" />
               <circle cx="-5" cy="0" r="4" fill="#fff" />
               <circle cx="5" cy="0" r="4" fill="#fff" />
-              <circle cx="0" cy="0" r="2.5" fill="#fef08a" />
+              <circle cx="0" cy="0" r="2.5" fill="var(--color-cosmic-yellow)" />
             </g>
             {/* Flower 3 - Center */}
             <g transform="translate(100, 16) scale(0.85)">
@@ -648,7 +648,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
               <circle cx="0" cy="5" r="4" fill="#fff" />
               <circle cx="-5" cy="0" r="4" fill="#fff" />
               <circle cx="5" cy="0" r="4" fill="#fff" />
-              <circle cx="0" cy="0" r="2.5" fill="#fef08a" />
+              <circle cx="0" cy="0" r="2.5" fill="var(--color-cosmic-yellow)" />
             </g>
             {/* Flower 5 - Right */}
             <g transform="translate(132, 20) scale(0.65)">
@@ -656,7 +656,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
               <circle cx="0" cy="5" r="4" fill="#f472b6" />
               <circle cx="-5" cy="0" r="4" fill="#f472b6" />
               <circle cx="5" cy="0" r="4" fill="#f472b6" />
-              <circle cx="0" cy="0" r="2.5" fill="#fef08a" />
+              <circle cx="0" cy="0" r="2.5" fill="var(--color-cosmic-yellow)" />
             </g>
           </g>
         );
@@ -664,13 +664,13 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
         return (
           <g id="accessory-frog-hat" className="pointer-events-none" transform="translate(0, 1)">
             {/* Green Dome */}
-            <path d="M 68,23 C 68,0 132,0 132,23 Z" fill="#4ade80" stroke="#2d1e38" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M 68,23 C 68,0 132,0 132,23 Z" fill="#4ade80" stroke="var(--color-cosmic-border)" strokeWidth="3" strokeLinejoin="round" />
             {/* Frog Left Eye */}
-            <circle cx="82" cy="7" r="10" fill="#4ade80" stroke="#2d1e38" strokeWidth="2.5" />
+            <circle cx="82" cy="7" r="10" fill="#4ade80" stroke="var(--color-cosmic-border)" strokeWidth="2.5" />
             <circle cx="82" cy="7" r="6" fill="#fff" />
             <circle cx="80" cy="8" r="3.5" fill="#000" />
             {/* Frog Right Eye */}
-            <circle cx="118" cy="7" r="10" fill="#4ade80" stroke="#2d1e38" strokeWidth="2.5" />
+            <circle cx="118" cy="7" r="10" fill="#4ade80" stroke="var(--color-cosmic-border)" strokeWidth="2.5" />
             <circle cx="118" cy="7" r="6" fill="#fff" />
             <circle cx="120" cy="8" r="3.5" fill="#000" />
             {/* Cute Frog Cheeks */}
@@ -682,51 +682,51 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
         return (
           <g id="accessory-cowboy-hat" className="pointer-events-none" transform="translate(0, -6)">
             {/* Cowboy hat top crown */}
-            <path d="M 75,20 C 72,2 88,4 100,5 C 112,4 128,2 125,20 Z" fill="#b45309" stroke="#2d1e38" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M 75,20 C 72,2 88,4 100,5 C 112,4 128,2 125,20 Z" fill="#b45309" stroke="var(--color-cosmic-border)" strokeWidth="3" strokeLinejoin="round" />
             {/* Hat ribbon/band */}
-            <path d="M 75,19 Q 100,21 125,19" fill="none" stroke="#fef08a" strokeWidth="3.5" />
+            <path d="M 75,19 Q 100,21 125,19" fill="none" stroke="var(--color-cosmic-yellow)" strokeWidth="3.5" />
             {/* Brim: beautifully curved upturned cowboy brim */}
-            <path d="M 54,23 Q 100,10 146,23 C 158,26 142,20 130,19 C 112,17 88,17 70,19 C 58,20 42,26 54,23 Z" fill="#92400e" stroke="#2d1e38" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M 54,23 Q 100,10 146,23 C 158,26 142,20 130,19 C 112,17 88,17 70,19 C 58,20 42,26 54,23 Z" fill="#92400e" stroke="var(--color-cosmic-border)" strokeWidth="3" strokeLinejoin="round" />
           </g>
         );
       case "straw_hat":
         return (
           <g id="accessory-straw-hat" className="pointer-events-none" transform="translate(0, 1)">
             {/* Hat crown */}
-            <path d="M 75,22 Q 74,5 100,5 Q 126,5 125,22 Z" fill="#fde047" stroke="#2d1e38" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M 75,22 Q 74,5 100,5 Q 126,5 125,22 Z" fill="#fde047" stroke="var(--color-cosmic-border)" strokeWidth="3" strokeLinejoin="round" />
             {/* Red band */}
-            <rect x="76" y="16" width="48" height="6" fill="#f43f5e" stroke="#2d1e38" strokeWidth="2" />
+            <rect x="76" y="16" width="48" height="6" fill="#f43f5e" stroke="var(--color-cosmic-border)" strokeWidth="2" />
             {/* Straw brim */}
-            <ellipse cx="100" cy="22" rx="46" ry="6" fill="#facc15" stroke="#2d1e38" strokeWidth="3" />
+            <ellipse cx="100" cy="22" rx="46" ry="6" fill="#facc15" stroke="var(--color-cosmic-border)" strokeWidth="3" />
           </g>
         );
       case "sleep_cap":
         return (
           <g id="accessory-sleep-cap" className="pointer-events-none" transform="translate(0, 1)">
             {/* Flowing floppy nightcap body */}
-            <path d="M 75,23 C 70,10 80,-5 105,-8 C 118,-9 132,-5 130,5 C 128,15 135,18 135,23 Z" fill="#3b82f6" stroke="#2d1e38" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M 75,23 C 70,10 80,-5 105,-8 C 118,-9 132,-5 130,5 C 128,15 135,18 135,23 Z" fill="#3b82f6" stroke="var(--color-cosmic-border)" strokeWidth="3" strokeLinejoin="round" />
             {/* Falling tip to the side */}
-            <path d="M 124,0 C 138,0 152,15 145,26 C 142,28 136,22 132,18 Z" fill="#2563eb" stroke="#2d1e38" strokeWidth="2.5" strokeLinejoin="round" />
+            <path d="M 124,0 C 138,0 152,15 145,26 C 142,28 136,22 132,18 Z" fill="#2563eb" stroke="var(--color-cosmic-border)" strokeWidth="2.5" strokeLinejoin="round" />
             {/* Fluffy white pompom on the tip */}
-            <circle cx="146" cy="28" r="7.5" fill="#ffffff" stroke="#2d1e38" strokeWidth="2.5" />
+            <circle cx="146" cy="28" r="7.5" fill="#ffffff" stroke="var(--color-cosmic-border)" strokeWidth="2.5" />
             {/* Star details on nightcap */}
             <path d="M 90,4 L 92,7 L 95,7 L 93,9 L 94,12 L 91,10 L 88,12 L 89,9 L 87,7 L 90,7 Z" fill="#fde047" transform="scale(0.7) translate(25, 5)" />
             <path d="M 90,4 L 92,7 L 95,7 L 93,9 L 94,12 L 91,10 L 88,12 L 89,9 L 87,7 L 90,7 Z" fill="#fde047" transform="scale(0.6) translate(85, -2)" />
             {/* White rim band on planet forehead */}
-            <rect x="73" y="19" width="54" height="6" rx="2.5" fill="#f1f5f9" stroke="#2d1e38" strokeWidth="2.5" />
+            <rect x="73" y="19" width="54" height="6" rx="2.5" fill="#f1f5f9" stroke="var(--color-cosmic-border)" strokeWidth="2.5" />
           </g>
         );
       case "pirate_hat":
         return (
           <g id="accessory-pirate-hat" className="pointer-events-none" transform="translate(0, -2)">
             {/* High-quality tricorn black hat shapes */}
-            <path d="M 60,22 Q 100,5 140,22 C 160,5 140,-4 100,-4 C 60,-4 40,5 60,22 Z" fill="#1e293b" stroke="#100d23" strokeWidth="3.5" strokeLinejoin="round" />
+            <path d="M 60,22 Q 100,5 140,22 C 160,5 140,-4 100,-4 C 60,-4 40,5 60,22 Z" fill="#1e293b" stroke="var(--color-cosmic-bg)" strokeWidth="3.5" strokeLinejoin="round" />
             {/* Golden brim border */}
             <path d="M 56,22 Q 100,3 144,22" fill="none" stroke="#fbbf24" strokeWidth="2.5" />
             {/* Skull and Crossbones Jolly Roger Emblem */}
             <g transform="translate(100, 7) scale(0.55)">
-              <rect x="-6" y="-6" width="12" height="10" rx="4" fill="#ffffff" stroke="#100d23" strokeWidth="1.5" />
-              <rect x="-3" y="2" width="6" height="5" fill="#ffffff" stroke="#100d23" strokeWidth="1.5" />
+              <rect x="-6" y="-6" width="12" height="10" rx="4" fill="#ffffff" stroke="var(--color-cosmic-bg)" strokeWidth="1.5" />
+              <rect x="-3" y="2" width="6" height="5" fill="#ffffff" stroke="var(--color-cosmic-bg)" strokeWidth="1.5" />
               <circle cx="-2.5" cy="-2" r="1.5" fill="#000" />
               <circle cx="2.5" cy="-2" r="1.5" fill="#000" />
               <line x1="-10" y1="-8" x2="10" y2="6" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
@@ -743,8 +743,8 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
             <path d="M 146,23 L 158,-5 M 154,12 L 168,8 M 156,4 L 170,-2" fill="none" stroke="#92400e" strokeWidth="4.5" strokeLinecap="round" />
             {/* Red bow in the center of the head */}
             <g transform="translate(100, 18) scale(0.7)">
-              <path d="M -8,-4 L 8,4 L 8,-4 L -8,4 Z" fill="#ef4444" stroke="#2d1e38" strokeWidth="2" />
-              <circle cx="0" cy="0" r="3.5" fill="#facc15" stroke="#2d1e38" strokeWidth="1.5" />
+              <path d="M -8,-4 L 8,4 L 8,-4 L -8,4 Z" fill="#ef4444" stroke="var(--color-cosmic-border)" strokeWidth="2" />
+              <circle cx="0" cy="0" r="3.5" fill="#facc15" stroke="var(--color-cosmic-border)" strokeWidth="1.5" />
             </g>
           </g>
         );
@@ -765,11 +765,11 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
         return (
           <g id="accessory-top-hat" className="pointer-events-none" transform="translate(0, -6)">
             {/* Tall top cylinder hat body */}
-            <path d="M 78,21 L 82,1 L 118,1 L 122,21 Z" fill="#1e293b" stroke="#100d23" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M 78,21 L 82,1 L 118,1 L 122,21 Z" fill="#1e293b" stroke="var(--color-cosmic-bg)" strokeWidth="3" strokeLinejoin="round" />
             {/* Red silken band */}
-            <rect x="78" y="15" width="44" height="6" fill="#ef4444" stroke="#100d23" strokeWidth="2" />
+            <rect x="78" y="15" width="44" height="6" fill="#ef4444" stroke="var(--color-cosmic-bg)" strokeWidth="2" />
             {/* Brim flat base */}
-            <ellipse cx="100" cy="22" rx="42" ry="5.5" fill="#0f172a" stroke="#100d23" strokeWidth="3" />
+            <ellipse cx="100" cy="22" rx="42" ry="5.5" fill="#0f172a" stroke="var(--color-cosmic-bg)" strokeWidth="3" />
           </g>
         );
       case "devil_horns":
@@ -785,15 +785,15 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
         return (
           <g id="accessory-butterfly-wings" className="pointer-events-none">
             {/* Left side wing */}
-            <path d="M 50,75 C 10,40 -10,80 30,110 C 15,130 35,145 50,115" fill="#e879f9" stroke="#2d1e38" strokeWidth="2.5" opacity="0.9" />
+            <path d="M 50,75 C 10,40 -10,80 30,110 C 15,130 35,145 50,115" fill="#e879f9" stroke="var(--color-cosmic-border)" strokeWidth="2.5" opacity="0.9" />
             <path d="M 45,85 C 20,65 10,90 32,105" fill="#f472b6" opacity="0.8" />
             
             {/* Right side wing */}
-            <path d="M 150,75 C 190,40 210,80 170,110 C 185,130 165,145 150,115" fill="#e879f9" stroke="#2d1e38" strokeWidth="2.5" opacity="0.9" />
+            <path d="M 150,75 C 190,40 210,80 170,110 C 185,130 165,145 150,115" fill="#e879f9" stroke="var(--color-cosmic-border)" strokeWidth="2.5" opacity="0.9" />
             <path d="M 155,85 C 180,65 190,90 168,105" fill="#f472b6" opacity="0.8" />
 
             {/* A cute little butterfly antennae/head set in the center of the head */}
-            <path d="M 94,18 Q 90,0 86,-4 M 106,18 Q 110,0 114,-4" fill="none" stroke="#2d1e38" strokeWidth="2" strokeLinecap="round" />
+            <path d="M 94,18 Q 90,0 86,-4 M 106,18 Q 110,0 114,-4" fill="none" stroke="var(--color-cosmic-border)" strokeWidth="2" strokeLinecap="round" />
             <circle cx="86" cy="-4" r="2" fill="#d946ef" />
             <circle cx="114" cy="-4" r="2" fill="#d946ef" />
             <path d="M 85,22 Q 100,10 115,22" fill="none" stroke="#d946ef" strokeWidth="3" />
@@ -899,12 +899,12 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
           <>
             {/* Eyes: Shiny anime eyes with heart highlights */}
             <g transform="translate(45, 62)">
-              <rect x="0" y="0" width="18" height="24" rx="9" fill="#2d1e38" />
+              <rect x="0" y="0" width="18" height="24" rx="9" fill="var(--color-cosmic-border)" />
               <circle cx="5" cy="6" r="4.5" fill="white" />
               <circle cx="12" cy="16" r="2.5" fill="white" />
             </g>
             <g transform="translate(115, 62)">
-              <rect x="0" y="0" width="18" height="24" rx="9" fill="#2d1e38" />
+              <rect x="0" y="0" width="18" height="24" rx="9" fill="var(--color-cosmic-border)" />
               <circle cx="5" cy="6" r="4.5" fill="white" />
               <circle cx="12" cy="16" r="2.5" fill="white" />
             </g>
@@ -914,7 +914,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
             <path
               d="M 82,88 Q 88,94 92,89 Q 96,94 102,88"
               fill="none"
-              stroke="#2d1e38"
+              stroke="var(--color-cosmic-border)"
               strokeWidth="4"
               strokeLinecap="round"
             />
@@ -1132,10 +1132,10 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
                 <g transform="translate(10, 0)">
                   {/* Flower 1 */}
                   <g transform="translate(130, 40) scale(0.7)">
-                    <circle cx="0" cy="-6" r="4.5" fill="#fef08a" />
-                    <circle cx="0" cy="6" r="4.5" fill="#fef08a" />
-                    <circle cx="-6" cy="0" r="4.5" fill="#fef08a" />
-                    <circle cx="6" cy="0" r="4.5" fill="#fef08a" />
+                    <circle cx="0" cy="-6" r="4.5" fill="var(--color-cosmic-yellow)" />
+                    <circle cx="0" cy="6" r="4.5" fill="var(--color-cosmic-yellow)" />
+                    <circle cx="-6" cy="0" r="4.5" fill="var(--color-cosmic-yellow)" />
+                    <circle cx="6" cy="0" r="4.5" fill="var(--color-cosmic-yellow)" />
                     <circle cx="0" cy="0" r="3" fill="#fb923c" />
                   </g>
                   {/* Flower 2 */}
@@ -1183,7 +1183,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
   <g transform="translate(100,20) scale(0.85)" className="animate-bounce">
     <path
       d="M 0,-15 L 3,-5 L 13,-5 L 5,2 L 8,12 L 0,6 L -8,12 L -5,2 L -13,-5 L -3,-5 Z"
-      fill="#fef08a"
+      fill="var(--color-cosmic-yellow)"
     />
   </g>
 )}
@@ -1273,25 +1273,25 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
       {/* Planet Info Display & Level-Bar */}
       <div className={`mt-6 flex flex-col items-center w-full max-w-md relative z-10 rounded-2.5xl p-6 border-3 transition-colors duration-500 shadow-md ${
         isNight 
-          ? "bg-[#130f2c]/95 border-[#caa5fe]/60 text-[#ffeef4]" 
+          ? "bg-[#130f2c]/95 border-cosmic-accent/60 text-cosmic-text" 
           : "bg-[#fffdf2]/95 border-amber-300 text-slate-800"
       }`}>
         <div className="flex items-center gap-2">
           <span className={`font-sans text-xs font-black px-2.5 py-0.5 rounded-full border-2 transition-colors duration-500 ${
             isNight 
-              ? "bg-[#caa5fe] border-[#100d23] text-[#100d23]" 
+              ? "bg-cosmic-accent border-cosmic-bg text-cosmic-bg" 
               : "bg-amber-200 border-amber-500 text-amber-950"
           }`}>
             Lv. {level}
           </span>
           <h2 className={`font-sans font-black uppercase text-sm sm:text-base tracking-wide ${
-            isNight ? "text-[#ffeef4]" : "text-amber-950"
+            isNight ? "text-cosmic-text" : "text-amber-950"
           }`}>
             {theme.name}
           </h2>
         </div>
         <p className={`font-sans text-[11px] text-center mt-2 leading-relaxed font-semibold transition-colors duration-500 ${
-          isNight ? "text-[#ab9fd2]" : "text-slate-600"
+          isNight ? "text-cosmic-accent-muted" : "text-slate-600"
         }`}>
           {theme.subName}
         </p>
@@ -1300,14 +1300,14 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
         <div className="w-full mt-3">
           <div className="flex justify-between items-center text-[10px] font-mono mb-1.5 transition-colors duration-500">
             <span className={`uppercase font-bold tracking-wider ${
-              isNight ? "text-[#ab9fd2]" : "text-amber-800"
+              isNight ? "text-cosmic-accent-muted" : "text-amber-800"
             }`}>Evolution</span>
-            <span className={isNight ? "text-[#ffeef4]" : "text-amber-950"}>
+            <span className={isNight ? "text-cosmic-text" : "text-amber-950"}>
               {Math.floor(planetExp)} / {planetExpNeeded} EXP
             </span>
           </div>
           <div className={`w-full h-3.5 border-2 rounded-full overflow-hidden p-[1px] transition-colors duration-500 ${
-            isNight ? "border-[#caa5fe]/45 bg-[#090715]" : "border-amber-305 bg-amber-50"
+            isNight ? "border-cosmic-accent/45 bg-[#090715]" : "border-amber-305 bg-amber-50"
           }`}>
             <motion.div
               initial={{ width: 0 }}
@@ -1315,7 +1315,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(({
               transition={{ type: "tween", duration: 0.3 }}
               className={`h-full rounded-full border-r ${
                 isNight 
-                  ? "bg-gradient-to-r from-[#caa5fe] to-[#ff9db8] border-[#100d23]" 
+                  ? "bg-gradient-to-r from-cosmic-accent to-cosmic-pink border-cosmic-bg" 
                   : "bg-gradient-to-r from-yellow-405 to-amber-500 border-amber-950"
               }`}
             />

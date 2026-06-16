@@ -55,16 +55,16 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = ({
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="modal-frame-target bg-[#181335]/95 border-3 border-[#caa5fe] rounded-3.5xl p-6.5 max-w-xl w-full shadow-2xl text-[#ffeef4] max-h-[90vh] overflow-y-auto"
+        className="modal-frame-target bg-[#181335]/95 border-3 border-cosmic-accent rounded-3.5xl p-6.5 max-w-xl w-full shadow-2xl text-cosmic-text max-h-[90vh] overflow-y-auto"
       >
         <div className="flex items-center gap-2.5">
-          <Sparkles className="w-5 h-5 text-[#caa5fe]" />
+          <Sparkles className="w-5 h-5 text-cosmic-accent" />
           <h5 className="font-sans font-black text-[#ffcbdc] text-base sm:text-lg uppercase tracking-wider">
             Synchronisations-Konflikt
           </h5>
         </div>
         
-        <p className="font-sans text-xs text-[#ab9fd2] font-semibold mt-3 leading-relaxed">
+        <p className="font-sans text-xs text-cosmic-accent-muted font-semibold mt-3 leading-relaxed">
           Es wurde ein bestehender Spielstand in der Cloud gefunden! Vergleiche die Spieldaten und wähle die Spielwelt aus, mit der du fortfahren möchtest.
         </p>
 
@@ -80,7 +80,7 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = ({
             <div className="space-y-1.5 font-mono text-[11px] font-black text-slate-350">
               <div className="flex justify-between">
                 <span>Evolutions-Stufe:</span>
-                <span className="text-[#ffeef4]">Lv. {localData.planetLevel}</span>
+                <span className="text-cosmic-text">Lv. {localData.planetLevel}</span>
               </div>
               <div className="flex justify-between">
                 <span>Prestige-Stufe:</span>
@@ -94,25 +94,25 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = ({
               </div>
               <div className="flex justify-between">
                 <span>Erspieltes Leben:</span>
-                <span className="text-[#ffeef4]">{formatCompactNumber(localData.life)} 💖</span>
+                <span className="text-cosmic-text">{formatCompactNumber(localData.life)} 💖</span>
               </div>
               <div className="flex justify-between">
                 <span>Spielzeit:</span>
-                <span className="text-[#ffeef4]">{formatTime(localData.secondsPlayed)}</span>
+                <span className="text-cosmic-text">{formatTime(localData.secondsPlayed)}</span>
               </div>
             </div>
           </div>
 
           {/* Cloud Save Stats */}
-          <div className="p-4 rounded-2xl bg-[#0e0a24]/90 border-2 border-[#caa5fe]/30 hover:border-[#caa5fe]/50 transition-all text-left">
-            <div className="flex items-center gap-1.5 text-xs text-[#caa5fe] font-bold mb-2">
-              <Cloud className="w-4 h-4 text-[#caa5fe]" />
+          <div className="p-4 rounded-2xl bg-[#0e0a24]/90 border-2 border-cosmic-accent/30 hover:border-cosmic-accent/50 transition-all text-left">
+            <div className="flex items-center gap-1.5 text-xs text-cosmic-accent font-bold mb-2">
+              <Cloud className="w-4 h-4 text-cosmic-accent" />
               <span>CLOUD-SPEICHER</span>
             </div>
             <div className="space-y-1.5 font-mono text-[11px] font-black text-slate-350">
               <div className="flex justify-between">
                 <span>Evolutions-Stufe:</span>
-                <span className="text-[#ffeef4]">Lv. {cloudData.planetLevel}</span>
+                <span className="text-cosmic-text">Lv. {cloudData.planetLevel}</span>
               </div>
               <div className="flex justify-between">
                 <span>Prestige-Stufe:</span>
@@ -126,11 +126,11 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = ({
               </div>
               <div className="flex justify-between">
                 <span>Erspieltes Leben:</span>
-                <span className="text-[#ffeef4]">{formatCompactNumber(cloudData.life)} 💖</span>
+                <span className="text-cosmic-text">{formatCompactNumber(cloudData.life)} 💖</span>
               </div>
               <div className="flex justify-between">
                 <span>Spielzeit:</span>
-                <span className="text-[#ffeef4]">{formatTime(cloudData.secondsPlayed)}</span>
+                <span className="text-cosmic-text">{formatTime(cloudData.secondsPlayed)}</span>
               </div>
             </div>
           </div>
@@ -146,14 +146,14 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = ({
         <div className="mt-6 flex flex-col sm:flex-row gap-3 font-black">
           <button
             onClick={onKeepCloud}
-            className="flex-1 py-3 px-4 bg-gradient-to-r from-purple-650 to-indigo-650 hover:from-purple-700 hover:to-indigo-700 text-white border-2 border-[#caa5fe]/60 rounded-xl text-xs font-black transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
+            className="flex-1 py-3 px-4 bg-gradient-to-r from-purple-650 to-indigo-650 hover:from-purple-700 hover:to-indigo-700 text-white border-2 border-cosmic-accent/60 rounded-xl text-xs font-black transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
           >
             <Cloud className="w-4 h-4 shrink-0" />
             Cloud-Spielstand laden
           </button>
           <button
             onClick={onKeepLocal}
-            className="flex-1 py-3 px-4 bg-[#211a43] hover:bg-[#2d225c] text-slate-200 border-2 border-slate-500/40 rounded-xl text-xs font-black transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
+            className="flex-1 py-3 px-4 bg-cosmic-surface-mid hover:bg-[#2d225c] text-slate-200 border-2 border-slate-500/40 rounded-xl text-xs font-black transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
           >
             <Monitor className="w-4 h-4 shrink-0" />
             Lokal behalten & hochladen

@@ -90,12 +90,12 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="modal-frame-target bg-[#181236]/95 border-3 border-[#caa5fe] rounded-3.5xl p-6.5 max-w-lg w-full shadow-2xl text-[#ffeef4] relative"
+        className="modal-frame-target bg-[#181236]/95 border-3 border-cosmic-accent rounded-3.5xl p-6.5 max-w-lg w-full shadow-2xl text-cosmic-text relative"
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4.5 right-4.5 p-2 rounded-xl hover:bg-white/5 text-[#ab9fd2] hover:text-white transition-colors cursor-pointer"
+          className="absolute top-4.5 right-4.5 p-2 rounded-xl hover:bg-white/5 text-cosmic-accent-muted hover:text-white transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -111,8 +111,8 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
         <AnimatePresence mode="wait">
           {authLoading ? (
             <div className="py-12 flex flex-col items-center justify-center gap-3">
-              <RefreshCcw className="w-8 h-8 text-[#caa5fe] animate-spin" />
-              <p className="text-[#ab9fd2] text-xs font-semibold uppercase tracking-wider">Verbindung prüfen...</p>
+              <RefreshCcw className="w-8 h-8 text-cosmic-accent animate-spin" />
+              <p className="text-cosmic-accent-muted text-xs font-semibold uppercase tracking-wider">Verbindung prüfen...</p>
             </div>
           ) : !user ? (
             /* NOT LOGGED IN VIEW */
@@ -130,7 +130,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                     Warum in der Cloud sichern?
                   </h3>
                 </div>
-                <ul className="text-[11px] font-semibold text-[#ab9fd2] space-y-2 leading-relaxed text-left pl-1">
+                <ul className="text-[11px] font-semibold text-cosmic-accent-muted space-y-2 leading-relaxed text-left pl-1">
                   <li className="flex items-start gap-2">
                     <span className="text-sky-305 mt-0.5">•</span>
                     <span>Speichere deine Spielfortschritte dauerhaft in Cloud-Datenbanken.</span>
@@ -176,17 +176,17 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
               className="space-y-4"
             >
               {/* User Profile Badge */}
-              <div className="p-4.5 rounded-2.5xl bg-[#0d0a22]/85 border-2 border-[#caa5fe]/25 flex items-center justify-between gap-3 text-left">
+              <div className="p-4.5 rounded-2.5xl bg-[#0d0a22]/85 border-2 border-cosmic-accent/25 flex items-center justify-between gap-3 text-left">
                 <div className="flex items-center gap-3">
                   {user.photoURL ? (
                     <img
                       src={user.photoURL}
                       alt={user.displayName || "Avatar"}
-                      className="w-11 h-11 rounded-full border-2 border-[#caa5fe] shadow-sm"
+                      className="w-11 h-11 rounded-full border-2 border-cosmic-accent shadow-sm"
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <div className="w-11 h-11 rounded-full border-2 border-[#caa5fe] bg-[#1a123d] flex items-center justify-center text-xl shadow-sm">
+                    <div className="w-11 h-11 rounded-full border-2 border-cosmic-accent bg-[#1a123d] flex items-center justify-center text-xl shadow-sm">
                       🪐
                     </div>
                   )}
@@ -194,7 +194,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                     <h4 className="font-sans font-black text-xs uppercase text-[#ffcbdc]">
                       {user.displayName || "Kosmischer Wanderer"}
                     </h4>
-                    <p className="text-[10px] text-[#ab9fd2] font-semibold font-mono truncate max-w-[200px] sm:max-w-[240px]">
+                    <p className="text-[10px] text-cosmic-accent-muted font-semibold font-mono truncate max-w-[200px] sm:max-w-[240px]">
                       {user.email}
                     </p>
                   </div>
@@ -213,7 +213,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
               {/* Sync status section */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-3 rounded-2xl bg-[#090616]/70 border border-white/5 text-left flex flex-col justify-center">
-                  <span className="text-[9px] uppercase font-mono font-black text-[#ab9fd2] block leading-none">Letzter Sync</span>
+                  <span className="text-[9px] uppercase font-mono font-black text-cosmic-accent-muted block leading-none">Letzter Sync</span>
                   <span className="text-[10.5px] font-black text-sky-405 mt-1 animate-pulse flex items-center gap-1.5 leading-none">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                     {getSyncTimeString()}
@@ -221,7 +221,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                 </div>
                 
                 <div className="p-3 rounded-2xl bg-[#090616]/70 border border-white/5 text-left flex flex-col justify-center">
-                  <span className="text-[9px] uppercase font-mono font-black text-[#ab9fd2] block leading-none">Sync-Netzwerk</span>
+                  <span className="text-[9px] uppercase font-mono font-black text-cosmic-accent-muted block leading-none">Sync-Netzwerk</span>
                   <span className="text-[10px] font-black text-emerald-400 mt-1 flex items-center gap-1.5 leading-none">
                     <ShieldCheck className="w-3.5 h-3.5" />
                     Aktiv & Sicher
@@ -263,9 +263,9 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-[#090616]/70 border border-[#caa5fe]/15 text-left">
-                  <div className="flex items-center gap-1.5 text-[10px] text-[#caa5fe] font-bold mb-1.5">
-                    <Cloud className="w-3.5 h-3.5 text-[#caa5fe]" />
+                <div className="p-3.5 rounded-2xl bg-[#090616]/70 border border-cosmic-accent/15 text-left">
+                  <div className="flex items-center gap-1.5 text-[10px] text-cosmic-accent font-bold mb-1.5">
+                    <Cloud className="w-3.5 h-3.5 text-cosmic-accent" />
                     <span>In der Cloud</span>
                   </div>
                   {cloudStats ? (
@@ -307,7 +307,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                 <button
                   onClick={onForceSave}
                   disabled={syncing}
-                  className="flex-1 py-3 px-3 bg-indigo-650 hover:bg-indigo-700 disabled:opacity-50 text-white border-2 border-[#caa5fe]/45 rounded-xl text-[10.5px] font-black tracking-wide uppercase transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
+                  className="flex-1 py-3 px-3 bg-indigo-650 hover:bg-indigo-700 disabled:opacity-50 text-white border-2 border-cosmic-accent/45 rounded-xl text-[10.5px] font-black tracking-wide uppercase transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
                 >
                   <CloudUpload className="w-4 h-4 text-sky-305 shrink-0" />
                   Sichern
@@ -315,7 +315,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
                 <button
                   onClick={onForceLoad}
                   disabled={syncing || !cloudStats}
-                  className="flex-1 py-3 px-3 bg-[#1d173d] hover:bg-[#2e265c] disabled:opacity-30 border-2 border-slate-500/35 rounded-xl text-[10.5px] text-[#caa5fe] font-black tracking-wide uppercase transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
+                  className="flex-1 py-3 px-3 bg-[#1d173d] hover:bg-[#2e265c] disabled:opacity-30 border-2 border-slate-500/35 rounded-xl text-[10.5px] text-cosmic-accent font-black tracking-wide uppercase transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
                 >
                   <CloudDownload className="w-4 h-4 text-emerald-355 shrink-0" />
                   Laden

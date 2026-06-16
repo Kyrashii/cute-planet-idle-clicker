@@ -43,7 +43,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(({
 }) => {
   return (
     <header className={`sticky top-0 z-20 backdrop-blur-md py-4 px-4 sm:px-6 shadow-md transition-all duration-500 border-b-4 ${
-      isNightStyle ? "bg-[#110e26]/85 border-[#caa5fe]/50 text-[#ffeef4]" : ""
+      isNightStyle ? "bg-[#110e26]/85 border-cosmic-accent/50 text-cosmic-text" : ""
     } ${showTutorial ? "blur-md pointer-events-none select-none" : ""}`}>
       <div className="max-w-6xl mx-auto flex items-center justify-between relative z-10">
         
@@ -58,12 +58,12 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(({
           </motion.span>
           <div>
             <h1 className={`font-sans font-black uppercase tracking-[0.12em] text-sm sm:text-base flex items-center gap-2 ${
-              isNightStyle ? "text-[#ffeef4]" : ""
+              isNightStyle ? "text-cosmic-text" : ""
             }`}>
-              Pastell-Kosmos <span className="text-[#100d23] text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#caa5fe] border-2 border-[#100d23] hidden sm:inline-block leading-none uppercase shadow-[2px_2px_0px_#100d23]">Idle Game</span>
+              Pastell-Kosmos <span className="text-cosmic-bg text-[10px] font-black px-2.5 py-0.5 rounded-full bg-cosmic-accent border-2 border-cosmic-bg hidden sm:inline-block leading-none uppercase shadow-[2px_2px_0px_var(--color-cosmic-bg)]">Idle Game</span>
             </h1>
             <p className={`text-[10px] sm:text-xs font-bold mt-0.5 ${
-              isNightStyle ? "text-[#ab9fd2]" : ""
+              isNightStyle ? "text-cosmic-accent-muted" : ""
             }`}>Belebe deinen süßen Begleiter</p>
           </div>
         </div>
@@ -73,10 +73,10 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(({
           
           {/* Lifepoints summary */}
           <div className={`px-4 py-1.5 rounded-xl flex flex-col items-end shadow-sm border-2 transition-colors duration-500 ${
-            isNightStyle ? "bg-[#191533] border-[#ff9db8]/60 text-[#ffeef4]" : ""
+            isNightStyle ? "bg-[#191533] border-cosmic-pink/60 text-cosmic-text" : ""
           }`}>
             <span className={`text-[9px] uppercase font-mono font-black tracking-wider leading-none ${
-              isNightStyle ? "text-[#ff9db8]" : ""
+              isNightStyle ? "text-cosmic-pink" : ""
             }`}>Erspieltes Leben</span>
             <span className="font-mono text-xs sm:text-sm font-black mt-0.5" title={Math.floor(life).toLocaleString("de-DE")}>
               {formatCompactNumber(life)} 💖
@@ -96,26 +96,26 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(({
           {/* Quiet Mute Switch */}
           <button
             onClick={handleToggleMute}
-            className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-[#caa5fe]/50 bg-[#16132f] hover:bg-[#201b44] text-[#ffeef4]"
+            className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
             title={isMutedState ? "Ton einschalten" : "Ton stummschalten"}
           >
-            {isMutedState ? <VolumeX className="w-4 h-4 text-rose-350" /> : <Volume2 className="w-4 h-4 text-[#ff9db8] animate-pulse" />}
+            {isMutedState ? <VolumeX className="w-4 h-4 text-rose-350" /> : <Volume2 className="w-4 h-4 text-cosmic-pink animate-pulse" />}
           </button>
 
           {/* Soundtrack Settings Window trigger */}
           <button
             onClick={() => setShowMusicSettingsModal(true)}
-            className="group p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-[#caa5fe]/50 bg-[#16132f] hover:bg-[#201b44] text-[#ffeef4]"
+            className="group p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
             title="Sound & Einstellungen öffnen"
             id="header_lofi_music_btn"
           >
-            <Settings className="w-4 h-4 text-[#caa5fe] transition-transform duration-500 group-hover:rotate-90" />
+            <Settings className="w-4 h-4 text-cosmic-accent transition-transform duration-500 group-hover:rotate-90" />
           </button>
 
           {/* Cloud Sync/Storage toggle */}
           <button
             onClick={() => setShowCloudSyncModal(true)}
-            className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer relative border-[#caa5fe]/50 bg-[#16132f] hover:bg-[#201b44] text-[#ffeef4]"
+            className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer relative border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
             title="Cloud Backup & Synchronisation öffnen"
             id="header_cloud_sync_btn"
           >
@@ -128,7 +128,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(({
           {/* Global Leaderboard trigger */}
           <button
             onClick={() => setShowLeaderboardModal(true)}
-            className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-[#caa5fe]/50 bg-[#16132f] hover:bg-[#201b44] text-[#ffeef4]"
+            className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
             title="Globale Bestenliste öffnen"
             id="header_leaderboard_btn"
           >
@@ -138,16 +138,16 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(({
           {/* Quick Tutorial drawer toggle */}
           <button
             onClick={() => setShowTutorial((prev) => !prev)}
-            className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-[#caa5fe]/50 bg-[#16132f] hover:bg-[#201b44] text-[#ffeef4]"
+            className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
             title="Anleitung"
           >
-            <Info className="w-4 h-4 text-[#caa5fe]" />
+            <Info className="w-4 h-4 text-cosmic-accent" />
           </button>
 
           {/* Reset check trigger */}
           <button
             onClick={() => setShowResetDialog(true)}
-            className="p-2.5 rounded-xl border-2 active:scale-92 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-[#ff9db8]/50 bg-red-950/40 hover:bg-red-900/40 text-red-300"
+            className="p-2.5 rounded-xl border-2 active:scale-92 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-cosmic-pink/50 bg-red-950/40 hover:bg-red-900/40 text-red-300"
             title="Spiel zurücksetzen"
           >
             <RotateCcw className="w-4 h-4 text-red-400" />
