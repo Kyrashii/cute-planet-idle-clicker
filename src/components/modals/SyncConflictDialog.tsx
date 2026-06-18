@@ -3,18 +3,12 @@ import { Modal } from "../ui/Modal";
 import { CloudSaveData } from "../../hooks/useFirebaseSync";
 import { formatCompactNumber } from "../../data";
 import { Sparkles, Cloud, Monitor } from "lucide-react";
+import { useGameState } from "../../contexts/GameStateContext";
 
 interface SyncConflictDialogProps {
   isOpen: boolean;
   cloudData: CloudSaveData | null;
-  localData: {
-    life: number;
-    planetLevel: number;
-    secondsPlayed: number;
-    prestigeCount: number;
-    moonsCount: number;
-    purchasedUpgrades?: string[];
-  };
+  purchasedUpgrades?: string[];
   onKeepLocal: () => void;
   onKeepCloud: () => void;
 }
@@ -35,10 +29,11 @@ const getMaxMoonsForList = (upgrades: string[] | undefined): number => {
 export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = React.memo(({
   isOpen,
   cloudData,
-  localData,
+  purchasedUpgrades,
   onKeepLocal,
   onKeepCloud,
 }) => {
+  const { life, planetLevel, secondsPlayed, prestigeCount, moonsCount } = useGameState();
   const formatTime = (totalSeconds: number) => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -77,25 +72,25 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = React.memo(
             <div className="space-y-1.5 font-mono text-[11px] font-black text-slate-350">
               <div className="flex justify-between">
                 <span>Evolutions-Stufe:</span>
-                <span className="text-cosmic-text">Lv. {localData.planetLevel}</span>
+                <span className="text-cosmic-text">Lv. {planetLevel}</span>
               </div>
               <div className="flex justify-between">
                 <span>Prestige-Stufe:</span>
-                <span className="text-amber-300">St. {localData.prestigeCount || 0}</span>
+                <span className="text-amber-300">St. {prestigeCount || 0}</span>
               </div>
               <div className="flex justify-between">
                 <span>Erschaffene Monde:</span>
                 <span className="text-purple-305">
-                  {localData.moonsCount || 0}/{getMaxMoonsForList(localData.purchasedUpgrades)} 🌙
+                  {moonsCount || 0}/{getMaxMoonsForList(purchasedUpgrades)} 🌙
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Erspieltes Leben:</span>
-                <span className="text-cosmic-text">{formatCompactNumber(localData.life)} 💖</span>
+                <span className="text-cosmic-text">{formatCompactNumber(life)} 💖</span>
               </div>
               <div className="flex justify-between">
                 <span>Spielzeit:</span>
-                <span className="text-cosmic-text">{formatTime(localData.secondsPlayed)}</span>
+                <span className="text-cosmic-text">{formatTime(secondsPlayed)}</span>
               </div>
             </div>
           </div>

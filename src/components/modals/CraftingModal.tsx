@@ -3,16 +3,12 @@ import { AnimatePresence, motion } from "motion/react";
 import { Modal } from "../ui/Modal";
 import { CRAFTING_RECIPES, Recipe } from "../../data/recipes";
 import { Hammer, Coins, Star, HelpCircle, Package, Layers, Sparkles } from "lucide-react";
+import { useGameState } from "../../contexts/GameStateContext";
 
 interface CraftingModalProps {
   isOpen: boolean;
   onClose: () => void;
   isNight: boolean;
-  life: number;
-  starsCount: number;
-  moonsCount: number;
-  glitterDust: number;
-  shootingStarsCount: number;
   craftedItems: Record<string, number>;
   onCraftItem: (recipeId: string, count?: number) => void;
   formatCompactNumber: (num: number) => string;
@@ -22,15 +18,11 @@ export const CraftingModal: React.FC<CraftingModalProps> = React.memo(({
   isOpen,
   onClose,
   isNight,
-  life,
-  starsCount,
-  moonsCount,
-  glitterDust,
-  shootingStarsCount,
   craftedItems,
   onCraftItem,
   formatCompactNumber,
 }) => {
+  const { life, starsCount, moonsCount, glitterDust, shootingStarsCount } = useGameState();
   const [selectedCategory, setSelectedCategory] = useState<"materials" | "consumables">("materials");
   const [selectedRecipeId, setSelectedRecipeId] = useState<string>(
     CRAFTING_RECIPES.find((r) => r.category === "materials")?.id || CRAFTING_RECIPES[0].id

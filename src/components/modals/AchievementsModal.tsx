@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal } from "../ui/Modal";
+import { useGameState } from "../../contexts/GameStateContext";
 
 interface Achievement {
   id: string;
@@ -17,12 +18,10 @@ interface AchievementsModalProps {
   onClose: () => void;
   isNight: boolean;
   achievements: Achievement[];
-  unlockedAchievementsCount: number;
   achievementCategoryFilter: string;
   setAchievementCategoryFilter: (filter: string) => void;
   achievementSearch: string;
   setAchievementSearch: (search: string) => void;
-  life: number;
   formatCompactNumber: (num: number) => string;
   playUpgrade: () => void;
 }
@@ -32,15 +31,14 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(fu
   onClose,
   isNight,
   achievements,
-  unlockedAchievementsCount,
   achievementCategoryFilter,
   setAchievementCategoryFilter,
   achievementSearch,
   setAchievementSearch,
-  life,
   formatCompactNumber,
   playUpgrade,
 }) {
+  const { life, unlockedAchievementsCount } = useGameState();
   return (
     <Modal
       isOpen={isOpen}

@@ -1,18 +1,11 @@
 import React from "react";
 import { Modal } from "../ui/Modal";
+import { useGameState } from "../../contexts/GameStateContext";
 
 interface StatsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  totalLifeEarned: number;
-  clicksCount: number;
-  totalStarsLps: number;
-  secondsPlayed: number;
   purchasedAnimals: Record<string, number>;
-  starsCount: number;
-  planetLevel: number;
-  totalLps: number;
-  prestigeCount: number;
   formatCompactNumber: (num: number) => string;
   formatTimePlayed: (seconds: number) => string;
 }
@@ -20,18 +13,14 @@ interface StatsModalProps {
 export const StatsModal: React.FC<StatsModalProps> = React.memo(({
   isOpen,
   onClose,
-  totalLifeEarned,
-  clicksCount,
-  totalStarsLps,
-  secondsPlayed,
   purchasedAnimals,
-  starsCount,
-  planetLevel,
-  totalLps,
-  prestigeCount,
   formatCompactNumber,
   formatTimePlayed,
 }) => {
+  const {
+    totalLifeEarned, clicksCount, totalStarsLps, secondsPlayed,
+    starsCount, planetLevel, totalLps, prestigeCount,
+  } = useGameState();
   const prestigeBonusPercent = prestigeCount * 10;
 
   return (

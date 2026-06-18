@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "motion/react";
 import { Animal } from "../../types";
 import { Modal } from "../ui/Modal";
+import { useGameState } from "../../contexts/GameStateContext";
 
 const AnimalImage: React.FC<{
   image?: string;
@@ -34,8 +35,6 @@ const AnimalImage: React.FC<{
 interface AnimalsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  life: number;
-  totalAnimalsLps: number;
   purchasedAnimals: Record<string, number>;
   animalDefs: Animal[];
   onBuyAnimal: (animalId: string, cost: number, countToBuy: number) => void;
@@ -56,8 +55,6 @@ interface AnimalsModalProps {
 export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(({
   isOpen,
   onClose,
-  life,
-  totalAnimalsLps,
   purchasedAnimals,
   animalDefs,
   onBuyAnimal,
@@ -65,6 +62,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(({
   formatCompactNumber,
   upgradesSpecs,
 }) => {
+  const { life, totalAnimalsLps } = useGameState();
   const [buyAmount, setBuyAmount] = useState<1 | 10 | 25 | "max">(1);
   const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
 

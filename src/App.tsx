@@ -49,6 +49,7 @@ import { GalaxyVoyageModal } from "./components/modals/GalaxyVoyageModal";
 import { CosmicHeader } from "./components/CosmicHeader";
 import { GameModalsContainer } from "./components/GameModalsContainer";
 import { ModalSettingsProvider } from "./components/ui/Modal";
+import { GameStateProvider, GameStateValue } from "./contexts/GameStateContext";
 import { BackgroundCompanions } from "./components/BackgroundCompanions";
 import { EventBackgrounds } from "./components/EventBackgrounds";
 import { CosmicHUD } from "./components/CosmicHUD";
@@ -1324,6 +1325,21 @@ export default function App() {
     return limit;
   }, [purchasedUpgrades]);
 
+  // Memoized context value — changes only when a game scalar actually changes.
+  // GameModalsContainer does NOT consume this context, so its React.memo holds
+  // between ticks. Only the single open modal (which calls useGameState()) re-renders.
+  const gameState = useMemo<GameStateValue>(() => ({
+    life, totalLifeEarned, secondsPlayed, planetExp, planetLevel, prestigeCount,
+    glitterDust, starsCount, moonsCount, shootingStarsCount, clicksCount, starClicksTriggered,
+    totalLps, totalStarsLps, totalAnimalsLps, starPowerPerStar, totalAnimalsCount, unlockedAchievementsCount,
+    starCost, maxMoons,
+  }), [
+    life, totalLifeEarned, secondsPlayed, planetExp, planetLevel, prestigeCount,
+    glitterDust, starsCount, moonsCount, shootingStarsCount, clicksCount, starClicksTriggered,
+    totalLps, totalStarsLps, totalAnimalsLps, starPowerPerStar, totalAnimalsCount, unlockedAchievementsCount,
+    starCost, maxMoons,
+  ]);
+
   const handleBuyStar = useCallback(() => {
     if (life < starCost) return;
     playBuy();
@@ -1383,7 +1399,7 @@ export default function App() {
   }, [life, purchasedUpgrades]);
 
   // Full Game hard Reset trigger
-  const handleGameReset = () => {
+  const handleGameReset = useCallback(() => {
     playLevelUp();
     localStorage.removeItem("cute_planet_save");
     workerRef.current?.postMessage({
@@ -1400,7 +1416,7 @@ export default function App() {
     setClaimedMissionIds([]);
 
     setShowResetDialog(false);
-  };
+  }, []);
 
   const handleConfirmPrestige = useCallback(() => {
     if (planetLevel < 20 && life < getPrestigeRequirement(prestigeCount)) return;
@@ -1414,18 +1430,32 @@ export default function App() {
     setShowPrestigeModal(false);
   }, [planetLevel, life, prestigeCount]);
 
+  // Stable force-save callback — reads current state from a ref so the identity
+  // never changes even though the saved values are always fresh.
+  const latestCloudSaveRef = useRef<any>({});
+  latestCloudSaveRef.current = {
+    life, totalLifeEarned, starsCount, purchasedAnimals, purchasedUpgrades,
+    planetLevel, planetExp, clicksCount, starClicksTriggered, secondsPlayed,
+    unlockedCosmetics, activeStarColor, activeAccessory, activeFrame, activeMoonSkin,
+    shootingStarsCount, missionSetNumber, claimedMissionIds, missionsCooldownEnd,
+    prestigeCount, moonsCount, constellations,
+  };
+  const handleForceSaveToCloud = useCallback(() => {
+    saveStateToCloud(latestCloudSaveRef.current);
+  }, [saveStateToCloud]);
+
   // Helper to view time played beautifully
-  const formatTimePlayed = (totalSeconds: number) => {
+  const formatTimePlayed = useCallback((totalSeconds: number) => {
     const hrs = Math.floor(totalSeconds / 3600);
     const mins = Math.floor((totalSeconds % 3600) / 60);
     const secs = totalSeconds % 60;
-    
-    const parts = [];
+
+    const parts: string[] = [];
     if (hrs > 0) parts.push(`${hrs} Std.`);
     if (mins > 0 || hrs > 0) parts.push(`${mins} Min.`);
     parts.push(`${secs} Sek.`);
     return parts.join(" ");
-  };
+  }, []);
 
   // Stable modal openers — defined once so memoized children never see new refs
   const openPrestigeModal = useCallback(() => setShowPrestigeModal(true), []);
@@ -1639,124 +1669,106 @@ export default function App() {
         </div>
       </footer>
 
-      <GameModalsContainer
-        showResetDialog={showResetDialog}
-        setShowResetDialog={setShowResetDialog}
-        showCheatEventModal={showCheatEventModal}
-        setShowCheatEventModal={setShowCheatEventModal}
-        showUpgradesModal={showUpgradesModal}
-        setShowUpgradesModal={setShowUpgradesModal}
-        showAnimalsModal={showAnimalsModal}
-        setShowAnimalsModal={setShowAnimalsModal}
-        showStarsModal={showStarsModal}
-        setShowStarsModal={setShowStarsModal}
-        showCraftingModal={showCraftingModal}
-        setShowCraftingModal={setShowCraftingModal}
-        showStatsModal={showStatsModal}
-        setShowStatsModal={setShowStatsModal}
-        showOfflineModal={showOfflineModal}
-        setShowOfflineModal={setShowOfflineModal}
-        showAchievementsModal={showAchievementsModal}
-        setShowAchievementsModal={setShowAchievementsModal}
-        showMusicSettingsModal={showMusicSettingsModal}
-        setShowMusicSettingsModal={setShowMusicSettingsModal}
-        showCloudSyncModal={showCloudSyncModal}
-        setShowCloudSyncModal={setShowCloudSyncModal}
-        showConflictDialog={showConflictDialog}
-        setShowConflictDialog={setShowConflictDialog}
-        showMissionsModal={showMissionsModal}
-        setShowMissionsModal={setShowMissionsModal}
-        openingResult={openingResult}
-        setOpeningResult={setOpeningResult}
-        showInventoryModal={showInventoryModal}
-        setShowInventoryModal={setShowInventoryModal}
-        showZodiacModal={showZodiacModal}
-        setShowZodiacModal={setShowZodiacModal}
-        showLeaderboardModal={showLeaderboardModal}
-        setShowLeaderboardModal={setShowLeaderboardModal}
-        showPrestigeModal={showPrestigeModal}
-        setShowPrestigeModal={setShowPrestigeModal}
-        handleGameReset={handleGameReset}
-        workerRef={workerRef}
-        handleBuyUpgrade={handleBuyUpgrade}
-        handleBuyUpgradesBatch={handleBuyUpgradesBatch}
-        handleBuyAnimal={handleBuyAnimal}
-        handleBuyStar={handleBuyStar}
-        handleMergeMoons={handleMergeMoons}
-        handleInvestConstellation={handleInvestConstellation}
-        handleCraftItem={handleCraftItem}
-        handleClaimOfflineEarnings={handleClaimOfflineEarnings}
-        handleClaimMissionReward={handleClaimMissionReward}
-        handleOpenShootingStar={handleOpenShootingStar}
-        handleApplyCosmetic={handleApplyCosmetic}
-        handleUnlockCosmeticDirect={handleUnlockCosmeticDirect}
-        handleUpgradeCosmeticRarity={handleUpgradeCosmeticRarity}
-        handleUseCraftedItem={handleUseCraftedItem}
-        handleSelectZodiac={handleSelectZodiac}
-        handleConfirmPrestige={handleConfirmPrestige}
-        life={life}
-        glitterDust={glitterDust}
-        totalLps={totalLps}
-        purchasedUpgrades={purchasedUpgrades}
-        staticUpgrades={STATIC_UPGRADES}
-        totalAnimalsLps={totalAnimalsLps}
-        purchasedAnimals={purchasedAnimals}
-        starsCount={starsCount}
-        starPowerPerStar={starPowerPerStar}
-        starClicksTriggered={starClicksTriggered}
-        starCost={starCost}
-        totalStarsLps={totalStarsLps}
-        moonsCount={moonsCount}
-        prestigeCount={prestigeCount}
-        maxMoons={maxMoons}
-        constellations={constellations}
-        isNightStyle={isNightStyle}
-        shootingStarsCount={shootingStarsCount}
-        craftedItems={craftedItems}
-        totalLifeEarned={totalLifeEarned}
-        clicksCount={clicksCount}
-        secondsPlayed={secondsPlayed}
-        planetLevel={planetLevel}
-        planetExp={planetExp}
-        formatCompactNumber={formatCompactNumber}
-        formatTimePlayed={formatTimePlayed}
-        offlineSeconds={offlineSeconds}
-        offlineLpsRate={offlineLpsRate}
-        offlineEarnedLife={offlineEarnedLife}
-        achievements={achievements}
-        unlockedAchievementsCount={unlockedAchievementsCount}
-        achievementCategoryFilter={achievementCategoryFilter}
-        setAchievementCategoryFilter={setAchievementCategoryFilter}
-        achievementSearch={achievementSearch}
-        setAchievementSearch={setAchievementSearch}
-        playUpgrade={playUpgrade}
-        musicStyleState={musicStyleState}
-        setMusicStyleState={setMusicStyleState}
-        isLowMemory={isLowMemory}
-        setIsLowMemory={setIsLowMemory}
-        user={user}
-        authLoading={authLoading}
-        syncing={syncing}
-        lastSynced={lastSynced}
-        loginWithGoogle={loginWithGoogle}
-        logout={logout}
-        saveStateToCloud={saveStateToCloud}
-        cloudSaveFound={cloudSaveFound}
-        triggerCloudStateLoad={triggerCloudStateLoad}
-        forceLocalOverwriteCloud={forceLocalOverwriteCloud}
-        totalAnimalsCount={totalAnimalsCount}
-        missionSetNumber={missionSetNumber}
-        claimedMissionIds={claimedMissionIds}
-        missionsCooldownEnd={missionsCooldownEnd}
-        activeFrame={activeFrame}
-        unlockedCosmetics={unlockedCosmetics}
-        activeStarColor={activeStarColor}
-        activeAccessory={activeAccessory}
-        activeMoonSkin={activeMoonSkin}
-        activeZodiacId={activeZodiacId}
-        cosmeticRarityLevels={cosmeticRarityLevels}
-        upgradesSpecs={upgradesSpecs}
-      />
+      <GameStateProvider value={gameState}>
+        <GameModalsContainer
+          showResetDialog={showResetDialog}
+          setShowResetDialog={setShowResetDialog}
+          showCheatEventModal={showCheatEventModal}
+          setShowCheatEventModal={setShowCheatEventModal}
+          showUpgradesModal={showUpgradesModal}
+          setShowUpgradesModal={setShowUpgradesModal}
+          showAnimalsModal={showAnimalsModal}
+          setShowAnimalsModal={setShowAnimalsModal}
+          showStarsModal={showStarsModal}
+          setShowStarsModal={setShowStarsModal}
+          showCraftingModal={showCraftingModal}
+          setShowCraftingModal={setShowCraftingModal}
+          showStatsModal={showStatsModal}
+          setShowStatsModal={setShowStatsModal}
+          showOfflineModal={showOfflineModal}
+          setShowOfflineModal={setShowOfflineModal}
+          showAchievementsModal={showAchievementsModal}
+          setShowAchievementsModal={setShowAchievementsModal}
+          showMusicSettingsModal={showMusicSettingsModal}
+          setShowMusicSettingsModal={setShowMusicSettingsModal}
+          showCloudSyncModal={showCloudSyncModal}
+          setShowCloudSyncModal={setShowCloudSyncModal}
+          showConflictDialog={showConflictDialog}
+          setShowConflictDialog={setShowConflictDialog}
+          showMissionsModal={showMissionsModal}
+          setShowMissionsModal={setShowMissionsModal}
+          openingResult={openingResult}
+          setOpeningResult={setOpeningResult}
+          showInventoryModal={showInventoryModal}
+          setShowInventoryModal={setShowInventoryModal}
+          showZodiacModal={showZodiacModal}
+          setShowZodiacModal={setShowZodiacModal}
+          showLeaderboardModal={showLeaderboardModal}
+          setShowLeaderboardModal={setShowLeaderboardModal}
+          showPrestigeModal={showPrestigeModal}
+          setShowPrestigeModal={setShowPrestigeModal}
+          handleGameReset={handleGameReset}
+          workerRef={workerRef}
+          handleBuyUpgrade={handleBuyUpgrade}
+          handleBuyUpgradesBatch={handleBuyUpgradesBatch}
+          handleBuyAnimal={handleBuyAnimal}
+          handleBuyStar={handleBuyStar}
+          handleMergeMoons={handleMergeMoons}
+          handleInvestConstellation={handleInvestConstellation}
+          handleCraftItem={handleCraftItem}
+          handleClaimOfflineEarnings={handleClaimOfflineEarnings}
+          handleClaimMissionReward={handleClaimMissionReward}
+          handleOpenShootingStar={handleOpenShootingStar}
+          handleApplyCosmetic={handleApplyCosmetic}
+          handleUnlockCosmeticDirect={handleUnlockCosmeticDirect}
+          handleUpgradeCosmeticRarity={handleUpgradeCosmeticRarity}
+          handleUseCraftedItem={handleUseCraftedItem}
+          handleSelectZodiac={handleSelectZodiac}
+          handleConfirmPrestige={handleConfirmPrestige}
+          onForceSave={handleForceSaveToCloud}
+          purchasedUpgrades={purchasedUpgrades}
+          staticUpgrades={STATIC_UPGRADES}
+          purchasedAnimals={purchasedAnimals}
+          constellations={constellations}
+          isNightStyle={isNightStyle}
+          craftedItems={craftedItems}
+          formatCompactNumber={formatCompactNumber}
+          formatTimePlayed={formatTimePlayed}
+          offlineSeconds={offlineSeconds}
+          offlineLpsRate={offlineLpsRate}
+          offlineEarnedLife={offlineEarnedLife}
+          achievements={achievements}
+          achievementCategoryFilter={achievementCategoryFilter}
+          setAchievementCategoryFilter={setAchievementCategoryFilter}
+          achievementSearch={achievementSearch}
+          setAchievementSearch={setAchievementSearch}
+          playUpgrade={playUpgrade}
+          musicStyleState={musicStyleState}
+          setMusicStyleState={setMusicStyleState}
+          isLowMemory={isLowMemory}
+          setIsLowMemory={setIsLowMemory}
+          user={user}
+          authLoading={authLoading}
+          syncing={syncing}
+          lastSynced={lastSynced}
+          loginWithGoogle={loginWithGoogle}
+          logout={logout}
+          cloudSaveFound={cloudSaveFound}
+          triggerCloudStateLoad={triggerCloudStateLoad}
+          forceLocalOverwriteCloud={forceLocalOverwriteCloud}
+          missionSetNumber={missionSetNumber}
+          claimedMissionIds={claimedMissionIds}
+          missionsCooldownEnd={missionsCooldownEnd}
+          activeFrame={activeFrame}
+          unlockedCosmetics={unlockedCosmetics}
+          activeStarColor={activeStarColor}
+          activeAccessory={activeAccessory}
+          activeMoonSkin={activeMoonSkin}
+          activeZodiacId={activeZodiacId}
+          cosmeticRarityLevels={cosmeticRarityLevels}
+          upgradesSpecs={upgradesSpecs}
+        />
+      </GameStateProvider>
 
       {/* Dynamic Autosave Toast Indicator */}
       <AnimatePresence>

@@ -2,14 +2,12 @@ import React from "react";
 import { Check, Sparkles } from "lucide-react";
 import { Modal } from "../ui/Modal";
 import { generateMissionsForSet, Mission } from "../../data/missions";
+import { useGameState } from "../../contexts/GameStateContext";
 
 interface MissionsModalProps {
   isOpen: boolean;
   onClose: () => void;
   isNight: boolean;
-  clicksCount: number;
-  totalAnimalsCount: number;
-  starsCount: number;
   missionSetNumber: number;
   claimedMissionIds: string[];
   missionsCooldownEnd?: number | null;
@@ -23,9 +21,6 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(({
   isOpen,
   onClose,
   isNight,
-  clicksCount,
-  totalAnimalsCount,
-  starsCount,
   missionSetNumber,
   claimedMissionIds,
   missionsCooldownEnd = null,
@@ -34,6 +29,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(({
   unlockedCosmetics = [],
   purchasedUpgrades = []
 }) => {
+  const { clicksCount, totalAnimalsCount, starsCount } = useGameState();
   // Check Sakura Set Bonus (+20% Mission-Rewards)
   const hasSetBonusSet = purchasedUpgrades.includes("upg-glitter-set");
   const sakuraSetComplete = hasSetBonusSet && ["star_pink", "acc_flower_crown", "moon_sakura"].every((id) => unlockedCosmetics.includes(id));

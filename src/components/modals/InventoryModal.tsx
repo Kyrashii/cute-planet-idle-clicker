@@ -5,12 +5,12 @@ import { Sparkles, Star, ShieldAlert, Check, Lock, Backpack } from "lucide-react
 import { COSMETIC_ITEMS, CosmeticItem, RARITY_STYLES } from "../../data/cosmetics";
 import { CRAFTING_RECIPES } from "../../data/recipes";
 import { ZODIACS } from "../../data/zodiacs";
+import { useGameState } from "../../contexts/GameStateContext";
 
 interface InventoryModalProps {
   isOpen: boolean;
   onClose: () => void;
   isNight: boolean;
-  shootingStarsCount: number;
   unlockedCosmetics: string[];
   activeStarColor: string;
   activeAccessory: string;
@@ -20,7 +20,6 @@ interface InventoryModalProps {
   onApplyCosmetic: (id: string, type: "star_color" | "planet_accessory" | "frame_style" | "moon_skin") => void;
   
   // Glitter Dust props
-  glitterDust: number;
   purchasedUpgrades: string[];
   cosmeticRarityLevels: Record<string, string>;
   onUnlockCosmeticDirect: (cosmeticId: string, cost: number) => void;
@@ -37,7 +36,6 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(({
   isOpen,
   onClose,
   isNight,
-  shootingStarsCount,
   unlockedCosmetics,
   activeStarColor,
   activeAccessory,
@@ -45,7 +43,6 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(({
   activeMoonSkin,
   onOpenShootingStar,
   onApplyCosmetic,
-  glitterDust,
   purchasedUpgrades,
   cosmeticRarityLevels,
   onUnlockCosmeticDirect,
@@ -55,6 +52,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(({
   zodiac,
   onSelectZodiac,
 }) => {
+  const { glitterDust, shootingStarsCount } = useGameState();
   const [activeTab, setActiveTab] = useState<string>("star_color");
   const [openingState, setOpeningState] = useState<"idle" | "shaking" | "revealed">("idle");
   const [revealedItem, setRevealedItem] = useState<CosmeticItem | null>(null);
