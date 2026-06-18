@@ -1009,6 +1009,8 @@ export default function App() {
   // Keep save variables stored in a ref so the autosave interval doesn't rebuild 50 times a second
   const autoSaveStateRef = useRef<any>(null);
   const lastCloudSyncTimeRef = useRef<number>(0);
+  const showConflictRef = useRef(false);
+  showConflictRef.current = showConflictDialog;
   useEffect(() => {
     autoSaveStateRef.current = {
       isLoaded,
@@ -1089,7 +1091,11 @@ export default function App() {
 
   // Synchronize dynamic local saves and autosave intervals
   useEffect(() => {
-    const saveState = () => {
+    // Reset the gate so the first cloud sync waits a full minute after login
+    // (avoids overwriting freshly loaded cloud data while the worker is still hydrating)
+    lastCloudSyncTimeRef.current = Date.now();
+
+    const saveState = async () => {
       const s = autoSaveStateRef.current;
       if (!s || !s.isLoaded) return;
       try {
@@ -1133,12 +1139,41 @@ export default function App() {
         };
         localStorage.setItem("cute_planet_save", JSON.stringify(stateToSave));
 
-        // Sync with Cloud every 20 seconds
-        if (user) {
-          const now = Date.now();
-          if (now - lastCloudSyncTimeRef.current >= 20000) {
-            lastCloudSyncTimeRef.current = now;
-            saveStateToCloud(stateToSave);
+        // Sync with cloud every 60 seconds; skip while conflict dialog is open
+        const now = Date.now();
+        if (now - lastCloudSyncTimeRef.current >= 60000 && !showConflictRef.current) {
+          lastCloudSyncTimeRef.current = now;
+
+          setAutosaveNotification({
+            show: true,
+            text: user ? "Lokale Daten & Cloud-Synchronisierung werden übertragen..." : "Lokaler Spielfortschritt wird gesichert...",
+            success: false,
+          });
+
+          try {
+            if (user) {
+              await saveStateToCloud(stateToSave);
+            }
+            setTimeout(() => {
+              setAutosaveNotification({
+                show: true,
+                text: user ? "Spielfortschritt in der Cloud gesichert! 🌌" : "Lokaler Fortschritt im Browser gesichert! 💾",
+                success: true,
+              });
+              setTimeout(() => {
+                setAutosaveNotification((prev) => prev ? { ...prev, show: false } : null);
+              }, 3000);
+            }, 850);
+          } catch (e) {
+            console.error("Autosave failed:", e);
+            setAutosaveNotification({
+              show: true,
+              text: "Automatisches Speichern fehlgeschlagen.",
+              success: false,
+            });
+            setTimeout(() => {
+              setAutosaveNotification((prev) => prev ? { ...prev, show: false } : null);
+            }, 3000);
           }
         }
       } catch (e) {
@@ -1148,100 +1183,6 @@ export default function App() {
 
     const interval = setInterval(saveState, 5000);
     return () => clearInterval(interval);
-  }, [user]);
-
-  // Visible 2-Minute Autosave Notification Trigger
-  useEffect(() => {
-    const triggerTwoMinuteAutosave = async () => {
-      const s = autoSaveStateRef.current;
-      if (!s || !s.isLoaded) return;
-
-      // 1. Show Saving In-Progress Toast
-      setAutosaveNotification({
-        show: true,
-        text: user ? "Lokale Daten & Cloud-Synchronisierung werden übertragen..." : "Lokaler Spielfortschritt wird gesichert...",
-        success: false,
-      });
-
-      try {
-        const stateToSave = {
-          life: s.life,
-          totalLifeEarned: s.totalLifeEarned,
-          starsCount: s.starsCount,
-          moonsCount: s.moonsCount,
-          purchasedAnimals: s.purchasedAnimals,
-          purchasedUpgrades: s.purchasedUpgrades,
-          planetLevel: s.planetLevel,
-          planetExp: s.planetExp,
-          clicksCount: s.clicksCount,
-          starClicksTriggered: s.starClicksTriggered,
-          secondsPlayed: s.secondsPlayed,
-          unlockedCosmetics: s.unlockedCosmetics,
-          activeStarColor: s.activeStarColor,
-          activeAccessory: s.activeAccessory,
-          activeFrame: s.activeFrame,
-          activeMoonSkin: s.activeMoonSkin,
-          shootingStarsCount: s.shootingStarsCount,
-          missionSetNumber: s.missionSetNumber,
-          claimedMissionIds: s.claimedMissionIds,
-          missionsCooldownEnd: s.missionsCooldownEnd,
-          prestigeCount: s.prestigeCount,
-          galaxyShards: s.galaxyShards,
-          offlineSeconds: s.offlineSeconds,
-          offlineLpsRate: s.offlineLpsRate,
-          offlineEarnedLife: s.offlineEarnedLife,
-          constellations: s.constellations,
-          craftedItems: s.craftedItems,
-          glitterDust: s.glitterDust,
-          cosmeticRarityLevels: s.cosmeticRarityLevels,
-          blackHoleSize: s.blackHoleSize,
-          zodiac: s.activeZodiacId,
-          zodiacLevels: s.zodiacLevels,
-          slummerGlassLevel: s.slummerGlassLevel,
-          catalystLevel: s.catalystLevel,
-          doubleStellarLevel: s.doubleStellarLevel,
-          lastSavedAt: Date.now(),
-        };
-
-        // Save local
-        localStorage.setItem("cute_planet_save", JSON.stringify(stateToSave));
-
-        // Save Cloud if user is authenticated
-        if (user) {
-          await saveStateToCloud(stateToSave);
-        }
-
-        // 2. Success Feedback after a slight dynamic delay
-        setTimeout(() => {
-          setAutosaveNotification({
-            show: true,
-            text: user ? "Spielfortschritt in der Cloud gesichert! 🌌" : "Lokaler Fortschritt im Browser gesichert! 💾",
-            success: true,
-          });
-
-          // 3. Auto-hide success toast after 3 seconds
-          setTimeout(() => {
-            setAutosaveNotification((prev) => prev ? { ...prev, show: false } : null);
-          }, 3000);
-        }, 850);
-
-      } catch (e) {
-        console.error("2-Minute Autosave failed:", e);
-        setAutosaveNotification({
-          show: true,
-          text: "Automatisches Speichern fehlgeschlagen.",
-          success: false,
-        });
-        setTimeout(() => {
-          setAutosaveNotification((prev) => prev ? { ...prev, show: false } : null);
-        }, 3000);
-      }
-    };
-
-    // Set interval for every 2 minutes (120,000 milliseconds)
-    const twoMinInterval = setInterval(triggerTwoMinuteAutosave, 120000);
-
-    return () => clearInterval(twoMinInterval);
   }, [user]);
 
   // ----------------------------------------------------
