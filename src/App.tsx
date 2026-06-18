@@ -44,6 +44,7 @@ import { calculateOfflineLps } from "./utils/offline";
 import { generateMissionsForSet } from "./data/missions";
 import { TutorialModal } from "./components/modals/TutorialModal";
 import { GalaxyVoyageModal } from "./components/modals/GalaxyVoyageModal";
+import { GalaxyShardsShopModal } from "./components/modals/GalaxyShardsShopModal";
 
 // Modularized UI Components
 import { CosmicHeader } from "./components/CosmicHeader";
@@ -209,6 +210,11 @@ export default function App() {
   const [activeZodiacId, setActiveZodiacId] = useState<string>("katze");
   const [prestigeCount, setPrestigeCount] = useState<number>(0);
   const [galaxyShards, setGalaxyShards] = useState<number>(0);
+  const [showGalaxyShardsShop, setShowGalaxyShardsShop] = useState<boolean>(false);
+  const [zodiacLevels, setZodiacLevels] = useState<Record<string, number>>({});
+  const [slummerGlassLevel, setSlummerGlassLevel] = useState<number>(1);
+  const [catalystLevel, setCatalystLevel] = useState<number>(0);
+  const [doubleStellarLevel, setDoubleStellarLevel] = useState<number>(0);
   const [blackHoleSize, setBlackHoleSize] = useState<number>(1);
   const [blackHoleResult, setBlackHoleResult] = useState<{
     show: boolean;
@@ -222,6 +228,7 @@ export default function App() {
   const [showMissionsModal, setShowMissionsModal] = useState<boolean>(false);
   const [showInventoryModal, setShowInventoryModal] = useState<boolean>(false);
   const [showPrestigeModal, setShowPrestigeModal] = useState<boolean>(false);
+  const [showVoyageModal, setShowVoyageModal] = useState<boolean>(false);
   const [showZodiacModal, setShowZodiacModal] = useState<boolean>(false);
   
   const [openingResult, setOpeningResult] = useState<{
@@ -290,7 +297,9 @@ export default function App() {
 
           // Only calculate if the total accumulated secs is >= 10
           if (totalOfflineSecs >= 10) {
-            const maxOfflineSecs = 5 * 60 * 60; // 5 hours in seconds = 18000
+            const lvl = savedStateObj.slummerGlassLevel || 1;
+            const maxOfflineHours = 5 + (lvl - 1) * 2;
+            const maxOfflineSecs = maxOfflineHours * 60 * 60;
             const cappedSecs = Math.min(totalOfflineSecs, maxOfflineSecs);
             const computedLps = calculateOfflineLps(savedStateObj);
             const lifeEarned = Math.floor(computedLps * cappedSecs);
@@ -500,6 +509,10 @@ export default function App() {
         if (data.blackHoleSize !== undefined) setBlackHoleSize(data.blackHoleSize || 1);
         if (data.zodiac !== undefined) setActiveZodiacId(data.zodiac);
         if (data.galaxyShards !== undefined) setGalaxyShards(data.galaxyShards || 0);
+        if (data.zodiacLevels !== undefined) setZodiacLevels(data.zodiacLevels || {});
+        if (data.slummerGlassLevel !== undefined) setSlummerGlassLevel(data.slummerGlassLevel || 1);
+        if (data.catalystLevel !== undefined) setCatalystLevel(data.catalystLevel || 0);
+        if (data.doubleStellarLevel !== undefined) setDoubleStellarLevel(data.doubleStellarLevel || 0);
       }
     };
     window.addEventListener("firebase-load-state", handleFirebaseLoad);
@@ -539,6 +552,10 @@ export default function App() {
         if (savedStateObj.cosmeticRarityLevels) setCosmeticRarityLevels(savedStateObj.cosmeticRarityLevels);
         setActiveZodiacId(savedStateObj.zodiac || "katze");
         if (savedStateObj.galaxyShards !== undefined) setGalaxyShards(savedStateObj.galaxyShards || 0);
+        if (savedStateObj.zodiacLevels !== undefined) setZodiacLevels(savedStateObj.zodiacLevels || {});
+        if (savedStateObj.slummerGlassLevel !== undefined) setSlummerGlassLevel(savedStateObj.slummerGlassLevel || 1);
+        if (savedStateObj.catalystLevel !== undefined) setCatalystLevel(savedStateObj.catalystLevel || 0);
+        if (savedStateObj.doubleStellarLevel !== undefined) setDoubleStellarLevel(savedStateObj.doubleStellarLevel || 0);
       }
     } catch (e) {
       console.error("Failed to parse initial save for Web Worker:", e);
@@ -575,6 +592,10 @@ export default function App() {
           setEventTimeRemaining(ws.eventTimeRemaining);
           setPrestigeCount(ws.prestigeCount || 0);
           if (ws.galaxyShards !== undefined) setGalaxyShards(ws.galaxyShards || 0);
+          if (ws.zodiacLevels !== undefined) setZodiacLevels(ws.zodiacLevels || {});
+          if (ws.slummerGlassLevel !== undefined) setSlummerGlassLevel(ws.slummerGlassLevel || 1);
+          if (ws.catalystLevel !== undefined) setCatalystLevel(ws.catalystLevel || 0);
+          if (ws.doubleStellarLevel !== undefined) setDoubleStellarLevel(ws.doubleStellarLevel || 0);
           if (ws.blackHoleSize !== undefined) setBlackHoleSize(ws.blackHoleSize || 1);
           
           setConstellations((prevOrder) => isObjEqual(prevOrder, ws.constellations) ? prevOrder : (ws.constellations || {}));
@@ -908,11 +929,13 @@ export default function App() {
           // Open the cosmic event selector cheat modal
           setShowCheatEventModal(true);
 
-          // Add 10% (1800s) to the sleep/slummer jar
+          // Add 10% of maximum to the sleep/slummer jar
           const currentState = autoSaveStateRef.current || {};
           const currentOfflineSecs = currentState.offlineSeconds || 0;
-          const maxOfflineSecs = 5 * 60 * 60; // 18000s
-          const addedSecs = 1800; // 10% of 5 hours
+          const currentSlummerLvl = currentState.slummerGlassLevel || slummerGlassLevel || 1;
+          const maxOfflineHours = 5 + (currentSlummerLvl - 1) * 2;
+          const maxOfflineSecs = maxOfflineHours * 60 * 60;
+          const addedSecs = Math.floor(maxOfflineSecs * 0.10); // 10% of modern maximum
           const newOfflineSecs = Math.min(maxOfflineSecs, currentOfflineSecs + addedSecs);
 
           // Get simulated updated animals and stars count
@@ -985,6 +1008,7 @@ export default function App() {
 
   // Keep save variables stored in a ref so the autosave interval doesn't rebuild 50 times a second
   const autoSaveStateRef = useRef<any>(null);
+  const lastCloudSyncTimeRef = useRef<number>(0);
   useEffect(() => {
     autoSaveStateRef.current = {
       isLoaded,
@@ -1019,6 +1043,10 @@ export default function App() {
       cosmeticRarityLevels,
       blackHoleSize,
       activeZodiacId,
+      zodiacLevels,
+      slummerGlassLevel,
+      catalystLevel,
+      doubleStellarLevel,
     };
   }, [
     isLoaded,
@@ -1053,6 +1081,10 @@ export default function App() {
     glitterDust,
     cosmeticRarityLevels,
     activeZodiacId,
+    zodiacLevels,
+    slummerGlassLevel,
+    catalystLevel,
+    doubleStellarLevel,
   ]);
 
   // Synchronize dynamic local saves and autosave intervals
@@ -1093,13 +1125,21 @@ export default function App() {
           cosmeticRarityLevels: s.cosmeticRarityLevels,
           blackHoleSize: s.blackHoleSize,
           zodiac: s.activeZodiacId,
+          zodiacLevels: s.zodiacLevels,
+          slummerGlassLevel: s.slummerGlassLevel,
+          catalystLevel: s.catalystLevel,
+          doubleStellarLevel: s.doubleStellarLevel,
           lastSavedAt: Date.now(),
         };
         localStorage.setItem("cute_planet_save", JSON.stringify(stateToSave));
 
-        // Sync with Cloud every 20 seconds (since loop tick is 5 seconds, secondsPlayed % 20 === 0 works wonderfully!)
-        if (user && s.secondsPlayed % 20 === 0) {
-          saveStateToCloud(stateToSave);
+        // Sync with Cloud every 20 seconds
+        if (user) {
+          const now = Date.now();
+          if (now - lastCloudSyncTimeRef.current >= 20000) {
+            lastCloudSyncTimeRef.current = now;
+            saveStateToCloud(stateToSave);
+          }
         }
       } catch (e) {
         console.error("Autosave failed in dynamic interval:", e);
@@ -1156,6 +1196,10 @@ export default function App() {
           cosmeticRarityLevels: s.cosmeticRarityLevels,
           blackHoleSize: s.blackHoleSize,
           zodiac: s.activeZodiacId,
+          zodiacLevels: s.zodiacLevels,
+          slummerGlassLevel: s.slummerGlassLevel,
+          catalystLevel: s.catalystLevel,
+          doubleStellarLevel: s.doubleStellarLevel,
           lastSavedAt: Date.now(),
         };
 
@@ -1398,6 +1442,30 @@ export default function App() {
     workerRef.current?.postMessage({ type: "BUY_UPGRADE", id, cost });
   }, [life, purchasedUpgrades]);
 
+  const handleUpgradeZodiacLevel = useCallback((id: string, cost: number) => {
+    if (galaxyShards < cost) return;
+    playUpgrade();
+    workerRef.current?.postMessage({ type: "UPGRADE_ZODIAC_LEVEL", id, cost });
+  }, [galaxyShards]);
+
+  const handleUpgradeSlummerGlass = useCallback((cost: number) => {
+    if (galaxyShards < cost) return;
+    playUpgrade();
+    workerRef.current?.postMessage({ type: "UPGRADE_SLUMMER_GLASS", cost });
+  }, [galaxyShards]);
+
+  const handleUpgradeCatalyst = useCallback((cost: number) => {
+    if (galaxyShards < cost) return;
+    playUpgrade();
+    workerRef.current?.postMessage({ type: "UPGRADE_CATALYST", cost });
+  }, [galaxyShards]);
+
+  const handleUpgradeDoubleStellar = useCallback((cost: number) => {
+    if (galaxyShards < cost) return;
+    playUpgrade();
+    workerRef.current?.postMessage({ type: "UPGRADE_DOUBLE_STELLAR", cost });
+  }, [galaxyShards]);
+
   // Full Game hard Reset trigger
   const handleGameReset = useCallback(() => {
     playLevelUp();
@@ -1428,6 +1496,7 @@ export default function App() {
       return nextCount;
     });
     setShowPrestigeModal(false);
+    setShowVoyageModal(false);
   }, [planetLevel, life, prestigeCount]);
 
   // Stable force-save callback — reads current state from a ref so the identity
@@ -1525,8 +1594,6 @@ export default function App() {
         isNightStyle 
           ? "bg-gradient-to-b from-cosmic-bg via-[#1b1535] to-[#0b0818] text-cosmic-text selection:bg-cosmic-pink selection:text-cosmic-bg" 
           : ""
-      } ${
-        planetLevel >= 20 ? "pointer-events-none select-none blur-md" : ""
       }`}>
       
       {/* Scattered Ambient Background Animals (floating freely over the entire cosmos background) */}
@@ -1550,6 +1617,11 @@ export default function App() {
         setShowTutorial={setShowTutorial}
         setShowResetDialog={setShowResetDialog}
         formatCompactNumber={formatCompactNumber}
+        prestigeCount={prestigeCount}
+        onOpenGalaxyShardsShop={() => {
+          playUpgrade();
+          setShowGalaxyShardsShop(true);
+        }}
       />
 
       {/* 2. Immersive Centered Master View (Planet takes center stage with plenty of room around it) */}
@@ -1768,6 +1840,20 @@ export default function App() {
           cosmeticRarityLevels={cosmeticRarityLevels}
           upgradesSpecs={upgradesSpecs}
         />
+
+        <GalaxyShardsShopModal
+          isOpen={showGalaxyShardsShop}
+          onClose={() => setShowGalaxyShardsShop(false)}
+          galaxyShards={galaxyShards}
+          zodiacLevels={zodiacLevels}
+          slummerGlassLevel={slummerGlassLevel}
+          catalystLevel={catalystLevel}
+          doubleStellarLevel={doubleStellarLevel}
+          onUpgradeZodiacLevel={handleUpgradeZodiacLevel}
+          onUpgradeSlummerGlass={handleUpgradeSlummerGlass}
+          onUpgradeCatalyst={handleUpgradeCatalyst}
+          onUpgradeDoubleStellar={handleUpgradeDoubleStellar}
+        />
       </GameStateProvider>
 
       {/* Dynamic Autosave Toast Indicator */}
@@ -1862,8 +1948,47 @@ export default function App() {
 
       </div>
 
+      {/* Level 20: Block game interactions with a clean transparent click-absorbing overlay, and show the flashing button */}
+      {planetLevel >= 20 && (
+        <div className="fixed inset-0 z-40 bg-black/5 pointer-events-auto flex flex-col items-center justify-end pb-24 sm:pb-32 leading-none">
+          {/* Cute prompt box floating above the flashy button */}
+          <div className="mb-6 px-5 py-3.5 rounded-2xl bg-[#120f26]/95 border-2 border-[#ffcbdc]/45 text-center text-white max-w-sm shadow-2xl backdrop-blur-md animate-bounce">
+            <span className="text-[10px] sm:text-xs font-mono font-black uppercase tracking-widest text-[#ffcbdc] block mb-1">🌠 Planet Level 20 Erreicht! 🌠</span>
+            <p className="font-sans font-semibold text-xs text-rose-100 leading-normal">
+              Bewundere deinen vollendeten Planeten! Wenn du so weit bist, klicke auf die Schaltfläche unten, um deine kosmische Galaxiereise anzutreten.
+            </p>
+          </div>
+          
+          <motion.button
+            animate={{
+              scale: [1, 1.05, 1],
+              boxShadow: [
+                "0 0 15px rgba(255, 120, 170, 0.4)",
+                "0 0 35px rgba(255, 120, 170, 0.8)",
+                "0 0 15px rgba(255, 120, 170, 0.4)"
+              ],
+              borderColor: ["#ffcbdc", "#cac5fe", "#ffcbdc"]
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.93 }}
+            onClick={() => {
+              playUpgrade();
+              setShowVoyageModal(true);
+            }}
+            className="px-8 py-4 rounded-3xl bg-gradient-to-r from-cosmic-pink via-cosmic-accent to-cosmic-pink text-[#0b0818] font-sans font-black text-sm uppercase tracking-[0.2em] border-4 cursor-pointer select-none pointer-events-auto shadow-2xl"
+          >
+            Galaxiereise Antreten 🚀
+          </motion.button>
+        </div>
+      )}
+
       <GalaxyVoyageModal
-        isOpen={planetLevel >= 20}
+        isOpen={showVoyageModal}
         prestigeCount={prestigeCount}
         onConfirmVoyage={handleConfirmPrestige}
       />

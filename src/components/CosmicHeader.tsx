@@ -24,6 +24,8 @@ interface CosmicHeaderProps {
   setShowTutorial: React.Dispatch<React.SetStateAction<boolean>>;
   setShowResetDialog: (show: boolean) => void;
   formatCompactNumber: (num: number) => string;
+  prestigeCount: number;
+  onOpenGalaxyShardsShop: () => void;
 }
 
 export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(({
@@ -40,6 +42,8 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(({
   setShowTutorial,
   setShowResetDialog,
   formatCompactNumber,
+  prestigeCount,
+  onOpenGalaxyShardsShop,
 }) => {
   return (
     <header className={`sticky top-0 z-20 backdrop-blur-md py-4 px-4 sm:px-6 shadow-md transition-all duration-500 border-b-4 ${
@@ -84,13 +88,18 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(({
           </div>
 
           {/* Galaxy Shards (Galaxie-Splitter) summary */}
-          {galaxyShards > 0 && (
-            <div className={`px-4 py-1.5 rounded-xl flex flex-col items-end shadow-sm border-2 border-fuchsia-400 bg-[#1e1438] text-fuchsia-250 animate-pulse`}>
-              <span className="text-[9px] uppercase font-mono font-black tracking-wider leading-none text-fuchsia-300">Galaxie-Splitter</span>
-              <span className="font-mono text-xs sm:text-sm font-black mt-0.5 text-[#f5d0fe]" title={galaxyShards.toLocaleString("de-DE")}>
+          {(galaxyShards > 0 || prestigeCount > 0) && (
+            <button
+              onClick={onOpenGalaxyShardsShop}
+              className={`px-4 py-1.5 rounded-xl flex flex-col items-end shadow-md border-2 border-fuchsia-400 bg-[#1e1438] text-fuchsia-250 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 group relative overflow-hidden`}
+              title="Galaktischen Splitter-Shop öffnen 🌌"
+            >
+              <span className="text-[9px] uppercase font-mono font-black tracking-wider leading-none text-fuchsia-300 group-hover:text-fuchsia-200 transition-colors">Galaxie-Splitter</span>
+              <span className="font-mono text-xs sm:text-sm font-black mt-0.5 text-[#f5d0fe] flex items-center gap-1 group-hover:text-white transition-colors" title={galaxyShards.toLocaleString("de-DE")}>
                 {galaxyShards} 🌌
               </span>
-            </div>
+              <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-fuchsia-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            </button>
           )}
 
           {/* Quiet Mute Switch */}

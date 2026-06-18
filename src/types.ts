@@ -74,4 +74,8 @@ export interface GameState {
   blackHoleSize?: number;
   zodiac?: string;
   galaxyShards?: number;
+  zodiacLevels?: Record<string, number>;
+  slummerGlassLevel?: number;
+  catalystLevel?: number;
+  doubleStellarLevel?: number;
 }

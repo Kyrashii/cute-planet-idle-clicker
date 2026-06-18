@@ -35,6 +35,10 @@ interface WorkerState {
   craftedItems?: Record<string, number>;
   zodiac?: string;
   galaxyShards: number;
+  zodiacLevels?: Record<string, number>;
+  slummerGlassLevel?: number;
+  catalystLevel?: number;
+  doubleStellarLevel?: number;
 }
 
 // Default initial state
@@ -65,6 +69,10 @@ let state: WorkerState = {
   craftedItems: {},
   zodiac: "katze",
   galaxyShards: 0,
+  zodiacLevels: {},
+  slummerGlassLevel: 1,
+  catalystLevel: 0,
+  doubleStellarLevel: 0,
 };
 
 // Timers refs
@@ -145,7 +153,9 @@ function getLpsAndStats() {
 
   // Fuchs zodiac flat increase (+40% click power)
   if (state.zodiac === "fuchs") {
-    clickPower = Math.ceil(clickPower * 1.40);
+    const lvl = (state.zodiacLevels?.fuchs) || 1;
+    const fuchsMultiplier = 1.40 + (lvl - 1) * 0.15;
+    clickPower = Math.ceil(clickPower * fuchsMultiplier);
   }
 
   // XP multiplier calculation based on Research upgrades
@@ -256,10 +266,12 @@ function getLpsAndStats() {
 
   // Drache zodiac event boost (+40% to event multipliers)
   if (activeEvent && state.zodiac === "drache") {
-    clickMultiplierForEvents = 1.0 + (clickMultiplierForEvents - 1.0) * 1.40;
-    starMultiplierForEvents = 1.0 + (starMultiplierForEvents - 1.0) * 1.40;
-    animalMultiplierForEvents = 1.0 + (animalMultiplierForEvents - 1.0) * 1.40;
-    xpEventMultiplier = 1.0 + (xpEventMultiplier - 1.0) * 1.40;
+    const lvl = (state.zodiacLevels?.drache) || 1;
+    const multiplier = 1.40 + (lvl - 1) * 0.15;
+    clickMultiplierForEvents = 1.0 + (clickMultiplierForEvents - 1.0) * multiplier;
+    starMultiplierForEvents = 1.0 + (starMultiplierForEvents - 1.0) * multiplier;
+    animalMultiplierForEvents = 1.0 + (animalMultiplierForEvents - 1.0) * multiplier;
+    xpEventMultiplier = 1.0 + (xpEventMultiplier - 1.0) * multiplier;
   }
 
   // Calculate Star Autoclick Power
@@ -294,7 +306,8 @@ function getLpsAndStats() {
 
   // Eule zodiac star boost (+30% stars LPS)
   if (state.zodiac === "eule") {
-    finalStarPowerPos *= 1.30;
+    const lvl = (state.zodiacLevels?.eule) || 1;
+    finalStarPowerPos *= (1.30 + (lvl - 1) * 0.15);
   }
 
   const totalStarsLps = starsCount * finalStarPowerPos;
@@ -323,7 +336,8 @@ function getLpsAndStats() {
 
     // Biene zodiac animal boost (+35% animal production)
     if (state.zodiac === "biene") {
-      lps *= 1.35;
+      const lvl = (state.zodiacLevels?.biene) || 1;
+      lps *= (1.35 + (lvl - 1) * 0.15);
     }
 
     animalLpsMap[def.id] = lps;
@@ -335,6 +349,11 @@ function getLpsAndStats() {
 
   // Aggregate Life Per Second (LPS)
   let totalLps = (totalAnimalsLps * animalMultiplierForEvents) + (totalStarsLps * starMultiplierForEvents) + flatMoonLps;
+  
+  // Cosmic Catalyst global booster (+15% passive LPS per level)
+  const catalystLvl = state.catalystLevel || 0;
+  totalLps *= (1.0 + catalystLvl * 0.15);
+
   if (purchasedUpgrades.includes("upg-nexus-core")) {
     totalLps *= 1.40;
   }
@@ -363,13 +382,15 @@ function getLpsAndStats() {
 
   // Apply Moon global multiplier (+150% total LPS per Moon, or +225% if Mond zodiac)
   if (state.moonsCount && state.moonsCount > 0) {
-    const moonMultiplier = state.zodiac === "mond" ? 2.25 : 1.50;
+    const lvl = (state.zodiacLevels?.mond) || 1;
+    const moonMultiplier = state.zodiac === "mond" ? (2.25 + (lvl - 1) * 0.25) : 1.50;
     totalLps *= (1.0 + state.moonsCount * moonMultiplier);
   }
 
   // Schildkröte zodiac total passive boost (+20% total passive LPS)
   if (state.zodiac === "schildkroete") {
-    totalLps *= 1.20;
+    const lvl = (state.zodiacLevels?.schildkroete) || 1;
+    totalLps *= (1.20 + (lvl - 1) * 0.10);
   }
 
   // Aggregate quantities
@@ -547,7 +568,9 @@ function generateAchievements() {
 // amounts (e.g. catch-up after a long tab-out). Emits at most ONE LEVEL_UP
 // message per call (with the final level), avoiding main-thread message floods.
 function addPlanetExp(amount: number) {
-  const r = computeLevelUpResult(state.planetLevel, state.planetExp, amount);
+  const catalystLvl = state.catalystLevel || 0;
+  const finalAmount = amount * (1.0 + catalystLvl * 0.15);
+  const r = computeLevelUpResult(state.planetLevel, state.planetExp, finalAmount);
   state.planetExp = r.newExp;
   if (r.levelsGained > 0) {
     state.planetLevel = r.newLevel;
@@ -606,6 +629,10 @@ function broadcastStateUpdate(forceRecalculateAchievements = false, cachedStats?
       craftedItems: state.craftedItems || {},
       zodiac: state.zodiac || "katze",
       galaxyShards: state.galaxyShards || 0,
+      zodiacLevels: state.zodiacLevels || {},
+      slummerGlassLevel: state.slummerGlassLevel || 1,
+      catalystLevel: state.catalystLevel || 0,
+      doubleStellarLevel: state.doubleStellarLevel || 0,
     },
     calculations: {
       ...calculations,
@@ -786,9 +813,10 @@ addEventListener("message", (e) => {
       const stats = getLpsAndStats();
 
       const isKatze = state.zodiac === "katze";
-      const critChance = isKatze ? 0.20 : 0.05;
+      const lvl = (state.zodiacLevels?.katze) || 1;
+      const critChance = isKatze ? (0.20 + (lvl - 1) * 0.05) : 0.05;
       const isCrit = Math.random() < critChance;
-      const critMult = isKatze ? 7 : 3;
+      const critMult = isKatze ? (7 + (lvl - 1) * 2) : 3;
       const clickVal = isCrit ? (stats.clickPower * critMult) : stats.clickPower;
 
       const actualClickLife = clickVal * stats.clickMultiplierForEvents;
@@ -862,7 +890,9 @@ addEventListener("message", (e) => {
       const { cost } = data;
       if (state.life >= cost) {
         state.life -= cost;
-        state.starsCount += 1;
+        const doubleStellarLvl = state.doubleStellarLevel || 0;
+        const amountGained = (doubleStellarLvl > 0 && Math.random() < doubleStellarLvl * 0.10) ? 2 : 1;
+        state.starsCount += amountGained;
         broadcastStateUpdate(true);
       }
       break;
@@ -1292,6 +1322,10 @@ addEventListener("message", (e) => {
         craftedItems: {},
         zodiac: "katze",
         galaxyShards: 0,
+        zodiacLevels: {},
+        slummerGlassLevel: 1,
+        catalystLevel: 0,
+        doubleStellarLevel: 0,
       };
       broadcastStateUpdate(true);
       break;
@@ -1315,6 +1349,45 @@ addEventListener("message", (e) => {
       state.constellations = {};
       state.zodiac = rollNewZodiac(oldZodiac);
       broadcastStateUpdate(true);
+      break;
+    }
+    case "UPGRADE_ZODIAC_LEVEL": {
+      const { id, cost } = data;
+      if ((state.galaxyShards || 0) >= cost) {
+        state.galaxyShards = (state.galaxyShards || 0) - cost;
+        if (!state.zodiacLevels) {
+          state.zodiacLevels = {};
+        }
+        state.zodiacLevels[id] = (state.zodiacLevels[id] || 1) + 1;
+        broadcastStateUpdate(true);
+      }
+      break;
+    }
+    case "UPGRADE_SLUMMER_GLASS": {
+      const { cost } = data;
+      if ((state.galaxyShards || 0) >= cost) {
+        state.galaxyShards = (state.galaxyShards || 0) - cost;
+        state.slummerGlassLevel = (state.slummerGlassLevel || 1) + 1;
+        broadcastStateUpdate(true);
+      }
+      break;
+    }
+    case "UPGRADE_CATALYST": {
+      const { cost } = data;
+      if ((state.galaxyShards || 0) >= cost) {
+        state.galaxyShards = (state.galaxyShards || 0) - cost;
+        state.catalystLevel = (state.catalystLevel || 0) + 1;
+        broadcastStateUpdate(true);
+      }
+      break;
+    }
+    case "UPGRADE_DOUBLE_STELLAR": {
+      const { cost } = data;
+      if ((state.galaxyShards || 0) >= cost) {
+        state.galaxyShards = (state.galaxyShards || 0) - cost;
+        state.doubleStellarLevel = (state.doubleStellarLevel || 0) + 1;
+        broadcastStateUpdate(true);
+      }
       break;
     }
     case "INVEST_CONSTELLATION": {
@@ -1365,8 +1438,16 @@ addEventListener("message", (e) => {
       break;
     }
     case "ADD_GLITTER_DUST": {
-      const { amount } = data;
-      const phoenixMultiplier = state.zodiac === "phoenix" ? 1.50 : 1.0;
+      let { amount } = data;
+      
+      // Double Stellar Catcher premium upgrade (+10% chance to double glitter dust gains per level)
+      const doubleStellarLvl = state.doubleStellarLevel || 0;
+      if (doubleStellarLvl > 0 && Math.random() < doubleStellarLvl * 0.10) {
+        amount = amount * 2;
+      }
+
+      const phoenixLvl = (state.zodiacLevels?.phoenix) || 1;
+      const phoenixMultiplier = state.zodiac === "phoenix" ? (1.50 + (phoenixLvl - 1) * 0.15) : 1.0;
       state.glitterDust = (state.glitterDust || 0) + Math.ceil(Number(amount) * phoenixMultiplier);
       broadcastStateUpdate(true);
       break;

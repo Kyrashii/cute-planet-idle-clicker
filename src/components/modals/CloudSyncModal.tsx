@@ -71,11 +71,19 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(({
 
   const getSyncTimeString = () => {
     if (!lastSynced) return "Noch nicht synchronisiert";
-    return lastSynced.toLocaleTimeString("de-DE", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
+    try {
+      const date = lastSynced instanceof Date ? lastSynced : new Date(lastSynced as any);
+      if (isNaN(date.getTime())) {
+        return "Noch nicht synchronisiert";
+      }
+      return date.toLocaleTimeString("de-DE", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+    } catch (e) {
+      return String(lastSynced);
+    }
   };
 
   return (
