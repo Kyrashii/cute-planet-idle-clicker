@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "motion/react";
+import { Modal } from "../ui/Modal";
 
 interface CheatEventModalProps {
   isOpen: boolean;
@@ -7,13 +7,11 @@ interface CheatEventModalProps {
   onClose: () => void;
 }
 
-export const CheatEventModal: React.FC<CheatEventModalProps> = ({
+export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(({
   isOpen,
   onSelectEvent,
   onClose,
 }) => {
-  if (!isOpen) return null;
-
   const events = [
     {
       id: "meteors",
@@ -53,13 +51,11 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = ({
   ] as const;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/75 backdrop-blur-sm">
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        id="cheat-event-modal"
-        className="modal-frame-target bg-[#140f30]/95 border-3 border-cosmic-accent rounded-3.5xl p-6 max-w-md w-full shadow-[0_0_40px_rgba(171,159,210,0.25)] text-[#e2dafb] relative overflow-hidden"
-      >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName="bg-[#140f30]/95 border-3 border-cosmic-accent rounded-3.5xl p-6 max-w-md w-full shadow-[0_0_40px_rgba(171,159,210,0.25)] text-[#e2dafb] relative overflow-hidden"
+    >
         {/* Background glow effects */}
         <div className="absolute -top-24 -left-24 w-48 h-48 rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -right-24 w-48 h-48 rounded-full bg-cosmic-pink/10 blur-3xl pointer-events-none" />
@@ -116,7 +112,8 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = ({
             Schließen
           </button>
         </div>
-      </motion.div>
-    </div>
+    </Modal>
   );
-};
+});
+
+CheatEventModal.displayName = "CheatEventModal";

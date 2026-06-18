@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
+import { Modal } from "../ui/Modal";
 import { Sparkles, Trophy, X, Gift, Flame, Heart } from "lucide-react";
 import { formatCompactNumber } from "../../data";
 
@@ -27,13 +28,13 @@ interface OpeningResultModalProps {
   } | null;
 }
 
-export const OpeningResultModal: React.FC<OpeningResultModalProps> = ({
+export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(({
   isOpen,
   onClose,
   isNight,
   result,
 }) => {
-  if (!isOpen || !result) return null;
+  if (!result) return null;
 
   const { itemName, itemEmoji, count, rewards } = result;
 
@@ -50,18 +51,15 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = ({
   const hasEvents = rewards.eventsTriggered && rewards.eventsTriggered.length > 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/75 backdrop-blur-sm">
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        transition={{ type: "spring", damping: 25, stiffness: 220 }}
-        className={`relative w-full max-w-lg overflow-y-auto max-h-[90vh] rounded-3.5xl border-3 shadow-2xl p-6 md:p-8 ${
-          isNight
-            ? "bg-[#16122f]/98 border-cosmic-accent/70 text-cosmic-text custom-scrollbar"
-            : "bg-amber-50/98 border-amber-300 text-slate-800 custom-scrollbar"
-        }`}
-      >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName={`relative w-full max-w-lg overflow-y-auto max-h-[90vh] rounded-3.5xl border-3 shadow-2xl p-6 md:p-8 ${
+        isNight
+          ? "bg-[#16122f]/98 border-cosmic-accent/70 text-cosmic-text custom-scrollbar"
+          : "bg-amber-50/98 border-amber-300 text-slate-800 custom-scrollbar"
+      }`}
+    >
         {/* Sparkles / Aura Effects in Background */}
         <div className={`absolute -top-12 -left-12 w-32 h-32 rounded-full blur-3xl opacity-25 ${isNight ? "bg-purple-500" : "bg-yellow-405"}`} />
         <div className={`absolute -bottom-12 -right-12 w-32 h-32 rounded-full blur-3xl opacity-25 ${isNight ? "bg-pink-500" : "bg-orange-400"}`} />
@@ -274,7 +272,8 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = ({
             Süß, her damit! 🎉
           </button>
         </div>
-      </motion.div>
-    </div>
+    </Modal>
   );
-};
+});
+
+OpeningResultModal.displayName = "OpeningResultModal";

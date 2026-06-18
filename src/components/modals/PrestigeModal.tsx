@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
+import { Modal } from "../ui/Modal";
 import { Sparkles, Award, RotateCcw, HelpCircle, Flame, Check } from "lucide-react";
 import { getPrestigeRequirement } from "../../data";
 
@@ -13,7 +14,7 @@ interface PrestigeModalProps {
   formatCompactNumber: (num: number) => string;
 }
 
-export const PrestigeModal: React.FC<PrestigeModalProps> = ({
+export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(({
   isOpen,
   onClose,
   isNight,
@@ -22,8 +23,6 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = ({
   onPrestigeConfirm,
   formatCompactNumber,
 }) => {
-  if (!isOpen) return null;
-
   const PRESTIGE_REQUIREMENT = getPrestigeRequirement(prestigeCount);
   const canPrestige = life >= PRESTIGE_REQUIREMENT;
   const progressPercent = Math.min(100, (life / PRESTIGE_REQUIREMENT) * 100);
@@ -32,14 +31,13 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = ({
   const nextMultiplier = 1 + (prestigeCount + 1) * 0.10;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/65 backdrop-blur-sm">
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0, y: 15 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        className={`modal-frame-target flex flex-col max-w-md w-full shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
-          isNight ? "bg-[#181333]/95 border-cosmic-accent" : "bg-amber-50 border-amber-400 text-slate-800"
-        }`}
-      >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName={`flex flex-col max-w-md w-full shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
+        isNight ? "bg-[#181333]/95 border-cosmic-accent" : "bg-amber-50 border-amber-400 text-slate-800"
+      }`}
+    >
         {/* Header */}
         <div className={`p-4 sm:p-5 border-b-3 flex items-center justify-between shrink-0 transition-colors duration-500 ${
           isNight ? "border-cosmic-accent/40 bg-[#0d0a20]" : "border-amber-300 bg-amber-100 text-[#2c1d0a]"
@@ -175,7 +173,8 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = ({
             Zurück zum Planeten
           </button>
         </div>
-      </motion.div>
-    </div>
+    </Modal>
   );
-};
+});
+
+PrestigeModal.displayName = "PrestigeModal";

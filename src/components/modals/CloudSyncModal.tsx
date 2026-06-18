@@ -1,5 +1,6 @@
 import React from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { Modal } from "../ui/Modal";
 import { 
   Cloud, 
   X, 
@@ -52,7 +53,7 @@ const getMaxMoonsForList = (upgrades: string[] | undefined): number => {
   return limit;
 };
 
-export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
+export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(({
   isOpen,
   onClose,
   user,
@@ -66,7 +67,6 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
   localStats,
   cloudStats,
 }) => {
-  if (!isOpen) return null;
 
   const formatTime = (totalSeconds: number) => {
     const hours = Math.floor(totalSeconds / 3600);
@@ -85,13 +85,11 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-gray-950/65 backdrop-blur-sm">
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.95, opacity: 0 }}
-        className="modal-frame-target bg-[#181236]/95 border-3 border-cosmic-accent rounded-3.5xl p-6.5 max-w-lg w-full shadow-2xl text-cosmic-text relative"
-      >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName="bg-[#181236]/95 border-3 border-cosmic-accent rounded-3.5xl p-6.5 max-w-lg w-full shadow-2xl text-cosmic-text relative"
+    >
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -324,7 +322,8 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = ({
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.div>
-    </div>
+    </Modal>
   );
-};
+});
+
+CloudSyncModal.displayName = "CloudSyncModal";

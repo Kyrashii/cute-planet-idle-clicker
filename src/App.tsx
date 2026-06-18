@@ -783,6 +783,19 @@ export default function App() {
     };
   }, []);
 
+  // Tab visibility — pause/resume the worker loop to avoid backlog + freeze on return
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.hidden) {
+        workerRef.current?.postMessage({ type: "PAUSE_TIMERS" });
+      } else {
+        workerRef.current?.postMessage({ type: "RESUME_TIMERS" });
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
+
   // Game stats tracking (hydrated by worker)
   const [showResetDialog, setShowResetDialog] = useState<boolean>(false);
   const [showCheatEventModal, setShowCheatEventModal] = useState<boolean>(false);

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
 import { Animal } from "../../types";
+import { Modal } from "../ui/Modal";
 
 const AnimalImage: React.FC<{
   image?: string;
@@ -52,7 +53,7 @@ interface AnimalsModalProps {
   };
 }
 
-export const AnimalsModal: React.FC<AnimalsModalProps> = ({
+export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(({
   isOpen,
   onClose,
   life,
@@ -66,8 +67,6 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
 }) => {
   const [buyAmount, setBuyAmount] = useState<1 | 10 | 25 | "max">(1);
   const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
-
-  if (!isOpen) return null;
 
   // Smart Helpers math calculations
   const getCheapestAnimal = () => {
@@ -134,12 +133,11 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/60 backdrop-blur-sm">
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0, y: 15 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="modal-frame-target bg-[#1a163a]/95 rounded-3.5xl border-3 border-cosmic-accent flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
-      >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName="bg-[#1a163a]/95 rounded-3.5xl border-3 border-cosmic-accent flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
+    >
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b-3 border-cosmic-accent/60 bg-gradient-to-r from-[#171430] via-[#211a3d] to-[#171430] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
@@ -665,7 +663,8 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = ({
             </b>
           </span>
         </div>
-      </motion.div>
-    </div>
+    </Modal>
   );
-};
+});
+
+AnimalsModal.displayName = "AnimalsModal";

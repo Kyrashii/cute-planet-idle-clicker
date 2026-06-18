@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { Modal } from "../ui/Modal";
 import { Sparkles, Star, ShieldAlert, Check, Lock, Backpack } from "lucide-react";
 import { COSMETIC_ITEMS, CosmeticItem, RARITY_STYLES } from "../../data/cosmetics";
 import { CRAFTING_RECIPES } from "../../data/recipes";
@@ -32,7 +33,7 @@ interface InventoryModalProps {
   onSelectZodiac?: (zodiacId: string) => void;
 }
 
-export const InventoryModal: React.FC<InventoryModalProps> = ({
+export const InventoryModal: React.FC<InventoryModalProps> = React.memo(({
   isOpen,
   onClose,
   isNight,
@@ -58,8 +59,6 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
   const [openingState, setOpeningState] = useState<"idle" | "shaking" | "revealed">("idle");
   const [revealedItem, setRevealedItem] = useState<CosmeticItem | null>(null);
   const [isRevealDuplicate, setIsRevealDuplicate] = useState(false);
-
-  if (!isOpen) return null;
 
   const getGlitterRefund = (rarity: string): number => {
     if (rarity === "legendary") return 100;
@@ -175,14 +174,13 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/65 backdrop-blur-sm">
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0, y: 15 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        className={`modal-frame-target flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
-          isNight ? "bg-[#161230]/95 border-cosmic-accent" : "bg-amber-50/95 border-amber-400 text-slate-800"
-        }`}
-      >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName={`flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
+        isNight ? "bg-[#161230]/95 border-cosmic-accent" : "bg-amber-50/95 border-amber-400 text-slate-800"
+      }`}
+    >
         {/* GACHA SHAKING STATE OVERLAY */}
         {openingState === "shaking" && (
           <div className="absolute inset-0 bg-[#070514ec]/98 backdrop-blur-md flex flex-col items-center justify-center gap-4 z-50">
@@ -906,7 +904,8 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({
             </div>
           )}
         </div>
-      </motion.div>
-    </div>
+    </Modal>
   );
-};
+});
+
+InventoryModal.displayName = "InventoryModal";

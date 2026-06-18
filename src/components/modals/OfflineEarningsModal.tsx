@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "motion/react";
+import { Modal } from "../ui/Modal";
 import { Clock, Sparkles, Flame, Coins, Award } from "lucide-react";
 
 interface OfflineEarningsModalProps {
@@ -14,7 +14,7 @@ interface OfflineEarningsModalProps {
   isNight: boolean;
 }
 
-export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = ({
+export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = React.memo(({
   isOpen,
   onClose,
   secondsAway,
@@ -25,8 +25,6 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = ({
   formatCompactNumber,
   isNight,
 }) => {
-  if (!isOpen || earnedLife <= 0) return null;
-
   // Format seconds into a beautiful readable string (Up to 5 hours maximum)
   const formatOfflineTime = (totalSeconds: number) => {
     const hrs = Math.floor(totalSeconds / 3600);
@@ -46,14 +44,13 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = ({
   const baseLps = offlineLps / prestigeMultiplier;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/70 backdrop-blur-md">
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0, y: 30 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        className={`modal-frame-target flex flex-col max-w-sm w-full shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
-          isNight ? "bg-[#181333]/95 border-cosmic-accent" : "bg-amber-50 border-amber-400 text-slate-800"
-        }`}
-      >
+    <Modal
+      isOpen={isOpen && earnedLife > 0}
+      onClose={onClose}
+      panelClassName={`flex flex-col max-w-sm w-full shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
+        isNight ? "bg-[#181333]/95 border-cosmic-accent" : "bg-amber-50 border-amber-400 text-slate-800"
+      }`}
+    >
         {/* Subtle glowing sparks in background */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-yellow-300/10 via-[#0d0a20]/0 to-indigo-900/10 pointer-events-none" />
 
@@ -149,7 +146,8 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = ({
             Lebensenergie ernten!
           </button>
         </div>
-      </motion.div>
-    </div>
+    </Modal>
   );
-};
+});
+
+OfflineEarningsModal.displayName = "OfflineEarningsModal";

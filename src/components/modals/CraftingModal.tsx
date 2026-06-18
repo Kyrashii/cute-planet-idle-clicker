@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { Modal } from "../ui/Modal";
 import { CRAFTING_RECIPES, Recipe } from "../../data/recipes";
 import { Hammer, Coins, Star, HelpCircle, Package, Layers, Sparkles } from "lucide-react";
 
@@ -17,7 +18,7 @@ interface CraftingModalProps {
   formatCompactNumber: (num: number) => string;
 }
 
-export const CraftingModal: React.FC<CraftingModalProps> = ({
+export const CraftingModal: React.FC<CraftingModalProps> = React.memo(({
   isOpen,
   onClose,
   isNight,
@@ -36,8 +37,6 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [craftAmount, setCraftAmount] = useState<number>(1);
-
-  if (!isOpen) return null;
 
   const handleSelectRecipe = (id: string) => {
     setSelectedRecipeId(id);
@@ -141,14 +140,13 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/65 backdrop-blur-sm">
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0, y: 15 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        className={`modal-frame-target flex flex-col max-w-4xl w-full h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
-          isNight ? "bg-[#14102d]/95 border-cosmic-accent" : "bg-amber-50/95 border-amber-450 text-slate-800"
-        }`}
-      >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName={`flex flex-col max-w-4xl w-full h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
+        isNight ? "bg-[#14102d]/95 border-cosmic-accent" : "bg-amber-50/95 border-amber-450 text-slate-800"
+      }`}
+    >
         {/* Header */}
         <div className={`p-4 sm:p-5 border-b-3 flex items-center justify-between shrink-0 transition-colors duration-500 ${
           isNight ? "border-cosmic-accent/45 bg-[#0a081e]" : "border-amber-300 bg-amber-100 text-[#2c1d0a]"
@@ -491,7 +489,8 @@ export const CraftingModal: React.FC<CraftingModalProps> = ({
           </div>
 
         </div>
-      </motion.div>
-    </div>
+    </Modal>
   );
-};
+});
+
+CraftingModal.displayName = "CraftingModal";
