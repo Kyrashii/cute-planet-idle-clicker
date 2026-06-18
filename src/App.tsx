@@ -48,6 +48,7 @@ import { GalaxyVoyageModal } from "./components/modals/GalaxyVoyageModal";
 // Modularized UI Components
 import { CosmicHeader } from "./components/CosmicHeader";
 import { GameModalsContainer } from "./components/GameModalsContainer";
+import { ModalSettingsProvider } from "./components/ui/Modal";
 import { BackgroundCompanions } from "./components/BackgroundCompanions";
 import { EventBackgrounds } from "./components/EventBackgrounds";
 import { CosmicHUD } from "./components/CosmicHUD";
@@ -966,7 +967,7 @@ export default function App() {
     };
   }, []);
 
-  // Autosave game state periodically to browser localStorage (read from   // Synchronize modal styling class directly with the body element
+  // Synchronize modal styling class directly with the body element
   useEffect(() => {
     const b = document.body;
     b.classList.forEach((c) => {
@@ -974,6 +975,12 @@ export default function App() {
     });
     b.classList.add(`active-frame-${activeFrame}`);
   }, [activeFrame]);
+
+  // Toggle low-memory body class so CSS can kill all GPU-heavy effects app-wide
+  useEffect(() => {
+    document.body.classList.toggle("low-memory", disableAnimations);
+    return () => { document.body.classList.remove("low-memory"); };
+  }, [disableAnimations]);
 
   // Keep save variables stored in a ref so the autosave interval doesn't rebuild 50 times a second
   const autoSaveStateRef = useRef<any>(null);
@@ -1483,7 +1490,7 @@ export default function App() {
   }
 
   return (
-    <>
+    <ModalSettingsProvider disableAnimations={disableAnimations}>
       <div className={`min-h-screen relative overflow-hidden transition-all duration-1000 ease-in-out flex flex-col font-sans scroll-smooth ${
         isNightStyle 
           ? "bg-gradient-to-b from-cosmic-bg via-[#1b1535] to-[#0b0818] text-cosmic-text selection:bg-cosmic-pink selection:text-cosmic-bg" 
@@ -1848,6 +1855,6 @@ export default function App() {
         prestigeCount={prestigeCount}
         onConfirmVoyage={handleConfirmPrestige}
       />
-    </>
+    </ModalSettingsProvider>
   );
 }

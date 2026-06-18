@@ -563,3 +563,25 @@ body.active-frame-butterfly [class*="rounded-3"]:not([class*="rounded-3xl\/"]):n
   animation: companion-bob var(--bob-dur) ease-in-out infinite;
   animation-delay: var(--bob-delay);
 }
+
+/* ─── Low-memory / prefers-reduced-motion ────────────────────────────────── */
+/* Kill every backdrop-filter compositing layer app-wide in one shot.         */
+/* JS sets body.low-memory when isLowMemory || prefersReducedMotion is true.  */
+body.low-memory *,
+body.low-memory *::before,
+body.low-memory *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  --tw-blur: 0;
+}
+
+/* Stop infinite keyframe animations that churn the GPU each frame            */
+body.low-memory .modal-frame-target::before,
+body.low-memory .modal-frame-target::after,
+body.low-memory [class*="rounded-3"]::before,
+body.low-memory [class*="rounded-3"]::after,
+body.low-memory .companion-outer,
+body.low-memory .companion-inner,
+body.low-memory .animate-rainbow-star {
+  animation: none !important;
+}
