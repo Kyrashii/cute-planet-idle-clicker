@@ -1,6 +1,6 @@
 import React from "react";
-import { motion } from "motion/react";
 import { Check, Sparkles } from "lucide-react";
+import { Modal } from "../ui/Modal";
 import { generateMissionsForSet, Mission } from "../../data/missions";
 
 interface MissionsModalProps {
@@ -19,7 +19,7 @@ interface MissionsModalProps {
   purchasedUpgrades?: string[];
 }
 
-export const MissionsModal: React.FC<MissionsModalProps> = ({
+export const MissionsModal: React.FC<MissionsModalProps> = React.memo(({
   isOpen,
   onClose,
   isNight,
@@ -34,8 +34,6 @@ export const MissionsModal: React.FC<MissionsModalProps> = ({
   unlockedCosmetics = [],
   purchasedUpgrades = []
 }) => {
-  if (!isOpen) return null;
-
   // Check Sakura Set Bonus (+20% Mission-Rewards)
   const hasSetBonusSet = purchasedUpgrades.includes("upg-glitter-set");
   const sakuraSetComplete = hasSetBonusSet && ["star_pink", "acc_flower_crown", "moon_sakura"].every((id) => unlockedCosmetics.includes(id));
@@ -80,12 +78,11 @@ export const MissionsModal: React.FC<MissionsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/65 backdrop-blur-sm">
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0, y: 15 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        className={`modal-frame-target flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text bg-[#181435]/95 border-cosmic-accent`}
-      >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName="flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text bg-[#181435]/95 border-cosmic-accent"
+    >
         {/* Header */}
         <div className={`p-4 sm:p-5 border-b-3 flex items-center justify-between shrink-0 transition-colors duration-500 border-cosmic-accent/40 bg-[#0e0b23]`}>
           <div className="flex items-center gap-2.5">
@@ -273,7 +270,8 @@ export const MissionsModal: React.FC<MissionsModalProps> = ({
             </div>
           </div>
         )}
-      </motion.div>
-    </div>
+    </Modal>
   );
-};
+});
+
+MissionsModal.displayName = "MissionsModal";

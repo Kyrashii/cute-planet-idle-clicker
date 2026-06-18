@@ -3,9 +3,7 @@ import { INITIAL_ANIMALS, calculateCost } from "./data";
 import { COSMETIC_ITEMS } from "./data/cosmetics";
 import { CRAFTING_RECIPES } from "./data/recipes";
 import { ZODIACS } from "./data/zodiacs";
-
-// Static level bounds matching App.tsx
-const EXP_PER_LEVEL = [0, 1500, 5000, 18000, 60000, 220000, 850000, 3200000, 12000000, 45000000, 160000000, 550000000, 1800000000, 6000000000, 20000000000, 65000000000, 200000000000, 600000000000, 1800000000000, 5000000000000];
+import { computeLevelUpResult, expForLevel, EXP_PER_LEVEL } from "./game/engine";
 
 // ROMAN NUMERAL LIST for Achievements
 const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV"];
@@ -71,6 +69,8 @@ let state: WorkerState = {
 
 // Timers refs
 let gameTimerId: any = null;
+// Timestamp when the tab was hidden (for batched catch-up on resume)
+let hiddenAt: number | null = null;
 
 // Roll helper to guarantee never calling the same zodiac twice in a row
 function rollNewZodiac(currentId?: string): string {
@@ -542,29 +542,18 @@ function generateAchievements() {
   return list;
 }
 
-// Check and trigger planet level ups
+// Check and trigger planet level ups.
+// Uses the pure computeLevelUpResult from engine.ts — safe for large batched XP
+// amounts (e.g. catch-up after a long tab-out). Emits at most ONE LEVEL_UP
+// message per call (with the final level), avoiding main-thread message floods.
 function addPlanetExp(amount: number) {
-  let currentExp = state.planetExp + amount;
-  let currentLevel = state.planetLevel;
-  let leveledUp = false;
-
-  while (true) {
-    const expBound = EXP_PER_LEVEL[currentLevel] || (5000000000000 + (currentLevel - 19) * 2000000000000);
-    if (currentExp >= expBound) {
-      currentExp -= expBound;
-      currentLevel += 1;
-      leveledUp = true;
-    } else {
-      break;
-    }
-  }
-
-  state.planetExp = currentExp;
-  if (leveledUp) {
-    state.planetLevel = currentLevel;
+  const r = computeLevelUpResult(state.planetLevel, state.planetExp, amount);
+  state.planetExp = r.newExp;
+  if (r.levelsGained > 0) {
+    state.planetLevel = r.newLevel;
     postMessage({
       type: "LEVEL_UP",
-      level: currentLevel,
+      level: r.newLevel,
     });
   }
 }
@@ -1774,6 +1763,69 @@ addEventListener("message", (e) => {
           error: "Nicht genügend Ressourcen für diese Opfergabe!",
         });
       }
+      break;
+    }
+    // -----------------------------------------------------------------------
+    // Tab visibility — pause/resume
+    // -----------------------------------------------------------------------
+    case "PAUSE_TIMERS": {
+      // Tab became hidden: stop all ticking to prevent interval backlog.
+      stopTimers();
+      hiddenAt = Date.now();
+      break;
+    }
+    case "RESUME_TIMERS": {
+      // Tab became visible again: apply one batched catch-up instead of
+      // replaying a backlog of ticks, then restart live timers.
+      if (hiddenAt !== null) {
+        const elapsedMs = Date.now() - hiddenAt;
+        hiddenAt = null;
+
+        const elapsedSecs = Math.floor(elapsedMs / 1000);
+        if (elapsedSecs >= 1) {
+          // Cap at the same 5-hour limit used by the offline-earnings path
+          const MAX_CATCHUP_SECS = 5 * 60 * 60;
+          const cappedSecs = Math.min(elapsedSecs, MAX_CATCHUP_SECS);
+
+          // Compute LPS once from current live state
+          const stats = getLpsAndStats();
+          const lifeEarned = stats.totalLps * cappedSecs;
+          state.life += lifeEarned;
+          state.totalLifeEarned += lifeEarned;
+
+          // Advance secondsPlayed
+          state.secondsPlayed += cappedSecs;
+
+          // Advance day/night cycle
+          // Each 250ms tick adds 0.4166667% progress; clamp and toggle as needed
+          const cycleUnits = cappedSecs * 4; // 4 ticks per second
+          const constellMondhasenLvl = state.constellations?.mondhasen || 0;
+          let cycleProgress = state.cycleProgress;
+          let isNight = state.isNight;
+          let progressToAdd = cycleUnits * 0.4166667;
+          // Apply night-time slow factor (mondhasen constellation)
+          const nightMod = isNight ? (1 / (1 + constellMondhasenLvl * 0.25)) : 1.0;
+          progressToAdd *= nightMod;
+          cycleProgress += progressToAdd;
+          // Count full cycles and determine final state
+          const fullCycles = Math.floor(cycleProgress / 100);
+          if (fullCycles > 0) {
+            if (fullCycles % 2 === 1) isNight = !isNight;
+            cycleProgress = cycleProgress % 100;
+          }
+          state.cycleProgress = cycleProgress;
+          state.isNight = isNight;
+
+          // Batch XP from stars/moons (same math as the starTimerId, once per second)
+          const xpFromStars = state.starsCount * 1.0 * stats.xpMultiplier * stats.xpEventMultiplier * cappedSecs;
+          const xpFromMoons = (state.moonsCount || 0) * 15 * stats.xpMultiplier * stats.xpEventMultiplier * cappedSecs;
+          addPlanetExp(xpFromStars + xpFromMoons);
+        }
+      }
+
+      startTimers();
+      // Broadcast one consolidated update so the UI jumps to correct values
+      broadcastStateUpdate(false);
       break;
     }
     case "CLEANUP": {

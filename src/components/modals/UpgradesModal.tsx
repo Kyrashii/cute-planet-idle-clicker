@@ -1,6 +1,6 @@
 import React from "react";
-import { motion } from "motion/react";
 import { Upgrade } from "../../types";
+import { Modal } from "../ui/Modal";
 
 interface UpgradesModalProps {
   isOpen: boolean;
@@ -15,7 +15,7 @@ interface UpgradesModalProps {
   formatCompactNumber: (num: number) => string;
 }
 
-export const UpgradesModal: React.FC<UpgradesModalProps> = ({
+export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(({
   isOpen,
   onClose,
   life,
@@ -27,8 +27,6 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = ({
   onBuyUpgradesBatch,
   formatCompactNumber,
 }) => {
-  if (!isOpen) return null;
-
   // Calculate affordable upgrades list (simulation of buy order: cheapest first)
   const getAffordableUpgradesList = () => {
     const unpurchased = staticUpgrades.filter(upg => !purchasedUpgrades.includes(upg.id));
@@ -66,12 +64,11 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/60 backdrop-blur-sm">
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0, y: 15 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="modal-frame-target bg-[#1a163a]/95 rounded-3.5xl border-3 border-cosmic-accent flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
-      >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName="bg-[#1a163a]/95 rounded-3.5xl border-3 border-cosmic-accent flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
+    >
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b-3 border-cosmic-accent/60 bg-gradient-to-r from-[#171430] via-[#211a3d] to-[#171430] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
@@ -217,7 +214,8 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = ({
             <span>Guthaben: <b className="text-cosmic-pink" title={Math.floor(life).toLocaleString("de-DE")}>{formatCompactNumber(life)} 💖</b></span>
           </div>
         </div>
-      </motion.div>
-    </div>
+    </Modal>
   );
-};
+});
+
+UpgradesModal.displayName = "UpgradesModal";

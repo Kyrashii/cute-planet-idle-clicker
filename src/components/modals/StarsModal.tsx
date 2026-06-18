@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { Star, HelpCircle, Flame, Sparkles, Orbit } from "lucide-react";
+import { Modal } from "../ui/Modal";
 
 export interface ConstellationDef {
   id: string;
@@ -104,7 +105,7 @@ interface StarsModalProps {
   onInvestConstellation: (constellationId: string, starsCost: number, moonsCost: number) => void;
 }
 
-export const StarsModal: React.FC<StarsModalProps> = ({
+export const StarsModal: React.FC<StarsModalProps> = React.memo(({
   isOpen,
   onClose,
   life,
@@ -119,13 +120,11 @@ export const StarsModal: React.FC<StarsModalProps> = ({
   onMergeMoons,
   prestigeCount = 0,
   maxMoons = 3,
-  
+
   constellations,
   onInvestConstellation,
 }) => {
   const [activeTab, setActiveTab] = useState<"stars_call" | "constellations">("stars_call");
-
-  if (!isOpen) return null;
 
   const canMerge = starsCount >= 50 && moonsCount < maxMoons;
   const prestigeMultiplier = 1 + prestigeCount * 0.10;
@@ -133,12 +132,11 @@ export const StarsModal: React.FC<StarsModalProps> = ({
   const totalMoonPower = moonsCount * singleMoonPower;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/65 backdrop-blur-sm">
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0, y: 15 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="modal-frame-target bg-[#141235]/95 backdrop-blur-md rounded-3.5xl border-3 border-amber-300 flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
-      >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName="bg-[#141235]/95 rounded-3.5xl border-3 border-amber-300 flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
+    >
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b-3 border-amber-300/60 bg-gradient-to-r from-[#110e2f] via-[#1b1747] to-[#110e2f] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
@@ -468,7 +466,8 @@ export const StarsModal: React.FC<StarsModalProps> = ({
           </div>
           <span>Guthaben: <b className="text-cosmic-pink font-black">{formatCompactNumber(life)} 💖</b></span>
         </div>
-      </motion.div>
-    </div>
+    </Modal>
   );
-};
+});
+
+StarsModal.displayName = "StarsModal";

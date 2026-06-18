@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "motion/react";
+import { Modal } from "../ui/Modal";
 import { collection, query, orderBy, limit, getDocs, doc, getDoc } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType } from "../../lib/firebase";
 import { Trophy, RefreshCw, Medal } from "lucide-react";
@@ -19,7 +19,7 @@ interface LeaderboardModalProps {
   formatCompactNumber: (num: number) => string;
 }
 
-export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
+export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(({
   isOpen,
   onClose,
   currentUserId,
@@ -80,15 +80,13 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
     }
   }, [isOpen, currentUserId]);
 
-  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/60 backdrop-blur-sm">
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0, y: 15 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="modal-frame-target bg-[#1a163a]/95 backdrop-blur-md border-3 border-amber-400 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-3.5xl"
-      >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName="bg-[#1a163a]/95 border-3 border-amber-400 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-3.5xl"
+    >
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b-3 border-amber-400/60 bg-gradient-to-r from-[#1b1c3c] via-[#212450] to-[#1b1c3c] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
@@ -241,7 +239,8 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = ({
             Deine Position wird automatisch aktualisiert, wenn deine Spieldaten in die Cloud synchronisiert werden.
           </p>
         </div>
-      </motion.div>
-    </div>
+    </Modal>
   );
-};
+});
+
+LeaderboardModal.displayName = "LeaderboardModal";

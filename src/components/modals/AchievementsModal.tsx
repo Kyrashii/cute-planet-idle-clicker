@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "motion/react";
+import { Modal } from "../ui/Modal";
 
 interface Achievement {
   id: string;
@@ -27,7 +27,7 @@ interface AchievementsModalProps {
   playUpgrade: () => void;
 }
 
-export const AchievementsModal: React.FC<AchievementsModalProps> = ({
+export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(function AchievementsModal({
   isOpen,
   onClose,
   isNight,
@@ -40,17 +40,14 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
   life,
   formatCompactNumber,
   playUpgrade,
-}) => {
-  if (!isOpen) return null;
-
+}) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/60 backdrop-blur-sm">
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0, y: 15 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        className={`modal-frame-target flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl rounded-3xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text ${
-          isNight ? "bg-[#181435]/95 border-amber-300" : "bg-amber-50/95 border-amber-400 text-slate-800"
-        }`}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName={`flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl rounded-3xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text ${
+        isNight ? "bg-[#181435]/95 border-amber-300" : "bg-amber-50/95 border-amber-400 text-slate-800"
+      }`}
       >
         {/* Modal Header */}
         <div className={`p-4 sm:p-5 border-b-3 flex items-center justify-between shrink-0 transition-colors duration-500 ${
@@ -260,7 +257,8 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = ({
           <span>Erfolge freigeschaltet: <b className="text-amber-300 font-extrabold">{unlockedAchievementsCount} / {achievements.length}</b></span>
           <span>Guthaben: <b className="text-cosmic-pink font-extrabold">{formatCompactNumber(life)} 💖</b></span>
         </div>
-      </motion.div>
-    </div>
+    </Modal>
   );
-};
+});
+
+AchievementsModal.displayName = "AchievementsModal";

@@ -1,4 +1,5 @@
 import React from "react";
+import { ModalSettingsProvider } from "./ui/Modal";
 import { ResetDialog } from "./modals/ResetDialog";
 import { CheatEventModal } from "./modals/CheatEventModal";
 import { UpgradesModal } from "./modals/UpgradesModal";
@@ -142,6 +143,7 @@ interface GameModalsContainerProps {
   activeZodiacId: string;
   cosmeticRarityLevels: Record<string, string>;
   upgradesSpecs: any;
+  disableAnimations: boolean;
 }
 
 export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.memo(({
@@ -263,9 +265,10 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
   activeZodiacId,
   cosmeticRarityLevels,
   upgradesSpecs,
+  disableAnimations,
 }) => {
   return (
-    <>
+    <ModalSettingsProvider disableAnimations={disableAnimations}>
       {showResetDialog && (
         <ResetDialog
           isOpen={showResetDialog}
@@ -575,7 +578,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           formatCompactNumber={formatCompactNumber}
         />
       )}
-    </>
+    </ModalSettingsProvider>
   );
 });
 

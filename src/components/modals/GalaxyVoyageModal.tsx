@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
+import { Modal } from "../ui/Modal";
 import { Sparkles, Compass, Rocket, Heart, Gift, Award } from "lucide-react";
 
 interface GalaxyVoyageModalProps {
@@ -35,30 +36,28 @@ const VOYAGE_STORIES = [
   "Die gesamte Galaxie summt vor Glück und Dankbarkeit. Aus jedem Winkel deiner Himmelskörper leuchten süße Lämpchen der Liebe auf. Du hast eine perfekte Sinfonie des Pastells kreiert! Doch der Kosmos ist unendlich groß, und neue flauschige Geheimnisse warten hinter dem funkelnden Horizont darauf, von deinem liebenswerten Geist entdeckt zu werden. Vorwärts zu neuen Träumen!"
 ];
 
-export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = ({
+export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(({
   isOpen,
   prestigeCount,
   onConfirmVoyage,
 }) => {
-  if (!isOpen) return null;
-
   // Retrieve story by current prestige index
   const selectStory = VOYAGE_STORIES[prestigeCount % VOYAGE_STORIES.length];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#070512]/95 backdrop-blur-md overflow-y-auto select-none">
-      {/* Outer wrapper card taking up beautiful space */}
-      <motion.div
-        initial={{ scale: 0.92, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative max-w-2xl w-full aspect-[4/5] sm:aspect-[1.4/1] rounded-[2.5rem] overflow-hidden border-4 border-[#ffcbdc] shadow-[0_0_50px_rgba(255,203,220,0.35)] flex flex-col justify-end p-6 sm:p-10 select-none text-white"
-        style={{
-          backgroundImage: "url('/assets/stuff/pastell_galaxie_reise.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {}}
+      closeOnBackdrop={false}
+      skipFrameTarget
+      backdropClassName="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#070512]/95 backdrop-blur-md overflow-y-auto select-none"
+      panelClassName="relative max-w-2xl w-full aspect-[4/5] sm:aspect-[1.4/1] rounded-[2.5rem] overflow-hidden border-4 border-[#ffcbdc] shadow-[0_0_50px_rgba(255,203,220,0.35)] flex flex-col justify-end p-6 sm:p-10 select-none text-white"
+      panelStyle={{
+        backgroundImage: "url('/assets/stuff/pastell_galaxie_reise.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
         {/* Dark warm glowing backdrop overlay over the image to guarantee readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-cosmic-bg/95 via-cosmic-bg/70 to-cosmic-bg/25 pointer-events-none" />
 
@@ -147,7 +146,8 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = ({
           </p>
 
         </div>
-      </motion.div>
-    </div>
+    </Modal>
   );
-};
+});
+
+GalaxyVoyageModal.displayName = "GalaxyVoyageModal";
