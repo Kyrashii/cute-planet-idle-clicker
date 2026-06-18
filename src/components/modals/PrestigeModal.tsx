@@ -3,13 +3,12 @@ import { motion } from "motion/react";
 import { Modal } from "../ui/Modal";
 import { Sparkles, Award, RotateCcw, HelpCircle, Flame, Check } from "lucide-react";
 import { getPrestigeRequirement } from "../../data";
+import { useGameState } from "../../contexts/GameStateContext";
 
 interface PrestigeModalProps {
   isOpen: boolean;
   onClose: () => void;
   isNight: boolean;
-  life: number;
-  prestigeCount: number;
   onPrestigeConfirm: () => void;
   formatCompactNumber: (num: number) => string;
 }
@@ -18,11 +17,10 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(({
   isOpen,
   onClose,
   isNight,
-  life,
-  prestigeCount,
   onPrestigeConfirm,
   formatCompactNumber,
 }) => {
+  const { life, prestigeCount } = useGameState();
   const PRESTIGE_REQUIREMENT = getPrestigeRequirement(prestigeCount);
   const canPrestige = life >= PRESTIGE_REQUIREMENT;
   const progressPercent = Math.min(100, (life / PRESTIGE_REQUIREMENT) * 100);

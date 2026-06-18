@@ -1,5 +1,4 @@
 import React from "react";
-import { ModalSettingsProvider } from "./ui/Modal";
 import { ResetDialog } from "./modals/ResetDialog";
 import { CheatEventModal } from "./modals/CheatEventModal";
 import { UpgradesModal } from "./modals/UpgradesModal";
@@ -79,39 +78,21 @@ interface GameModalsContainerProps {
   handleUseCraftedItem: (itemId: string, count?: number) => void;
   handleSelectZodiac: (zodiacId: string) => void;
   handleConfirmPrestige: () => void;
+  onForceSave: () => void;
 
-  // State variables
-  life: number;
-  glitterDust: number;
-  totalLps: number;
+  // Stable state — referentially guarded or changes only on user actions
   purchasedUpgrades: string[];
   staticUpgrades: any;
-  totalAnimalsLps: number;
   purchasedAnimals: Record<string, number>;
-  starsCount: number;
-  starPowerPerStar: number;
-  starClicksTriggered: number;
-  starCost: number;
-  totalStarsLps: number;
-  moonsCount: number;
-  prestigeCount: number;
-  maxMoons: number;
   constellations: Record<string, number>;
   isNightStyle: boolean;
-  shootingStarsCount: number;
   craftedItems: Record<string, number>;
-  totalLifeEarned: number;
-  clicksCount: number;
-  secondsPlayed: number;
-  planetLevel: number;
-  planetExp: number;
   formatCompactNumber: (num: number) => string;
   formatTimePlayed: (sec: number) => string;
   offlineSeconds: number;
   offlineLpsRate: number;
   offlineEarnedLife: number;
   achievements: any[];
-  unlockedAchievementsCount: number;
   achievementCategoryFilter: string;
   setAchievementCategoryFilter: (filter: string) => void;
   achievementSearch: string;
@@ -127,11 +108,9 @@ interface GameModalsContainerProps {
   lastSynced: string | null;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
-  saveStateToCloud: (state: any) => Promise<void>;
   cloudSaveFound: any;
   triggerCloudStateLoad: (data: any) => void;
   forceLocalOverwriteCloud: () => void;
-  totalAnimalsCount: number;
   missionSetNumber: number;
   claimedMissionIds: string[];
   missionsCooldownEnd: number | null;
@@ -143,7 +122,6 @@ interface GameModalsContainerProps {
   activeZodiacId: string;
   cosmeticRarityLevels: Record<string, string>;
   upgradesSpecs: any;
-  disableAnimations: boolean;
 }
 
 export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.memo(({
@@ -202,38 +180,20 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
   handleUseCraftedItem,
   handleSelectZodiac,
   handleConfirmPrestige,
+  onForceSave,
 
-  life,
-  glitterDust,
-  totalLps,
   purchasedUpgrades,
   staticUpgrades,
-  totalAnimalsLps,
   purchasedAnimals,
-  starsCount,
-  starPowerPerStar,
-  starClicksTriggered,
-  starCost,
-  totalStarsLps,
-  moonsCount,
-  prestigeCount,
-  maxMoons,
   constellations,
   isNightStyle,
-  shootingStarsCount,
   craftedItems,
-  totalLifeEarned,
-  clicksCount,
-  secondsPlayed,
-  planetLevel,
-  planetExp,
   formatCompactNumber,
   formatTimePlayed,
   offlineSeconds,
   offlineLpsRate,
   offlineEarnedLife,
   achievements,
-  unlockedAchievementsCount,
   achievementCategoryFilter,
   setAchievementCategoryFilter,
   achievementSearch,
@@ -249,11 +209,9 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
   lastSynced,
   loginWithGoogle,
   logout,
-  saveStateToCloud,
   cloudSaveFound,
   triggerCloudStateLoad,
   forceLocalOverwriteCloud,
-  totalAnimalsCount,
   missionSetNumber,
   claimedMissionIds,
   missionsCooldownEnd,
@@ -265,10 +223,9 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
   activeZodiacId,
   cosmeticRarityLevels,
   upgradesSpecs,
-  disableAnimations,
 }) => {
   return (
-    <ModalSettingsProvider disableAnimations={disableAnimations}>
+    <>
       {showResetDialog && (
         <ResetDialog
           isOpen={showResetDialog}
@@ -294,9 +251,6 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
         <UpgradesModal
           isOpen={showUpgradesModal}
           onClose={() => setShowUpgradesModal(false)}
-          life={life}
-          glitterDust={glitterDust}
-          totalLps={totalLps}
           purchasedUpgrades={purchasedUpgrades}
           staticUpgrades={staticUpgrades}
           onBuyUpgrade={handleBuyUpgrade}
@@ -309,8 +263,6 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
         <AnimalsModal
           isOpen={showAnimalsModal}
           onClose={() => setShowAnimalsModal(false)}
-          life={life}
-          totalAnimalsLps={totalAnimalsLps}
           purchasedAnimals={purchasedAnimals}
           animalDefs={INITIAL_ANIMALS}
           onBuyAnimal={handleBuyAnimal}
@@ -324,18 +276,9 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
         <StarsModal
           isOpen={showStarsModal}
           onClose={() => setShowStarsModal(false)}
-          life={life}
-          starsCount={starsCount}
-          starPowerPerStar={starPowerPerStar}
-          starClicksTriggered={starClicksTriggered}
           onBuyStar={handleBuyStar}
-          starCost={starCost}
-          totalStarsLps={totalStarsLps}
           formatCompactNumber={formatCompactNumber}
-          moonsCount={moonsCount}
           onMergeMoons={handleMergeMoons}
-          prestigeCount={prestigeCount}
-          maxMoons={maxMoons}
           constellations={constellations}
           onInvestConstellation={handleInvestConstellation}
         />
@@ -346,11 +289,6 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           isOpen={showCraftingModal}
           onClose={() => setShowCraftingModal(false)}
           isNight={isNightStyle}
-          life={life}
-          starsCount={starsCount}
-          moonsCount={moonsCount}
-          glitterDust={glitterDust}
-          shootingStarsCount={shootingStarsCount}
           craftedItems={craftedItems}
           onCraftItem={handleCraftItem}
           formatCompactNumber={formatCompactNumber}
@@ -361,15 +299,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
         <StatsModal
           isOpen={showStatsModal}
           onClose={() => setShowStatsModal(false)}
-          totalLifeEarned={totalLifeEarned}
-          clicksCount={clicksCount}
-          totalStarsLps={totalStarsLps}
-          secondsPlayed={secondsPlayed}
           purchasedAnimals={purchasedAnimals}
-          starsCount={starsCount}
-          planetLevel={planetLevel}
-          totalLps={totalLps}
-          prestigeCount={prestigeCount}
           formatCompactNumber={formatCompactNumber}
           formatTimePlayed={formatTimePlayed}
         />
@@ -382,7 +312,6 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           secondsAway={offlineSeconds}
           offlineLps={offlineLpsRate}
           earnedLife={offlineEarnedLife}
-          prestigeCount={prestigeCount}
           onClaim={handleClaimOfflineEarnings}
           formatCompactNumber={formatCompactNumber}
           isNight={isNightStyle}
@@ -395,12 +324,10 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           onClose={() => setShowAchievementsModal(false)}
           isNight={isNightStyle}
           achievements={achievements}
-          unlockedAchievementsCount={unlockedAchievementsCount}
           achievementCategoryFilter={achievementCategoryFilter}
           setAchievementCategoryFilter={setAchievementCategoryFilter}
           achievementSearch={achievementSearch}
           setAchievementSearch={setAchievementSearch}
-          life={life}
           formatCompactNumber={formatCompactNumber}
           playUpgrade={playUpgrade}
         />
@@ -428,46 +355,13 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           lastSynced={lastSynced}
           onLogin={loginWithGoogle}
           onLogout={logout}
-          onForceSave={() => {
-            saveStateToCloud({
-              life,
-              totalLifeEarned,
-              starsCount,
-              purchasedAnimals,
-              purchasedUpgrades,
-              planetLevel,
-              planetExp,
-              clicksCount,
-              starClicksTriggered,
-              secondsPlayed,
-              unlockedCosmetics,
-              activeStarColor,
-              activeAccessory,
-              activeFrame,
-              activeMoonSkin,
-              shootingStarsCount,
-              missionSetNumber,
-              claimedMissionIds,
-              missionsCooldownEnd,
-              prestigeCount,
-              moonsCount,
-              constellations,
-            });
-          }}
+          onForceSave={onForceSave}
           onForceLoad={() => {
             if (cloudSaveFound) {
               triggerCloudStateLoad(cloudSaveFound);
             }
           }}
-          localStats={{
-            life,
-            totalLifeEarned,
-            planetLevel,
-            secondsPlayed,
-            prestigeCount,
-            moonsCount,
-            purchasedUpgrades,
-          }}
+          purchasedUpgrades={purchasedUpgrades}
           cloudStats={cloudSaveFound}
         />
       )}
@@ -476,14 +370,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
         <SyncConflictDialog
           isOpen={showConflictDialog}
           cloudData={cloudSaveFound}
-          localData={{
-            life,
-            planetLevel,
-            secondsPlayed,
-            prestigeCount,
-            moonsCount,
-            purchasedUpgrades,
-          }}
+          purchasedUpgrades={purchasedUpgrades}
           onKeepLocal={() => {
             forceLocalOverwriteCloud();
             setShowConflictDialog(false);
@@ -502,9 +389,6 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           isOpen={showMissionsModal}
           onClose={() => setShowMissionsModal(false)}
           isNight={isNightStyle}
-          clicksCount={clicksCount}
-          totalAnimalsCount={totalAnimalsCount}
-          starsCount={starsCount}
           missionSetNumber={missionSetNumber}
           claimedMissionIds={claimedMissionIds}
           missionsCooldownEnd={missionsCooldownEnd}
@@ -530,7 +414,6 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           onClose={() => setShowInventoryModal(false)}
           isNight={isNightStyle}
           zodiac={activeZodiacId}
-          shootingStarsCount={shootingStarsCount}
           unlockedCosmetics={unlockedCosmetics}
           activeStarColor={activeStarColor}
           activeAccessory={activeAccessory}
@@ -538,7 +421,6 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           activeMoonSkin={activeMoonSkin}
           onOpenShootingStar={handleOpenShootingStar}
           onApplyCosmetic={handleApplyCosmetic}
-          glitterDust={glitterDust}
           purchasedUpgrades={purchasedUpgrades}
           cosmeticRarityLevels={cosmeticRarityLevels}
           onUnlockCosmeticDirect={handleUnlockCosmeticDirect}
@@ -572,13 +454,11 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           isOpen={showPrestigeModal}
           onClose={() => setShowPrestigeModal(false)}
           isNight={isNightStyle}
-          life={life}
-          prestigeCount={prestigeCount}
           onPrestigeConfirm={handleConfirmPrestige}
           formatCompactNumber={formatCompactNumber}
         />
       )}
-    </ModalSettingsProvider>
+    </>
   );
 });
 

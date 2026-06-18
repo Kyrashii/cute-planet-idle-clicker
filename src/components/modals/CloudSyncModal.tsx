@@ -1,6 +1,7 @@
 import React from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Modal } from "../ui/Modal";
+import { useGameState } from "../../contexts/GameStateContext";
 import { 
   Cloud, 
   X, 
@@ -28,15 +29,7 @@ interface CloudSyncModalProps {
   onLogout: () => void;
   onForceSave: () => void;
   onForceLoad: () => void;
-  localStats: {
-    life: number;
-    totalLifeEarned: number;
-    planetLevel: number;
-    secondsPlayed: number;
-    prestigeCount: number;
-    moonsCount: number;
-    purchasedUpgrades: string[];
-  };
+  purchasedUpgrades: string[];
   cloudStats: any; // CloudSaveData | null
 }
 
@@ -64,9 +57,10 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(({
   onLogout,
   onForceSave,
   onForceLoad,
-  localStats,
+  purchasedUpgrades,
   cloudStats,
 }) => {
+  const { life, planetLevel, secondsPlayed, prestigeCount, moonsCount } = useGameState();
 
   const formatTime = (totalSeconds: number) => {
     const hours = Math.floor(totalSeconds / 3600);
@@ -238,25 +232,25 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(({
                   <div className="space-y-1 font-mono text-[10px] font-black text-slate-350">
                     <div className="flex justify-between">
                       <span>Stufe:</span>
-                      <span className="text-white">Lv. {localStats.planetLevel}</span>
+                      <span className="text-white">Lv. {planetLevel}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Prestige:</span>
-                      <span className="text-amber-300">St. {localStats.prestigeCount || 0}</span>
+                      <span className="text-amber-300">St. {prestigeCount || 0}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Monde:</span>
                       <span className="text-purple-300">
-                        {localStats.moonsCount || 0}/{getMaxMoonsForList(localStats.purchasedUpgrades)} 🌙
+                        {moonsCount || 0}/{getMaxMoonsForList(purchasedUpgrades)} 🌙
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Leben:</span>
-                      <span className="text-white">{formatCompactNumber(localStats.life)}</span>
+                      <span className="text-white">{formatCompactNumber(life)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Spielzeit:</span>
-                      <span className="text-white">{formatTime(localStats.secondsPlayed)}</span>
+                      <span className="text-white">{formatTime(secondsPlayed)}</span>
                     </div>
                   </div>
                 </div>

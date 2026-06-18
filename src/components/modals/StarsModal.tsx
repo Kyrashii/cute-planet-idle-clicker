@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Star, HelpCircle, Flame, Sparkles, Orbit } from "lucide-react";
 import { Modal } from "../ui/Modal";
+import { useGameState } from "../../contexts/GameStateContext";
 
 export interface ConstellationDef {
   id: string;
@@ -87,20 +88,9 @@ export const CONSTELLATIONS_LIST: ConstellationDef[] = [
 interface StarsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  life: number;
-  starsCount: number;
-  starPowerPerStar: number;
-  starClicksTriggered: number;
   onBuyStar: () => void;
-  starCost: number;
-  totalStarsLps: number;
   formatCompactNumber: (num: number) => string;
-  moonsCount: number;
   onMergeMoons: () => void;
-  prestigeCount?: number;
-  maxMoons?: number;
-  
-  // Integrated Constellations Props
   constellations: Record<string, number>;
   onInvestConstellation: (constellationId: string, starsCost: number, moonsCost: number) => void;
 }
@@ -108,22 +98,16 @@ interface StarsModalProps {
 export const StarsModal: React.FC<StarsModalProps> = React.memo(({
   isOpen,
   onClose,
-  life,
-  starsCount,
-  starPowerPerStar,
-  starClicksTriggered,
   onBuyStar,
-  starCost,
-  totalStarsLps,
   formatCompactNumber,
-  moonsCount,
   onMergeMoons,
-  prestigeCount = 0,
-  maxMoons = 3,
-
   constellations,
   onInvestConstellation,
 }) => {
+  const {
+    life, starsCount, starPowerPerStar, starClicksTriggered,
+    starCost, totalStarsLps, moonsCount, prestigeCount, maxMoons,
+  } = useGameState();
   const [activeTab, setActiveTab] = useState<"stars_call" | "constellations">("stars_call");
 
   const canMerge = starsCount >= 50 && moonsCount < maxMoons;

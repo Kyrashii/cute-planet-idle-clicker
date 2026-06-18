@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal } from "../ui/Modal";
 import { Clock, Sparkles, Flame, Coins, Award } from "lucide-react";
+import { useGameState } from "../../contexts/GameStateContext";
 
 interface OfflineEarningsModalProps {
   isOpen: boolean;
@@ -8,7 +9,6 @@ interface OfflineEarningsModalProps {
   secondsAway: number;
   offlineLps: number;
   earnedLife: number;
-  prestigeCount: number;
   onClaim: (earned: number) => void;
   formatCompactNumber: (num: number) => string;
   isNight: boolean;
@@ -20,11 +20,11 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = React.m
   secondsAway,
   offlineLps,
   earnedLife,
-  prestigeCount,
   onClaim,
   formatCompactNumber,
   isNight,
 }) => {
+  const { prestigeCount } = useGameState();
   // Format seconds into a beautiful readable string (Up to 5 hours maximum)
   const formatOfflineTime = (totalSeconds: number) => {
     const hrs = Math.floor(totalSeconds / 3600);

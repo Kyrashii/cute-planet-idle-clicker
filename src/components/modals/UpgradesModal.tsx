@@ -1,13 +1,11 @@
 import React from "react";
 import { Upgrade } from "../../types";
 import { Modal } from "../ui/Modal";
+import { useGameState } from "../../contexts/GameStateContext";
 
 interface UpgradesModalProps {
   isOpen: boolean;
   onClose: () => void;
-  life: number;
-  glitterDust: number;
-  totalLps: number;
   purchasedUpgrades: string[];
   staticUpgrades: Upgrade[];
   onBuyUpgrade: (id: string, cost: number) => void;
@@ -18,15 +16,13 @@ interface UpgradesModalProps {
 export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(({
   isOpen,
   onClose,
-  life,
-  glitterDust,
-  totalLps,
   purchasedUpgrades,
   staticUpgrades,
   onBuyUpgrade,
   onBuyUpgradesBatch,
   formatCompactNumber,
 }) => {
+  const { life, glitterDust, totalLps } = useGameState();
   // Calculate affordable upgrades list (simulation of buy order: cheapest first)
   const getAffordableUpgradesList = () => {
     const unpurchased = staticUpgrades.filter(upg => !purchasedUpgrades.includes(upg.id));
