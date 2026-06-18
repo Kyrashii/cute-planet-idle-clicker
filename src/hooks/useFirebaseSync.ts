@@ -52,6 +52,14 @@ export function useFirebaseSync() {
 
   // Keep a reference to current logged in user UID to avoid race conditions
   const userRef = useRef<User | null>(null);
+  // Ref-based guards so saveStateToCloud is safe to call from stale interval closures
+  const isSavingRef = useRef(false);
+  const saveCreatedAtRef = useRef<any>(null);
+
+  const updateSaveCreatedAt = (v: any) => {
+    saveCreatedAtRef.current = v;
+    setSaveCreatedAt(v);
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -83,7 +91,7 @@ export function useFirebaseSync() {
         const data = rawData as CloudSaveData;
         setCloudSaveFound(data);
         if (data.createdAt) {
-          setSaveCreatedAt(data.createdAt);
+          updateSaveCreatedAt(data.createdAt);
         }
         
         // Auto check if we have a conflict or if we should auto load/save
@@ -200,10 +208,10 @@ export function useFirebaseSync() {
       const freshSnap = await getDoc(docRef);
       if (freshSnap.exists()) {
         const freshData = freshSnap.data() as CloudSaveData;
-        setSaveCreatedAt(freshData.createdAt || creationTime);
+        updateSaveCreatedAt(freshData.createdAt || creationTime);
         setCloudSaveFound(freshData);
       } else {
-        setSaveCreatedAt(creationTime);
+        updateSaveCreatedAt(creationTime);
       }
     } catch (err) {
       console.error("Failed to upload local save as initial sync:", err);
@@ -252,23 +260,26 @@ export function useFirebaseSync() {
   // Synchronize state actively (can be triggered by autosave loops)
   const saveStateToCloud = async (state: Omit<CloudSaveData, "userId">) => {
     const activeUser = userRef.current;
-    if (!activeUser || syncing) return;
+    // Use isSavingRef instead of the `syncing` state so stale interval closures still see the live guard
+    if (!activeUser || isSavingRef.current) return;
+    isSavingRef.current = true;
 
     const docRef = doc(db, "saves", activeUser.uid);
     try {
       setSyncing(true);
       // Ensure we preserve the createdAt timestamp to satisfy security rules (incoming().createdAt == existing().createdAt)
-      let resolvedCreatedAt = saveCreatedAt;
+      // Read from ref so a stale closure still gets the current value
+      let resolvedCreatedAt = saveCreatedAtRef.current;
       if (!resolvedCreatedAt) {
         // Fallback or read dynamically
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const cloudData = docSnap.data() as CloudSaveData;
           resolvedCreatedAt = cloudData.createdAt || serverTimestamp();
-          setSaveCreatedAt(resolvedCreatedAt);
+          updateSaveCreatedAt(resolvedCreatedAt);
         } else {
           resolvedCreatedAt = serverTimestamp();
-          setSaveCreatedAt(resolvedCreatedAt);
+          updateSaveCreatedAt(resolvedCreatedAt);
         }
       }
 
@@ -333,7 +344,7 @@ export function useFirebaseSync() {
       const freshSnap = await getDoc(docRef);
       if (freshSnap.exists()) {
         const freshData = freshSnap.data() as CloudSaveData;
-        setSaveCreatedAt(freshData.createdAt || resolvedCreatedAt);
+        updateSaveCreatedAt(freshData.createdAt || resolvedCreatedAt);
         setCloudSaveFound(freshData);
       }
     } catch (err) {
@@ -342,6 +353,7 @@ export function useFirebaseSync() {
         handleFirestoreError(err, OperationType.UPDATE, `saves/${activeUser.uid}`);
       } catch (e) {}
     } finally {
+      isSavingRef.current = false;
       setSyncing(false);
     }
   };
