@@ -1636,7 +1636,6 @@ export default function App() {
           totalLps={totalLps}
           starsCount={starsCount}
           prestigeCount={prestigeCount}
-          onShowPrestige={openPrestigeModal}
         />
 
         {/* Cosmic Event Alert / Notification Panel - Displays countdown or active event state dynamically with glowing animations */}

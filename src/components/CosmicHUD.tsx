@@ -8,7 +8,6 @@ interface CosmicHUDProps {
   totalLps: number;
   starsCount: number;
   prestigeCount: number;
-  onShowPrestige: () => void;
 }
 
 export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(({
@@ -17,7 +16,6 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(({
   totalLps,
   starsCount,
   prestigeCount,
-  onShowPrestige,
 }) => {
   const PRESTIGE_REQUIREMENT = getPrestigeRequirement(prestigeCount);
 
@@ -52,27 +50,18 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(({
 
       <div className="w-[1.5px] h-3 bg-slate-350/20 dark:bg-slate-305/15 shrink-0" />
 
-      {/* Prestige HUD panel / Button */}
-      <button
-        onClick={onShowPrestige}
+      {/* Prestige HUD Level Display (Earned only via Galaxiereise at Level 20!) */}
+      <div
         id="hud-prestige-btn"
-        className={`flex items-center gap-1 sm:gap-1.5 text-xs font-semibold py-1 px-2.5 rounded-xl border transition-all ${
-          life >= PRESTIGE_REQUIREMENT
-            ? "bg-amber-400/25 text-amber-300 border-amber-400/60 animate-pulse hover:bg-amber-400/35 cursor-pointer hover:scale-105 active:scale-95"
-            : "opacity-40 text-slate-500 border-slate-700 bg-slate-800/10 cursor-not-allowed select-none"
-        }`}
-        title={
-          life >= PRESTIGE_REQUIREMENT
-            ? "Prestige ist BEREIT! Klicke zum Aufsteigen! ✨"
-            : `Prestige gesperrt (Benötigt ${formatCompactNumber(PRESTIGE_REQUIREMENT)} Leben. Aktuell: ${formatCompactNumber(life)})`
-        }
+        className="flex items-center gap-1 sm:gap-1.5 text-xs font-semibold py-1 px-2.5 rounded-xl border border-purple-500/20 bg-[#181333]/40 text-cosmic-accent-muted select-none cursor-help"
+        title="Dauerhafter Bonus durch Vollendung deines Planeten auf Level 20! Jede Galaxiereise erhöht deine Prestige-Stufe."
       >
-        <Award className={`w-3.5 h-3.5 shrink-0 ${life >= PRESTIGE_REQUIREMENT ? "text-amber-300 fill-amber-300/10" : "text-slate-500"}`} />
-        <span className={`text-[10px] hidden md:inline ${life >= PRESTIGE_REQUIREMENT ? "text-amber-200" : "text-slate-500"}`}>Prestige:</span>
-        <span className="font-mono text-[10px] sm:text-[11px] font-black">
+        <Award className="w-3.5 h-3.5 shrink-0 text-amber-300 fill-amber-300/10" />
+        <span className="text-[10px] hidden md:inline text-cosmic-accent-muted">Prestige:</span>
+        <span className="font-mono text-[10px] sm:text-[11px] font-black text-amber-300">
           {prestigeCount > 0 ? `Lv. ${prestigeCount}` : "Aufstieg"}
         </span>
-      </button>
+      </div>
     </section>
   );
 });

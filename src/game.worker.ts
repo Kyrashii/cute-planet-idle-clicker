@@ -397,14 +397,9 @@ function getLpsAndStats() {
   const totalAnimalsCount = Object.values(purchasedAnimals).reduce((sum, qty) => sum + qty, 0);
   const researchedUpgradesCount = purchasedUpgrades.length;
 
-  // EXP needed to level up the planet based on current level
+  // EXP needed to level up the planet based on current level and prestigeCount
   const nextIdx = state.planetLevel;
-  let planetExpNeeded = 45000000;
-  if (nextIdx < EXP_PER_LEVEL.length) {
-    planetExpNeeded = EXP_PER_LEVEL[nextIdx];
-  } else {
-    planetExpNeeded = 5000000000000 + (state.planetLevel - 19) * 2000000000000;
-  }
+  const planetExpNeeded = expForLevel(nextIdx, state.prestigeCount || 0);
 
   return {
     upgradesSpecs,
@@ -570,7 +565,7 @@ function generateAchievements() {
 function addPlanetExp(amount: number) {
   const catalystLvl = state.catalystLevel || 0;
   const finalAmount = amount * (1.0 + catalystLvl * 0.15);
-  const r = computeLevelUpResult(state.planetLevel, state.planetExp, finalAmount);
+  const r = computeLevelUpResult(state.planetLevel, state.planetExp, finalAmount, state.prestigeCount || 0);
   state.planetExp = r.newExp;
   if (r.levelsGained > 0) {
     state.planetLevel = r.newLevel;

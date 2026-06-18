@@ -36,13 +36,19 @@ export const EXP_PER_LEVEL: readonly number[] = [
 /**
  * Returns the EXP threshold to advance from `level` to `level + 1`.
  * Handles levels beyond the static table with a linear formula.
+ * Scaling: Slower leveling per Prestige level (requires more EXP).
  */
-export function expForLevel(level: number): number {
+export function expForLevel(level: number, prestigeCount: number = 0): number {
+  let baseExp = 0;
   if (level < EXP_PER_LEVEL.length) {
-    return EXP_PER_LEVEL[level];
+    baseExp = EXP_PER_LEVEL[level];
+  } else {
+    // Linear tail beyond the table (level 20+)
+    baseExp = 5_000_000_000_000 + (level - 19) * 2_000_000_000_000;
   }
-  // Linear tail beyond the table (level 20+)
-  return 5_000_000_000_000 + (level - 19) * 2_000_000_000_000;
+  // Slower leveling: require +50% extra EXP per Prestige level
+  const scale = 1.0 + (prestigeCount || 0) * 0.50;
+  return Math.round(baseExp * scale);
 }
 
 // ---------------------------------------------------------------------------
@@ -71,14 +77,15 @@ export interface LevelUpResult {
 export function computeLevelUpResult(
   planetLevel: number,
   planetExp: number,
-  xpAmount: number
+  xpAmount: number,
+  prestigeCount: number = 0
 ): LevelUpResult {
   let currentExp = planetExp + xpAmount;
   let currentLevel = planetLevel;
   const startLevel = planetLevel;
 
   while (true) {
-    const threshold = expForLevel(currentLevel);
+    const threshold = expForLevel(currentLevel, prestigeCount);
     if (threshold <= 0) break; // level 0 edge case
     if (currentExp >= threshold) {
       currentExp -= threshold;

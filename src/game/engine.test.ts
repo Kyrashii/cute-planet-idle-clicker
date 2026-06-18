@@ -81,4 +81,26 @@ describe("computeLevelUpResult", () => {
     const result = computeLevelUpResult(3, 0, 1);
     expect(result.levelsGained).toBe(0);
   });
+
+  describe("Prestige speed scaling", () => {
+    it("increases EXP threshold for levels when prestigeCount > 0", () => {
+      // Base: lvl 1 -> lvl 2 threshold: 1500
+      expect(expForLevel(1, 0)).toBe(1500);
+      // Prestige 1 (+50%): should require 2250 EXP
+      expect(expForLevel(1, 1)).toBe(2250);
+      // Prestige 2 (+100%): should require 3000 EXP
+      expect(expForLevel(1, 2)).toBe(3000);
+    });
+
+    it("makes leveling slower in computeLevelUpResult", () => {
+      // 1500 XP at Prestige 0 grants a level up
+      const r0 = computeLevelUpResult(1, 0, 1500, 0);
+      expect(r0.newLevel).toBe(2);
+
+      // 1500 XP at Prestige 1 does NOT grant a level up (needs 2250)
+      const r1 = computeLevelUpResult(1, 0, 1500, 1);
+      expect(r1.newLevel).toBe(1);
+      expect(r1.newExp).toBe(1500);
+    });
+  });
 });
