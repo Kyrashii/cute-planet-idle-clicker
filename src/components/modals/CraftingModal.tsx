@@ -1,488 +1,1040 @@
-import React, { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import React, {
+  useState,
+  useRef,
+  useLayoutEffect,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { Modal } from "../ui/Modal";
-import { CRAFTING_RECIPES, Recipe } from "../../data/recipes";
-import { Hammer, Coins, Star, HelpCircle, Package, Layers, Sparkles } from "lucide-react";
+import { CRAFTING_RECIPES } from "../../data/recipes";
+import {
+  buildGraph,
+  resolve,
+  getItem,
+  GraphNode,
+  BASE_RESOURCES,
+  ResolveResult,
+  CraftItem,
+} from "../../data/craftingGraph";
 import { useGameState } from "../../contexts/GameStateContext";
+import { useIsMobile } from "../../hooks/useMediaQuery";
 
 interface CraftingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  isNight: boolean;
   craftedItems: Record<string, number>;
-  onCraftItem: (recipeId: string, count?: number) => void;
+  onCraftRecursive: (targetItemId: string, count?: number) => void;
   formatCompactNumber: (num: number) => string;
 }
 
-export const CraftingModal: React.FC<CraftingModalProps> = React.memo(({
-  isOpen,
-  onClose,
-  isNight,
-  craftedItems,
-  onCraftItem,
-  formatCompactNumber,
-}) => {
-  const { life, starsCount, moonsCount, glitterDust, shootingStarsCount } = useGameState();
-  const [selectedCategory, setSelectedCategory] = useState<"materials" | "consumables">("materials");
-  const [selectedRecipeId, setSelectedRecipeId] = useState<string>(
-    CRAFTING_RECIPES.find((r) => r.category === "materials")?.id || CRAFTING_RECIPES[0].id
+function nodeStatus(
+  node: GraphNode,
+  have: Record<string, number>,
+  isRoot = false,
+): "ok" | "short" | "make" | "have" {
+  const owned = have[node.id] || 0;
+  if (node.kind === "raw") return owned >= node.need ? "ok" : "short";
+  if (!isRoot && owned >= node.need) return "have";
+  const r = resolve(node.id, node.need, have);
+  return r.ok ? "make" : "short";
+}
+
+interface LeafChipProps {
+  key?: React.Key | null;
+  node: GraphNode;
+  have: Record<string, number>;
+  formatNum: (n: number) => string;
+}
+function LeafChip({ node, have, formatNum }: LeafChipProps) {
+  const ok = (have[node.id] || 0) >= node.need;
+  return (
+    <div
+      className={`pk-craft-leafchip pk-craft-leafchip--${ok ? "ok" : "short"}`}
+      data-uid={node.uid}
+    >
+      <span className="pk-craft-leafchip__em">{node.item.emoji}</span>
+      <span className="pk-craft-leafchip__nm">{node.item.name}</span>
+      <span className="pk-craft-leafchip__amt" style={{ color: ok ? "#a3e635" : "#fb7185" }}>
+        {formatNum(node.need)}
+      </span>
+    </div>
   );
-  const [searchTerm, setSearchTerm] = useState("");
-  const [craftAmount, setCraftAmount] = useState<number>(1);
+}
 
-  const handleSelectRecipe = (id: string) => {
-    setSelectedRecipeId(id);
-    setCraftAmount(1);
-  };
+interface NodeGroupProps {
+  key?: React.Key | null;
+  node: GraphNode;
+  have: Record<string, number>;
+  isRoot?: boolean;
+  onDrill: (id: string) => void;
+  formatNum: (n: number) => string;
+}
+function NodeGroup({ node, have, isRoot, onDrill, formatNum }: NodeGroupProps) {
+  const status = nodeStatus(node, have, isRoot);
+  const owned = have[node.id] || 0;
 
-  // Filter recipes based on search and category
-  const filteredRecipes = CRAFTING_RECIPES.filter((recipe) => {
-    const matchesCategory = recipe.category === selectedCategory;
-    const matchesSearch = recipe.result.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          recipe.name.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const rawKids = node.children.filter((c) => c.kind === "raw");
+  const craftKids = node.children.filter((c) => c.kind === "craft");
 
-  const selectedRecipe = CRAFTING_RECIPES.find((r) => r.id === selectedRecipeId) || CRAFTING_RECIPES[0];
-
-  // Check if player has enough ingredients
-  const checkCanCraft = (recipe: Recipe): boolean => {
-    const { life: reqLife, stars: reqStars, moons: reqMoons, glitter: reqGlitter, lootboxes: reqLootboxes, items: reqItems } = recipe.ingredients;
-
-    if (reqLife && life < reqLife) return false;
-    if (reqStars && starsCount < reqStars) return false;
-    if (reqMoons && moonsCount < reqMoons) return false;
-    if (reqGlitter && glitterDust < reqGlitter) return false;
-    if (reqLootboxes && shootingStarsCount < reqLootboxes) return false;
-
-    if (reqItems) {
-      for (const [itemId, qty] of Object.entries(reqItems)) {
-        const owned = craftedItems[itemId] || 0;
-        if (owned < qty) return false;
-      }
-    }
-
-    return true;
-  };
-
-  const checkCanCraftQuantity = (recipe: Recipe, amount: number): boolean => {
-    const { life: reqLife, stars: reqStars, moons: reqMoons, glitter: reqGlitter, lootboxes: reqLootboxes, items: reqItems } = recipe.ingredients;
-
-    if (reqLife && life < reqLife * amount) return false;
-    if (reqStars && starsCount < reqStars * amount) return false;
-    if (reqMoons && moonsCount < reqMoons * amount) return false;
-    if (reqGlitter && glitterDust < reqGlitter * amount) return false;
-    if (reqLootboxes && shootingStarsCount < reqLootboxes * amount) return false;
-
-    if (reqItems) {
-      for (const [itemId, qty] of Object.entries(reqItems)) {
-        const owned = craftedItems[itemId] || 0;
-        if (owned < qty * amount) return false;
-      }
-    }
-
-    return true;
-  };
-
-  const getMaxCraftableValue = (recipe: Recipe): number => {
-    const { life: reqLife, stars: reqStars, moons: reqMoons, glitter: reqGlitter, lootboxes: reqLootboxes, items: reqItems } = recipe.ingredients;
-    let maxCount = Infinity;
-
-    if (reqLife) {
-      maxCount = Math.min(maxCount, Math.floor(life / reqLife));
-    }
-    if (reqStars) {
-      maxCount = Math.min(maxCount, Math.floor(starsCount / reqStars));
-    }
-    if (reqMoons) {
-      maxCount = Math.min(maxCount, Math.floor(moonsCount / reqMoons));
-    }
-    if (reqGlitter) {
-      maxCount = Math.min(maxCount, Math.floor(glitterDust / reqGlitter));
-    }
-    if (reqLootboxes) {
-      maxCount = Math.min(maxCount, Math.floor(shootingStarsCount / reqLootboxes));
-    }
-
-    if (reqItems) {
-      for (const [itemId, qty] of Object.entries(reqItems)) {
-        const owned = craftedItems[itemId] || 0;
-        maxCount = Math.min(maxCount, Math.floor(owned / qty));
-      }
-    }
-
-    return maxCount === Infinity ? 0 : maxCount;
-  };
-
-  const selectedCanCraft = checkCanCraft(selectedRecipe);
-  const selectedCanCraftQuantity = checkCanCraftQuantity(selectedRecipe, craftAmount);
-  const maxCraftableCount = getMaxCraftableValue(selectedRecipe);
-
-  // Helper to fetch item name by ID
-  const getItemNameById = (id: string): string => {
-    if (id === "mat_stardust") return "Sternenstaub";
-    const found = CRAFTING_RECIPES.find((r) => r.result.id === id);
-    return found ? found.result.name : id;
-  };
-
-  const getItemEmojiById = (id: string): string => {
-    if (id === "mat_stardust") return "✨";
-    const found = CRAFTING_RECIPES.find((r) => r.result.id === id);
-    return found ? found.result.emoji : "📦";
-  };
+  const pillCls =
+    { ok: "pill--ok", make: "pill--make", short: "pill--short", have: "pill--have" }[status];
+  const pillTxt =
+    node.kind === "raw"
+      ? status === "ok" ? "vorhanden" : "fehlt"
+      : status === "have"
+      ? "im Lager ✓"
+      : status === "make"
+      ? `schmieden ×${node.ops}`
+      : "Engpass";
+  const nodeCls = [
+    "pk-craft-node",
+    `pk-craft-node--${node.kind}`,
+    `pk-craft-node--${status}`,
+    isRoot ? "pk-craft-node--root" : "",
+  ].filter(Boolean).join(" ");
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      panelClassName={`flex flex-col max-w-4xl w-full h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
-        isNight ? "bg-[#14102d]/95 border-cosmic-accent" : "bg-amber-50/95 border-amber-450 text-slate-800"
-      }`}
+    <div className="pk-ng">
+      {node.children.length > 0 && (
+        <div className="pk-ng__kids">
+          {craftKids.map((c) => (
+            <NodeGroup key={c.uid} node={c} have={have} onDrill={onDrill} formatNum={formatNum} />
+          ))}
+          {rawKids.length > 0 && (
+            <div className="pk-craft-leafcol">
+              {rawKids.map((c) => (
+                <LeafChip key={c.uid} node={c} have={have} formatNum={formatNum} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+      <div className="pk-ng__box">
+        <div
+          className={nodeCls}
+          data-uid={node.uid}
+          onClick={node.kind === "craft" && !isRoot ? () => onDrill(node.id) : undefined}
+          title={
+            node.kind === "craft" && !isRoot
+              ? "Als Ziel öffnen — zur Quelle springen"
+              : undefined
+          }
+        >
+          <div className="pk-craft-node__top">
+            <span className="pk-craft-node__em">{node.item.emoji}</span>
+            <span className="pk-craft-node__nm">{node.item.name}</span>
+          </div>
+          <div className="pk-craft-node__meta">
+            <span className="pk-craft-node__need">×{formatNum(node.need)}</span>
+            <span className={`pk-craft-pill ${pillCls}`}>{pillTxt}</span>
+          </div>
+          {node.kind === "craft" && (
+            <div className="pk-craft-node__stock">
+              Lager {owned} · Ausbeute {node.yield}/Synthese
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface EdgeGeo {
+  d: string;
+  childUid: number;
+}
+
+// ---------------------------------------------------------------------------
+// Module-level sub-components — defined outside render to prevent remounting
+// ---------------------------------------------------------------------------
+
+interface SummaryContentProps {
+  target: CraftItem;
+  qty: number;
+  setQty: React.Dispatch<React.SetStateAction<number>>;
+  plan: ResolveResult;
+  have: Record<string, number>;
+  fmtNum: (id: string, n: number) => string;
+  maxQty: number;
+  showPlan: boolean;
+}
+
+const SummaryContent = React.memo(function SummaryContent({
+  target,
+  qty,
+  setQty,
+  plan,
+  have,
+  fmtNum,
+  maxQty,
+  showPlan,
+}: SummaryContentProps) {
+  return (
+    <div className="pk-craft-sum__scroll">
+      <div className="pk-craft-hero">
+        <span className="pk-craft-hero__em">{target.emoji}</span>
+        <span className={`pk-craft-cat-pill pk-craft-cat-pill--${target.cat ?? "materials"}`}>
+          {target.cat === "materials" ? "Rohstoff / Zutat" : "Aktivierbares Item"}
+        </span>
+        <span className="pk-craft-hero__nm">{target.name}</span>
+        <span className="pk-craft-hero__desc">{target.desc ?? ""}</span>
+      </div>
+
+      <div className="pk-craft-qty">
+        <span className="pk-craft-qty__lbl">🏭 Anzahl</span>
+        <div className="pk-craft-qty__ctl">
+          <button
+            className="pk-craft-stepper"
+            disabled={qty <= 1}
+            onClick={() => setQty((q) => Math.max(1, q - 1))}
+          >
+            －
+          </button>
+          <span className="pk-craft-qty__val">{qty}</span>
+          <button
+            className="pk-craft-stepper"
+            disabled={qty >= maxQty}
+            onClick={() => setQty((q) => Math.min(maxQty, q + 1))}
+          >
+            ＋
+          </button>
+        </div>
+      </div>
+
+      <div className={`pk-craft-ready pk-craft-ready--${plan.ok ? "ok" : "no"}`}>
+        <span className="pk-craft-ready__em">{plan.ok ? "✅" : "⚠️"}</span>
+        <div>
+          <div
+            className="pk-craft-ready__t"
+            style={{ color: plan.ok ? "#6ee7b7" : "#fda4af" }}
+          >
+            {plan.ok ? "Alle Rohstoffe vorhanden" : "Rohstoffe fehlen"}
+          </div>
+          <div className="pk-craft-ready__s">
+            {plan.ok
+              ? `${plan.plan.length} Vorstufe(n) werden automatisch geschmiedet`
+              : `Fehlt: ${Object.entries(plan.shortfall)
+                  .map(([k, v]) => `${getItem(k).emoji} ${fmtNum(k, v)}`)
+                  .join(" · ")}`}
+          </div>
+        </div>
+      </div>
+
+      {showPlan && (
+        <>
+          <div>
+            <div className="pk-craft-sec-lbl" style={{ marginBottom: 7 }}>
+              ⚒ Auto-Schmiede-Plan
+            </div>
+            <div className="pk-craft-plan">
+              {plan.plan.length === 0 && (
+                <div className="pk-craft-planempty">
+                  Keine Vorstufen nötig — direkt herstellbar.
+                </div>
+              )}
+              {plan.plan.map((s, i) => (
+                <div className="pk-craft-planrow" key={s.id + i}>
+                  <span className="pk-craft-planrow__n">{i + 1}</span>
+                  <span style={{ fontSize: 16 }}>{s.emoji}</span>
+                  <span className="pk-craft-planrow__nm">{s.name}</span>
+                  <span className="pk-craft-planrow__pr">
+                    +{s.produces}
+                    {s.fromStock ? `  ·  ${s.fromStock} ⌂` : ""}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="pk-craft-sec-lbl" style={{ marginBottom: 7 }}>
+              🧾 Rohstoff-Verbrauch (gesamt)
+            </div>
+            <div className="pk-craft-costs">
+              {Object.keys(plan.rawNeed).length === 0 && (
+                <div className="pk-craft-planempty">—</div>
+              )}
+              {Object.entries(plan.rawNeed).map(([k, v]) => {
+                const it = getItem(k);
+                const ok = (have[k] || 0) >= v;
+                return (
+                  <div className="pk-craft-costrow" key={k}>
+                    <span className="pk-craft-costrow__k">
+                      {it.emoji} {it.name}
+                    </span>
+                    <span
+                      className="pk-craft-costrow__v"
+                      style={{ color: ok ? "#a3e635" : "#fb7185" }}
+                    >
+                      {fmtNum(k, v)} / {fmtNum(k, have[k] || 0)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+});
+
+interface CraftButtonProps {
+  planOk: boolean;
+  qty: number;
+  onCraft: () => void;
+}
+
+const CraftButton = React.memo(function CraftButton({ planOk, qty, onCraft }: CraftButtonProps) {
+  return (
+    <button
+      className={`pk-craft-craftbtn ${planOk ? "pk-craft-craftbtn--go" : "pk-craft-craftbtn--off"}`}
+      onClick={onCraft}
+      disabled={!planOk}
     >
+      <span>
+        {planOk ? `🔨 Alles schmieden ×${qty}` : "🔒 Schmiede gesperrt"}
+        <span className="pk-craft-craftbtn__sub">
+          {planOk
+            ? "Vorstufen werden automatisch erstellt & Material abgezogen"
+            : "Sammle die fehlenden Rohstoffe"}
+        </span>
+      </span>
+    </button>
+  );
+});
+
+// ---------------------------------------------------------------------------
+// Main component
+// ---------------------------------------------------------------------------
+
+export const CraftingModal: React.FC<CraftingModalProps> = React.memo(
+  ({ isOpen, onClose, craftedItems, onCraftRecursive, formatCompactNumber }) => {
+    const { life, starsCount, moonsCount, glitterDust, shootingStarsCount } =
+      useGameState();
+
+    const [cat, setCat] = useState<"materials" | "consumables">("materials");
+    const [search, setSearch] = useState("");
+    const [stack, setStack] = useState<string[]>(() => {
+      const first = CRAFTING_RECIPES.find((r) => r.category === "materials");
+      return first ? [first.result.id] : [CRAFTING_RECIPES[0].result.id];
+    });
+    const [qty, setQty] = useState(1);
+    const isMobile = useIsMobile();
+    const [mobileRecipeOpen, setMobileRecipeOpen] = useState(false);
+    const [toast, setToast] = useState<{ id: number; text: string } | null>(null);
+
+    const targetId = stack[stack.length - 1];
+    const target = useMemo(() => getItem(targetId), [targetId]);
+
+    const have = useMemo(
+      () => ({
+        life,
+        stars: starsCount,
+        moons: moonsCount,
+        glitter: glitterDust,
+        lootboxes: shootingStarsCount,
+        ...craftedItems,
+      }),
+      [life, starsCount, moonsCount, glitterDust, shootingStarsCount, craftedItems]
+    );
+
+    const { root } = useMemo(() => buildGraph(targetId, qty), [targetId, qty]);
+    const plan = useMemo(() => resolve(targetId, qty, have), [targetId, qty, have]);
+
+    const uniqueRecipes = useMemo(() => {
+      const seen = new Set<string>();
+      return CRAFTING_RECIPES.filter((r) => {
+        if (seen.has(r.result.id)) return false;
+        seen.add(r.result.id);
+        return true;
+      });
+    }, []);
+
+    const filteredList = useMemo(
+      () =>
+        uniqueRecipes.filter(
+          (r) =>
+            r.category === cat &&
+            (r.result.name.toLowerCase().includes(search.toLowerCase()) ||
+              r.description.toLowerCase().includes(search.toLowerCase()))
+        ),
+      [cat, search, uniqueRecipes]
+    );
+
+    // --- viewport refs ---
+    const graphScrollRef = useRef<HTMLDivElement>(null);
+    const innerRef = useRef<HTMLDivElement>(null);
+    const viewRef = useRef({ scale: 1, tx: 0, ty: 0 });
+    const s0Ref = useRef(1);
+    const maxScaleRef = useRef(1.6);
+    const natSizeRef = useRef({ w: 0, h: 0 });
+    const dragRef = useRef({
+      active: false,
+      startX: 0,
+      startY: 0,
+      startTx: 0,
+      startTy: 0,
+      moved: false,
+    });
+    const draggedRef = useRef(false);
+    const pointersRef = useRef(new Map<number, { x: number; y: number }>());
+    const pinchRef = useRef({
+      active: false,
+      initDist: 0,
+      initScale: 1,
+      initTx: 0,
+      initTy: 0,
+      initMidX: 0,
+      initMidY: 0,
+    });
+
+    // Edge geometry: stable per targetId+qty, re-measured on layout
+    const [edgeGeo, setEdgeGeo] = useState<{ paths: EdgeGeo[]; w: number; h: number }>({
+      paths: [],
+      w: 0,
+      h: 0,
+    });
+
+    // Edge colors: reactive to have without re-measuring geometry
+    const statusByUid = useMemo(() => {
+      const map = new Map<number, "ok" | "short" | "make" | "have">();
+      function traverse(node: GraphNode, isNodeRoot: boolean) {
+        map.set(node.uid, nodeStatus(node, have, isNodeRoot));
+        for (const child of node.children) traverse(child, false);
+      }
+      traverse(root, true);
+      return map;
+    }, [root, have]);
+
+    const applyView = useCallback(() => {
+      const inner = innerRef.current;
+      if (!inner) return;
+      const { scale, tx, ty } = viewRef.current;
+      inner.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`;
+    }, []);
+
+    const fitToView = useCallback(() => {
+      const g = graphScrollRef.current;
+      if (!g) return;
+      const { w: natW, h: natH } = natSizeRef.current;
+      if (!natW || !natH) return;
+      const cw = g.clientWidth;
+      const ch = g.clientHeight;
+      const s0 = Math.min(cw / natW, ch / natH, 1);
+      s0Ref.current = s0;
+      maxScaleRef.current = Math.max(s0, 1.6);
+      const tx = Math.max(0, (cw - natW * s0) / 2);
+      const ty = Math.max(0, (ch - natH * s0) / 2);
+      viewRef.current = { scale: s0, tx, ty };
+      applyView();
+    }, [applyView]);
+
+    const zoomBy = useCallback((factor: number) => {
+      const g = graphScrollRef.current;
+      if (!g) return;
+      const cw = g.clientWidth;
+      const ch = g.clientHeight;
+      const { scale, tx, ty } = viewRef.current;
+      const newScale = Math.max(s0Ref.current, Math.min(maxScaleRef.current, scale * factor));
+      const ratio = newScale / scale;
+      viewRef.current = {
+        scale: newScale,
+        tx: cw / 2 - ratio * (cw / 2 - tx),
+        ty: ch / 2 - ratio * (ch / 2 - ty),
+      };
+      applyView();
+    }, [applyView]);
+
+    // Re-measure geometry and fit-to-view when target or qty changes
+    useLayoutEffect(() => {
+      if (isMobile) return;
+      const raf = requestAnimationFrame(() => {
+        const g = graphScrollRef.current;
+        const inner = innerRef.current;
+        if (!g || !inner) return;
+
+        inner.style.transform = "none";
+
+        const natW = inner.scrollWidth;
+        const natH = inner.scrollHeight;
+        if (!natW || !natH) return;
+
+        natSizeRef.current = { w: natW, h: natH };
+
+        const cw = g.clientWidth;
+        const ch = g.clientHeight;
+        const s0 = Math.min(cw / natW, ch / natH, 1);
+        s0Ref.current = s0;
+        maxScaleRef.current = Math.max(s0, 1.6);
+
+        const tx = Math.max(0, (cw - natW * s0) / 2);
+        const ty = Math.max(0, (ch - natH * s0) / 2);
+        viewRef.current = { scale: s0, tx, ty };
+
+        // Measure edge paths in natural coordinates (transform = "none")
+        const base = inner.getBoundingClientRect();
+        const paths: EdgeGeo[] = [];
+
+        Array.from(inner.querySelectorAll(".pk-ng")).forEach((ngEl) => {
+          const ng = ngEl as HTMLElement;
+          const parentBox = ng.querySelector(
+            ":scope > .pk-ng__box > .pk-craft-node"
+          ) as HTMLElement | null;
+          const kids = ng.querySelector(":scope > .pk-ng__kids") as HTMLElement | null;
+          if (!parentBox || !kids) return;
+
+          const p = parentBox.getBoundingClientRect();
+          const px = p.left - base.left;
+          const py = p.top - base.top + p.height / 2;
+
+          const childEls = [
+            ...Array.from(
+              kids.querySelectorAll(":scope > .pk-ng > .pk-ng__box > .pk-craft-node")
+            ),
+            ...Array.from(
+              kids.querySelectorAll(":scope > .pk-craft-leafcol > .pk-craft-leafchip")
+            ),
+          ] as HTMLElement[];
+
+          childEls.forEach((ce) => {
+            const c = ce.getBoundingClientRect();
+            const cx = c.right - base.left;
+            const cy = c.top - base.top + c.height / 2;
+            const mid = (cx + px) / 2;
+            const uid = Number(ce.dataset.uid);
+            paths.push({
+              d: `M ${cx} ${cy} C ${mid} ${cy}, ${mid} ${py}, ${px} ${py}`,
+              childUid: uid,
+            });
+          });
+        });
+
+        setEdgeGeo({ paths, w: natW, h: natH });
+        applyView();
+      });
+      return () => cancelAnimationFrame(raf);
+    }, [targetId, qty, applyView, isMobile]);
+
+    // Refit on resize
+    useLayoutEffect(() => {
+      if (isMobile) return;
+      window.addEventListener("resize", fitToView);
+      return () => window.removeEventListener("resize", fitToView);
+    }, [fitToView, isMobile]);
+
+    // Non-passive wheel listener (React's onWheel is passive since React 17)
+    useEffect(() => {
+      if (isMobile) return;
+      const g = graphScrollRef.current;
+      if (!g) return;
+      const handler = (e: WheelEvent) => {
+        e.preventDefault();
+        const inner = innerRef.current;
+        if (!inner) return;
+        const rect = g.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        const { scale, tx, ty } = viewRef.current;
+        const s0 = s0Ref.current;
+        const maxS = maxScaleRef.current;
+        const factor = e.deltaMode === 1 ? 30 : 1;
+        const delta = -e.deltaY * factor * 0.001;
+        const newScale = Math.max(s0, Math.min(maxS, scale * (1 + delta)));
+        const ratio = newScale / scale;
+        const newTx = mouseX - ratio * (mouseX - tx);
+        const newTy = mouseY - ratio * (mouseY - ty);
+        viewRef.current = { scale: newScale, tx: newTx, ty: newTy };
+        inner.style.transform = `translate(${newTx}px,${newTy}px) scale(${newScale})`;
+      };
+      g.addEventListener("wheel", handler, { passive: false });
+      return () => g.removeEventListener("wheel", handler);
+    }, [isMobile]);
+
+    // Drag-pan + pinch-zoom handlers
+    const onPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+      const tgt = e.target as HTMLElement;
+      if (tgt.closest("button") || tgt.closest("input")) return;
+
+      (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+      pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+      const pointers = pointersRef.current;
+
+      if (pointers.size >= 2) {
+        const pts = [...pointers.values()];
+        const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+        const g = graphScrollRef.current;
+        if (!g) return;
+        const rect = g.getBoundingClientRect();
+        const { tx: initTx, ty: initTy, scale: initScale } = viewRef.current;
+        const initMidX = (pts[0].x + pts[1].x) / 2 - rect.left;
+        const initMidY = (pts[0].y + pts[1].y) / 2 - rect.top;
+        pinchRef.current = { active: true, initDist: dist, initScale, initTx, initTy, initMidX, initMidY };
+        dragRef.current.active = false;
+        draggedRef.current = true;
+      } else {
+        pinchRef.current.active = false;
+        dragRef.current = {
+          active: true,
+          startX: e.clientX,
+          startY: e.clientY,
+          startTx: viewRef.current.tx,
+          startTy: viewRef.current.ty,
+          moved: false,
+        };
+        draggedRef.current = false;
+      }
+    }, []);
+
+    const onPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+      pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      const pointers = pointersRef.current;
+
+      if (pointers.size >= 2 && pinchRef.current.active) {
+        const pts = [...pointers.values()];
+        const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+        const g = graphScrollRef.current;
+        const inner = innerRef.current;
+        if (!g || !inner) return;
+        const rect = g.getBoundingClientRect();
+        const midX = (pts[0].x + pts[1].x) / 2 - rect.left;
+        const midY = (pts[0].y + pts[1].y) / 2 - rect.top;
+        const { initDist, initScale, initTx, initTy, initMidX, initMidY } = pinchRef.current;
+        const newScale = Math.max(s0Ref.current, Math.min(maxScaleRef.current, initScale * (dist / initDist)));
+        const newTx = midX - ((initMidX - initTx) / initScale) * newScale;
+        const newTy = midY - ((initMidY - initTy) / initScale) * newScale;
+        viewRef.current = { scale: newScale, tx: newTx, ty: newTy };
+        inner.style.transform = `translate(${newTx}px,${newTy}px) scale(${newScale})`;
+        draggedRef.current = true;
+        return;
+      }
+
+      if (!dragRef.current.active) return;
+      const dx = e.clientX - dragRef.current.startX;
+      const dy = e.clientY - dragRef.current.startY;
+      if (!dragRef.current.moved && Math.hypot(dx, dy) > 5) {
+        dragRef.current.moved = true;
+        draggedRef.current = true;
+      }
+      if (!dragRef.current.moved) return;
+      const inner = innerRef.current;
+      const g = graphScrollRef.current;
+      if (!inner || !g) return;
+
+      const { w: natW, h: natH } = natSizeRef.current;
+      const { scale } = viewRef.current;
+      const cw = g.clientWidth;
+      const ch = g.clientHeight;
+      const margin = 80;
+      const newTx = Math.max(
+        margin - natW * scale,
+        Math.min(cw - margin, dragRef.current.startTx + dx)
+      );
+      const newTy = Math.max(
+        margin - natH * scale,
+        Math.min(ch - margin, dragRef.current.startTy + dy)
+      );
+      viewRef.current.tx = newTx;
+      viewRef.current.ty = newTy;
+      inner.style.transform = `translate(${newTx}px,${newTy}px) scale(${scale})`;
+    }, []);
+
+    const onPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+      if (!pointersRef.current.has(e.pointerId)) return;
+      pointersRef.current.delete(e.pointerId);
+      const pointers = pointersRef.current;
+
+      if (pointers.size < 2) pinchRef.current.active = false;
+
+      if (pointers.size === 1) {
+        const pt = [...pointers.values()][0];
+        dragRef.current = {
+          active: true,
+          startX: pt.x,
+          startY: pt.y,
+          startTx: viewRef.current.tx,
+          startTy: viewRef.current.ty,
+          moved: false,
+        };
+        draggedRef.current = true;
+      } else if (pointers.size === 0) {
+        dragRef.current.active = false;
+        setTimeout(() => { draggedRef.current = false; }, 0);
+      }
+    }, []);
+
+    // Navigation
+    const pick = useCallback((id: string) => {
+      setStack([id]);
+      setQty(1);
+      setMobileRecipeOpen(false);
+    }, []);
+
+    const drill = useCallback((id: string) => {
+      if (draggedRef.current) return;
+      setStack((s) => [...s, id]);
+      setQty(1);
+    }, []);
+
+    const crumbTo = useCallback((i: number) => {
+      setStack((s) => s.slice(0, i + 1));
+      setQty(1);
+    }, []);
+
+    const fmtNum = useCallback(
+      (id: string, n: number) =>
+        BASE_RESOURCES[id]?.compact ? formatCompactNumber(n) : String(n),
+      [formatCompactNumber]
+    );
+
+    const auraItem = (key: string, label: string, val: number, color: string) => (
+      <span key={key} style={{ color: "#cfc8ec", whiteSpace: "nowrap" }}>
+        {BASE_RESOURCES[key]?.emoji} {label}:{" "}
+        <b style={{ color }}>{fmtNum(key, val)}</b>
+      </span>
+    );
+
+    const handleCraft = useCallback(() => {
+      if (!plan.ok) return;
+      onCraftRecursive(targetId, qty);
+      setToast({ id: Date.now(), text: `✨ ${qty}× ${target.name} geschmiedet!` });
+    }, [plan.ok, onCraftRecursive, targetId, qty, target.name]);
+
+    useEffect(() => {
+      if (!toast) return;
+      const t = setTimeout(() => setToast(null), 2200);
+      return () => clearTimeout(t);
+    }, [toast?.id]);
+
+    const maxQty = 99;
+
+    return (
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        panelClassName="pk-craft-panel flex flex-col"
+        backdropClassName="fixed inset-0 z-50 flex items-center justify-center p-4 max-[900px]:p-0 bg-gray-950/65 backdrop-blur-sm"
+      >
+        {/* In-modal toast */}
+        <AnimatePresence>
+          {toast && (
+            <motion.div
+              key={toast.id}
+              className="pk-craft-toast"
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.22 }}
+            >
+              {toast.text}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Header */}
-        <div className={`p-4 sm:p-5 border-b-3 flex items-center justify-between shrink-0 transition-colors duration-500 ${
-          isNight ? "border-cosmic-accent/45 bg-[#0a081e]" : "border-amber-300 bg-amber-100 text-[#2c1d0a]"
-        }`}>
-          <div className="flex items-center gap-2.5">
-            <span className="text-3xl select-none animate-pulse">🔨</span>
+        <div className="pk-craft-hd">
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 26 }}>🔨</span>
             <div>
-              <span className={`text-[10px] uppercase font-black tracking-wider block ${isNight ? "text-purple-300" : "text-amber-700"}`}>
-                Kosmische Synthese
-              </span>
-              <h4 className="font-sans font-black text-sm uppercase tracking-wide">
+              <div className="pk-craft-hd__eyebrow">Kosmische Synthese</div>
+              <div className="pk-craft-hd__title">
                 Sternen-Schmiede &amp; Alchemie
-              </h4>
+              </div>
             </div>
           </div>
           <button
+            className="pk-craft-hd__close"
             onClick={onClose}
-            className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
-              isNight ? "bg-[#1a1738] border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover" : "bg-white border-2 border-amber-450 text-amber-900 hover:bg-amber-100"
-            }`}
+            title="Schließen"
           >
             ✕
           </button>
         </div>
 
-        {/* Resources Subheader (AURA) */}
-        <div className={`px-4 py-2 border-b-2 flex items-center justify-around gap-2 bg-[#09071a] text-purple-200 text-[10.5px] font-mono font-black shrink-0 ${
-          !isNight && "bg-amber-100/50 border-amber-200/50 text-amber-950"
-        }`}>
-          <div className="flex items-center gap-1">
-            <span>💖 Leben:</span>
-            <span className="text-pink-300">{formatCompactNumber(life)}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span>⭐ Sterne:</span>
-            <span className="text-amber-350">{starsCount}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span>🌙 Monde:</span>
-            <span className="text-purple-300">{moonsCount}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span>✨ Glitzerstaub:</span>
-            <span className="text-violet-300">{glitterDust}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span>🌠 Lootboxen:</span>
-            <span className="text-amber-200">{shootingStarsCount}</span>
-          </div>
+        {/* Resource aura bar */}
+        <div className="pk-craft-aura">
+          {auraItem("life", "Leben", life, "#fff")}
+          {auraItem("stars", "Sterne", starsCount, "#fef08a")}
+          {auraItem("moons", "Monde", moonsCount, "#caa5fe")}
+          {auraItem("glitter", "Glitzerstaub", glitterDust, "#e879f9")}
+          {auraItem("lootboxes", "Lootboxen", shootingStarsCount, "#fcd34d")}
         </div>
 
-        {/* Body Area */}
-        <div className="flex flex-1 overflow-hidden min-h-0">
-          
-          {/* Left Pane: Recipes List */}
-          <div className={`w-full sm:w-[45%] flex flex-col border-r-2 ${
-            isNight ? "border-cosmic-accent/20" : "border-amber-205"
-          }`}>
-            
-            {/* Category selection */}
-            <div className="p-3 shrink-0 flex gap-1.5 border-b border-purple-500/10">
-              <button
-                onClick={() => {
-                  setSelectedCategory("materials");
-                  const first = CRAFTING_RECIPES.find((r) => r.category === "materials");
-                  if (first) handleSelectRecipe(first.id);
-                }}
-                className={`flex-1 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1 transition-all cursor-pointer ${
-                  selectedCategory === "materials"
-                    ? isNight ? "bg-purple-900/50 text-purple-200 border border-purple-500/20" : "bg-amber-200 text-amber-900 shadow-sm border border-amber-400"
-                    : isNight ? "text-gray-400 hover:text-white" : "text-slate-600 hover:bg-slate-205/40"
-                }`}
-              >
-                <Layers className="w-3.5 h-3.5 text-blue-300" /> Rohstoffe
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedCategory("consumables");
-                  const first = CRAFTING_RECIPES.find((r) => r.category === "consumables");
-                  if (first) handleSelectRecipe(first.id);
-                }}
-                className={`flex-1 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1 transition-all cursor-pointer ${
-                  selectedCategory === "consumables"
-                    ? isNight ? "bg-purple-900/50 text-purple-200 border border-purple-500/20" : "bg-amber-200 text-amber-900 shadow-sm border border-amber-400"
-                    : isNight ? "text-gray-400 hover:text-white" : "text-slate-600 hover:bg-slate-205/40"
-                }`}
-              >
-                <Package className="w-3.5 h-3.5 text-yellow-300" /> Elixiere/Boxen
-              </button>
-            </div>
+        {isMobile ? (
+          /* ── Mobile layout: recipe picker + scrollable plan + pinned craft btn ── */
+          <>
+            {/* Recipe picker trigger */}
+            <button
+              className="pk-craft-mobile-recipe-btn"
+              onClick={() => setMobileRecipeOpen(true)}
+            >
+              <span>{target.emoji}</span>
+              <span style={{ flex: 1, textAlign: "left" }}>{target.name}</span>
+              <span style={{ opacity: 0.5 }}>▼</span>
+            </button>
 
-            {/* Recipe search */}
-            <div className="p-3 shrink-0 border-b border-purple-500/10">
-              <input
-                type="text"
-                placeholder="Rezept suchen... 🔎"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className={`w-full px-3.5 py-1.5 rounded-xl text-xs font-semibold focus:outline-none focus:ring-1 border ${
-                  isNight 
-                    ? "bg-[#181333] border-purple-500/20 text-white placeholder-slate-500 focus:ring-purple-400" 
-                    : "bg-white border-amber-300 text-slate-800 placeholder-slate-400 focus:ring-amber-400"
-                }`}
+            {/* Recipe overlay */}
+            <AnimatePresence>
+              {mobileRecipeOpen && (
+                <motion.div
+                  className="pk-craft-mobile-overlay"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  onClick={() => setMobileRecipeOpen(false)}
+                >
+                  <motion.div
+                    className="pk-craft-mobile-overlay__panel"
+                    initial={{ y: "100%" }}
+                    animate={{ y: 0 }}
+                    exit={{ y: "100%" }}
+                    transition={{ type: "spring", stiffness: 400, damping: 38 }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="pk-craft-tabs" style={{ padding: "11px 11px 4px" }}>
+                      <button
+                        className={`pk-craft-tab ${cat === "materials" ? "pk-craft-tab--on" : ""}`}
+                        onClick={() => setCat("materials")}
+                      >
+                        ▦ Rohstoffe
+                      </button>
+                      <button
+                        className={`pk-craft-tab ${cat === "consumables" ? "pk-craft-tab--on" : ""}`}
+                        onClick={() => setCat("consumables")}
+                      >
+                        📦 Elixiere/Boxen
+                      </button>
+                    </div>
+                    <div className="pk-craft-search" style={{ padding: "0 11px 8px" }}>
+                      <input
+                        placeholder="Rezept suchen… 🔎"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                      />
+                    </div>
+                    <div className="pk-craft-list" style={{ maxHeight: "55vh" }}>
+                      {filteredList.map((r) => {
+                        const recipeHave = resolve(r.result.id, 1, have);
+                        const isOn = targetId === r.result.id;
+                        return (
+                          <div
+                            key={r.result.id}
+                            className={`pk-craft-rrow ${isOn ? "pk-craft-rrow--on" : ""}`}
+                            onClick={() => pick(r.result.id)}
+                          >
+                            <span className="pk-craft-rrow__em">{r.result.emoji}</span>
+                            <div style={{ minWidth: 0, flex: 1 }}>
+                              <div className="pk-craft-rrow__nm">{r.result.name}</div>
+                              <div className="pk-craft-rrow__sub">{r.description}</div>
+                            </div>
+                            <span
+                              className="pk-craft-dot"
+                              style={{ background: recipeHave.ok ? "#34d399" : "#5b5680" }}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Scrollable plan */}
+            <div className="pk-craft-mobile-plan">
+              <SummaryContent
+                target={target}
+                qty={qty}
+                setQty={setQty}
+                plan={plan}
+                have={have}
+                fmtNum={fmtNum}
+                maxQty={maxQty}
+                showPlan
               />
             </div>
 
-            {/* List */}
-            <div className={`flex-1 overflow-y-auto p-2 space-y-1.5 ${isNight ? "bg-[#0b081e]" : "bg-amber-100/10"}`}>
-              {filteredRecipes.map((recipe) => {
-                const canCraft = checkCanCraft(recipe);
-                const isSelected = selectedRecipeId === recipe.id;
-                return (
+            {/* Pinned craft button */}
+            <div className="pk-craft-mobile-foot">
+              <CraftButton planOk={plan.ok} qty={qty} onCraft={handleCraft} />
+            </div>
+          </>
+        ) : (
+          /* ── Desktop layout: rail + graph stage + summary column ── */
+          <div className="pk-craft-body">
+            {/* Left rail */}
+            <div className="pk-craft-rail">
+              <div className="pk-craft-tabs">
+                <button
+                  className={`pk-craft-tab ${cat === "materials" ? "pk-craft-tab--on" : ""}`}
+                  onClick={() => setCat("materials")}
+                >
+                  ▦ Rohstoffe
+                </button>
+                <button
+                  className={`pk-craft-tab ${cat === "consumables" ? "pk-craft-tab--on" : ""}`}
+                  onClick={() => setCat("consumables")}
+                >
+                  📦 Elixiere/Boxen
+                </button>
+              </div>
+              <div className="pk-craft-search">
+                <input
+                  placeholder="Rezept suchen… 🔎"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+              <div className="pk-craft-list">
+                {filteredList.map((r) => {
+                  const recipeHave = resolve(r.result.id, 1, have);
+                  const isOn = targetId === r.result.id;
+                  return (
+                    <div
+                      key={r.result.id}
+                      className={`pk-craft-rrow ${isOn ? "pk-craft-rrow--on" : ""}`}
+                      onClick={() => pick(r.result.id)}
+                    >
+                      <span className="pk-craft-rrow__em">{r.result.emoji}</span>
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <div className="pk-craft-rrow__nm">{r.result.name}</div>
+                        <div className="pk-craft-rrow__sub">{r.description}</div>
+                      </div>
+                      <span
+                        className="pk-craft-dot"
+                        style={{ background: recipeHave.ok ? "#34d399" : "#5b5680" }}
+                        title={recipeHave.ok ? "schmiedbar" : "fehlende Materialien"}
+                      />
+                    </div>
+                  );
+                })}
+                {filteredList.length === 0 && (
                   <div
-                    key={recipe.id}
-                    onClick={() => handleSelectRecipe(recipe.id)}
-                    className={`p-2.5 rounded-2xl border transition-all cursor-pointer flex items-center gap-2 relative ${
-                      isSelected
-                        ? isNight 
-                          ? "bg-purple-500/20 border-cosmic-accent" 
-                          : "bg-amber-100 border-amber-450 scale-[1.01]"
-                        : isNight
-                          ? "bg-[#110e2d]/65 border-purple-950/40 hover:bg-[#18143c]"
-                          : "bg-white border-amber-200/60 hover:bg-amber-50"
-                    }`}
+                    className="pk-craft-planempty"
+                    style={{ textAlign: "center", padding: "24px 0" }}
                   >
-                    <span className="text-2xl select-none filter drop-shadow-sm shrink-0">
-                      {recipe.result.emoji}
-                    </span>
-                    <div className="min-w-0 flex-grow select-none">
-                      <h6 className={`font-sans font-black text-[11px] leading-tight truncate ${
-                        isNight ? "text-cosmic-text" : "text-slate-800"
-                      }`}>
-                        {recipe.result.name}
-                      </h6>
-                      <p className={`text-[9px] truncate font-medium ${isNight ? "text-[#a298cb]" : "text-slate-500"}`}>
-                        {recipe.description}
-                      </p>
-                    </div>
-
-                    {/* Status Badge */}
-                    <div className="shrink-0">
-                      {canCraft ? (
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-450 inline-block animate-pulse align-middle" title="Schmiedbar!" />
-                      ) : (
-                        <span className="w-2.5 h-2.5 rounded-full bg-gray-500 inline-block align-middle" title="Fehlende Materialien" />
-                      )}
-                    </div>
+                    Keine Rezepte gefunden
                   </div>
-                );
-              })}
-              {filteredRecipes.length === 0 && (
-                <div className="text-center py-10 opacity-50 text-[11px] font-bold">
-                  Keine Rezepte gefunden
+                )}
+              </div>
+            </div>
+
+            {/* Graph stage */}
+            <div className="pk-craft-stage">
+              <div className="pk-craft-crumb">
+                {stack.map((id, i) => {
+                  const it = getItem(id);
+                  const cur = i === stack.length - 1;
+                  return (
+                    <React.Fragment key={id + i}>
+                      {i > 0 && <span style={{ color: "#6f6a99" }}>▸</span>}
+                      <span
+                        className={`pk-craft-crumb__seg ${cur ? "pk-craft-crumb__seg--cur" : ""}`}
+                        onClick={cur ? undefined : () => crumbTo(i)}
+                      >
+                        {it.emoji} {it.name}
+                      </span>
+                    </React.Fragment>
+                  );
+                })}
+                <span className="pk-craft-crumb__hint">
+                  Klicke ein schmiedbares Teil, um zu seiner Quelle zu springen ↗
+                </span>
+              </div>
+
+              <div
+                className="pk-craft-graph"
+                ref={graphScrollRef}
+                onPointerDown={onPointerDown}
+                onPointerMove={onPointerMove}
+                onPointerUp={onPointerUp}
+                onPointerCancel={onPointerUp}
+              >
+                <div className="pk-craft-zoom">
+                  <button className="pk-craft-zoom__btn" onClick={() => zoomBy(1.25)} title="Einzoomen">＋</button>
+                  <button className="pk-craft-zoom__btn" onClick={fitToView} title="Alles zeigen">⟳</button>
+                  <button className="pk-craft-zoom__btn" onClick={() => zoomBy(0.8)} title="Auszoomen">－</button>
                 </div>
-              )}
+                <div
+                  ref={innerRef}
+                  style={{
+                    position: "relative",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    transformOrigin: "0 0",
+                  }}
+                >
+                  <svg
+                    className="pk-craft-edges"
+                    width={edgeGeo.w}
+                    height={edgeGeo.h}
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      top: 0,
+                      pointerEvents: "none",
+                      overflow: "visible",
+                    }}
+                  >
+                    {edgeGeo.paths.map((p, i) => {
+                      const status = statusByUid.get(p.childUid);
+                      const isShort = status === "short";
+                      const isOk = status === "ok" || status === "have";
+                      const isMake = status === "make";
+                      const color = isShort
+                        ? "rgba(251,113,133,.55)"
+                        : isOk
+                        ? "rgba(52,211,153,.5)"
+                        : "rgba(202,165,254,.55)";
+                      return (
+                        <path
+                          key={i}
+                          d={p.d}
+                          fill="none"
+                          stroke={color}
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          className={isMake ? "edge--make" : ""}
+                        />
+                      );
+                    })}
+                  </svg>
+                  <NodeGroup
+                    node={root}
+                    have={have}
+                    isRoot
+                    onDrill={drill}
+                    formatNum={(n) => String(n)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Right summary */}
+            <div className="pk-craft-sum">
+              <SummaryContent
+                target={target}
+                qty={qty}
+                setQty={setQty}
+                plan={plan}
+                have={have}
+                fmtNum={fmtNum}
+                maxQty={maxQty}
+                showPlan
+              />
+              <div className="pk-craft-sum__foot">
+                <CraftButton planOk={plan.ok} qty={qty} onCraft={handleCraft} />
+              </div>
             </div>
           </div>
-
-          {/* Right Pane: Selected Recipe Detail */}
-          <div className="hidden sm:flex sm:w-[55%] flex-col overflow-y-auto p-4 sm:p-6 justify-between h-full bg-[#1c183df0]/20">
-            {selectedRecipe ? (
-              <div className="space-y-4 flex flex-col h-full justify-between">
-                
-                {/* Visual Header */}
-                <div className="text-center space-y-2 mt-2">
-                  <span className="text-6xl select-none filter drop-shadow-md block mb-2">
-                    {selectedRecipe.result.emoji}
-                  </span>
-                  <div>
-                    <span className={`px-2.5 py-0.5 rounded-full text-[8.5px] font-mono font-black uppercase tracking-wider border ${
-                      selectedRecipe.category === "materials"
-                        ? "bg-blue-500/10 text-blue-300 border-blue-500/20"
-                        : "bg-amber-500/10 text-amber-300 border-amber-500/20"
-                    }`}>
-                      {selectedRecipe.category === "materials" ? "Rohstoff / Zutat" : "Aktivierbares Item"}
-                    </span>
-                    <h4 className="font-sans font-black text-sm uppercase tracking-wide text-amber-300 mt-2">
-                      {selectedRecipe.result.name}
-                    </h4>
-                    <p className={`text-[10px] sm:text-[11px] font-semibold max-w-xs mx-auto leading-normal ${
-                      isNight ? "text-[#bdb8dd]" : "text-slate-600"
-                    }`}>
-                      {selectedRecipe.result.description}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Ingredients List Box */}
-                <div className={`p-3 rounded-2.5xl border-2 space-y-2 ${
-                  isNight ? "bg-black/35 border-purple-500/10" : "bg-white border-amber-250"
-                }`}>
-                  <span className="text-[9px] uppercase font-mono font-black tracking-widest text-[#a298cb] block">
-                    🧪 Erforderliche Zutaten:
-                  </span>
-                  
-                  <div className="grid grid-cols-1 gap-1.5 max-h-[160px] overflow-y-auto pr-1">
-                    {/* Life ingredient */}
-                    {selectedRecipe.ingredients.life && (
-                      <div className="flex items-center justify-between text-xs font-mono font-black py-0.5">
-                        <span className="flex items-center gap-1 text-slate-300">
-                          💖 Leben
-                        </span>
-                        <span className={life >= selectedRecipe.ingredients.life ? "text-[#a3e635]" : "text-rose-400"}>
-                          {formatCompactNumber(selectedRecipe.ingredients.life)} ({formatCompactNumber(life)})
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Stars ingredient */}
-                    {selectedRecipe.ingredients.stars && (
-                      <div className="flex items-center justify-between text-xs font-mono font-black py-0.5">
-                        <span className="flex items-center gap-1 text-slate-300">
-                          ⭐ Sterne
-                        </span>
-                        <span className={starsCount >= selectedRecipe.ingredients.stars ? "text-[#a3e635]" : "text-rose-400"}>
-                          {selectedRecipe.ingredients.stars} ({starsCount})
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Moons ingredient */}
-                    {selectedRecipe.ingredients.moons && (
-                      <div className="flex items-center justify-between text-xs font-mono font-black py-0.5">
-                        <span className="flex items-center gap-1 text-slate-300">
-                          🌙 Monde
-                        </span>
-                        <span className={moonsCount >= selectedRecipe.ingredients.moons ? "text-[#a3e635]" : "text-rose-400"}>
-                          {selectedRecipe.ingredients.moons} ({moonsCount})
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Glitter ingredient */}
-                    {selectedRecipe.ingredients.glitter && (
-                      <div className="flex items-center justify-between text-xs font-mono font-black py-0.5">
-                        <span className="flex items-center gap-1 text-slate-300">
-                          ✨ Glitzerstaub
-                        </span>
-                        <span className={glitterDust >= selectedRecipe.ingredients.glitter ? "text-[#a3e635]" : "text-rose-400"}>
-                          {selectedRecipe.ingredients.glitter} ({glitterDust})
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Lootboxes ingredient */}
-                    {selectedRecipe.ingredients.lootboxes && (
-                      <div className="flex items-center justify-between text-xs font-mono font-black py-0.5">
-                        <span className="flex items-center gap-1 text-slate-300">
-                          🌠 Lootboxen
-                        </span>
-                        <span className={shootingStarsCount >= selectedRecipe.ingredients.lootboxes ? "text-[#a3e635]" : "text-rose-400"}>
-                          {selectedRecipe.ingredients.lootboxes} ({shootingStarsCount})
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Crafted Items ingredients */}
-                    {selectedRecipe.ingredients.items && 
-                      Object.entries(selectedRecipe.ingredients.items).map(([itemId, qty]) => {
-                        const ownedQty = craftedItems[itemId] || 0;
-                        return (
-                          <div key={itemId} className="flex items-center justify-between text-xs font-mono font-black py-0.5">
-                            <span className="flex items-center gap-1 text-slate-300 truncate max-w-[65%]">
-                              {getItemEmojiById(itemId)} {getItemNameById(itemId)}
-                            </span>
-                            <span className={ownedQty >= qty ? "text-[#a3e635]" : "text-rose-400"}>
-                              {qty}x ({ownedQty}x)
-                            </span>
-                          </div>
-                        );
-                    })}
-                  </div>
-                </div>
-
-                {/* Quantity Selection */}
-                <div className={`p-3 rounded-2xl border flex items-center justify-between ${
-                  isNight ? "bg-black/25 border-purple-500/10" : "bg-white border-amber-200"
-                }`}>
-                  <span className={`text-[10px] uppercase font-black tracking-wider ${isNight ? "text-[#a298cb]" : "text-slate-600"} font-mono`}>
-                    🏭 Anzahl herstellen:
-                  </span>
-                  <div className="flex items-center gap-3">
-                    <button
-                      type="button"
-                      disabled={craftAmount <= 1}
-                      onClick={() => setCraftAmount(prev => Math.max(1, prev - 1))}
-                      className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs border transition-all active:scale-95 ${
-                        craftAmount <= 1
-                          ? isNight ? "opacity-30 border-purple-800 text-purple-400 select-none cursor-not-allowed" : "opacity-30 border-amber-200 text-amber-950 cursor-not-allowed select-none"
-                          : isNight ? "bg-[#201c40]/80 border-purple-400/40 text-purple-200 hover:bg-[#2c265d] hover:border-purple-300/60 cursor-pointer" : "bg-amber-100/60 border-amber-300 text-amber-900 hover:bg-amber-100 cursor-pointer"
-                      }`}
-                    >
-                      －
-                    </button>
-                    <span className="font-mono text-sm font-black w-6 text-center select-none">
-                      {craftAmount}
-                    </span>
-                    <button
-                      type="button"
-                      disabled={craftAmount >= Math.max(1, maxCraftableCount)}
-                      onClick={() => setCraftAmount(prev => prev + 1)}
-                      className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs border transition-all active:scale-95 ${
-                        craftAmount >= Math.max(1, maxCraftableCount)
-                          ? isNight ? "opacity-30 border-purple-800 text-purple-400 select-none cursor-not-allowed" : "opacity-30 border-amber-200 text-amber-950 cursor-not-allowed select-none"
-                          : isNight ? "bg-[#201c40]/80 border-purple-400/40 text-purple-200 hover:bg-[#2c265d] hover:border-purple-300/60 cursor-pointer" : "bg-amber-100/60 border-amber-300 text-amber-900 hover:bg-amber-100 cursor-pointer"
-                      }`}
-                    >
-                      ＋
-                    </button>
-                  </div>
-                </div>
-
-                {/* Inventory / Crafted details */}
-                <div className="text-center font-semibold text-[10.5px] font-mono text-[#a59bcb]">
-                  Bereits im Besitz: <strong className="text-white bg-purple-900/40 border border-purple-500/10 px-2 py-0.2 rounded-full ml-1">
-                    {craftedItems[selectedRecipe.result.id] || 0}x
-                  </strong>
-                </div>
-
-                {/* Crafting Button */}
-                <button
-                  onClick={() => selectedCanCraftQuantity && onCraftItem(selectedRecipe.id, craftAmount)}
-                  disabled={!selectedCanCraftQuantity}
-                  className={`w-full py-4 rounded-2.5xl font-sans font-black text-xs uppercase tracking-widest cursor-pointer shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2 border-2 ${
-                    selectedCanCraftQuantity
-                      ? "bg-gradient-to-r from-amber-450 via-orange-500 to-pink-500 hover:from-amber-500 hover:via-orange-600 hover:to-pink-600 text-white border-yellow-300 shadow-amber-300/10"
-                      : "bg-[#18152e] border-purple-500/10 text-slate-500 cursor-not-allowed"
-                  }`}
-                >
-                  <Hammer className={`w-4 h-4 ${selectedCanCraftQuantity ? "animate-bounce" : ""}`} />
-                  {selectedCanCraftQuantity ? `${selectedRecipe.result.quantity * craftAmount}x herstellen!` : "Schmiede gesperrt"}
-                </button>
-
-              </div>
-            ) : (
-              <div className="text-center my-auto font-black text-sm uppercase opacity-40">
-                Wähle ein Rezept
-              </div>
-            )}
-          </div>
-
-        </div>
-    </Modal>
-  );
-});
+        )}
+      </Modal>
+    );
+  }
+);
 
 CraftingModal.displayName = "CraftingModal";

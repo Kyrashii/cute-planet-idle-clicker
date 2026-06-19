@@ -2,6 +2,7 @@ import { GameState, Animal, Upgrade } from "./types";
 import { INITIAL_ANIMALS, calculateCost } from "./data";
 import { COSMETIC_ITEMS } from "./data/cosmetics";
 import { CRAFTING_RECIPES } from "./data/recipes";
+import { resolve, RECIPE_BY_RESULT, getItem } from "./data/craftingGraph";
 import { ZODIACS } from "./data/zodiacs";
 import { computeLevelUpResult, expForLevel, EXP_PER_LEVEL } from "./game/engine";
 
@@ -989,6 +990,49 @@ addEventListener("message", (e) => {
 
         broadcastStateUpdate(true);
       }
+      break;
+    }
+    case "CRAFT_RECURSIVE": {
+      const { targetItemId, count: rawCountR } = data;
+      const countR = Math.max(1, Number(rawCountR || 1));
+      if (!state.craftedItems) state.craftedItems = {};
+
+      const haveR: Record<string, number> = {
+        life: state.life,
+        stars: state.starsCount,
+        moons: state.moonsCount,
+        glitter: state.glitterDust,
+        lootboxes: state.shootingStarsCount,
+        ...state.craftedItems,
+      };
+
+      const { plan: planR, ok: okR } = resolve(targetItemId, countR, haveR);
+      if (!okR) break;
+
+      for (const step of planR) {
+        const recipe = RECIPE_BY_RESULT.get(step.id);
+        if (!recipe) continue;
+        const { life: rl, stars: rs, moons: rm, glitter: rg, lootboxes: rlb, items: ri } = recipe.ingredients;
+        const ops = step.ops;
+        if (rl) state.life -= rl * ops;
+        if (rs) state.starsCount -= rs * ops;
+        if (rm) state.moonsCount -= rm * ops;
+        if (rg) state.glitterDust -= rg * ops;
+        if (rlb) state.shootingStarsCount -= rlb * ops;
+        if (ri) {
+          for (const [iid, iqty] of Object.entries(ri)) {
+            state.craftedItems[iid] = (state.craftedItems[iid] || 0) - iqty * ops;
+          }
+        }
+        state.craftedItems[step.id] = (state.craftedItems[step.id] || 0) + step.produces;
+      }
+
+      const targetItemInfo = getItem(targetItemId);
+      postMessage({
+        type: "COSMETIC_FOUND",
+        text: `Auto-geschmiedet: ${countR}x ${targetItemInfo.name} ${targetItemInfo.emoji}! 🔨`,
+      });
+      broadcastStateUpdate(true);
       break;
     }
     case "USE_CRAFTED_ITEM": {

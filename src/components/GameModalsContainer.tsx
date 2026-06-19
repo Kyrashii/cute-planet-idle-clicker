@@ -69,6 +69,7 @@ interface GameModalsContainerProps {
   handleMergeMoons: () => void;
   handleInvestConstellation: (constellationId: string, starsCost: number, moonsCost: number) => void;
   handleCraftItem: (recipeId: string, count?: number) => void;
+  handleCraftRecursive: (targetItemId: string, count?: number) => void;
   handleClaimOfflineEarnings: (earnedLife: number) => void;
   handleClaimMissionReward: (missionId: string, starsReward: number) => void;
   handleOpenShootingStar: (cosmetic: any, alreadyUnlocked: boolean, refundAmt: number) => void;
@@ -171,6 +172,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
   handleMergeMoons,
   handleInvestConstellation,
   handleCraftItem,
+  handleCraftRecursive,
   handleClaimOfflineEarnings,
   handleClaimMissionReward,
   handleOpenShootingStar,
@@ -288,9 +290,8 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
         <CraftingModal
           isOpen={showCraftingModal}
           onClose={() => setShowCraftingModal(false)}
-          isNight={isNightStyle}
           craftedItems={craftedItems}
-          onCraftItem={handleCraftItem}
+          onCraftRecursive={handleCraftRecursive}
           formatCompactNumber={formatCompactNumber}
         />
       )}
