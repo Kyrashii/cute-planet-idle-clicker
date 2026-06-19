@@ -1341,6 +1341,11 @@ export default function App() {
     workerRef.current?.postMessage({ type: "CRAFT_ITEM", recipeId, count });
   }, []);
 
+  const handleCraftRecursive = useCallback((targetItemId: string, count: number = 1) => {
+    playUpgrade();
+    workerRef.current?.postMessage({ type: "CRAFT_RECURSIVE", targetItemId, count });
+  }, []);
+
   const handleUseCraftedItem = useCallback((itemId: string, count: number = 1) => {
     playPop();
     workerRef.current?.postMessage({ type: "USE_CRAFTED_ITEM", itemId, count });
@@ -1728,6 +1733,7 @@ export default function App() {
           handleMergeMoons={handleMergeMoons}
           handleInvestConstellation={handleInvestConstellation}
           handleCraftItem={handleCraftItem}
+          handleCraftRecursive={handleCraftRecursive}
           handleClaimOfflineEarnings={handleClaimOfflineEarnings}
           handleClaimMissionReward={handleClaimMissionReward}
           handleOpenShootingStar={handleOpenShootingStar}
