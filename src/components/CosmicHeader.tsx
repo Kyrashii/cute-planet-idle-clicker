@@ -26,6 +26,7 @@ interface CosmicHeaderProps {
   formatCompactNumber: (num: number) => string;
   prestigeCount: number;
   onOpenGalaxyShardsShop: () => void;
+  inGlitchGalaxy?: boolean;
 }
 
 export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(({
@@ -44,6 +45,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(({
   formatCompactNumber,
   prestigeCount,
   onOpenGalaxyShardsShop,
+  inGlitchGalaxy = false,
 }) => {
   return (
     <header className={`sticky top-0 z-20 backdrop-blur-md py-4 px-4 sm:px-6 shadow-md transition-all duration-500 border-b-4 ${
@@ -154,13 +156,23 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(({
           </button>
 
           {/* Reset check trigger */}
-          <button
-            onClick={() => setShowResetDialog(true)}
-            className="p-2.5 rounded-xl border-2 active:scale-92 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-cosmic-pink/50 bg-red-950/40 hover:bg-red-900/40 text-red-300"
-            title="Spiel zurücksetzen"
-          >
-            <RotateCcw className="w-4 h-4 text-red-400" />
-          </button>
+          {!inGlitchGalaxy ? (
+            <button
+              onClick={() => setShowResetDialog(true)}
+              className="p-2.5 rounded-xl border-2 active:scale-92 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-cosmic-pink/50 bg-red-950/40 hover:bg-red-900/40 text-red-300"
+              title="Spiel zurücksetzen"
+            >
+              <RotateCcw className="w-4 h-4 text-red-400" />
+            </button>
+          ) : (
+            <button
+              disabled
+              className="p-2.5 rounded-xl border-2 transition-all shadow-sm border-gray-700/60 bg-gray-950/60 text-gray-500 cursor-not-allowed opacity-50"
+              title="Zurücksetzen blockiert in instabiler Galaxie"
+            >
+              <RotateCcw className="w-4 h-4 text-gray-550 animate-spin" style={{ animationDuration: "6s" }} />
+            </button>
+          )}
         </div>
       </div>
     </header>

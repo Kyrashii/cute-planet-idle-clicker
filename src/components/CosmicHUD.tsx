@@ -1,6 +1,6 @@
 import React from "react";
 import { Heart, TrendingUp, Star as StarIcon, Award } from "lucide-react";
-import { formatCompactNumber, getPrestigeRequirement } from "../data";
+import { formatCompactNumber as defaultFormatCompactNumber, getPrestigeRequirement } from "../data";
 
 interface CosmicHUDProps {
   isNightStyle: boolean;
@@ -8,6 +8,7 @@ interface CosmicHUDProps {
   totalLps: number;
   starsCount: number;
   prestigeCount: number;
+  formatCompactNumber?: (num: number) => string;
 }
 
 export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(({
@@ -16,6 +17,7 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(({
   totalLps,
   starsCount,
   prestigeCount,
+  formatCompactNumber = defaultFormatCompactNumber,
 }) => {
   const PRESTIGE_REQUIREMENT = getPrestigeRequirement(prestigeCount);
 

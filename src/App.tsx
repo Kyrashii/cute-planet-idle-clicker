@@ -53,11 +53,11 @@ import { ModalSettingsProvider } from "./components/ui/Modal";
 import { GameStateProvider, GameStateValue } from "./contexts/GameStateContext";
 import { BackgroundCompanions } from "./components/BackgroundCompanions";
 import { EventBackgrounds } from "./components/EventBackgrounds";
-import { CosmicHUD } from "./components/CosmicHUD";
-import { ActiveEventBanner } from "./components/ActiveEventBanner";
-import { DayNightIndicator } from "./components/DayNightIndicator";
-import { ActionButtons } from "./data/ActionButtons";
-import { FloatingTexts } from "./components/FloatingTexts";
+import { LoadingScreen } from "./components/LoadingScreen";
+import { CosmicFooter } from "./components/CosmicFooter";
+import { useAudioSettings } from "./hooks/useAudioSettings";
+import { CosmicOverlays } from "./components/CosmicOverlays";
+import { InteractiveCosmos } from "./components/InteractiveCosmos";
 
 // Static level bounds (significantly increased to slow down progression)
 const EXP_PER_LEVEL = [0, 1500, 5000, 18000, 60000, 220000, 850000, 3200000, 12000000, 45000000, 160000000, 550000000, 1800000000, 6000000000, 20000000000, 65000000000, 200000000000, 600000000000, 1800000000000, 5000000000000];
@@ -79,6 +79,14 @@ const isArrEqual = (a: any[] | undefined, b: any[] | undefined): boolean => {
 export default function App() {
   // Loaded state guards
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const {
+    isMutedState,
+    musicVolumeState,
+    musicStyleState,
+    setMusicStyleState,
+    handleToggleMute,
+  } = useAudioSettings();
 
   // 1. Primary Game Engine State
   const [life, setLife] = useState<number>(0);
@@ -102,9 +110,6 @@ export default function App() {
   const [showAnimalsModal, setShowAnimalsModal] = useState<boolean>(false);
   const [showStarsModal, setShowStarsModal] = useState<boolean>(false);
   const [showStatsModal, setShowStatsModal] = useState<boolean>(false);
-  const [isMutedState, setIsMutedState] = useState<boolean>(false);
-  const [musicVolumeState, setMusicVolumeState] = useState<number>(0.35);
-  const [musicStyleState, setMusicStyleState] = useState<MusicStyleId>("chiptune");
   const [showMusicSettingsModal, setShowMusicSettingsModal] = useState<boolean>(false);
   const [floatingTexts, setFloatingTexts] = useState<FloatingText[]>([]);
   const nextParticleId = useRef<number>(1);
@@ -226,6 +231,11 @@ export default function App() {
   } | null>(null);
 
   // Modals Visibility
+  const [inGlitchGalaxy, setInGlitchGalaxy] = useState<boolean>(false);
+  const [glitchPending, setGlitchPending] = useState<boolean>(false);
+  const [unlockedGlitchGalaxy, setUnlockedGlitchGalaxy] = useState<boolean>(false);
+  const [spentGalaxyShards, setSpentGalaxyShards] = useState<number>(0);
+  const [glitchBenchmarks, setGlitchBenchmarks] = useState<any>(undefined);
   const [showMissionsModal, setShowMissionsModal] = useState<boolean>(false);
   const [showInventoryModal, setShowInventoryModal] = useState<boolean>(false);
   const [showPrestigeModal, setShowPrestigeModal] = useState<boolean>(false);
@@ -278,6 +288,25 @@ export default function App() {
     setOfflineEarnedLife(0);
     setShowOfflineModal(false);
   }, []);
+
+  const glitchedFormatCompactNumber = useCallback((num: number): string => {
+    const normal = formatCompactNumber(num);
+    if (!inGlitchGalaxy) return normal;
+    
+    // Scramble values to look broken/unstable
+    const glitchSymbols = ["ø", "µ", "×", "‡", "■", "░", "█", "¥", "⧉"];
+    const hash = Math.floor(Math.abs(num) * 12345) % 100;
+    if (hash < 33) {
+      const idx = hash % glitchSymbols.length;
+      return normal + glitchSymbols[idx];
+    } else if (hash < 66) {
+      return normal.replace(/[0-9]/g, (char) => {
+        const digit = parseInt(char, 10);
+        return String.fromCharCode(0x2460 + digit); // Circled numbers ①, ②...
+      });
+    }
+    return normal;
+  }, [inGlitchGalaxy]);
 
   useEffect(() => {
     if (isLoaded && !offlineCheckedRef.current) {
@@ -558,6 +587,11 @@ export default function App() {
         if (savedStateObj.slummerGlassLevel !== undefined) setSlummerGlassLevel(savedStateObj.slummerGlassLevel || 1);
         if (savedStateObj.catalystLevel !== undefined) setCatalystLevel(savedStateObj.catalystLevel || 0);
         if (savedStateObj.doubleStellarLevel !== undefined) setDoubleStellarLevel(savedStateObj.doubleStellarLevel || 0);
+        if (savedStateObj.inGlitchGalaxy !== undefined) setInGlitchGalaxy(savedStateObj.inGlitchGalaxy);
+        if (savedStateObj.glitchPending !== undefined) setGlitchPending(savedStateObj.glitchPending);
+        if (savedStateObj.unlockedGlitchGalaxy !== undefined) setUnlockedGlitchGalaxy(savedStateObj.unlockedGlitchGalaxy);
+        if (savedStateObj.spentGalaxyShards !== undefined) setSpentGalaxyShards(savedStateObj.spentGalaxyShards || 0);
+        if (savedStateObj.glitchBenchmarks !== undefined) setGlitchBenchmarks(savedStateObj.glitchBenchmarks);
       }
     } catch (e) {
       console.error("Failed to parse initial save for Web Worker:", e);
@@ -600,6 +634,11 @@ export default function App() {
           if (ws.catalystLevel !== undefined) setCatalystLevel(ws.catalystLevel || 0);
           if (ws.doubleStellarLevel !== undefined) setDoubleStellarLevel(ws.doubleStellarLevel || 0);
           if (ws.blackHoleSize !== undefined) setBlackHoleSize(ws.blackHoleSize || 1);
+          if (ws.inGlitchGalaxy !== undefined) setInGlitchGalaxy(ws.inGlitchGalaxy);
+          if (ws.glitchPending !== undefined) setGlitchPending(ws.glitchPending);
+          if (ws.unlockedGlitchGalaxy !== undefined) setUnlockedGlitchGalaxy(ws.unlockedGlitchGalaxy);
+          if (ws.spentGalaxyShards !== undefined) setSpentGalaxyShards(ws.spentGalaxyShards || 0);
+          if (ws.glitchBenchmarks !== undefined) setGlitchBenchmarks(ws.glitchBenchmarks);
           
           setConstellations((prevOrder) => isObjEqual(prevOrder, ws.constellations) ? prevOrder : (ws.constellations || {}));
           setCraftedItems((prev) => isObjEqual(prev, ws.craftedItems) ? prev : (ws.craftedItems || {}));
@@ -825,6 +864,7 @@ export default function App() {
 
   // Game stats tracking (hydrated by worker)
   const [showResetDialog, setShowResetDialog] = useState<boolean>(false);
+  const [showRepairDialog, setShowRepairDialog] = useState<boolean>(false);
   const [showCheatEventModal, setShowCheatEventModal] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(true);
   const [showUpgradesModal, setShowUpgradesModal] = useState<boolean>(false);
@@ -850,57 +890,6 @@ export default function App() {
       type: "BLACK_HOLE_GAMBLE",
       sacrificeType,
     });
-  }, []);
-
-  // Load static music volumes and configurations
-  useEffect(() => {
-    try {
-      const savedMuted = localStorage.getItem("cute_planet_muted");
-      if (savedMuted) {
-        const isMuted = savedMuted === "true";
-        setMuted(isMuted);
-        setIsMutedState(isMuted);
-      }
-
-      const savedVolume = localStorage.getItem("cute_planet_music_volume");
-      if (savedVolume !== null) {
-        const vol = Number(savedVolume);
-        setMusicVolume(vol);
-        setMusicVolumeState(vol);
-      } else {
-        setMusicVolume(0.35);
-        setMusicVolumeState(0.35);
-      }
-
-      const savedStyle = localStorage.getItem("cute_planet_music_style") as MusicStyleId | null;
-      if (savedStyle !== null && ["classic", "rainy", "space", "chiptune", "zen"].includes(savedStyle)) {
-        setMusicStyle(savedStyle);
-        setMusicStyleState(savedStyle);
-      } else {
-        setMusicStyle("chiptune");
-        setMusicStyleState("chiptune");
-      }
-    } catch (e) {
-      console.error("Failed to load audio settings:", e);
-    }
-  }, []);
-
-  // Automatically trigger background music
-  useEffect(() => {
-    const handleFirstInteraction = () => {
-      startBackgroundMusic();
-      window.removeEventListener("click", handleFirstInteraction);
-      window.removeEventListener("touchstart", handleFirstInteraction);
-      window.removeEventListener("keydown", handleFirstInteraction);
-    };
-    window.addEventListener("click", handleFirstInteraction);
-    window.addEventListener("touchstart", handleFirstInteraction);
-    window.addEventListener("keydown", handleFirstInteraction);
-    return () => {
-      window.removeEventListener("click", handleFirstInteraction);
-      window.removeEventListener("touchstart", handleFirstInteraction);
-      window.removeEventListener("keydown", handleFirstInteraction);
-    };
   }, []);
 
   // Easter egg keydown handler for "uguu" cheat
@@ -1011,6 +1000,12 @@ export default function App() {
     return () => { document.body.classList.remove("low-memory"); };
   }, [disableAnimations]);
 
+  // Toggle glitch galaxy class directly on document body
+  useEffect(() => {
+    document.body.classList.toggle("glitch-galaxy-active", inGlitchGalaxy);
+    return () => { document.body.classList.remove("glitch-galaxy-active"); };
+  }, [inGlitchGalaxy]);
+
   // Keep save variables stored in a ref so the autosave interval doesn't rebuild 50 times a second
   const autoSaveStateRef = useRef<any>(null);
   const lastCloudSyncTimeRef = useRef<number>(0);
@@ -1054,6 +1049,11 @@ export default function App() {
       slummerGlassLevel,
       catalystLevel,
       doubleStellarLevel,
+      inGlitchGalaxy,
+      glitchPending,
+      unlockedGlitchGalaxy,
+      spentGalaxyShards,
+      glitchBenchmarks,
     };
   }, [
     isLoaded,
@@ -1092,6 +1092,11 @@ export default function App() {
     slummerGlassLevel,
     catalystLevel,
     doubleStellarLevel,
+    inGlitchGalaxy,
+    glitchPending,
+    unlockedGlitchGalaxy,
+    spentGalaxyShards,
+    glitchBenchmarks,
   ]);
 
   // Synchronize dynamic local saves and autosave intervals
@@ -1140,6 +1145,11 @@ export default function App() {
           slummerGlassLevel: s.slummerGlassLevel,
           catalystLevel: s.catalystLevel,
           doubleStellarLevel: s.doubleStellarLevel,
+          inGlitchGalaxy: s.inGlitchGalaxy,
+          glitchPending: s.glitchPending,
+          unlockedGlitchGalaxy: s.unlockedGlitchGalaxy,
+          spentGalaxyShards: s.spentGalaxyShards,
+          glitchBenchmarks: s.glitchBenchmarks,
           lastSavedAt: Date.now(),
         };
         localStorage.setItem("cute_planet_save", JSON.stringify(stateToSave));
@@ -1288,16 +1298,6 @@ export default function App() {
     });
   }, []);
 
-  // Click Sound Toggle helper
-  const handleToggleMute = useCallback(() => {
-    setIsMutedState((prev) => {
-      const next = !prev;
-      setMuted(next);
-      localStorage.setItem("cute_planet_muted", String(next));
-      return next;
-    });
-  }, []);
-
   // Buy cute star
   const starCost = useMemo(() => {
     return calculateCost(50, starsCount, 1.4);
@@ -1437,10 +1437,24 @@ export default function App() {
     setShowResetDialog(false);
   }, []);
 
+  const handleEnterGlitchGalaxy = useCallback(() => {
+    playLevelUp();
+    workerRef.current?.postMessage({ type: "ENTER_GLITCH_GALAXY" });
+  }, []);
+
+  const handleRepairGlitchGalaxy = useCallback(() => {
+    playLevelUp();
+    workerRef.current?.postMessage({ type: "REPAIR_GLITCH_GALAXY" });
+  }, []);
+
   const handleConfirmPrestige = useCallback(() => {
     if (planetLevel < 20 && life < getPrestigeRequirement(prestigeCount)) return;
     playLevelUp();
-    workerRef.current?.postMessage({ type: "PRESTIGE" });
+    if (inGlitchGalaxy) {
+      handleRepairGlitchGalaxy();
+    } else {
+      workerRef.current?.postMessage({ type: "PRESTIGE" });
+    }
     setShootingStarsCount((prev) => {
       const nextCount = prev + 1;
       workerRef.current?.postMessage({ type: "UPDATE_SHOOTING_STARS", count: nextCount });
@@ -1448,7 +1462,7 @@ export default function App() {
     });
     setShowPrestigeModal(false);
     setShowVoyageModal(false);
-  }, [planetLevel, life, prestigeCount]);
+  }, [planetLevel, life, prestigeCount, inGlitchGalaxy, handleRepairGlitchGalaxy]);
 
   // Stable force-save callback — reads current state from a ref so the identity
   // never changes even though the saved values are always fresh.
@@ -1492,51 +1506,7 @@ export default function App() {
   const closeTutorial = useCallback(() => setShowTutorial(false), []);
 
   if (!isLoaded) {
-    return (
-      <div className="fixed inset-0 bg-cosmic-bg flex flex-col items-center justify-center text-cosmic-text z-50 overflow-hidden select-none">
-        {/* Soft elegant ambient background nebula */}
-        <div className="absolute inset-0 bg-radial-gradient from-[#22174d]/40 via-transparent to-transparent opacity-80 pointer-events-none" />
-        
-        {/* Animated planet logo outline in pastel glow */}
-        <div className="relative mb-8">
-          <motion.div
-            animate={{
-              rotate: 360,
-              scale: [1, 1.05, 1],
-            }}
-            transition={{
-              rotate: { repeat: Infinity, duration: 15, ease: "linear" },
-              scale: { repeat: Infinity, duration: 3, ease: "easeInOut" }
-            }}
-            className="w-24 h-24 rounded-full border-4 border-dashed border-cosmic-accent/50 flex items-center justify-center relative shadow-[0_0_40px_rgba(202,165,254,0.15)]"
-          >
-            <span className="text-4xl">🪐</span>
-          </motion.div>
-          
-          {/* Circling cosmic particle */}
-          <motion.div
-            animate={{ rotate: -360 }}
-            transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
-            className="absolute inset-0"
-          >
-            <div className="absolute -top-1 left-1/2 -ml-2.5 w-5 h-5 rounded-full bg-cosmic-pink border-2 border-cosmic-bg shadow-[0_0_12px_var(--color-cosmic-pink)]" />
-          </motion.div>
-        </div>
-
-        {/* Loading text typography with beautiful tracking and sizes */}
-        <h2 className="font-sans font-black uppercase tracking-[0.25em] text-sm text-cosmic-accent leading-none mb-2">
-          Pastell-Kosmos
-        </h2>
-        <div className="flex items-center gap-1.5 text-xs text-cosmic-accent-muted font-semibold font-mono">
-          <span>Sterne werden geordnet</span>
-          <span className="flex gap-0.5">
-            <motion.span animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0 }} className="w-1.5 h-1.5 bg-cosmic-accent rounded-full" />
-            <motion.span animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.3 }} className="w-1.5 h-1.5 bg-cosmic-accent rounded-full" />
-            <motion.span animate={{ opacity: [1, 0.2, 1] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.6 }} className="w-1.5 h-1.5 bg-cosmic-accent rounded-full" />
-          </span>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (
@@ -1545,7 +1515,7 @@ export default function App() {
         isNightStyle 
           ? "bg-gradient-to-b from-cosmic-bg via-[#1b1535] to-[#0b0818] text-cosmic-text selection:bg-cosmic-pink selection:text-cosmic-bg" 
           : ""
-      }`}>
+      } ${inGlitchGalaxy ? "glitch-bg shadow-[inset_0_0_80px_rgba(244,63,94,0.3)]" : ""}`}>
       
       {/* Scattered Ambient Background Animals (floating freely over the entire cosmos background) */}
       <BackgroundCompanions companions={backgroundCompanions} />
@@ -1567,110 +1537,71 @@ export default function App() {
         setShowLeaderboardModal={setShowLeaderboardModal}
         setShowTutorial={setShowTutorial}
         setShowResetDialog={setShowResetDialog}
-        formatCompactNumber={formatCompactNumber}
+        formatCompactNumber={glitchedFormatCompactNumber}
         prestigeCount={prestigeCount}
         onOpenGalaxyShardsShop={() => {
           playUpgrade();
           setShowGalaxyShardsShop(true);
         }}
+        inGlitchGalaxy={inGlitchGalaxy}
       />
 
       {/* 2. Immersive Centered Master View (Planet takes center stage with plenty of room around it) */}
-      <main className={`flex-grow w-full max-w-4xl mx-auto px-4 py-6 flex flex-col items-center justify-center gap-5 relative z-10 transition-all duration-500 ${
-        showTutorial ? "blur-md pointer-events-none select-none" : ""
-      }`}>
-        
-        {/* Real-time compact live HUD metrics - Positioned at the very top and smaller to save space */}
-        <CosmicHUD
-          isNightStyle={isNightStyle}
-          life={life}
-          totalLps={totalLps}
-          starsCount={starsCount}
-          prestigeCount={prestigeCount}
-        />
-
-        {/* Cosmic Event Alert / Notification Panel - Displays countdown or active event state dynamically with glowing animations */}
-        <ActiveEventBanner
-          activeEvent={activeEvent}
-          activeEventDecision={activeEventDecision}
-          activeEventDetails={activeEventDetails}
-          eventTimeRemaining={eventTimeRemaining}
-          onSelectDecision={handleSelectEventDecision}
-          life={life}
-          starsCount={starsCount}
-          glitterDust={glitterDust}
-          blackHoleSize={blackHoleSize}
-          onGamble={handleBlackHoleGamble}
-        />
-
-        {/* Dynamic Day/Night Cycle Indicator and Bonus Panel */}
-        <DayNightIndicator
-          isNight={isNight}
-          cycleProgress={cycleProgress}
-          offlineEarnedLife={offlineEarnedLife}
-          offlineSeconds={offlineSeconds}
-          onOpenOfflineModal={openOfflineModal}
-        />
-
-        {/* Huge Interactive Planet Canvas: No overflow bounds, stars and animals float freely! */}
-        <section className="relative group w-full max-w-3xl flex flex-col items-center justify-center py-4">
-          {/* Wrapper shrinks to planet content width so FloatingTexts' inset-0 aligns with click coords */}
-          <div className="relative">
-            <Planet
-              level={planetLevel}
-              planetExp={planetExp}
-              planetExpNeeded={planetExpNeeded}
-              planetTask={planetTask}
-              starsCount={starsCount}
-              moonsCount={moonsCount || 0}
-              starPowerMultiplier={starPowerPerStar}
-              onPlanetClick={handlePlanetClick}
-              isNight={isNightStyle}
-              activeStarColor={activeStarColor}
-              activeAccessory={activeAccessory}
-              activeMoonSkin={activeMoonSkin}
-              isLowMemory={isLowMemory}
-              activeZodiacId={activeZodiacId}
-              onOpenZodiacModal={openZodiacModal}
-            />
-
-            {/* Floating click/star/level text particles — sibling overlay anchored to planet bounds */}
-            <FloatingTexts
-              floatingTexts={floatingTexts}
-              isLowMemory={isLowMemory}
-              isNight={isNightStyle}
-              activeStarColor={activeStarColor}
-            />
-          </div>
-
-          {/* Subtitle technical decoration lines */}
-          <div className="mt-4 flex justify-center opacity-60 font-mono text-[9.5px] sm:text-[11px] font-bold text-rose-300/40 tracking-wide pointer-events-none">
-            <span>SATELLITE SYST. LEVEL {planetLevel} // CLICK MULTIPLIER {clickPower}x</span>
-          </div>
-        </section>
-
-        {/* Beautiful Tactile Floating Buttons to open their corresponding modal window */}
-        <ActionButtons
-          onShowAnimals={openAnimalsModal}
-          onShowCrafting={openCraftingModal}
-          onShowStars={openStarsModal}
-          onShowUpgrades={openUpgradesModal}
-          onShowAchievements={openAchievementsModal}
-          onShowStats={openStatsModal}
-          onShowMissions={openMissionsModal}
-          onShowInventory={openInventoryModal}
-          disableAnimations={disableAnimations}
-          isNightStyle={isNightStyle}
-          totalAnimalsCount={totalAnimalsCount}
-          starsCount={starsCount}
-          researchedUpgradesCount={researchedUpgradesCount}
-          unlockedAchievementsCount={unlockedAchievementsCount}
-          achievementsLength={achievements.length}
-          completedUnclaimedMissionsCount={completedUnclaimedMissionsCount}
-          shootingStarsCount={shootingStarsCount}
-          activeConstellationsCount={activeConstellationsCount}
-        />
-      </main>
+      <InteractiveCosmos
+        isNightStyle={isNightStyle}
+        showTutorial={showTutorial}
+        life={life}
+        totalLps={totalLps}
+        starsCount={starsCount}
+        prestigeCount={prestigeCount}
+        glitchedFormatCompactNumber={glitchedFormatCompactNumber}
+        activeEvent={activeEvent}
+        activeEventDecision={activeEventDecision}
+        activeEventDetails={activeEventDetails}
+        eventTimeRemaining={eventTimeRemaining}
+        handleSelectEventDecision={handleSelectEventDecision}
+        glitterDust={glitterDust}
+        blackHoleSize={blackHoleSize}
+        handleBlackHoleGamble={handleBlackHoleGamble}
+        inGlitchGalaxy={inGlitchGalaxy}
+        planetLevel={planetLevel}
+        setShowVoyageModal={setShowVoyageModal}
+        isNight={isNight}
+        cycleProgress={cycleProgress}
+        offlineEarnedLife={offlineEarnedLife}
+        offlineSeconds={offlineSeconds}
+        openOfflineModal={openOfflineModal}
+        planetExp={planetExp}
+        planetExpNeeded={planetExpNeeded}
+        planetTask={planetTask}
+        moonsCount={moonsCount || 0}
+        starPowerPerStar={starPowerPerStar}
+        handlePlanetClick={handlePlanetClick}
+        activeStarColor={activeStarColor}
+        activeAccessory={activeAccessory}
+        activeMoonSkin={activeMoonSkin}
+        isLowMemory={isLowMemory}
+        activeZodiacId={activeZodiacId}
+        openZodiacModal={openZodiacModal}
+        floatingTexts={floatingTexts}
+        clickPower={clickPower}
+        openAnimalsModal={openAnimalsModal}
+        openCraftingModal={openCraftingModal}
+        openStarsModal={openStarsModal}
+        openUpgradesModal={openUpgradesModal}
+        openAchievementsModal={openAchievementsModal}
+        openStatsModal={openStatsModal}
+        openMissionsModal={openMissionsModal}
+        openInventoryModal={openInventoryModal}
+        disableAnimations={disableAnimations}
+        totalAnimalsCount={totalAnimalsCount}
+        researchedUpgradesCount={researchedUpgradesCount}
+        unlockedAchievementsCount={unlockedAchievementsCount}
+        achievementsLength={achievements.length}
+        completedUnclaimedMissionsCount={completedUnclaimedMissionsCount}
+        shootingStarsCount={shootingStarsCount}
+        activeConstellationsCount={activeConstellationsCount}
+      />
 
       {showTutorial && (
         <TutorialModal
@@ -1681,17 +1612,7 @@ export default function App() {
       )}
 
       {/* 4. Footer credits with minimalist elements */}
-      <footer className="border-t-4 py-5 px-4 text-center text-[11px] mt-10 transition-colors duration-500 bg-cosmic-bg/95 border-cosmic-accent/50 text-cosmic-accent-muted">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 font-semibold relative z-10">
-          <p>
-            Mit viel Liebe gemacht in Pastellfarben. Spielstand speichert sich automatisch im Browser.
-          </p>
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-md border-2 font-mono font-black text-[10px] bg-cosmic-surface-mid border-cosmic-accent text-white">Ver. 1.0.6</span>
-            <span className="text-[#f15e75] animate-pulse">💖</span>
-          </div>
-        </div>
-      </footer>
+      <CosmicFooter />
 
       <GameStateProvider value={gameState}>
         <GameModalsContainer
@@ -1757,7 +1678,7 @@ export default function App() {
           constellations={constellations}
           isNightStyle={isNightStyle}
           craftedItems={craftedItems}
-          formatCompactNumber={formatCompactNumber}
+          formatCompactNumber={glitchedFormatCompactNumber}
           formatTimePlayed={formatTimePlayed}
           offlineSeconds={offlineSeconds}
           offlineLpsRate={offlineLpsRate}
@@ -1901,49 +1822,16 @@ export default function App() {
 
       </div>
 
-      {/* Level 20: Block game interactions with a clean transparent click-absorbing overlay, and show the flashing button */}
-      {planetLevel >= 20 && (
-        <div className="fixed inset-0 z-40 bg-black/5 pointer-events-auto flex flex-col items-center justify-end pb-24 sm:pb-32 leading-none">
-          {/* Cute prompt box floating above the flashy button */}
-          <div className="mb-6 px-5 py-3.5 rounded-2xl bg-[#120f26]/95 border-2 border-[#ffcbdc]/45 text-center text-white max-w-sm shadow-2xl backdrop-blur-md animate-bounce">
-            <span className="text-[10px] sm:text-xs font-mono font-black uppercase tracking-widest text-[#ffcbdc] block mb-1">🌠 Planet Level 20 Erreicht! 🌠</span>
-            <p className="font-sans font-semibold text-xs text-rose-100 leading-normal">
-              Bewundere deinen vollendeten Planeten! Wenn du so weit bist, klicke auf die Schaltfläche unten, um deine kosmische Galaxiereise anzutreten.
-            </p>
-          </div>
-          
-          <motion.button
-            animate={{
-              scale: [1, 1.05, 1],
-              boxShadow: [
-                "0 0 15px rgba(255, 120, 170, 0.4)",
-                "0 0 35px rgba(255, 120, 170, 0.8)",
-                "0 0 15px rgba(255, 120, 170, 0.4)"
-              ],
-              borderColor: ["#ffcbdc", "#cac5fe", "#ffcbdc"]
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.93 }}
-            onClick={() => {
-              playUpgrade();
-              setShowVoyageModal(true);
-            }}
-            className="px-8 py-4 rounded-3xl bg-gradient-to-r from-cosmic-pink via-cosmic-accent to-cosmic-pink text-[#0b0818] font-sans font-black text-sm uppercase tracking-[0.2em] border-4 cursor-pointer select-none pointer-events-auto shadow-2xl"
-          >
-            Galaxiereise Antreten 🚀
-          </motion.button>
-        </div>
-      )}
-
-      <GalaxyVoyageModal
-        isOpen={showVoyageModal}
-        prestigeCount={prestigeCount}
-        onConfirmVoyage={handleConfirmPrestige}
+      <CosmicOverlays
+        planetLevel={planetLevel}
+        inGlitchGalaxy={inGlitchGalaxy}
+        glitchPending={glitchPending}
+        showRepairDialog={showRepairDialog}
+        setShowRepairDialog={setShowRepairDialog}
+        setShowVoyageModal={setShowVoyageModal}
+        handleEnterGlitchGalaxy={handleEnterGlitchGalaxy}
+        handleRepairGlitchGalaxy={handleRepairGlitchGalaxy}
+        setGlitchPending={setGlitchPending}
       />
     </ModalSettingsProvider>
   );

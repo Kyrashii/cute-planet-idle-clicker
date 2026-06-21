@@ -994,3 +994,50 @@ body.low-memory .animate-rainbow-star {
     background: var(--color-cosmic-bg);
   }
 }
+
+/* Custom Glitch animations */
+@keyframes glitch-flicker {
+  0%, 100% { opacity: 1; filter: none; }
+  50% { opacity: 0.98; filter: none; }
+}
+.glitch-bg {
+  /* No rapid flicker, just a calm and steady dark cosmic container */
+  animation: glitch-flicker 5s infinite ease-in-out;
+}
+
+@keyframes glitch-text {
+  0%, 100% { transform: translate(0, 0) skewX(0deg); }
+  25% { transform: translate(-0.5px, 0.5px) skewX(0.2deg); }
+  50% { transform: translate(0.5px, -0.5px) skewX(-0.2deg); }
+  75% { transform: translate(-0.5px, -0.5px) skewX(0.1deg); }
+}
+.glitch-text-anim {
+  animation: glitch-text 1.6s infinite ease-in-out;
+}
+
+@keyframes glitch-chromatic {
+  0%, 100% { text-shadow: 0.5px 0.5px 0 rgba(239, 68, 68, 0.25), -0.5px -0.5px 0 rgba(6, 182, 212, 0.25); }
+  50% { text-shadow: -0.5px -0.5px 0 rgba(239, 68, 68, 0.25), 0.5px 0.5px 0 rgba(6, 182, 212, 0.25); }
+}
+.glitch-chromatic-text {
+  animation: glitch-chromatic 1.2s infinite ease-in-out;
+}
+
+/* Global glitch style for ALL text and numbers in Glitch Galaxy without flickering background */
+body.glitch-galaxy-active h1,
+body.glitch-galaxy-active h2,
+body.glitch-galaxy-active h3,
+body.glitch-galaxy-active h4,
+body.glitch-galaxy-active h5,
+body.glitch-galaxy-active h6,
+body.glitch-galaxy-active p,
+body.glitch-galaxy-active span,
+body.glitch-galaxy-active button,
+body.glitch-galaxy-active label,
+body.glitch-galaxy-active input,
+body.glitch-galaxy-active select,
+body.glitch-galaxy-active textarea,
+body.glitch-galaxy-active a {
+  animation: glitch-text 2s infinite ease-in-out !important;
+}
+

@@ -224,6 +224,8 @@ export const Modal: React.FC<ModalProps> = ({
       ? document.getElementById("modal-root") ?? document.body
       : null;
 
+  const isGlitchedCtx = typeof document !== "undefined" && document.body.classList.contains("glitch-galaxy-active");
+
   if (!portalTarget) return null;
 
   return createPortal(
@@ -243,7 +245,11 @@ export const Modal: React.FC<ModalProps> = ({
             animate={disableAnimations ? {} : { scale: 1, opacity: 1, y: 0 }}
             exit={disableAnimations ? {} : { scale: 0.95, opacity: 0, y: 10 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className={`${skipFrameTarget ? "" : "modal-frame-target "}${panelClassName}`}
+            className={`${skipFrameTarget ? "" : "modal-frame-target "}${panelClassName} ${
+              isGlitchedCtx 
+                ? " !bg-black !text-cyan-400 !border-cyan-500 shadow-[0_0_35px_rgba(6,182,212,0.6)] border-4 select-none glitch-text-anim font-mono " 
+                : ""
+            }`}
             style={panelStyle}
             onKeyDown={handleKeyDown}
           >

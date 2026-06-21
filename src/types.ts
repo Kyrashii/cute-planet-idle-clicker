@@ -94,6 +94,17 @@ export interface GameState {
   activeEventDecision?: string | null;
   eventTimeRemaining?: number;
   activeEventDetails?: ActiveCosmicEvent | null;
+  inGlitchGalaxy?: boolean;
+  glitchPending?: boolean;
+  unlockedGlitchGalaxy?: boolean;
+  spentGalaxyShards?: number;
+  glitchBenchmarks?: {
+    prestigeTarget: number;
+    stardustTarget: number;
+    shardsTarget: number;
+    phoenixTarget: number;
+    glitterTarget: number;
+  };
 }
 
 export interface CosmicEventOption {
