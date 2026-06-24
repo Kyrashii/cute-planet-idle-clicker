@@ -3,6 +3,8 @@ import { Modal } from "../ui/Modal";
 
 interface CheatEventModalProps {
   isOpen: boolean;
+  currentPlanetLevel: number;
+  onSetPlanetLevel: (level: number) => void;
   onSelectEvent: (
     event:
       | "comet_tail"
@@ -19,7 +21,22 @@ interface CheatEventModalProps {
 }
 
 export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
-  ({ isOpen, onSelectEvent, onClose }) => {
+  ({ isOpen, currentPlanetLevel, onSetPlanetLevel, onSelectEvent, onClose }) => {
+    const [planetLevelInput, setPlanetLevelInput] = React.useState(String(currentPlanetLevel));
+
+    const handleSetPlanetLevel = (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+
+      const parsedLevel = Number(planetLevelInput);
+      if (!Number.isFinite(parsedLevel)) {
+        return;
+      }
+
+      const nextLevel = Math.min(20, Math.max(1, Math.trunc(parsedLevel)));
+      setPlanetLevelInput(String(nextLevel));
+      onSetPlanetLevel(nextLevel);
+    };
+
     const events = [
       {
         id: "comet_tail",
@@ -89,6 +106,43 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
           Wähle ein stellares Ereignis, das sofort im Himmel erblühen soll. Keine Wartezeit, pure
           Magie!
         </p>
+
+        <form
+          onSubmit={handleSetPlanetLevel}
+          className="mb-4 rounded-2xl border-2 border-purple-400/40 bg-black/30 p-3"
+        >
+          <label
+            htmlFor="cheat-planet-level"
+            className="mb-2 block font-mono text-[10px] font-black uppercase tracking-wider text-purple-200"
+          >
+            Planetenlevel direkt setzen
+          </label>
+          <div className="flex gap-2">
+            <input
+              id="cheat-planet-level"
+              type="number"
+              min={1}
+              max={20}
+              step={1}
+              value={planetLevelInput}
+              onChange={(event) => setPlanetLevelInput(event.target.value)}
+              className="min-w-0 flex-1 rounded-xl border-2 border-cosmic-accent/50 bg-[#0d0920] px-3 py-2 font-mono text-sm font-black text-white outline-none transition focus:border-purple-300 focus:ring-2 focus:ring-purple-400/30"
+              aria-describedby="cheat-planet-level-hint"
+            />
+            <button
+              type="submit"
+              className="rounded-xl border-2 border-purple-300/60 bg-purple-600 px-4 py-2 text-[10px] font-black uppercase tracking-wide text-white transition hover:bg-purple-500 active:scale-95 cursor-pointer"
+            >
+              Setzen
+            </button>
+          </div>
+          <p
+            id="cheat-planet-level-hint"
+            className="mt-1.5 font-sans text-[9px] font-semibold text-cosmic-accent-muted"
+          >
+            Erlaubt sind Level 1 bis 20. Aktuell: {currentPlanetLevel}
+          </p>
+        </form>
 
         <div className="flex flex-col gap-2.5 max-h-[350px] overflow-y-auto pr-1">
           {events.map((ev) => (

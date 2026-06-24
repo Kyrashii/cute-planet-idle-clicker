@@ -127,6 +127,29 @@ describe("handleWorkerAction", () => {
     });
   });
 
+  describe("SET_PLANET_LEVEL", () => {
+    it("sets the requested level and creates a fresh task", () => {
+      const state = makeState({ planetLevel: 3, planetExp: 999 });
+      const helpers = dispatch({ type: "SET_PLANET_LEVEL", level: 12 }, state);
+
+      expect(state.planetLevel).toBe(12);
+      expect(state.planetExp).toBe(0);
+      expect(state.planetTask).toBeDefined();
+      expect(helpers.broadcastStateUpdate).toHaveBeenCalledWith(true);
+    });
+
+    it("clamps the level to the playable range", () => {
+      const lowState = makeState();
+      const highState = makeState();
+
+      dispatch({ type: "SET_PLANET_LEVEL", level: -5 }, lowState);
+      dispatch({ type: "SET_PLANET_LEVEL", level: 999 }, highState);
+
+      expect(lowState.planetLevel).toBe(1);
+      expect(highState.planetLevel).toBe(20);
+    });
+  });
+
   describe("glitch galaxy repair + cooldown", () => {
     it("REPAIR grants +2 shards, re-baselines benchmarks, and starts the cooldown", () => {
       const state = makeState({
