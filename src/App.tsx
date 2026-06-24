@@ -860,7 +860,7 @@ export default function App() {
             const updated = { ...prev };
             placedAnimals.forEach((pa) => {
               const currentLove = updated[pa.animalId] || 0;
-              updated[pa.animalId] = Math.min(500, currentLove + uncreditedMinutes);
+              updated[pa.animalId] = Math.min(300, currentLove + uncreditedMinutes);
             });
             return updated;
           });
@@ -875,7 +875,7 @@ export default function App() {
           const updated = { ...prev };
           placedAnimals.forEach((pa) => {
             const currentLove = updated[pa.animalId] || 0;
-            updated[pa.animalId] = Math.min(500, currentLove + uncreditedMinutes);
+            updated[pa.animalId] = Math.min(300, currentLove + uncreditedMinutes);
           });
           return updated;
         });

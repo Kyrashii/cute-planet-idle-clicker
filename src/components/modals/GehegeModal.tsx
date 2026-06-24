@@ -11,72 +11,65 @@ interface AuraConfig {
 
 export const getAuraConfig = (love: number): AuraConfig | null => {
   if (love <= 0) return null;
-  if (love < 50) {
+  if (love < 30) {
     return {
-      classes: "shadow-[0_0_15px_rgba(255,255,255,0.15)] bg-white/5 border border-white/10",
+      classes: "shadow-[0_0_25px_rgba(255,255,255,0.75),inset_0_0_12px_rgba(255,255,255,0.4)] bg-white/20 border-2 border-white/50",
       name: "Sanfter Hauch Aura 🤍",
       colorName: "Weiß",
     };
   }
-  if (love < 100) {
+  if (love < 60) {
     return {
-      classes: "shadow-[0_0_18px_rgba(253,224,71,0.18)] bg-yellow-400/5 border border-yellow-400/10",
+      classes: "shadow-[0_0_28px_rgba(253,224,71,0.8),inset_0_0_15px_rgba(253,224,71,0.4)] bg-yellow-400/20 border-2 border-yellow-400/50",
       name: "Lichtfunken Aura 💛",
       colorName: "Goldgelb",
     };
   }
-  if (love < 150) {
+  if (love < 100) {
     return {
-      classes: "shadow-[0_0_20px_rgba(244,114,182,0.22)] bg-pink-400/5 border border-pink-400/10",
+      classes: "shadow-[0_0_30px_rgba(244,114,182,0.85),inset_0_0_15px_rgba(244,114,182,0.45)] bg-pink-400/20 border-2 border-pink-400/55",
       name: "Rosige Kuschel-Aura 🌸",
       colorName: "Pastellrosa",
     };
   }
-  if (love < 200) {
+  if (love < 140) {
     return {
-      classes: "shadow-[0_0_22px_rgba(251,146,60,0.24)] bg-orange-400/5 border border-orange-400/10",
+      classes: "shadow-[0_0_32px_rgba(251,146,60,0.9),inset_0_0_15px_rgba(251,146,60,0.5)] bg-orange-400/20 border-2 border-orange-400/60",
       name: "Warme Herzens-Aura 🧡",
       colorName: "Apricot",
     };
   }
-  if (love < 250) {
+  if (love < 180) {
     return {
-      classes: "shadow-[0_0_25px_rgba(52,211,153,0.26)] bg-emerald-400/5 border border-emerald-400/10",
+      classes: "shadow-[0_0_35px_rgba(52,211,153,0.95),inset_0_0_18px_rgba(52,211,153,0.55)] bg-emerald-400/20 border-2 border-emerald-400/65",
       name: "Naturkraft Aura 💚",
       colorName: "Smaragdgrün",
     };
   }
-  if (love < 300) {
+  if (love < 220) {
     return {
-      classes: "shadow-[0_0_28px_rgba(56,189,248,0.28)] bg-sky-400/5 border border-sky-400/10",
+      classes: "shadow-[0_0_38px_rgba(56,189,248,0.95),inset_0_0_18px_rgba(56,189,248,0.55)] bg-sky-400/20 border-2 border-sky-400/70",
       name: "Himmelsbrise Aura 🩵",
       colorName: "Lichtblau",
     };
   }
-  if (love < 350) {
+  if (love < 260) {
     return {
-      classes: "shadow-[0_0_30px_rgba(129,140,248,0.30)] bg-indigo-400/5 border border-indigo-400/10",
+      classes: "shadow-[0_0_40px_rgba(129,140,248,1.0),inset_0_0_20px_rgba(129,140,248,0.6)] bg-indigo-400/20 border-2 border-indigo-400/75",
       name: "Sternenglanz Aura 💙",
       colorName: "Sternenindigo",
     };
   }
-  if (love < 400) {
+  if (love < 300) {
     return {
-      classes: "shadow-[0_0_32px_rgba(167,139,250,0.32)] bg-violet-400/5 border border-violet-400/10",
+      classes: "shadow-[0_0_45px_rgba(167,139,250,1.0),inset_0_0_20px_rgba(167,139,250,0.65)] bg-violet-400/20 border-2 border-violet-400/80",
       name: "Kosmische Magie-Aura 💜",
       colorName: "Amethyst",
     };
   }
-  if (love < 450) {
-    return {
-      classes: "shadow-[0_0_35px_rgba(236,72,153,0.35)] bg-fuchsia-400/5 border border-fuchsia-400/10",
-      name: "Unergründliche Liebes-Aura 💖",
-      colorName: "Magenta",
-    };
-  }
   return {
-    classes: "shadow-[0_0_40px_rgba(239,68,68,0.40)] bg-gradient-to-tr from-rose-500/10 via-amber-500/10 to-pink-500/10 border border-rose-400/20",
-    name: "Ewige Zuneigungs-Meisteraura ❤️🔥",
+    classes: "shadow-[0_0_55px_rgba(239,68,68,1.0),inset_0_0_25px_rgba(245,158,11,0.7)] bg-gradient-to-tr from-rose-500/35 via-amber-500/25 to-pink-500/35 border-2 border-rose-500/90",
+    name: "Ewige Zuneigungs-Meisteraura ❤️🔥 (+5% LPS Boost!)",
     colorName: "Spurenregenbogen",
   };
 };
@@ -139,6 +132,7 @@ interface PlacedAnimalItemProps {
   pa: PlacedAnimal;
   def: Animal | undefined;
   loveVal: number;
+  lastPetTime: number;
   isNight: boolean;
   onPet: (animalId: string, x: number, y: number) => void;
   onRemove: (id: string) => void;
@@ -148,10 +142,28 @@ const PlacedAnimalItem = React.memo<PlacedAnimalItemProps>(({
   pa,
   def,
   loveVal,
+  lastPetTime,
   isNight,
   onPet,
   onRemove,
 }) => {
+  const [now, setNow] = useState(Date.now());
+
+  React.useEffect(() => {
+    const cooldownMs = 30 * 60 * 1000;
+    const elapsed = Date.now() - lastPetTime;
+    if (elapsed >= cooldownMs || loveVal >= 300) return;
+
+    // Tick to update exactly when cooldown ends
+    const remaining = cooldownMs - elapsed;
+    const t = setTimeout(() => {
+      setNow(Date.now());
+    }, remaining + 100);
+
+    return () => clearTimeout(t);
+  }, [lastPetTime, loveVal]);
+
+  const canPet = (now - lastPetTime >= 30 * 60 * 1000) && loveVal < 300;
   const aura = getAuraConfig(loveVal);
 
   return (
@@ -169,6 +181,17 @@ const PlacedAnimalItem = React.memo<PlacedAnimalItemProps>(({
       }}
     >
       <div className="relative group/animal">
+        {/* Thought Bubble with heart if animal can be pet */}
+        {canPet && (
+          <div className="absolute -top-6 -left-3.5 z-30 pointer-events-none animate-pulse">
+            <div className="relative bg-white text-slate-800 text-[10px] px-1.5 py-0.5 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.3)] flex items-center justify-center border border-pink-100 font-bold min-w-[24px] h-6 select-none">
+              ❤️
+              {/* Tail circles for thought bubble pointing to animal */}
+              <div className="absolute -bottom-0.5 right-1.5 w-1.5 h-1.5 bg-white rounded-full border border-pink-100/50" />
+              <div className="absolute -bottom-1.5 right-1 w-1 h-1 bg-white rounded-full border border-pink-100/50" />
+            </div>
+          </div>
+        )}
         {/* Floating animation wrapper with petting interaction */}
         <div
           onClick={(e) => {
@@ -188,11 +211,7 @@ const PlacedAnimalItem = React.memo<PlacedAnimalItemProps>(({
           )}
 
           <div
-            className={`p-1.5 rounded-2xl bg-white/5 backdrop-blur-[1px] hover:scale-110 active:scale-95 duration-150 transition-all relative z-10 ${
-              isNight
-                ? "hover:shadow-[0_0_15px_rgba(165,180,252,0.4)]"
-                : "hover:shadow-[0_0_15px_rgba(251,191,36,0.3)]"
-            }`}
+            className="p-1.5 hover:scale-110 active:scale-95 duration-150 transition-all relative z-10"
           >
             <AnimalImage
               image={def?.image}
@@ -449,13 +468,13 @@ const LoveGalleryCard = React.memo<LoveGalleryCardProps>(({
   }
 
   const aura = getAuraConfig(loveVal);
-  const percent = Math.min(100, (loveVal / 500) * 100);
+  const percent = Math.min(100, (loveVal / 300) * 100);
 
   return (
-    <div className="bg-slate-950/60 border border-slate-800/80 hover:border-pink-500/20 p-4 rounded-2xl flex flex-col items-center text-center gap-3 relative transition-all group/gallery duration-200">
+    <div className="bg-slate-950/60 border border-slate-800/80 hover:border-pink-500/20 p-4 rounded-2xl flex flex-col items-center text-center gap-3 relative transition-all group/gallery duration-200 overflow-hidden">
       {aura && (
         <div
-          className={`absolute -inset-1 rounded-2xl opacity-10 select-none pointer-events-none group-hover/gallery:opacity-25 transition-opacity animate-pulse ${aura.classes}`}
+          className={`absolute -inset-1 rounded-2xl opacity-60 select-none pointer-events-none group-hover/gallery:opacity-95 transition-opacity animate-pulse ${aura.classes}`}
           style={{ animationDuration: "3s" }}
         />
       )}
@@ -476,7 +495,7 @@ const LoveGalleryCard = React.memo<LoveGalleryCardProps>(({
 
         <div className="flex items-center gap-1 text-[11px] font-black text-pink-300">
           <span className="animate-bounce">❤️</span>
-          <span>{loveVal} <span className="text-slate-500 font-normal">/ 500</span></span>
+          <span>{loveVal} <span className="text-slate-500 font-normal">/ 300</span></span>
         </div>
 
         <div className="w-full bg-slate-900/90 border border-slate-800 rounded-full h-2 overflow-hidden mt-1 shadow-inner">
@@ -612,14 +631,14 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
     }
 
     const currentLove = animalLoveRef.current[animalId] || 0;
-    if (currentLove >= 500) {
-      triggerError("Dieses Tier hat bereits das Maximum von 500 Liebe erreicht! ❤️🌟");
+    if (currentLove >= 300) {
+      triggerError("Dieses Tier hat bereits das Maximum von 300 Liebe erreicht! ❤️🌟");
       return;
     }
 
     if (onUpdateAnimalLove) {
       const updatedLove = { ...animalLoveRef.current };
-      updatedLove[animalId] = Math.min(500, currentLove + 1);
+      updatedLove[animalId] = Math.min(300, currentLove + 1);
       onUpdateAnimalLove(updatedLove);
     }
     if (onUpdateAnimalLastPet) {
@@ -791,6 +810,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
                   pa={pa}
                   def={def}
                   loveVal={loveVal}
+                  lastPetTime={animalLastPet[pa.animalId] || 0}
                   isNight={isNight}
                   onPet={handlePetPlaced}
                   onRemove={handleRemovePlaced}
@@ -930,7 +950,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 220 }}
             id="animal-placer-drawer"
-            className="fixed inset-x-0 bottom-[72px] sm:bottom-[72px] bg-slate-900 border-t border-slate-800 shadow-2xl p-4 md:p-6 z-20 max-h-[50vh] overflow-y-auto"
+            className="fixed inset-x-0 bottom-[72px] sm:bottom-[72px] bg-slate-900 border-t border-slate-800 shadow-2xl p-4 md:p-6 z-40 max-h-[50vh] overflow-y-auto"
           >
             <div className="w-full max-w-4xl mx-auto">
               <div className="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">

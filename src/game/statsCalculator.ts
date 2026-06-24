@@ -279,6 +279,12 @@ export function getLpsAndStats(state: any) {
       lps *= 1.35 + (lvl - 1) * 0.15;
     }
 
+    // Apply max love (300) bonus: +5% life yield for this animal species
+    const loveVal = state.animalLove?.[def.id] || 0;
+    if (loveVal >= 300) {
+      lps *= 1.05;
+    }
+
     animalLpsMap[def.id] = lps;
     totalAnimalsLps += lps;
   });

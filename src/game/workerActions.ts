@@ -364,6 +364,11 @@ export function handleWorkerAction(
         moonsCount: 0,
         constellations: {},
         zodiac: rollNewZodiac(oldZodiac),
+        placedAnimals: [],
+        animalLove: {},
+        animalLastPet: {},
+        bowlLastFed: 0,
+        bowlFedMinutesCredited: 0,
       });
       broadcastStateUpdate(true);
       break;
@@ -395,6 +400,11 @@ export function handleWorkerAction(
         moonsCount: 0,
         constellations: {},
         zodiac: rollNewZodiac(oldZodiac),
+        placedAnimals: [],
+        animalLove: {},
+        animalLastPet: {},
+        bowlLastFed: 0,
+        bowlFedMinutesCredited: 0,
       });
       broadcastStateUpdate(true);
       break;
