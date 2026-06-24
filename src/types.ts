@@ -59,6 +59,13 @@ export interface PlanetTask {
   isCumulative?: boolean;
 }
 
+export interface PlacedAnimal {
+  id: string;
+  animalId: string;
+  x: number;
+  y: number;
+}
+
 export interface GameState {
   life: number;
   totalLifeEarned: number;
@@ -105,6 +112,11 @@ export interface GameState {
     phoenixTarget: number;
     glitterTarget: number;
   };
+  placedAnimals?: PlacedAnimal[];
+  animalLove?: Record<string, number>; // animalId -> level of love
+  animalLastPet?: Record<string, number>; // animalId -> timestamp (ms)
+  bowlLastFed?: number; // timestamp (ms) of last feed click
+  bowlFedMinutesCredited?: number; // number of minutes credited under current feed
 }
 
 export interface CosmicEventOption {

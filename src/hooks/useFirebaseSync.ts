@@ -36,6 +36,11 @@ export interface CloudSaveData {
   catalystLevel?: number;
   doubleStellarLevel?: number;
   planetTask?: any;
+  placedAnimals?: any[];
+  animalLove?: Record<string, number>;
+  animalLastPet?: Record<string, number>;
+  bowlLastFed?: number;
+  bowlFedMinutesCredited?: number;
   createdAt?: any; // Timestamp or string
   updatedAt?: any; // Timestamp or string
 }
@@ -186,6 +191,11 @@ export function useFirebaseSync() {
         catalystLevel: Number(localSave.catalystLevel || 0),
         doubleStellarLevel: Number(localSave.doubleStellarLevel || 0),
         planetTask: localSave.planetTask || null,
+        placedAnimals: localSave.placedAnimals || [],
+        animalLove: localSave.animalLove || {},
+        animalLastPet: localSave.animalLastPet || {},
+        bowlLastFed: Number(localSave.bowlLastFed || 0),
+        bowlFedMinutesCredited: Number(localSave.bowlFedMinutesCredited || 0),
         createdAt: resolvedCreatedAt,
         updatedAt: creationTime,
       };
@@ -330,6 +340,11 @@ export function useFirebaseSync() {
         catalystLevel: Number((state as any).catalystLevel || 0),
         doubleStellarLevel: Number((state as any).doubleStellarLevel || 0),
         planetTask: (state as any).planetTask || null,
+        placedAnimals: (state as any).placedAnimals || [],
+        animalLove: (state as any).animalLove || {},
+        animalLastPet: (state as any).animalLastPet || {},
+        bowlLastFed: Number((state as any).bowlLastFed || 0),
+        bowlFedMinutesCredited: Number((state as any).bowlFedMinutesCredited || 0),
         createdAt: resolvedCreatedAt,
         updatedAt: serverTimestamp(),
       };

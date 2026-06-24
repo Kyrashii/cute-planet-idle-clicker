@@ -1653,3 +1653,19 @@ body.glitch-galaxy-active textarea,
 body.glitch-galaxy-active a {
   animation: glitch-text 2s infinite ease-in-out !important;
 }
+
+/* Custom resets to remove active frame borders/shadows from Action Menu Buttons, but preserve emojis */
+body[class*="active-frame-"] button.modal-frame-target {
+  border-color: transparent !important;
+  border-width: 3px !important;
+  border-style: solid !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+  background-color: transparent !important;
+}
+
+body[class*="active-frame-"] button.modal-frame-target:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+

@@ -30,6 +30,7 @@ export function useModalState() {
   const [showTutorial, setShowTutorial] = useState(true);
   const [showUpgradesModal, setShowUpgradesModal] = useState(false);
   const [showAchievementsModal, setShowAchievementsModal] = useState(false);
+  const [showGehegeModal, setShowGehegeModal] = useState(false);
 
   const openPrestigeModal = useCallback(() => setShowPrestigeModal(true), []);
   const openOfflineModal = useCallback(() => setShowOfflineModal(true), []);
@@ -42,8 +43,12 @@ export function useModalState() {
   const openStatsModal = useCallback(() => setShowStatsModal(true), []);
   const openMissionsModal = useCallback(() => setShowMissionsModal(true), []);
   const openInventoryModal = useCallback(() => setShowInventoryModal(true), []);
+  const openGehegeModal = useCallback(() => setShowGehegeModal(true), []);
 
   return {
+    showGehegeModal,
+    setShowGehegeModal,
+    openGehegeModal,
     showAnimalsModal,
     setShowAnimalsModal,
     showStarsModal,

@@ -45,6 +45,7 @@ interface InteractiveCosmosProps {
   openZodiacModal: () => void;
   floatingTexts: any[];
   clickPower: number;
+  openGehegeModal: () => void;
   openAnimalsModal: () => void;
   openCraftingModal: () => void;
   openStarsModal: () => void;
@@ -101,6 +102,7 @@ export const InteractiveCosmos: React.FC<InteractiveCosmosProps> = ({
   openZodiacModal,
   floatingTexts,
   clickPower,
+  openGehegeModal,
   openAnimalsModal,
   openCraftingModal,
   openStarsModal,
@@ -234,6 +236,7 @@ export const InteractiveCosmos: React.FC<InteractiveCosmosProps> = ({
 
       {/* Beautiful Tactile Floating Buttons to open their corresponding modal window */}
       <ActionButtons
+        onShowGehege={openGehegeModal}
         onShowAnimals={openAnimalsModal}
         onShowCrafting={openCraftingModal}
         onShowStars={openStarsModal}

@@ -17,13 +17,14 @@ import {
   Music,
 } from "lucide-react";
 
-import { Animal, FloatingText, GameState, Upgrade, PlanetTask, ActiveCosmicEvent } from "./types";
+import { Animal, FloatingText, GameState, Upgrade, PlanetTask, ActiveCosmicEvent, PlacedAnimal } from "./types";
 import {
   INITIAL_ANIMALS,
   calculateCost,
   formatCompactNumber,
   getPrestigeRequirement,
 } from "./data";
+import { GehegeModal } from "./components/modals/GehegeModal";
 import { Planet } from "./components/Planet";
 import {
   playPop,
@@ -156,9 +157,12 @@ export default function App() {
     setShowUpgradesModal,
     showAchievementsModal,
     setShowAchievementsModal,
+    showGehegeModal,
+    setShowGehegeModal,
     openPrestigeModal,
     openOfflineModal,
     openZodiacModal,
+    openGehegeModal,
     openAnimalsModal,
     openCraftingModal,
     openStarsModal,
@@ -177,6 +181,11 @@ export default function App() {
 
   const [craftedItems, setCraftedItems] = useState<Record<string, number>>({});
   const [constellations, setConstellations] = useState<Record<string, number>>({});
+  const [placedAnimals, setPlacedAnimals] = useState<PlacedAnimal[]>([]);
+  const [animalLove, setAnimalLove] = useState<Record<string, number>>({});
+  const [animalLastPet, setAnimalLastPet] = useState<Record<string, number>>({});
+  const [bowlLastFed, setBowlLastFed] = useState<number>(0);
+  const [bowlFedMinutesCredited, setBowlFedMinutesCredited] = useState<number>(0);
   const [autosaveNotification, setAutosaveNotification] = useState<{
     show: boolean;
     text: string;
@@ -544,6 +553,11 @@ export default function App() {
         localStorage.setItem(SAVE_KEY, JSON.stringify(fullSaveData));
 
         // Hydrate Cosmetics & Missions
+        if (data.placedAnimals) setPlacedAnimals(data.placedAnimals);
+        if (data.animalLove) setAnimalLove(data.animalLove);
+        if (data.animalLastPet) setAnimalLastPet(data.animalLastPet);
+        if (data.bowlLastFed !== undefined) setBowlLastFed(data.bowlLastFed);
+        if (data.bowlFedMinutesCredited !== undefined) setBowlFedMinutesCredited(data.bowlFedMinutesCredited);
         if (data.unlockedCosmetics) setUnlockedCosmetics(data.unlockedCosmetics);
         if (data.activeStarColor) setActiveStarColor(data.activeStarColor);
         if (data.activeAccessory) setActiveAccessory(data.activeAccessory);
@@ -605,6 +619,12 @@ export default function App() {
         if (savedStateObj.moonsCount !== undefined) setMoonsCount(savedStateObj.moonsCount);
         if (savedStateObj.constellations) setConstellations(savedStateObj.constellations);
         if (savedStateObj.craftedItems) setCraftedItems(savedStateObj.craftedItems);
+        if (savedStateObj.placedAnimals) setPlacedAnimals(savedStateObj.placedAnimals);
+        if (savedStateObj.animalLove) setAnimalLove(savedStateObj.animalLove);
+        if (savedStateObj.animalLastPet) setAnimalLastPet(savedStateObj.animalLastPet);
+        if (savedStateObj.bowlLastFed !== undefined) setBowlLastFed(savedStateObj.bowlLastFed);
+        if (savedStateObj.bowlFedMinutesCredited !== undefined)
+          setBowlFedMinutesCredited(savedStateObj.bowlFedMinutesCredited);
         if (savedStateObj.glitterDust !== undefined) setGlitterDust(savedStateObj.glitterDust);
         if (savedStateObj.cosmeticRarityLevels)
           setCosmeticRarityLevels(savedStateObj.cosmeticRarityLevels);
@@ -821,6 +841,54 @@ export default function App() {
     };
   }, []);
 
+  // Interval to increment animal love when feeding is active
+  useEffect(() => {
+    if (!bowlLastFed) {
+      if (bowlFedMinutesCredited !== 0) setBowlFedMinutesCredited(0);
+      return;
+    }
+
+    const checkFeedingAccrual = () => {
+      const elapsedMs = Date.now() - bowlLastFed;
+      const currentElapsedMinutes = Math.min(25, Math.floor(elapsedMs / 60000));
+
+      if (elapsedMs >= 25 * 60 * 1000) {
+        // The 25 mins active window is over. Credit remaining up to 25.
+        const uncreditedMinutes = 25 - bowlFedMinutesCredited;
+        if (uncreditedMinutes > 0 && placedAnimals.length > 0) {
+          setAnimalLove((prev) => {
+            const updated = { ...prev };
+            placedAnimals.forEach((pa) => {
+              const currentLove = updated[pa.animalId] || 0;
+              updated[pa.animalId] = Math.min(500, currentLove + uncreditedMinutes);
+            });
+            return updated;
+          });
+          setBowlFedMinutesCredited(25);
+        }
+        return;
+      }
+
+      const uncreditedMinutes = currentElapsedMinutes - bowlFedMinutesCredited;
+      if (uncreditedMinutes > 0 && placedAnimals.length > 0) {
+        setAnimalLove((prev) => {
+          const updated = { ...prev };
+          placedAnimals.forEach((pa) => {
+            const currentLove = updated[pa.animalId] || 0;
+            updated[pa.animalId] = Math.min(500, currentLove + uncreditedMinutes);
+          });
+          return updated;
+        });
+        setBowlFedMinutesCredited(currentElapsedMinutes);
+      }
+    };
+
+    checkFeedingAccrual();
+
+    const interval = setInterval(checkFeedingAccrual, 10000); // Check every 10 seconds
+    return () => clearInterval(interval);
+  }, [bowlLastFed, placedAnimals, bowlFedMinutesCredited]);
+
   // Synchronize modal styling class directly with the body element
   useEffect(() => {
     const b = document.body;
@@ -881,6 +949,11 @@ export default function App() {
       offlineEarnedLife,
       constellations,
       craftedItems,
+      placedAnimals,
+      animalLove,
+      animalLastPet,
+      bowlLastFed,
+      bowlFedMinutesCredited,
       glitterDust,
       cosmeticRarityLevels,
       blackHoleSize,
@@ -926,6 +999,11 @@ export default function App() {
     offlineEarnedLife,
     constellations,
     craftedItems,
+    placedAnimals,
+    animalLove,
+    animalLastPet,
+    bowlLastFed,
+    bowlFedMinutesCredited,
     glitterDust,
     cosmeticRarityLevels,
     activeZodiacId,
@@ -979,6 +1057,11 @@ export default function App() {
           offlineEarnedLife: s.offlineEarnedLife,
           constellations: s.constellations,
           craftedItems: s.craftedItems,
+          placedAnimals: s.placedAnimals,
+          animalLove: s.animalLove,
+          animalLastPet: s.animalLastPet,
+          bowlLastFed: s.bowlLastFed,
+          bowlFedMinutesCredited: s.bowlFedMinutesCredited,
           glitterDust: s.glitterDust,
           cosmeticRarityLevels: s.cosmeticRarityLevels,
           blackHoleSize: s.blackHoleSize,
@@ -1517,6 +1600,7 @@ export default function App() {
           openZodiacModal={openZodiacModal}
           floatingTexts={floatingTexts}
           clickPower={clickPower}
+          openGehegeModal={openGehegeModal}
           openAnimalsModal={openAnimalsModal}
           openCraftingModal={openCraftingModal}
           openStarsModal={openStarsModal}
@@ -1659,6 +1743,24 @@ export default function App() {
             onUpgradeSlummerGlass={handleUpgradeSlummerGlass}
             onUpgradeCatalyst={handleUpgradeCatalyst}
             onUpgradeDoubleStellar={handleUpgradeDoubleStellar}
+          />
+
+          <GehegeModal
+            isOpen={showGehegeModal}
+            onClose={() => setShowGehegeModal(false)}
+            isNight={isNight}
+            purchasedAnimals={purchasedAnimals}
+            animalDefs={INITIAL_ANIMALS}
+            placedAnimals={placedAnimals}
+            onUpdatePlacedAnimals={setPlacedAnimals}
+            animalLove={animalLove}
+            onUpdateAnimalLove={setAnimalLove}
+            animalLastPet={animalLastPet}
+            onUpdateAnimalLastPet={setAnimalLastPet}
+            bowlLastFed={bowlLastFed}
+            onUpdateBowlLastFed={setBowlLastFed}
+            bowlFedMinutesCredited={bowlFedMinutesCredited}
+            onUpdateBowlFedMinutesCredited={setBowlFedMinutesCredited}
           />
         </GameStateProvider>
 

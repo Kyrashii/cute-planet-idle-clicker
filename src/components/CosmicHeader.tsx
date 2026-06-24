@@ -1,6 +1,6 @@
 import React from "react";
-import { motion } from "motion/react";
-import { Volume2, VolumeX, Settings, Cloud, Trophy, Info, RotateCcw } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { Volume2, VolumeX, Settings, Cloud, Trophy, Info, RotateCcw, X } from "lucide-react";
 
 interface CosmicHeaderProps {
   isNightStyle: boolean;
@@ -40,8 +40,45 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
     onOpenGalaxyShardsShop,
     inGlitchGalaxy = false,
   }) => {
+    const [secretInput, setSecretInput] = React.useState("");
+    const [showVideo, setShowVideo] = React.useState(false);
+    const [videoVolume, setVideoVolume] = React.useState(0.8);
+    const [videoMuted, setVideoMuted] = React.useState(false);
+    const videoRef = React.useRef<HTMLVideoElement>(null);
+
+    React.useEffect(() => {
+      const handleGlobalKeyDown = (e: KeyboardEvent) => {
+        if (showVideo && e.code === "Space") {
+          e.preventDefault();
+        }
+      };
+      if (showVideo) {
+        window.addEventListener("keydown", handleGlobalKeyDown);
+      }
+      return () => {
+        window.removeEventListener("keydown", handleGlobalKeyDown);
+      };
+    }, [showVideo]);
+
+    React.useEffect(() => {
+      if (videoRef.current) {
+        videoRef.current.volume = videoVolume;
+        videoRef.current.muted = videoMuted;
+      }
+    }, [videoVolume, videoMuted, showVideo]);
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        if (secretInput.trim() === "hallodugeilesau") {
+          setShowVideo(true);
+        }
+        setSecretInput("");
+      }
+    };
+
     return (
-      <header
+      <>
+        <header
         className={`sticky top-0 z-20 backdrop-blur-md py-4 px-4 sm:px-6 shadow-md transition-all duration-500 border-b-4 ${
           isNightStyle ? "bg-[#110e26]/85 border-cosmic-accent/50 text-cosmic-text" : ""
         } ${showTutorial ? "blur-md pointer-events-none select-none" : ""}`}
@@ -79,6 +116,18 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
 
           {/* Core Quick stats & Utility buttons */}
           <div className="flex items-center gap-2 sm:gap-4">
+            {/* Secret code input field */}
+            <input
+              type="text"
+              placeholder="UWU"
+              value={secretInput}
+              onChange={(e) => setSecretInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="px-2.5 py-1.5 w-24 sm:w-32 text-xs font-mono font-black border-2 border-cosmic-pink/40 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text placeholder-cosmic-pink/30 rounded-xl focus:outline-none focus:border-cosmic-pink/90 transition-all duration-300 shadow-sm text-center"
+              title="Geheimer Text eingeben"
+              id="secret-code-input"
+            />
+
             {/* Lifepoints summary */}
             <div
               className={`px-4 py-1.5 rounded-xl flex flex-col items-end shadow-sm border-2 transition-colors duration-500 ${
@@ -199,7 +248,90 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
           </div>
         </div>
       </header>
-    );
+
+      <AnimatePresence>
+        {showVideo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35 }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-transparent pointer-events-none select-none"
+          >
+            {/* Close button with interactive state */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowVideo(false);
+              }}
+              className="absolute top-6 right-6 z-[10000] p-3 rounded-full bg-black/65 border border-white/20 text-white hover:bg-black/85 hover:scale-105 active:scale-95 transition-all shadow-lg pointer-events-auto cursor-pointer flex items-center justify-center animate-bounce"
+              title="Schließen"
+              style={{ animationDuration: "3s" }}
+              id="close-secret-video"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* Immersive Video frame container */}
+            <div 
+              className="relative w-full h-full max-w-full max-h-full flex items-center justify-center p-4 md:p-8 pointer-events-none"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+              <video
+                ref={videoRef}
+                src="/assets/stuff/hihihi.webm"
+                autoPlay
+                playsInline
+                onEnded={() => setShowVideo(false)}
+                onPause={() => {
+                  if (showVideo && videoRef.current) {
+                    videoRef.current.play().catch(() => {});
+                  }
+                }}
+                className="max-w-full max-h-full rounded-2xl shadow-2xl pointer-events-none bg-transparent"
+                id="secret-video-player"
+              />
+
+              {/* Custom volume controller locked from pausing/seeking */}
+              <div 
+                className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[10000] flex items-center gap-3 px-4 py-2 bg-black/85 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg pointer-events-auto"
+                id="custom-video-volume-controls"
+              >
+                <button
+                  onClick={() => setVideoMuted((prev) => !prev)}
+                  className="p-1.5 rounded-lg hover:bg-white/15 active:scale-95 text-white transition-all cursor-pointer"
+                  title={videoMuted ? "Ton einschalten" : "Ton stummschalten"}
+                >
+                  {videoMuted || videoVolume === 0 ? (
+                    <VolumeX className="w-5 h-5 text-rose-400" />
+                  ) : (
+                    <Volume2 className="w-5 h-5 text-cosmic-pink animate-pulse" />
+                  )}
+                </button>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={videoMuted ? 0 : videoVolume}
+                  onChange={(e) => {
+                    setVideoVolume(parseFloat(e.target.value));
+                    setVideoMuted(false);
+                  }}
+                  className="w-24 sm:w-32 h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-cosmic-pink hover:accent-fuchsia-400 transition-all"
+                  title="Lautstärke einstellen"
+                />
+                <span className="text-[10px] font-mono font-bold text-white/80 select-none w-8 text-right">
+                  {Math.round((videoMuted ? 0 : videoVolume) * 100)}%
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
   },
 );
 
