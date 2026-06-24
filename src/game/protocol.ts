@@ -201,6 +201,7 @@ export type WorkerCommand =
   | { type: "REPAIR_GLITCH_GALAXY" }
   // Cheats / dev
   | { type: "CHIPS_CHEAT" }
+  | { type: "SET_PLANET_LEVEL"; level: number }
   | { type: "RESET" };
 
 export type WorkerCommandType = WorkerCommand["type"];

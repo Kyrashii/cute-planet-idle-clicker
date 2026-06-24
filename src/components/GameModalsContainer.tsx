@@ -26,6 +26,7 @@ interface GameModalsContainerProps {
   setShowResetDialog: (show: boolean) => void;
   showCheatEventModal: boolean;
   setShowCheatEventModal: (show: boolean) => void;
+  planetLevel: number;
   showUpgradesModal: boolean;
   setShowUpgradesModal: (show: boolean) => void;
   showAnimalsModal: boolean;
@@ -138,6 +139,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
     setShowResetDialog,
     showCheatEventModal,
     setShowCheatEventModal,
+    planetLevel,
     showUpgradesModal,
     setShowUpgradesModal,
     showAnimalsModal,
@@ -247,6 +249,13 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
         {showCheatEventModal && (
           <CheatEventModal
             isOpen={showCheatEventModal}
+            currentPlanetLevel={planetLevel}
+            onSetPlanetLevel={(level) => {
+              workerRef.current?.postMessage({
+                type: "SET_PLANET_LEVEL",
+                level,
+              });
+            }}
             onSelectEvent={(event) => {
               workerRef.current?.postMessage({
                 type: "FORCE_TRIGGER_EVENT",

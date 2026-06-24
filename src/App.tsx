@@ -1636,6 +1636,7 @@ export default function App() {
             setShowResetDialog={setShowResetDialog}
             showCheatEventModal={showCheatEventModal}
             setShowCheatEventModal={setShowCheatEventModal}
+            planetLevel={planetLevel}
             showUpgradesModal={showUpgradesModal}
             setShowUpgradesModal={setShowUpgradesModal}
             showAnimalsModal={showAnimalsModal}

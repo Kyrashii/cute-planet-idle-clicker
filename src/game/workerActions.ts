@@ -109,6 +109,19 @@ export function handleWorkerAction(
       broadcastStateUpdate(true);
       break;
     }
+    case "SET_PLANET_LEVEL": {
+      const level = Math.min(20, Math.max(1, Math.trunc(data.level)));
+      if (!Number.isFinite(level)) {
+        break;
+      }
+
+      state.planetLevel = level;
+      state.planetExp = 0;
+      state.planetTask = rollTaskForLevel(level, state.prestigeCount || 0, INITIAL_ANIMALS);
+
+      broadcastStateUpdate(true);
+      break;
+    }
     case "FORCE_TRIGGER_EVENT": {
       const { event } = data;
       setupActiveEvent(event);
