@@ -21,7 +21,3 @@ if (typeof window !== "undefined" && !window.matchMedia) {
     dispatchEvent: vi.fn(),
   }));
 }
-
-if (typeof window !== "undefined") {
-  window.scrollTo = vi.fn();
-}

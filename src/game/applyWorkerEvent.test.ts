@@ -42,9 +42,6 @@ function makeHandlers() {
     "setUnlockedCosmetics",
     "setShootingStarsCount",
     "setActiveZodiacId",
-    "setAnimalLove",
-    "setActiveEnclosureBuffs",
-    "setLastEnclosureReward",
     "setCalculations",
     "setAchievements",
     "setIsLoaded",
@@ -97,7 +94,6 @@ const payload: WorkerStatePayload = {
   glitchPending: false,
   unlockedGlitchGalaxy: false,
   spentGalaxyShards: 0,
-  activeEnclosureBuffs: [],
 };
 
 describe("applyWorkerEvent", () => {
@@ -133,27 +129,6 @@ describe("applyWorkerEvent", () => {
     applyWorkerEvent({ type: "LEVEL_UP", level: 6 }, h);
     expect(h.playLevelUp).toHaveBeenCalled();
     expect(h.setFloatingTexts).toHaveBeenCalledTimes(1);
-  });
-
-  it("ENCLOSURE_REWARD_GRANTED stores the last reward and updates love rewards", () => {
-    const h = makeHandlers();
-    applyWorkerEvent(
-      {
-        type: "ENCLOSURE_REWARD_GRANTED",
-        animalId: "bunny",
-        trackId: "track-1",
-        reward: {
-          kind: "love",
-          label: "Kuschelherz",
-          amount: 3,
-          animalId: "bunny",
-        },
-      },
-      h,
-    );
-
-    expect(h.setLastEnclosureReward).toHaveBeenCalledTimes(1);
-    expect(h.setAnimalLove).toHaveBeenCalledTimes(1);
   });
 
   it("BLACK_HOLE_GAMBLE_RESULT failure shows the error dialog", () => {

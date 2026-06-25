@@ -12,7 +12,6 @@ import { handleUseCraftedItem } from "./game/itemHandlers";
 import { executeBlackHoleGamble } from "./game/blackHoleGamble";
 import { handleWorkerAction } from "./game/workerActions";
 import { DEFAULT_GLITCH_BENCHMARKS, hasReachedGlitchMilestone } from "./game/glitchGalaxy";
-import { pruneExpiredEnclosureBuffs } from "./game/enclosureRewards";
 import type {
   WorkerCommand,
   WorkerEvent,
@@ -73,12 +72,6 @@ let state: WorkerGameState = {
   unlockedGlitchGalaxy: false,
   spentGalaxyShards: 0,
   glitchCooldown: false,
-  placedAnimals: [],
-  animalLove: {},
-  animalLastPet: {},
-  bowlLastFed: 0,
-  bowlFedMinutesCredited: 0,
-  activeEnclosureBuffs: [],
 };
 
 // Timers refs
@@ -248,7 +241,6 @@ function broadcastStateUpdate(
     isSyncing = false;
   }
 
-  state.activeEnclosureBuffs = pruneExpiredEnclosureBuffs(state.activeEnclosureBuffs, Date.now());
   const calculations = cachedStats ?? getLpsAndStats();
 
   // Throttle achievements calculation to once every 1250ms unless forced by a buy/click event
@@ -308,7 +300,6 @@ function broadcastStateUpdate(
       spentGalaxyShards: state.spentGalaxyShards || 0,
       glitchBenchmarks: state.glitchBenchmarks,
       glitchCooldown: state.glitchCooldown || false,
-      activeEnclosureBuffs: state.activeEnclosureBuffs || [],
     },
     calculations: {
       ...calculations,
@@ -373,7 +364,6 @@ function startTimers() {
 
   // 1. Core Incremental game tick (every 250ms instead of 100ms for extreme mobile performance)
   gameTimerId = setInterval(() => {
-    state.activeEnclosureBuffs = pruneExpiredEnclosureBuffs(state.activeEnclosureBuffs, Date.now());
     const stats = getLpsAndStats();
     const increment = stats.totalLps / 4;
     if (increment > 0) {

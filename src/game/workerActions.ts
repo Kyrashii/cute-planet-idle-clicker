@@ -8,7 +8,6 @@ import { handleUseCraftedItem } from "./itemHandlers";
 import { executeBlackHoleGamble } from "./blackHoleGamble";
 import { formatCompactNumber } from "./achievements";
 import type { WorkerCommand, WorkerEvent, WorkerGameState, StatsResult } from "./protocol";
-import { applyEnclosureRewardToState, resolveEnclosureReward } from "./enclosureRewards";
 
 export interface WorkerActionHelpers {
   getLpsAndStats: () => StatsResult;
@@ -319,39 +318,6 @@ export function handleWorkerAction(
         catalystLevel: 0,
         doubleStellarLevel: 0,
         glitchCooldown: false,
-        placedAnimals: [],
-        animalLove: {},
-        animalLastPet: {},
-        bowlLastFed: 0,
-        bowlFedMinutesCredited: 0,
-        activeEnclosureBuffs: [],
-      });
-      broadcastStateUpdate(true);
-      break;
-    }
-    case "SYNC_ENCLOSURE_STATE": {
-      state.placedAnimals = data.placedAnimals;
-      state.animalLove = data.animalLove;
-      state.animalLastPet = data.animalLastPet;
-      state.bowlLastFed = data.bowlLastFed;
-      state.bowlFedMinutesCredited = data.bowlFedMinutesCredited;
-      broadcastStateUpdate(true);
-      break;
-    }
-    case "COLLECT_ENCLOSURE_TRACK": {
-      const reward = resolveEnclosureReward(
-        state,
-        getLpsAndStats(),
-        data.animalId,
-        data.profile,
-        Date.now(),
-      );
-      applyEnclosureRewardToState(state, reward);
-      emit({
-        type: "ENCLOSURE_REWARD_GRANTED",
-        reward,
-        animalId: data.animalId,
-        trackId: data.trackId,
       });
       broadcastStateUpdate(true);
       break;
@@ -374,12 +340,6 @@ export function handleWorkerAction(
         moonsCount: 0,
         constellations: {},
         zodiac: rollNewZodiac(oldZodiac),
-        placedAnimals: [],
-        animalLove: {},
-        animalLastPet: {},
-        bowlLastFed: 0,
-        bowlFedMinutesCredited: 0,
-        activeEnclosureBuffs: [],
       });
       broadcastStateUpdate(true);
       break;
@@ -422,7 +382,6 @@ export function handleWorkerAction(
         animalLastPet: {},
         bowlLastFed: 0,
         bowlFedMinutesCredited: 0,
-        activeEnclosureBuffs: [],
       });
       broadcastStateUpdate(true);
       break;
@@ -459,7 +418,6 @@ export function handleWorkerAction(
         animalLastPet: {},
         bowlLastFed: 0,
         bowlFedMinutesCredited: 0,
-        activeEnclosureBuffs: [],
       });
       broadcastStateUpdate(true);
       break;

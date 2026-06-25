@@ -1,11 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import type {
-  PlanetTask,
-  ActiveCosmicEvent,
-  FloatingText,
-  EnclosureBuff,
-  EnclosureRewardOutcome,
-} from "../types";
+import type { PlanetTask, ActiveCosmicEvent, FloatingText } from "../types";
 import type { WorkerEvent } from "./protocol";
 import { formatCompactNumber } from "../utils/format";
 import { isObjEqual, isArrEqual } from "../utils/equality";
@@ -54,16 +48,6 @@ export interface WorkerEventHandlers {
   setUnlockedCosmetics: Dispatch<SetStateAction<string[]>>;
   setShootingStarsCount: Dispatch<SetStateAction<number>>;
   setActiveZodiacId: Dispatch<SetStateAction<string>>;
-  setAnimalLove: Dispatch<SetStateAction<Record<string, number>>>;
-  setActiveEnclosureBuffs: Dispatch<SetStateAction<EnclosureBuff[]>>;
-  setLastEnclosureReward: Dispatch<
-    SetStateAction<{
-      animalId: string;
-      trackId: string;
-      reward: EnclosureRewardOutcome;
-      receivedAt: number;
-    } | null>
-  >;
   setCalculations: Dispatch<SetStateAction<any>>;
   setAchievements: Dispatch<SetStateAction<any[]>>;
   setIsLoaded: Dispatch<SetStateAction<boolean>>;
@@ -116,9 +100,6 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
     setUnlockedCosmetics,
     setShootingStarsCount,
     setActiveZodiacId,
-    setAnimalLove,
-    setActiveEnclosureBuffs,
-    setLastEnclosureReward,
     setCalculations,
     setAchievements,
     setIsLoaded,
@@ -188,7 +169,6 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
         );
       if (ws.shootingStarsCount !== undefined) setShootingStarsCount(ws.shootingStarsCount);
       if (ws.zodiac !== undefined) setActiveZodiacId(ws.zodiac || "katze");
-      setActiveEnclosureBuffs(ws.activeEnclosureBuffs || []);
 
       setCalculations((prevCalculations: any) => {
         if (
@@ -338,23 +318,6 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
         }
         return next;
       });
-      break;
-    }
-    case "ENCLOSURE_REWARD_GRANTED": {
-      setLastEnclosureReward({
-        animalId: data.animalId,
-        trackId: data.trackId,
-        reward: data.reward,
-        receivedAt: Date.now(),
-      });
-
-      if (data.reward.kind === "love") {
-        const reward = data.reward;
-        setAnimalLove((prev) => ({
-          ...prev,
-          [reward.animalId]: Math.min(300, (prev[reward.animalId] || 0) + reward.amount),
-        }));
-      }
       break;
     }
     case "CRAFTED_ITEMS_OPENED": {

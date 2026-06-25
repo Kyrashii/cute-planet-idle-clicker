@@ -37,24 +37,13 @@ function makeState(overrides: Partial<WorkerGameState> = {}): WorkerGameState {
     slummerGlassLevel: 1,
     catalystLevel: 0,
     doubleStellarLevel: 0,
-    placedAnimals: [],
-    animalLove: {},
-    animalLastPet: {},
-    bowlLastFed: 0,
-    bowlFedMinutesCredited: 0,
-    activeEnclosureBuffs: [],
     ...overrides,
   };
 }
 
 function makeHelpers(): WorkerActionHelpers {
   return {
-    getLpsAndStats: vi.fn(
-      () =>
-        ({
-          animalLpsMap: { bunny: 10, phoenix: 500 },
-        }) as unknown as StatsResult,
-    ),
+    getLpsAndStats: vi.fn(() => ({}) as unknown as StatsResult),
     addPlanetExp: vi.fn(),
     setupActiveEvent: vi.fn(),
     updateTaskProgress: vi.fn(),
@@ -158,43 +147,6 @@ describe("handleWorkerAction", () => {
 
       expect(lowState.planetLevel).toBe(1);
       expect(highState.planetLevel).toBe(20);
-    });
-  });
-
-  describe("COLLECT_ENCLOSURE_TRACK", () => {
-    it("applies a species buff reward for paw tracks", () => {
-      const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.2);
-      const state = makeState();
-      const helpers = dispatch(
-        { type: "COLLECT_ENCLOSURE_TRACK", animalId: "bunny", profile: "paw", trackId: "t1" },
-        state,
-      );
-
-      expect(state.activeEnclosureBuffs).toHaveLength(1);
-      expect(state.activeEnclosureBuffs?.[0]).toMatchObject({
-        animalId: "bunny",
-        scope: "species",
-        multiplier: 1.5,
-      });
-      expect(helpers.emit).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: "ENCLOSURE_REWARD_GRANTED",
-          trackId: "t1",
-        }),
-      );
-      randomSpy.mockRestore();
-    });
-
-    it("applies love rewards without exceeding the cap", () => {
-      const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.8);
-      const state = makeState({ animalLove: { bunny: 299 } });
-      dispatch(
-        { type: "COLLECT_ENCLOSURE_TRACK", animalId: "bunny", profile: "paw", trackId: "t2" },
-        state,
-      );
-
-      expect(state.animalLove?.bunny).toBe(300);
-      randomSpy.mockRestore();
     });
   });
 
