@@ -97,4 +97,37 @@ describe("getLpsAndStats (characterization)", () => {
       }
     `);
   });
+
+  it("applies enclosure buffs to species and global animal output", () => {
+    const state = {
+      purchasedAnimals: { bunny: 10, chick: 5 },
+      activeEnclosureBuffs: [
+        {
+          id: "buff-global",
+          sourceAnimalId: "phoenix",
+          profile: "mythic",
+          label: "Mythen-Glanz",
+          multiplier: 1.2,
+          scope: "all_animals",
+          expiresAt: Date.now() + 20_000,
+        },
+        {
+          id: "buff-bunny",
+          sourceAnimalId: "bunny",
+          profile: "paw",
+          label: "Pfoten-Power",
+          multiplier: 1.5,
+          scope: "species",
+          animalId: "bunny",
+          expiresAt: Date.now() + 20_000,
+        },
+      ],
+    };
+
+    const result = getLpsAndStats(state) as Record<string, unknown>;
+    const animalLpsMap = result.animalLpsMap as Record<string, number>;
+    expect(animalLpsMap.bunny).toBeCloseTo(1.8, 5);
+    expect(animalLpsMap.chick).toBeCloseTo(3.6, 5);
+    expect(result.totalAnimalsLps).toBeCloseTo(5.4, 5);
+  });
 });

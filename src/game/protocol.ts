@@ -11,7 +11,14 @@
  * compile error rather than a silent runtime break. Types are erased at build
  * time, so adopting this contract changes no runtime behaviour.
  */
-import type { PlanetTask, ActiveCosmicEvent } from "../types";
+import type {
+  PlanetTask,
+  ActiveCosmicEvent,
+  EnclosureBuff,
+  EnclosureRewardOutcome,
+  EnclosureRewardProfile,
+  PlacedAnimal,
+} from "../types";
 import type { getLpsAndStats } from "./statsCalculator";
 
 // ---------------------------------------------------------------------------
@@ -59,6 +66,12 @@ export interface WorkerGameState {
   spentGalaxyShards?: number;
   glitchBenchmarks?: GlitchBenchmarks;
   glitchCooldown?: boolean;
+  placedAnimals?: PlacedAnimal[];
+  animalLove?: Record<string, number>;
+  animalLastPet?: Record<string, number>;
+  bowlLastFed?: number;
+  bowlFedMinutesCredited?: number;
+  activeEnclosureBuffs?: EnclosureBuff[];
 }
 
 export interface GlitchBenchmarks {
@@ -110,6 +123,7 @@ export interface WorkerStatePayload {
   spentGalaxyShards: number;
   glitchBenchmarks?: GlitchBenchmarks;
   glitchCooldown: boolean;
+  activeEnclosureBuffs: EnclosureBuff[];
 }
 
 /** Raw LPS/stats result from `getLpsAndStats` (without the achievements count). */
@@ -196,6 +210,20 @@ export type WorkerCommand =
   | { type: "FORCE_TRIGGER_EVENT"; event: string }
   | { type: "SET_NIGHT_CYCLE_FORCE"; isNight: boolean }
   | { type: "BLACK_HOLE_GAMBLE"; sacrificeType: "life" | "stars" | "dust" }
+  | {
+      type: "SYNC_ENCLOSURE_STATE";
+      placedAnimals: PlacedAnimal[];
+      animalLove: Record<string, number>;
+      animalLastPet: Record<string, number>;
+      bowlLastFed: number;
+      bowlFedMinutesCredited: number;
+    }
+  | {
+      type: "COLLECT_ENCLOSURE_TRACK";
+      animalId: string;
+      profile: EnclosureRewardProfile;
+      trackId: string;
+    }
   // Glitch galaxy
   | { type: "ENTER_GLITCH_GALAXY" }
   | { type: "REPAIR_GLITCH_GALAXY" }
@@ -225,6 +253,12 @@ export type WorkerEvent =
   | { type: "LEVEL_UP"; level: number }
   | { type: "EVENT_TRIGGER"; event: string | null; active: boolean }
   | { type: "COSMETIC_FOUND"; text: string }
+  | {
+      type: "ENCLOSURE_REWARD_GRANTED";
+      reward: EnclosureRewardOutcome;
+      animalId: string;
+      trackId: string;
+    }
   | {
       type: "CRAFTED_ITEMS_OPENED";
       itemId: string;

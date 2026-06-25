@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { act, renderHook } from "@testing-library/react";
 import { useFloatingTexts } from "./useFloatingTexts";
 import type { FloatingText } from "../types";
@@ -16,46 +16,34 @@ const makeText = (
   createdAt,
 });
 
+async function wait(ms: number) {
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, ms));
+  });
+}
+
 describe("useFloatingTexts", () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(0);
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
   it("starts empty and exposes a monotonically increasing id ref", () => {
     const { result } = renderHook(() => useFloatingTexts());
     expect(result.current.floatingTexts).toEqual([]);
     expect(result.current.nextParticleId.current).toBe(1);
   });
 
-  it("prunes expired particles on the sweep (1.2s for normal, 4s for level)", () => {
+  it("prunes expired particles on the sweep (1.2s for normal, 4s for level)", async () => {
     const { result } = renderHook(() => useFloatingTexts());
+    const now = Date.now();
 
     act(() => {
       result.current.setFloatingTexts([
-        makeText(1, 0, "click"), // expires at 1200ms
-        makeText(2, 0, "level"), // expires at 4000ms
+        makeText(1, now - 1000, "click"),
+        makeText(2, now - 1000, "level"),
       ]);
     });
 
-    // Advance just past the normal-particle lifetime; the level text survives.
-    act(() => {
-      vi.setSystemTime(1300);
-      vi.advanceTimersByTime(200);
-    });
+    await wait(350);
+    expect(result.current.floatingTexts.map((text) => text.id)).toEqual([2]);
 
-    expect(result.current.floatingTexts.map((t) => t.id)).toEqual([2]);
-
-    // Advance past the level-text lifetime; everything is pruned.
-    act(() => {
-      vi.setSystemTime(4200);
-      vi.advanceTimersByTime(200);
-    });
-
+    await wait(3100);
     expect(result.current.floatingTexts).toEqual([]);
   });
 

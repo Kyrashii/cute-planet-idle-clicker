@@ -64,7 +64,59 @@ export interface PlacedAnimal {
   animalId: string;
   x: number;
   y: number;
+  behaviorSeed: number;
+  facing: 1 | -1;
 }
+
+export type EnclosureRewardProfile = "paw" | "wing" | "splash" | "mythic";
+
+export interface EnclosureTrack {
+  id: string;
+  animalId: string;
+  profile: EnclosureRewardProfile;
+  x: number;
+  y: number;
+  scale: number;
+  rotation: number;
+  expiresAt: number;
+}
+
+export type EnclosureBuffScope = "all_animals" | "species";
+
+export interface EnclosureBuff {
+  id: string;
+  sourceAnimalId: string;
+  profile: EnclosureRewardProfile;
+  label: string;
+  multiplier: number;
+  scope: EnclosureBuffScope;
+  animalId?: string;
+  expiresAt: number;
+}
+
+export type EnclosureRewardOutcome =
+  | {
+      kind: "buff";
+      label: string;
+      amount: number;
+      buff: EnclosureBuff;
+    }
+  | {
+      kind: "instant_life";
+      label: string;
+      amount: number;
+    }
+  | {
+      kind: "instant_stars";
+      label: string;
+      amount: number;
+    }
+  | {
+      kind: "love";
+      label: string;
+      amount: number;
+      animalId: string;
+    };
 
 export interface GameState {
   life: number;
@@ -117,6 +169,7 @@ export interface GameState {
   animalLastPet?: Record<string, number>; // animalId -> timestamp (ms)
   bowlLastFed?: number; // timestamp (ms) of last feed click
   bowlFedMinutesCredited?: number; // number of minutes credited under current feed
+  activeEnclosureBuffs?: EnclosureBuff[];
 }
 
 export interface CosmicEventOption {

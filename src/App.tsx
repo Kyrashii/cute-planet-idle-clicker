@@ -17,7 +17,17 @@ import {
   Music,
 } from "lucide-react";
 
-import { Animal, FloatingText, GameState, Upgrade, PlanetTask, ActiveCosmicEvent, PlacedAnimal } from "./types";
+import {
+  Animal,
+  FloatingText,
+  GameState,
+  Upgrade,
+  PlanetTask,
+  ActiveCosmicEvent,
+  PlacedAnimal,
+  EnclosureBuff,
+  EnclosureRewardOutcome,
+} from "./types";
 import {
   INITIAL_ANIMALS,
   calculateCost,
@@ -186,6 +196,13 @@ export default function App() {
   const [animalLastPet, setAnimalLastPet] = useState<Record<string, number>>({});
   const [bowlLastFed, setBowlLastFed] = useState<number>(0);
   const [bowlFedMinutesCredited, setBowlFedMinutesCredited] = useState<number>(0);
+  const [activeEnclosureBuffs, setActiveEnclosureBuffs] = useState<EnclosureBuff[]>([]);
+  const [lastEnclosureReward, setLastEnclosureReward] = useState<{
+    animalId: string;
+    trackId: string;
+    reward: EnclosureRewardOutcome;
+    receivedAt: number;
+  } | null>(null);
   const [autosaveNotification, setAutosaveNotification] = useState<{
     show: boolean;
     text: string;
@@ -541,46 +558,70 @@ export default function App() {
   useEffect(() => {
     const handleFirebaseLoad = (e: Event) => {
       const data = (e as CustomEvent).detail;
-      if (data && workerRef.current) {
+      const migratedData = migrateSave(data);
+      if (migratedData && workerRef.current) {
         workerRef.current.postMessage({
           type: "INIT",
-          savedState: migrateSave(data),
+          savedState: migratedData,
         });
         const fullSaveData = withSaveVersion({
-          ...data,
-          lastSavedAt: data.lastSavedAt || Date.now(),
+          ...migratedData,
+          lastSavedAt:
+            typeof migratedData.lastSavedAt === "number" ? migratedData.lastSavedAt : Date.now(),
         });
         localStorage.setItem(SAVE_KEY, JSON.stringify(fullSaveData));
 
         // Hydrate Cosmetics & Missions
-        if (data.placedAnimals) setPlacedAnimals(data.placedAnimals);
-        if (data.animalLove) setAnimalLove(data.animalLove);
-        if (data.animalLastPet) setAnimalLastPet(data.animalLastPet);
-        if (data.bowlLastFed !== undefined) setBowlLastFed(data.bowlLastFed);
-        if (data.bowlFedMinutesCredited !== undefined) setBowlFedMinutesCredited(data.bowlFedMinutesCredited);
-        if (data.unlockedCosmetics) setUnlockedCosmetics(data.unlockedCosmetics);
-        if (data.activeStarColor) setActiveStarColor(data.activeStarColor);
-        if (data.activeAccessory) setActiveAccessory(data.activeAccessory);
-        if (data.activeFrame) setActiveFrame(data.activeFrame);
-        if (data.activeMoonSkin) setActiveMoonSkin(data.activeMoonSkin);
-        if (data.shootingStarsCount !== undefined) setShootingStarsCount(data.shootingStarsCount);
-        if (data.missionSetNumber !== undefined) setMissionSetNumber(data.missionSetNumber);
-        if (data.claimedMissionIds) setClaimedMissionIds(data.claimedMissionIds);
-        if (data.missionsCooldownEnd !== undefined)
-          setMissionsCooldownEnd(data.missionsCooldownEnd);
-        if (data.moonsCount !== undefined) setMoonsCount(data.moonsCount);
-        if (data.constellations) setConstellations(data.constellations);
-        if (data.craftedItems) setCraftedItems(data.craftedItems);
-        if (data.glitterDust !== undefined) setGlitterDust(data.glitterDust);
-        if (data.cosmeticRarityLevels) setCosmeticRarityLevels(data.cosmeticRarityLevels);
-        if (data.blackHoleSize !== undefined) setBlackHoleSize(data.blackHoleSize || 1);
-        if (data.zodiac !== undefined) setActiveZodiacId(data.zodiac);
-        if (data.galaxyShards !== undefined) setGalaxyShards(data.galaxyShards || 0);
-        if (data.zodiacLevels !== undefined) setZodiacLevels(data.zodiacLevels || {});
-        if (data.slummerGlassLevel !== undefined) setSlummerGlassLevel(data.slummerGlassLevel || 1);
-        if (data.catalystLevel !== undefined) setCatalystLevel(data.catalystLevel || 0);
-        if (data.doubleStellarLevel !== undefined)
-          setDoubleStellarLevel(data.doubleStellarLevel || 0);
+        if (migratedData.placedAnimals)
+          setPlacedAnimals(migratedData.placedAnimals as PlacedAnimal[]);
+        if (migratedData.animalLove)
+          setAnimalLove(migratedData.animalLove as Record<string, number>);
+        if (migratedData.animalLastPet)
+          setAnimalLastPet(migratedData.animalLastPet as Record<string, number>);
+        if (migratedData.bowlLastFed !== undefined)
+          setBowlLastFed(Number(migratedData.bowlLastFed));
+        if (migratedData.bowlFedMinutesCredited !== undefined)
+          setBowlFedMinutesCredited(Number(migratedData.bowlFedMinutesCredited));
+        if (migratedData.unlockedCosmetics)
+          setUnlockedCosmetics(migratedData.unlockedCosmetics as string[]);
+        if (migratedData.activeStarColor) setActiveStarColor(String(migratedData.activeStarColor));
+        if (migratedData.activeAccessory) setActiveAccessory(String(migratedData.activeAccessory));
+        if (migratedData.activeFrame) setActiveFrame(String(migratedData.activeFrame));
+        if (migratedData.activeMoonSkin) setActiveMoonSkin(String(migratedData.activeMoonSkin));
+        if (migratedData.shootingStarsCount !== undefined)
+          setShootingStarsCount(Number(migratedData.shootingStarsCount));
+        if (migratedData.missionSetNumber !== undefined)
+          setMissionSetNumber(Number(migratedData.missionSetNumber));
+        if (migratedData.claimedMissionIds)
+          setClaimedMissionIds(migratedData.claimedMissionIds as string[]);
+        if (migratedData.missionsCooldownEnd !== undefined)
+          setMissionsCooldownEnd(
+            migratedData.missionsCooldownEnd === null
+              ? null
+              : Number(migratedData.missionsCooldownEnd),
+          );
+        if (migratedData.moonsCount !== undefined) setMoonsCount(Number(migratedData.moonsCount));
+        if (migratedData.constellations)
+          setConstellations(migratedData.constellations as Record<string, number>);
+        if (migratedData.craftedItems)
+          setCraftedItems(migratedData.craftedItems as Record<string, number>);
+        if (migratedData.glitterDust !== undefined)
+          setGlitterDust(Number(migratedData.glitterDust));
+        if (migratedData.cosmeticRarityLevels)
+          setCosmeticRarityLevels(migratedData.cosmeticRarityLevels as Record<string, string>);
+        if (migratedData.blackHoleSize !== undefined)
+          setBlackHoleSize(Number(migratedData.blackHoleSize) || 1);
+        if (migratedData.zodiac !== undefined) setActiveZodiacId(String(migratedData.zodiac));
+        if (migratedData.galaxyShards !== undefined)
+          setGalaxyShards(Number(migratedData.galaxyShards) || 0);
+        if (migratedData.zodiacLevels !== undefined)
+          setZodiacLevels((migratedData.zodiacLevels as Record<string, number>) || {});
+        if (migratedData.slummerGlassLevel !== undefined)
+          setSlummerGlassLevel(Number(migratedData.slummerGlassLevel) || 1);
+        if (migratedData.catalystLevel !== undefined)
+          setCatalystLevel(Number(migratedData.catalystLevel) || 0);
+        if (migratedData.doubleStellarLevel !== undefined)
+          setDoubleStellarLevel(Number(migratedData.doubleStellarLevel) || 0);
       }
     };
     window.addEventListener("firebase-load-state", handleFirebaseLoad);
@@ -701,6 +742,9 @@ export default function App() {
       setUnlockedCosmetics,
       setShootingStarsCount,
       setActiveZodiacId,
+      setAnimalLove,
+      setActiveEnclosureBuffs,
+      setLastEnclosureReward,
       setCalculations,
       setAchievements,
       setIsLoaded,
@@ -720,6 +764,18 @@ export default function App() {
       worker.terminate();
     };
   }, []);
+
+  useEffect(() => {
+    if (!workerRef.current) return;
+    workerRef.current.postMessage({
+      type: "SYNC_ENCLOSURE_STATE",
+      placedAnimals,
+      animalLove,
+      animalLastPet,
+      bowlLastFed,
+      bowlFedMinutesCredited,
+    });
+  }, [placedAnimals, animalLove, animalLastPet, bowlLastFed, bowlFedMinutesCredited]);
 
   // Tab visibility — pause/resume the worker loop to avoid backlog + freeze on return
   useWorkerVisibility(workerRef);
@@ -747,6 +803,18 @@ export default function App() {
       sacrificeType,
     });
   }, []);
+
+  const handleCollectEnclosureTrack = useCallback(
+    (animalId: string, profile: "paw" | "wing" | "splash" | "mythic", trackId: string) => {
+      workerRef.current?.postMessage({
+        type: "COLLECT_ENCLOSURE_TRACK",
+        animalId,
+        profile,
+        trackId,
+      });
+    },
+    [],
+  );
 
   // Easter egg keydown handler for "uguu" cheat
   useEffect(() => {
@@ -1498,6 +1566,20 @@ export default function App() {
     prestigeCount,
     moonsCount,
     constellations,
+    craftedItems,
+    placedAnimals,
+    animalLove,
+    animalLastPet,
+    bowlLastFed,
+    bowlFedMinutesCredited,
+    glitterDust,
+    cosmeticRarityLevels,
+    blackHoleSize,
+    galaxyShards,
+    zodiacLevels,
+    slummerGlassLevel,
+    catalystLevel,
+    doubleStellarLevel,
   };
   const handleForceSaveToCloud = useCallback(() => {
     saveStateToCloud(latestCloudSaveRef.current);
@@ -1762,6 +1844,9 @@ export default function App() {
             onUpdateBowlLastFed={setBowlLastFed}
             bowlFedMinutesCredited={bowlFedMinutesCredited}
             onUpdateBowlFedMinutesCredited={setBowlFedMinutesCredited}
+            activeEnclosureBuffs={activeEnclosureBuffs}
+            lastEnclosureReward={lastEnclosureReward}
+            onCollectEnclosureTrack={handleCollectEnclosureTrack}
           />
         </GameStateProvider>
 

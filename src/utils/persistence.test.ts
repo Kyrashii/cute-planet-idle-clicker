@@ -21,6 +21,27 @@ describe("migrateSave", () => {
     const current = { version: SAVE_VERSION, life: 5 };
     expect(migrateSave(current)).toEqual(current);
   });
+
+  it("fills missing enclosure movement fields on legacy placed animals", () => {
+    const migrated = migrateSave({
+      placedAnimals: [{ id: "p1", animalId: "bunny", x: 10, y: 20 }],
+    });
+
+    expect(migrated).toMatchObject({
+      placedAnimals: [
+        expect.objectContaining({
+          id: "p1",
+          animalId: "bunny",
+          x: 10,
+          y: 20,
+          facing: 1,
+        }),
+      ],
+    });
+    expect((migrated?.placedAnimals as Array<Record<string, unknown>>)[0].behaviorSeed).toEqual(
+      expect.any(Number),
+    );
+  });
 });
 
 describe("withSaveVersion", () => {

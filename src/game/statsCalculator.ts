@@ -254,6 +254,12 @@ export function getLpsAndStats(state: any) {
   // Calculate Animal LPS
   let totalAnimalsLps = 0;
   const animalLpsMap: Record<string, number> = {};
+  const activeEnclosureBuffs = (state.activeEnclosureBuffs || []).filter(
+    (buff: any) => buff && typeof buff.expiresAt === "number" && buff.expiresAt > Date.now(),
+  );
+  const globalEnclosureMultiplier = activeEnclosureBuffs
+    .filter((buff: any) => buff.scope === "all_animals")
+    .reduce((mult: number, buff: any) => mult * (buff.multiplier || 1), 1);
 
   INITIAL_ANIMALS.forEach((def) => {
     let multiplier = 1.0;
@@ -284,6 +290,12 @@ export function getLpsAndStats(state: any) {
     if (loveVal >= 300) {
       lps *= 1.05;
     }
+
+    const speciesEnclosureMultiplier = activeEnclosureBuffs
+      .filter((buff: any) => buff.scope === "species" && buff.animalId === def.id)
+      .reduce((mult: number, buff: any) => mult * (buff.multiplier || 1), 1);
+    lps *= speciesEnclosureMultiplier;
+    lps *= globalEnclosureMultiplier;
 
     animalLpsMap[def.id] = lps;
     totalAnimalsLps += lps;
@@ -373,6 +385,7 @@ export function getLpsAndStats(state: any) {
     flatMoonLps,
     totalLps,
     totalAnimalsCount,
+    animalLpsMap,
     researchedUpgradesCount,
     planetExpNeeded,
     prestigeCount: state.prestigeCount || 0,
