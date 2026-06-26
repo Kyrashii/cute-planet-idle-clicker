@@ -2,6 +2,14 @@ import React, { useState, useMemo, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Animal, PlacedAnimal } from "../../types";
 import { playPop } from "../../utils/audio";
+import {
+  clampPercent,
+  GehegeDropResult,
+  commitGehegeDrag,
+  POSITION_PADDING_X,
+  POSITION_PADDING_Y,
+  resolveGehegeDrop,
+} from "./gehegePlacement";
 
 interface AuraConfig {
   classes: string;
@@ -13,62 +21,71 @@ export const getAuraConfig = (love: number): AuraConfig | null => {
   if (love <= 0) return null;
   if (love < 30) {
     return {
-      classes: "shadow-[0_0_25px_rgba(255,255,255,0.75),inset_0_0_12px_rgba(255,255,255,0.4)] bg-white/20 border-2 border-white/50",
+      classes:
+        "shadow-[0_0_25px_rgba(255,255,255,0.75),inset_0_0_12px_rgba(255,255,255,0.4)] bg-white/20 border-2 border-white/50",
       name: "Sanfter Hauch Aura 🤍",
       colorName: "Weiß",
     };
   }
   if (love < 60) {
     return {
-      classes: "shadow-[0_0_28px_rgba(253,224,71,0.8),inset_0_0_15px_rgba(253,224,71,0.4)] bg-yellow-400/20 border-2 border-yellow-400/50",
+      classes:
+        "shadow-[0_0_28px_rgba(253,224,71,0.8),inset_0_0_15px_rgba(253,224,71,0.4)] bg-yellow-400/20 border-2 border-yellow-400/50",
       name: "Lichtfunken Aura 💛",
       colorName: "Goldgelb",
     };
   }
   if (love < 100) {
     return {
-      classes: "shadow-[0_0_30px_rgba(244,114,182,0.85),inset_0_0_15px_rgba(244,114,182,0.45)] bg-pink-400/20 border-2 border-pink-400/55",
+      classes:
+        "shadow-[0_0_30px_rgba(244,114,182,0.85),inset_0_0_15px_rgba(244,114,182,0.45)] bg-pink-400/20 border-2 border-pink-400/55",
       name: "Rosige Kuschel-Aura 🌸",
       colorName: "Pastellrosa",
     };
   }
   if (love < 140) {
     return {
-      classes: "shadow-[0_0_32px_rgba(251,146,60,0.9),inset_0_0_15px_rgba(251,146,60,0.5)] bg-orange-400/20 border-2 border-orange-400/60",
+      classes:
+        "shadow-[0_0_32px_rgba(251,146,60,0.9),inset_0_0_15px_rgba(251,146,60,0.5)] bg-orange-400/20 border-2 border-orange-400/60",
       name: "Warme Herzens-Aura 🧡",
       colorName: "Apricot",
     };
   }
   if (love < 180) {
     return {
-      classes: "shadow-[0_0_35px_rgba(52,211,153,0.95),inset_0_0_18px_rgba(52,211,153,0.55)] bg-emerald-400/20 border-2 border-emerald-400/65",
+      classes:
+        "shadow-[0_0_35px_rgba(52,211,153,0.95),inset_0_0_18px_rgba(52,211,153,0.55)] bg-emerald-400/20 border-2 border-emerald-400/65",
       name: "Naturkraft Aura 💚",
       colorName: "Smaragdgrün",
     };
   }
   if (love < 220) {
     return {
-      classes: "shadow-[0_0_38px_rgba(56,189,248,0.95),inset_0_0_18px_rgba(56,189,248,0.55)] bg-sky-400/20 border-2 border-sky-400/70",
+      classes:
+        "shadow-[0_0_38px_rgba(56,189,248,0.95),inset_0_0_18px_rgba(56,189,248,0.55)] bg-sky-400/20 border-2 border-sky-400/70",
       name: "Himmelsbrise Aura 🩵",
       colorName: "Lichtblau",
     };
   }
   if (love < 260) {
     return {
-      classes: "shadow-[0_0_40px_rgba(129,140,248,1.0),inset_0_0_20px_rgba(129,140,248,0.6)] bg-indigo-400/20 border-2 border-indigo-400/75",
+      classes:
+        "shadow-[0_0_40px_rgba(129,140,248,1.0),inset_0_0_20px_rgba(129,140,248,0.6)] bg-indigo-400/20 border-2 border-indigo-400/75",
       name: "Sternenglanz Aura 💙",
       colorName: "Sternenindigo",
     };
   }
   if (love < 300) {
     return {
-      classes: "shadow-[0_0_45px_rgba(167,139,250,1.0),inset_0_0_20px_rgba(167,139,250,0.65)] bg-violet-400/20 border-2 border-violet-400/80",
+      classes:
+        "shadow-[0_0_45px_rgba(167,139,250,1.0),inset_0_0_20px_rgba(167,139,250,0.65)] bg-violet-400/20 border-2 border-violet-400/80",
       name: "Kosmische Magie-Aura 💜",
       colorName: "Amethyst",
     };
   }
   return {
-    classes: "shadow-[0_0_55px_rgba(239,68,68,1.0),inset_0_0_25px_rgba(245,158,11,0.7)] bg-gradient-to-tr from-rose-500/35 via-amber-500/25 to-pink-500/35 border-2 border-rose-500/90",
+    classes:
+      "shadow-[0_0_55px_rgba(239,68,68,1.0),inset_0_0_25px_rgba(245,158,11,0.7)] bg-gradient-to-tr from-rose-500/35 via-amber-500/25 to-pink-500/35 border-2 border-rose-500/90",
     name: "Ewige Zuneigungs-Meisteraura ❤️🔥 (+5% LPS Boost!)",
     colorName: "Spurenregenbogen",
   };
@@ -96,6 +113,17 @@ interface GehegeModalProps {
 function colCountSafe(val: number): number {
   return typeof val === "number" && !isNaN(val) ? val : 0;
 }
+
+const LONG_PRESS_MS = 280;
+const WALK_FRAME_MS = Math.round(1000 / 6);
+const HELD_FRAME_MS = Math.round(1000 / 4);
+const PICKUP_FRAME_MS = 70;
+const DROP_FRAME_MS = 35;
+const MOVE_CANCEL_TAP_PX = 8;
+const FEED_BOWL_BLOCKED_MESSAGE =
+  "An dieser Stelle steht der Futternapf! Platziere das Tier woanders. \u{1F372}";
+
+type SpriteAnimationPhase = "walking" | "pickup" | "held" | "drop";
 
 const AnimalImageComponent: React.FC<{
   image?: string;
@@ -127,6 +155,58 @@ const AnimalImageComponent: React.FC<{
 
 const AnimalImage = React.memo(AnimalImageComponent);
 
+const SpriteAnimalImage = React.memo<{
+  animal: Animal | undefined;
+  frameRow: number;
+  frameIndex: number;
+  emoji?: string;
+  sizeClassName?: string;
+  emojiSizeClassName?: string;
+}>(
+  ({
+    animal,
+    frameRow,
+    frameIndex,
+    sizeClassName = "w-12 h-12 md:w-16 md:h-16",
+    emojiSizeClassName = "text-3xl md:text-5xl pointer-events-none select-none",
+  }) => {
+    if (
+      animal?.sheetSrc &&
+      animal.columns &&
+      animal.frameWidth &&
+      animal.frameHeight &&
+      animal.walkFrames &&
+      animal.liftFrames
+    ) {
+      return (
+        <div
+          className={`relative overflow-hidden pointer-events-none select-none ${sizeClassName}`}
+        >
+          <img
+            src={animal.sheetSrc}
+            alt={animal.emoji}
+            draggable={false}
+            className="absolute inset-0 h-[200%] w-[600%] max-w-none pointer-events-none select-none"
+            style={{
+              transform: `translate(-${(frameIndex / animal.columns) * 100}%, -${(frameRow / 2) * 100}%)`,
+            }}
+            referrerPolicy="no-referrer"
+          />
+        </div>
+      );
+    }
+
+    return (
+      <AnimalImage
+        image={animal?.image}
+        emoji={animal?.emoji || "🐾"}
+        sizeClassName={sizeClassName}
+        emojiSizeClassName={emojiSizeClassName}
+      />
+    );
+  },
+);
+
 // Memoized Placed Animal Component
 interface PlacedAnimalItemProps {
   pa: PlacedAnimal;
@@ -134,114 +214,356 @@ interface PlacedAnimalItemProps {
   loveVal: number;
   lastPetTime: number;
   isNight: boolean;
+  landscapeRef: React.RefObject<HTMLDivElement | null>;
   onPet: (animalId: string, x: number, y: number) => void;
+  onDragCommit: (id: string, x: number, y: number) => GehegeDropResult;
   onRemove: (id: string) => void;
 }
 
-const PlacedAnimalItem = React.memo<PlacedAnimalItemProps>(({
-  pa,
-  def,
-  loveVal,
-  lastPetTime,
-  isNight,
-  onPet,
-  onRemove,
-}) => {
-  const [now, setNow] = useState(Date.now());
+const PlacedAnimalItem = React.memo<PlacedAnimalItemProps>(
+  ({ pa, def, loveVal, lastPetTime, isNight, landscapeRef, onPet, onDragCommit, onRemove }) => {
+    const [now, setNow] = useState(Date.now());
+    const [animationPhase, setAnimationPhase] = useState<SpriteAnimationPhase>("walking");
+    const [frameRow, setFrameRow] = useState(0);
+    const [frameIndex, setFrameIndex] = useState(0);
+    const [renderPos, setRenderPos] = useState({ x: pa.x, y: pa.y });
+    const pointerStateRef = useRef({
+      pointerId: -1,
+      originX: pa.x,
+      originY: pa.y,
+      currentX: pa.x,
+      currentY: pa.y,
+      startClientX: 0,
+      startClientY: 0,
+      longPressActive: false,
+      cancelTap: false,
+    });
+    const dragHandleRef = useRef<HTMLDivElement | null>(null);
+    const holdTimeoutRef = useRef<number | null>(null);
+    const suppressClickRef = useRef(false);
 
-  React.useEffect(() => {
-    const cooldownMs = 30 * 60 * 1000;
-    const elapsed = Date.now() - lastPetTime;
-    if (elapsed >= cooldownMs || loveVal >= 300) return;
+    React.useEffect(() => {
+      const cooldownMs = 30 * 60 * 1000;
+      const elapsed = Date.now() - lastPetTime;
+      if (elapsed >= cooldownMs || loveVal >= 300) return;
 
-    // Tick to update exactly when cooldown ends
-    const remaining = cooldownMs - elapsed;
-    const t = setTimeout(() => {
-      setNow(Date.now());
-    }, remaining + 100);
+      // Tick to update exactly when cooldown ends
+      const remaining = cooldownMs - elapsed;
+      const t = setTimeout(() => {
+        setNow(Date.now());
+      }, remaining + 100);
 
-    return () => clearTimeout(t);
-  }, [lastPetTime, loveVal]);
+      return () => clearTimeout(t);
+    }, [lastPetTime, loveVal]);
 
-  const canPet = (now - lastPetTime >= 30 * 60 * 1000) && loveVal < 300;
-  const aura = getAuraConfig(loveVal);
+    React.useEffect(() => {
+      if (pointerStateRef.current.longPressActive) return;
 
-  return (
-    <motion.div
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0, opacity: 0 }}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      className="absolute p-2 group"
-      style={{
-        left: `${pa.x}%`,
-        top: `${pa.y}%`,
-        x: "-50%",
-        y: "-50%",
-      }}
-    >
-      <div className="relative group/animal">
-        {/* Thought Bubble with heart if animal can be pet */}
-        {canPet && (
-          <div className="absolute -top-6 -left-3.5 z-30 pointer-events-none animate-pulse">
-            <div className="relative bg-white text-slate-800 text-[10px] px-1.5 py-0.5 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.3)] flex items-center justify-center border border-pink-100 font-bold min-w-[24px] h-6 select-none">
-              ❤️
-              {/* Tail circles for thought bubble pointing to animal */}
-              <div className="absolute -bottom-0.5 right-1.5 w-1.5 h-1.5 bg-white rounded-full border border-pink-100/50" />
-              <div className="absolute -bottom-1.5 right-1 w-1 h-1 bg-white rounded-full border border-pink-100/50" />
+      pointerStateRef.current.originX = pa.x;
+      pointerStateRef.current.originY = pa.y;
+      pointerStateRef.current.currentX = pa.x;
+      pointerStateRef.current.currentY = pa.y;
+      setRenderPos({ x: pa.x, y: pa.y });
+    }, [pa.x, pa.y]);
+
+    React.useEffect(() => {
+      let intervalId: number | null = null;
+      const timeoutIds: number[] = [];
+      const walkFrames = def?.walkFrames ?? 6;
+
+      if (animationPhase === "walking") {
+        setFrameRow(0);
+        setFrameIndex((prev) => prev % walkFrames);
+        intervalId = window.setInterval(() => {
+          setFrameIndex((prev) => (prev + 1) % walkFrames);
+        }, WALK_FRAME_MS);
+      } else if (animationPhase === "pickup") {
+        setFrameRow(1);
+        setFrameIndex(0);
+        [1, 2, 3].forEach((nextFrame, idx) => {
+          timeoutIds.push(
+            window.setTimeout(() => setFrameIndex(nextFrame), (idx + 1) * PICKUP_FRAME_MS),
+          );
+        });
+        timeoutIds.push(window.setTimeout(() => setAnimationPhase("held"), 4 * PICKUP_FRAME_MS));
+      } else if (animationPhase === "held") {
+        setFrameRow(1);
+        setFrameIndex(4);
+        intervalId = window.setInterval(() => {
+          setFrameIndex((prev) => (prev === 4 ? 5 : 4));
+        }, HELD_FRAME_MS);
+      } else {
+        setFrameRow(1);
+        setFrameIndex(3);
+        [2, 1, 0].forEach((nextFrame, idx) => {
+          timeoutIds.push(
+            window.setTimeout(() => setFrameIndex(nextFrame), (idx + 1) * DROP_FRAME_MS),
+          );
+        });
+        timeoutIds.push(window.setTimeout(() => setAnimationPhase("walking"), 4 * DROP_FRAME_MS));
+      }
+
+      return () => {
+        if (intervalId !== null) window.clearInterval(intervalId);
+        timeoutIds.forEach((id) => window.clearTimeout(id));
+      };
+    }, [animationPhase, def?.walkFrames]);
+
+    React.useEffect(() => {
+      return () => {
+        if (holdTimeoutRef.current !== null) {
+          window.clearTimeout(holdTimeoutRef.current);
+        }
+      };
+    }, []);
+
+    const clearHoldTimeout = useCallback(() => {
+      if (holdTimeoutRef.current !== null) {
+        window.clearTimeout(holdTimeoutRef.current);
+        holdTimeoutRef.current = null;
+      }
+    }, []);
+
+    const releasePointer = useCallback(() => {
+      const node = dragHandleRef.current;
+      const pointerId = pointerStateRef.current.pointerId;
+      if (node && pointerId >= 0 && node.hasPointerCapture?.(pointerId)) {
+        node.releasePointerCapture(pointerId);
+      }
+      pointerStateRef.current.pointerId = -1;
+    }, []);
+
+    const finishInteraction = useCallback(
+      (commitMove: boolean) => {
+        clearHoldTimeout();
+
+        const pointerState = pointerStateRef.current;
+        const wasDragging = pointerState.longPressActive;
+
+        if (wasDragging && commitMove) {
+          const result = onDragCommit(pa.id, pointerState.currentX, pointerState.currentY);
+          setRenderPos({ x: result.x, y: result.y });
+          pointerState.originX = result.x;
+          pointerState.originY = result.y;
+          pointerState.currentX = result.x;
+          pointerState.currentY = result.y;
+          setAnimationPhase("drop");
+        } else if (wasDragging) {
+          setRenderPos({ x: pointerState.originX, y: pointerState.originY });
+          pointerState.currentX = pointerState.originX;
+          pointerState.currentY = pointerState.originY;
+          setAnimationPhase("drop");
+        }
+
+        suppressClickRef.current = wasDragging || pointerState.cancelTap;
+        pointerState.longPressActive = false;
+        pointerState.cancelTap = false;
+        releasePointer();
+      },
+      [clearHoldTimeout, onDragCommit, pa.id, releasePointer],
+    );
+
+    const handlePointerDown = useCallback(
+      (e: React.PointerEvent<HTMLDivElement>) => {
+        if (e.button !== 0) return;
+
+        e.stopPropagation();
+        e.preventDefault();
+
+        const pointerState = pointerStateRef.current;
+        const pointerId = e.pointerId ?? 0;
+        pointerState.pointerId = pointerId;
+        pointerState.originX = renderPos.x;
+        pointerState.originY = renderPos.y;
+        pointerState.currentX = renderPos.x;
+        pointerState.currentY = renderPos.y;
+        pointerState.startClientX = e.clientX;
+        pointerState.startClientY = e.clientY;
+        pointerState.longPressActive = false;
+        pointerState.cancelTap = false;
+
+        e.currentTarget.setPointerCapture?.(pointerId);
+        clearHoldTimeout();
+        holdTimeoutRef.current = window.setTimeout(() => {
+          pointerStateRef.current.longPressActive = true;
+          suppressClickRef.current = true;
+          setAnimationPhase("pickup");
+        }, LONG_PRESS_MS);
+      },
+      [clearHoldTimeout, renderPos.x, renderPos.y],
+    );
+
+    const handlePointerMove = useCallback(
+      (e: React.PointerEvent<HTMLDivElement>) => {
+        const pointerState = pointerStateRef.current;
+        const pointerId = e.pointerId ?? pointerState.pointerId;
+        if (pointerState.pointerId !== pointerId) return;
+
+        e.stopPropagation();
+        e.preventDefault();
+
+        const dx = e.clientX - pointerState.startClientX;
+        const dy = e.clientY - pointerState.startClientY;
+
+        if (!pointerState.longPressActive) {
+          if (Math.hypot(dx, dy) > MOVE_CANCEL_TAP_PX) {
+            pointerState.cancelTap = true;
+            clearHoldTimeout();
+          }
+          return;
+        }
+
+        const landscape = landscapeRef.current;
+        if (!landscape) return;
+
+        const rect = landscape.getBoundingClientRect();
+        if (rect.width <= 0 || rect.height <= 0) return;
+
+        const nextX = clampPercent(
+          pointerState.originX + (dx / rect.width) * 100,
+          POSITION_PADDING_X,
+          100 - POSITION_PADDING_X,
+        );
+        const nextY = clampPercent(
+          pointerState.originY + (dy / rect.height) * 100,
+          POSITION_PADDING_Y,
+          100 - POSITION_PADDING_Y,
+        );
+
+        pointerState.currentX = nextX;
+        pointerState.currentY = nextY;
+        setRenderPos({ x: nextX, y: nextY });
+      },
+      [clearHoldTimeout, landscapeRef],
+    );
+
+    const handlePointerUp = useCallback(
+      (e: React.PointerEvent<HTMLDivElement>) => {
+        const pointerState = pointerStateRef.current;
+        const pointerId = e.pointerId ?? pointerState.pointerId;
+        if (pointerState.pointerId !== pointerId) return;
+
+        e.stopPropagation();
+        e.preventDefault();
+        finishInteraction(true);
+      },
+      [finishInteraction],
+    );
+
+    const handlePointerCancel = useCallback(
+      (e: React.PointerEvent<HTMLDivElement>) => {
+        const pointerState = pointerStateRef.current;
+        const pointerId = e.pointerId ?? pointerState.pointerId;
+        if (pointerState.pointerId !== pointerId) return;
+
+        e.stopPropagation();
+        e.preventDefault();
+        finishInteraction(false);
+      },
+      [finishInteraction],
+    );
+
+    const handleClick = useCallback(
+      (e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation();
+
+        if (suppressClickRef.current) {
+          suppressClickRef.current = false;
+          return;
+        }
+
+        onPet(pa.animalId, pa.x, pa.y);
+      },
+      [onPet, pa.animalId, pa.x, pa.y],
+    );
+
+    const canPet = now - lastPetTime >= 30 * 60 * 1000 && loveVal < 300;
+    const aura = getAuraConfig(loveVal);
+    const isLifted = animationPhase !== "walking";
+
+    return (
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0, opacity: 0 }}
+        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+        className="absolute p-2 group"
+        style={{
+          left: `${renderPos.x}%`,
+          top: `${renderPos.y}%`,
+          x: "-50%",
+          y: "-50%",
+          zIndex: isLifted ? 35 : 10,
+        }}
+      >
+        <div className="relative group/animal">
+          {/* Thought Bubble with heart if animal can be pet */}
+          {canPet && (
+            <div className="absolute -top-6 -left-3.5 z-30 pointer-events-none animate-pulse">
+              <div className="relative bg-white text-slate-800 text-[10px] px-1.5 py-0.5 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.3)] flex items-center justify-center border border-pink-100 font-bold min-w-[24px] h-6 select-none">
+                ❤️
+                {/* Tail circles for thought bubble pointing to animal */}
+                <div className="absolute -bottom-0.5 right-1.5 w-1.5 h-1.5 bg-white rounded-full border border-pink-100/50" />
+                <div className="absolute -bottom-1.5 right-1 w-1 h-1 bg-white rounded-full border border-pink-100/50" />
+              </div>
+            </div>
+          )}
+          {/* Floating animation wrapper with petting interaction */}
+          <div
+            ref={dragHandleRef}
+            onClick={handleClick}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerCancel}
+            onContextMenu={(e) => e.preventDefault()}
+            className={`cursor-pointer relative z-10 ${isLifted ? "" : "animate-bounce"}`}
+            style={{ animationDuration: "2.5s", touchAction: "none" }}
+            title="Streicheln ❤️"
+          >
+            {/* Faint Aura Backdrop pulsing behind, bouncing with the animal */}
+            {aura && (
+              <div
+                className={`absolute -inset-4 rounded-full select-none pointer-events-none transition-all duration-1000 animate-pulse ${aura.classes}`}
+                style={{ animationDuration: "3s" }}
+              />
+            )}
+
+            <div
+              className={`p-1.5 duration-150 transition-all relative z-10 ${isLifted ? "scale-110" : "hover:scale-110 active:scale-95"}`}
+            >
+              <SpriteAnimalImage
+                animal={def}
+                frameRow={frameRow}
+                frameIndex={frameIndex}
+                emoji={def?.emoji || "🐾"}
+                sizeClassName="w-12 h-12 md:w-16 md:h-16 object-contain pointer-events-none select-none"
+                emojiSizeClassName="text-3xl md:text-5xl pointer-events-none select-none"
+              />
             </div>
           </div>
-        )}
-        {/* Floating animation wrapper with petting interaction */}
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            onPet(pa.animalId, pa.x, pa.y);
-          }}
-          className="animate-bounce cursor-pointer relative z-10"
-          style={{ animationDuration: "2.5s" }}
-          title="Streicheln ❤️"
-        >
-          {/* Faint Aura Backdrop pulsing behind, bouncing with the animal */}
-          {aura && (
-            <div
-              className={`absolute -inset-4 rounded-full select-none pointer-events-none transition-all duration-1000 animate-pulse ${aura.classes}`}
-              style={{ animationDuration: "3s" }}
-            />
-          )}
 
-          <div
-            className="p-1.5 hover:scale-110 active:scale-95 duration-150 transition-all relative z-10"
-          >
-            <AnimalImage
-              image={def?.image}
-              emoji={def?.emoji || "🐾"}
-              sizeClassName="w-12 h-12 md:w-16 md:h-16 object-contain pointer-events-none select-none"
-              emojiSizeClassName="text-3xl md:text-5xl pointer-events-none select-none"
-            />
+          {/* Tooltip on hover showing animal name + love */}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2.5 py-1 bg-slate-950/90 text-[10px] text-pink-200 font-bold rounded-lg border border-pink-500/15 opacity-0 group-hover/animal:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-30 select-none shadow-md">
+            {def?.germanName || "Tier"} (❤️ {loveVal})
           </div>
-        </div>
 
-        {/* Tooltip on hover showing animal name + love */}
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2.5 py-1 bg-slate-950/90 text-[10px] text-pink-200 font-bold rounded-lg border border-pink-500/15 opacity-0 group-hover/animal:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-30 select-none shadow-md">
-          {def?.germanName || "Tier"} (❤️ {loveVal})
+          {/* Simple clear-cut deletion badge hover bubble */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove(pa.id);
+            }}
+            className="absolute -top-2 -right-2 bg-red-500/95 hover:bg-red-600 border border-white text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center opacity-100 sm:opacity-0 group-hover/animal:opacity-100 transition-opacity duration-150 shadow-md cursor-pointer z-20"
+            title="Tier entfernen"
+          >
+            ✕
+          </button>
         </div>
-
-        {/* Simple clear-cut deletion badge hover bubble */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemove(pa.id);
-          }}
-          className="absolute -top-2 -right-2 bg-red-500/95 hover:bg-red-600 border border-white text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center opacity-100 sm:opacity-0 group-hover/animal:opacity-100 transition-opacity duration-150 shadow-md cursor-pointer z-20"
-          title="Tier entfernen"
-        >
-          ✕
-        </button>
-      </div>
-    </motion.div>
-  );
-});
+      </motion.div>
+    );
+  },
+);
 
 PlacedAnimalItem.displayName = "PlacedAnimalItem";
 
@@ -254,115 +576,137 @@ interface FeedBowlComponentProps {
   spawnLocalHeart: (x: number, y: number) => void;
 }
 
-const FeedBowlComponent = React.memo<FeedBowlComponentProps>(({
-  bowlLastFed,
-  onUpdateBowlLastFed,
-  onUpdateBowlFedMinutesCredited,
-  onTriggerError,
-  spawnLocalHeart,
-}) => {
-  const [localTick, setLocalTick] = useState(0);
+const FeedBowlComponent = React.memo<FeedBowlComponentProps>(
+  ({
+    bowlLastFed,
+    onUpdateBowlLastFed,
+    onUpdateBowlFedMinutesCredited,
+    onTriggerError,
+    spawnLocalHeart,
+  }) => {
+    const [localTick, setLocalTick] = useState(0);
 
-  React.useEffect(() => {
+    React.useEffect(() => {
+      const elapsedMsSinceFeed = Date.now() - bowlLastFed;
+      const isVoll = elapsedMsSinceFeed < 25 * 60 * 1000;
+      const hasCooldown = elapsedMsSinceFeed < 30 * 60 * 1000;
+
+      // Only set interval if we are active or in cooldown to save resources
+      if (!isVoll && !hasCooldown) return;
+
+      const t = setInterval(() => setLocalTick((prev) => prev + 1), 1000);
+      return () => clearInterval(t);
+    }, [bowlLastFed]);
+
     const elapsedMsSinceFeed = Date.now() - bowlLastFed;
     const isVoll = elapsedMsSinceFeed < 25 * 60 * 1000;
     const hasCooldown = elapsedMsSinceFeed < 30 * 60 * 1000;
 
-    // Only set interval if we are active or in cooldown to save resources
-    if (!isVoll && !hasCooldown) return;
+    let bowlTooltip = "";
+    if (isVoll) {
+      const remainingMs = 25 * 60 * 1000 - elapsedMsSinceFeed;
+      const mins = Math.floor(remainingMs / 60000);
+      const secs = Math.floor((remainingMs % 60000) / 1000);
+      bowlTooltip = `Tiere fressen... 😋 (Voll für ${mins}m ${secs}s)`;
+    } else if (hasCooldown) {
+      const remainingMs = 30 * 60 * 1000 - elapsedMsSinceFeed;
+      const mins = Math.floor(remainingMs / 60000);
+      const secs = Math.floor((remainingMs % 60000) / 1000);
+      bowlTooltip = `Kuschelpause ⏱️ (Bereit in ${mins}m ${secs}s)`;
+    } else {
+      bowlTooltip = "Klicke den Futternapf an, um die Tiere zu füttern! 🍲 (+1 Liebe pro Minute)";
+    }
 
-    const t = setInterval(() => setLocalTick((prev) => prev + 1), 1000);
-    return () => clearInterval(t);
-  }, [bowlLastFed]);
-
-  const elapsedMsSinceFeed = Date.now() - bowlLastFed;
-  const isVoll = elapsedMsSinceFeed < 25 * 60 * 1000;
-  const hasCooldown = elapsedMsSinceFeed < 30 * 60 * 1000;
-
-  let bowlTooltip = "";
-  if (isVoll) {
-    const remainingMs = 25 * 60 * 1000 - elapsedMsSinceFeed;
-    const mins = Math.floor(remainingMs / 60000);
-    const secs = Math.floor((remainingMs % 60000) / 1000);
-    bowlTooltip = `Tiere fressen... 😋 (Voll für ${mins}m ${secs}s)`;
-  } else if (hasCooldown) {
-    const remainingMs = 30 * 60 * 1000 - elapsedMsSinceFeed;
-    const mins = Math.floor(remainingMs / 60000);
-    const secs = Math.floor((remainingMs % 60000) / 1000);
-    bowlTooltip = `Kuschelpause ⏱️ (Bereit in ${mins}m ${secs}s)`;
-  } else {
-    bowlTooltip = "Klicke den Futternapf an, um die Tiere zu füttern! 🍲 (+1 Liebe pro Minute)";
-  }
-
-  const handleFeedBowlClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const currentNow = Date.now();
-    const elapsed = currentNow - bowlLastFed;
-    if (elapsed < 30 * 60 * 1000) {
-      if (elapsed < 25 * 60 * 1000) {
-        onTriggerError("Die Tiere fressen bereits genüsslich! 🍲");
-      } else {
-        const remainingMs = 30 * 60 * 1000 - elapsed;
-        const mins = Math.floor(remainingMs / 60000);
-        const secs = Math.floor((remainingMs % 60000) / 1000);
-        onTriggerError(`Kuschelpause! Der Napf kann erst in ${mins}m ${secs}s wieder befüllt werden.`);
+    const handleFeedBowlClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      const currentNow = Date.now();
+      const elapsed = currentNow - bowlLastFed;
+      if (elapsed < 30 * 60 * 1000) {
+        if (elapsed < 25 * 60 * 1000) {
+          onTriggerError("Die Tiere fressen bereits genüsslich! 🍲");
+        } else {
+          const remainingMs = 30 * 60 * 1000 - elapsed;
+          const mins = Math.floor(remainingMs / 60000);
+          const secs = Math.floor((remainingMs % 60000) / 1000);
+          onTriggerError(
+            `Kuschelpause! Der Napf kann erst in ${mins}m ${secs}s wieder befüllt werden.`,
+          );
+        }
+        return;
       }
-      return;
-    }
 
-    if (onUpdateBowlLastFed) {
-      onUpdateBowlLastFed(currentNow);
-    }
-    if (onUpdateBowlFedMinutesCredited) {
-      onUpdateBowlFedMinutesCredited(0);
-    }
+      if (onUpdateBowlLastFed) {
+        onUpdateBowlLastFed(currentNow);
+      }
+      if (onUpdateBowlFedMinutesCredited) {
+        onUpdateBowlFedMinutesCredited(0);
+      }
 
-    playPop();
+      playPop();
 
-    // Spawn floating food emojis/hearts
-    for (let i = 0; i < 5; i++) {
-      setTimeout(() => {
-        spawnLocalHeart(50, 80 + Math.random() * 5);
-      }, i * 150);
-    }
-  };
+      // Spawn floating food emojis/hearts
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          spawnLocalHeart(50, 80 + Math.random() * 5);
+        }, i * 150);
+      }
+    };
 
-  return (
-    <div
-      onClick={handleFeedBowlClick}
-      className="absolute group/bowl select-none z-30 cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95"
-      style={{ left: "50%", top: "78%", transform: "translate(-50%, -50%)" }}
-    >
-      <div className="relative">
-        {!hasCooldown && (
-          <div className="absolute -inset-2 bg-pink-500/20 rounded-full blur animate-ping" style={{ animationDuration: "2s" }} />
-        )}
-        {isVoll && (
-          <div className="absolute -inset-1 bg-emerald-500/10 rounded-full blur animate-pulse" style={{ animationDuration: "1.5s" }} />
-        )}
+    return (
+      <div
+        onClick={handleFeedBowlClick}
+        className="absolute group/bowl select-none z-30 cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95"
+        style={{ left: "50%", top: "78%", transform: "translate(-50%, -50%)" }}
+      >
+        <div className="relative">
+          {!hasCooldown && (
+            <div
+              className="absolute -inset-2 bg-pink-500/20 rounded-full blur animate-ping"
+              style={{ animationDuration: "2s" }}
+            />
+          )}
+          {isVoll && (
+            <div
+              className="absolute -inset-1 bg-emerald-500/10 rounded-full blur animate-pulse"
+              style={{ animationDuration: "1.5s" }}
+            />
+          )}
 
-        <img
-          src={isVoll ? "/assets/stuff/futternapf_voll.png" : "/assets/stuff/futternapf_leer.png"}
-          alt="Futternapf"
-          className="w-14 h-14 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]"
-          referrerPolicy="no-referrer"
-        />
+          <img
+            src={isVoll ? "/assets/stuff/futternapf_voll.png" : "/assets/stuff/futternapf_leer.png"}
+            alt="Futternapf"
+            className="w-14 h-14 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]"
+            referrerPolicy="no-referrer"
+          />
 
-        <div className={`absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] text-white border border-white/20 shadow-md ${
-          isVoll ? "bg-emerald-500" : hasCooldown ? "bg-amber-500 animate-pulse" : "bg-indigo-600"
-        }`}>
-          {isVoll ? "🍲" : hasCooldown ? "⏱️" : "✨"}
-        </div>
+          <div
+            className={`absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] text-white border border-white/20 shadow-md ${
+              isVoll
+                ? "bg-emerald-500"
+                : hasCooldown
+                  ? "bg-amber-500 animate-pulse"
+                  : "bg-indigo-600"
+            }`}
+          >
+            {isVoll ? "🍲" : hasCooldown ? "⏱️" : "✨"}
+          </div>
 
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-slate-950/95 text-slate-100 text-[10px] font-bold rounded-xl border border-slate-800/80 shadow-xl opacity-0 group-hover/bowl:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-50 flex flex-col items-center gap-0.5 select-none text-center">
-          <span className="text-pink-300 font-extrabold uppercase tracking-wide text-[9px]">🥕 Tier-Fütterung 🥕</span>
-          <span className="text-white text-[10px]">{bowlTooltip}</span>
-          {!hasCooldown && <span className="text-indigo-300 text-[8px] font-medium font-mono uppercase mt-0.5">Bereit zum Füttern!</span>}
+          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-slate-950/95 text-slate-100 text-[10px] font-bold rounded-xl border border-slate-800/80 shadow-xl opacity-0 group-hover/bowl:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-50 flex flex-col items-center gap-0.5 select-none text-center">
+            <span className="text-pink-300 font-extrabold uppercase tracking-wide text-[9px]">
+              🥕 Tier-Fütterung 🥕
+            </span>
+            <span className="text-white text-[10px]">{bowlTooltip}</span>
+            {!hasCooldown && (
+              <span className="text-indigo-300 text-[8px] font-medium font-mono uppercase mt-0.5">
+                Bereit zum Füttern!
+              </span>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  },
+);
 
 FeedBowlComponent.displayName = "FeedBowlComponent";
 
@@ -376,58 +720,59 @@ interface PurchasedAnimalCardProps {
   onSelect: (id: string) => void;
 }
 
-const PurchasedAnimalCard = React.memo<PurchasedAnimalCardProps>(({
-  def,
-  owned,
-  placed,
-  isGehegeFull,
-  isSelected,
-  onSelect,
-}) => {
-  const available = owned - colCountSafe(placed);
-  const isFullyPlaced = available <= 0;
+const PurchasedAnimalCard = React.memo<PurchasedAnimalCardProps>(
+  ({ def, owned, placed, isGehegeFull, isSelected, onSelect }) => {
+    const available = owned - colCountSafe(placed);
+    const isFullyPlaced = available <= 0;
 
-  return (
-    <div
-      className={`p-3 rounded-2xl border transition-all flex flex-col justify-between items-center text-center gap-2 bg-slate-950/40 ${
-        isSelected
-          ? "border-indigo-500 bg-indigo-500/10 shadow-[0_0_12px_rgba(99,102,241,0.2)]"
-          : "border-slate-800 hover:border-slate-700"
-      }`}
-    >
-      <div className="flex flex-col items-center">
-        <AnimalImage
-          image={def.image}
-          emoji={def.emoji}
-          sizeClassName="w-10 h-10 object-contain pointer-events-none select-none"
-          emojiSizeClassName="text-2xl pointer-events-none select-none"
-        />
-        <span className="text-xs font-black text-slate-200 mt-1.5 truncate max-w-[120px]">
-          {def.germanName || def.name}
-        </span>
-        <span className="text-[10px] font-mono font-bold text-slate-400 mt-0.5">
-          {placed} / {owned} Platziert
-        </span>
-      </div>
-
-      <button
-        disabled={isFullyPlaced || isGehegeFull}
-        onClick={() => onSelect(def.id)}
-        className={`w-full py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-150 cursor-pointer ${
-          isFullyPlaced
-            ? "bg-slate-800 text-slate-500 border border-slate-800 cursor-not-allowed"
-            : isGehegeFull
-            ? "bg-amber-950/40 text-amber-500/80 border border-amber-900/40 cursor-not-allowed"
-            : isSelected
-            ? "bg-indigo-500 text-white border border-indigo-400 animate-pulse"
-            : "bg-indigo-600/30 hover:bg-indigo-600 text-indigo-200 hover:text-white border border-indigo-500/20"
+    return (
+      <div
+        className={`p-3 rounded-2xl border transition-all flex flex-col justify-between items-center text-center gap-2 bg-slate-950/40 ${
+          isSelected
+            ? "border-indigo-500 bg-indigo-500/10 shadow-[0_0_12px_rgba(99,102,241,0.2)]"
+            : "border-slate-800 hover:border-slate-700"
         }`}
       >
-        {isFullyPlaced ? "Vollständig" : isGehegeFull ? "Gehege voll" : isSelected ? "Bereit..." : "Platzieren"}
-      </button>
-    </div>
-  );
-});
+        <div className="flex flex-col items-center">
+          <AnimalImage
+            image={def.image}
+            emoji={def.emoji}
+            sizeClassName="w-10 h-10 object-contain pointer-events-none select-none"
+            emojiSizeClassName="text-2xl pointer-events-none select-none"
+          />
+          <span className="text-xs font-black text-slate-200 mt-1.5 truncate max-w-[120px]">
+            {def.germanName || def.name}
+          </span>
+          <span className="text-[10px] font-mono font-bold text-slate-400 mt-0.5">
+            {placed} / {owned} Platziert
+          </span>
+        </div>
+
+        <button
+          disabled={isFullyPlaced || isGehegeFull}
+          onClick={() => onSelect(def.id)}
+          className={`w-full py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-150 cursor-pointer ${
+            isFullyPlaced
+              ? "bg-slate-800 text-slate-500 border border-slate-800 cursor-not-allowed"
+              : isGehegeFull
+                ? "bg-amber-950/40 text-amber-500/80 border border-amber-900/40 cursor-not-allowed"
+                : isSelected
+                  ? "bg-indigo-500 text-white border border-indigo-400 animate-pulse"
+                  : "bg-indigo-600/30 hover:bg-indigo-600 text-indigo-200 hover:text-white border border-indigo-500/20"
+          }`}
+        >
+          {isFullyPlaced
+            ? "Vollständig"
+            : isGehegeFull
+              ? "Gehege voll"
+              : isSelected
+                ? "Bereit..."
+                : "Platzieren"}
+        </button>
+      </div>
+    );
+  },
+);
 
 PurchasedAnimalCard.displayName = "PurchasedAnimalCard";
 
@@ -438,11 +783,7 @@ interface LoveGalleryCardProps {
   lastPetTime: number;
 }
 
-const LoveGalleryCard = React.memo<LoveGalleryCardProps>(({
-  def,
-  loveVal,
-  lastPetTime,
-}) => {
+const LoveGalleryCard = React.memo<LoveGalleryCardProps>(({ def, loveVal, lastPetTime }) => {
   const [localTick, setLocalTick] = useState(0);
 
   React.useEffect(() => {
@@ -495,7 +836,9 @@ const LoveGalleryCard = React.memo<LoveGalleryCardProps>(({
 
         <div className="flex items-center gap-1 text-[11px] font-black text-pink-300">
           <span className="animate-bounce">❤️</span>
-          <span>{loveVal} <span className="text-slate-500 font-normal">/ 300</span></span>
+          <span>
+            {loveVal} <span className="text-slate-500 font-normal">/ 300</span>
+          </span>
         </div>
 
         <div className="w-full bg-slate-900/90 border border-slate-800 rounded-full h-2 overflow-hidden mt-1 shadow-inner">
@@ -506,12 +849,17 @@ const LoveGalleryCard = React.memo<LoveGalleryCardProps>(({
         </div>
 
         <p className="text-[9px] font-bold text-slate-400 mt-1.5 uppercase tracking-wider">
-          Aura: <span className={aura ? "text-amber-400" : "text-slate-500"}>{aura ? aura.name : "Keine Aura"}</span>
+          Aura:{" "}
+          <span className={aura ? "text-amber-400" : "text-slate-500"}>
+            {aura ? aura.name : "Keine Aura"}
+          </span>
         </p>
 
-        <span className={`text-[8px] font-mono font-bold uppercase tracking-wider mt-1.5 px-2 py-0.5 rounded-md ${
-          hasCooldown ? "bg-slate-800 text-slate-400" : "bg-emerald-500/10 text-emerald-400"
-        }`}>
+        <span
+          className={`text-[8px] font-mono font-bold uppercase tracking-wider mt-1.5 px-2 py-0.5 rounded-md ${
+            hasCooldown ? "bg-slate-800 text-slate-400" : "bg-emerald-500/10 text-emerald-400"
+          }`}
+        >
           {cooldownText}
         </span>
       </div>
@@ -617,39 +965,44 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
 
   const placingAnimalDef = placingAnimalId ? animalMap[placingAnimalId] : null;
 
-  const handlePetPlaced = useCallback((animalId: string, xPercent: number, yPercent: number) => {
-    const lastPet = animalLastPetRef.current[animalId] || 0;
-    const now = Date.now();
-    const cooldownMs = 30 * 60 * 1000;
-    if (now - lastPet < cooldownMs) {
-      const diffMs = cooldownMs - (now - lastPet);
-      const minutes = Math.floor(diffMs / 60000);
-      const seconds = Math.floor((diffMs % 60000) / 1000);
-      const animalName = animalMapRef.current[animalId]?.germanName || "Dieses Tier";
-      triggerError(`${animalName} hat genug Streicheleinheiten! Warte noch ${minutes}m ${seconds}s.`);
-      return;
-    }
+  const handlePetPlaced = useCallback(
+    (animalId: string, xPercent: number, yPercent: number) => {
+      const lastPet = animalLastPetRef.current[animalId] || 0;
+      const now = Date.now();
+      const cooldownMs = 30 * 60 * 1000;
+      if (now - lastPet < cooldownMs) {
+        const diffMs = cooldownMs - (now - lastPet);
+        const minutes = Math.floor(diffMs / 60000);
+        const seconds = Math.floor((diffMs % 60000) / 1000);
+        const animalName = animalMapRef.current[animalId]?.germanName || "Dieses Tier";
+        triggerError(
+          `${animalName} hat genug Streicheleinheiten! Warte noch ${minutes}m ${seconds}s.`,
+        );
+        return;
+      }
 
-    const currentLove = animalLoveRef.current[animalId] || 0;
-    if (currentLove >= 300) {
-      triggerError("Dieses Tier hat bereits das Maximum von 300 Liebe erreicht! ❤️🌟");
-      return;
-    }
+      const currentLove = animalLoveRef.current[animalId] || 0;
+      if (currentLove >= 300) {
+        triggerError("Dieses Tier hat bereits das Maximum von 300 Liebe erreicht! ❤️🌟");
+        return;
+      }
 
-    if (onUpdateAnimalLove) {
-      const updatedLove = { ...animalLoveRef.current };
-      updatedLove[animalId] = Math.min(300, currentLove + 1);
-      onUpdateAnimalLove(updatedLove);
-    }
-    if (onUpdateAnimalLastPet) {
-      const updatedLastPet = { ...animalLastPetRef.current };
-      updatedLastPet[animalId] = now;
-      onUpdateAnimalLastPet(updatedLastPet);
-    }
+      if (onUpdateAnimalLove) {
+        const updatedLove = { ...animalLoveRef.current };
+        updatedLove[animalId] = Math.min(300, currentLove + 1);
+        onUpdateAnimalLove(updatedLove);
+      }
+      if (onUpdateAnimalLastPet) {
+        const updatedLastPet = { ...animalLastPetRef.current };
+        updatedLastPet[animalId] = now;
+        onUpdateAnimalLastPet(updatedLastPet);
+      }
 
-    playPop();
-    spawnLocalHeart(xPercent, yPercent);
-  }, [onUpdateAnimalLove, onUpdateAnimalLastPet, spawnLocalHeart, triggerError]);
+      playPop();
+      spawnLocalHeart(xPercent, yPercent);
+    },
+    [onUpdateAnimalLove, onUpdateAnimalLastPet, spawnLocalHeart, triggerError],
+  );
 
   const handleLandscapeClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!placingAnimalId || !landscapeRef.current) return;
@@ -666,10 +1019,9 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
 
     if (xPercent < 0 || xPercent > 100 || yPercent < 0 || yPercent > 100) return;
 
-    const distToBowlX = Math.abs(xPercent - 50);
-    const distToBowlY = Math.abs(yPercent - 78);
-    if (distToBowlX < 8 && distToBowlY < 10) {
-      triggerError("An dieser Stelle steht der Futternapf! Platziere das Tier woanders. 🍲");
+    const resolvedDrop = resolveGehegeDrop(xPercent, yPercent);
+    if (!resolvedDrop.accepted) {
+      triggerError(FEED_BOWL_BLOCKED_MESSAGE);
       return;
     }
 
@@ -684,8 +1036,8 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
     const newPlaced: PlacedAnimal = {
       id: `placed-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
       animalId: placingAnimalId,
-      x: xPercent,
-      y: yPercent,
+      x: resolvedDrop.x,
+      y: resolvedDrop.y,
     };
 
     const updated = [...placedAnimals, newPlaced];
@@ -696,10 +1048,27 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
     }
   };
 
-  const handleRemovePlaced = useCallback((id: string) => {
-    const updated = placedAnimalsRef.current.filter((pa) => pa.id !== id);
-    onUpdatePlacedAnimals(updated);
-  }, [onUpdatePlacedAnimals]);
+  const handleDragCommit = useCallback(
+    (id: string, xPercent: number, yPercent: number): GehegeDropResult => {
+      const dragCommit = commitGehegeDrag(placedAnimalsRef.current, id, xPercent, yPercent);
+      if (!dragCommit.accepted) {
+        triggerError(FEED_BOWL_BLOCKED_MESSAGE);
+        return dragCommit;
+      }
+
+      onUpdatePlacedAnimals(dragCommit.placedAnimals);
+      return dragCommit;
+    },
+    [onUpdatePlacedAnimals, triggerError],
+  );
+
+  const handleRemovePlaced = useCallback(
+    (id: string) => {
+      const updated = placedAnimalsRef.current.filter((pa) => pa.id !== id);
+      onUpdatePlacedAnimals(updated);
+    },
+    [onUpdatePlacedAnimals],
+  );
 
   const handleRecallAll = useCallback(() => {
     onUpdatePlacedAnimals([]);
@@ -720,13 +1089,17 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
       {/* Top Header Bar */}
       <header className="relative z-10 w-full bg-slate-900/90 border-b border-slate-800/80 px-4 py-3 md:px-6 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">
-          <span className="text-2xl select-none" id="gehege-title-emoji">🏡</span>
+          <span className="text-2xl select-none" id="gehege-title-emoji">
+            🏡
+          </span>
           <div>
             <h1 className="text-base md:text-lg font-black text-indigo-100 tracking-wide uppercase">
               Tier-Gehege
             </h1>
             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-              {isNight ? "🌙 Nacht-Phase active // Stars +50%" : "☀️ Tag-Phase active // Klicks +50%"}
+              {isNight
+                ? "🌙 Nacht-Phase active // Stars +50%"
+                : "☀️ Tag-Phase active // Klicks +50%"}
             </p>
           </div>
         </div>
@@ -760,7 +1133,9 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
           ref={landscapeRef}
           onClick={handleLandscapeClick}
           className={`relative w-full h-full max-w-5xl md:max-h-[80vh] md:rounded-3xl overflow-hidden shadow-2xl transition-all duration-150 ${
-            placingAnimalId ? "cursor-crosshair border-2 border-indigo-500" : "border border-slate-800"
+            placingAnimalId
+              ? "cursor-crosshair border-2 border-indigo-500"
+              : "border border-slate-800"
           }`}
           style={{ aspectRatio: "16/9" }}
         >
@@ -791,7 +1166,11 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
           {/* Background Landscape Picture */}
           <div className="absolute inset-0 select-none pointer-events-none">
             <img
-              src={isNight ? "/assets/stuff/gehegelandschaft_nacht.png" : "/assets/stuff/gehegelandschaft_tag.png"}
+              src={
+                isNight
+                  ? "/assets/stuff/gehegelandschaft_nacht.png"
+                  : "/assets/stuff/gehegelandschaft_tag.png"
+              }
               alt="Gehegelandschaft"
               className="w-full h-full object-cover transition-opacity duration-1000"
               referrerPolicy="no-referrer"
@@ -812,7 +1191,9 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
                   loveVal={loveVal}
                   lastPetTime={animalLastPet[pa.animalId] || 0}
                   isNight={isNight}
+                  landscapeRef={landscapeRef}
                   onPet={handlePetPlaced}
+                  onDragCommit={handleDragCommit}
                   onRemove={handleRemovePlaced}
                 />
               );
@@ -828,7 +1209,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
                 top: "78%",
                 width: "16%",
                 height: "20%",
-                animationDuration: "2s"
+                animationDuration: "2s",
               }}
             >
               <span className="text-[9px] text-rose-200 font-extrabold uppercase tracking-widest bg-slate-950/80 px-1.5 py-0.5 rounded-md border border-rose-500/20 shadow-sm">
@@ -867,9 +1248,12 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
           {placedAnimals.length === 0 && (
             <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center pointer-events-none select-none text-white/50 bg-black/30 backdrop-blur-xs p-6 rounded-2xl max-w-sm mx-auto border border-white/5 shadow">
               <span className="text-4xl mb-2">🐾</span>
-              <p className="text-sm font-black uppercase tracking-wide text-indigo-200">Dein Gehege ist leer</p>
+              <p className="text-sm font-black uppercase tracking-wide text-indigo-200">
+                Dein Gehege ist leer
+              </p>
               <p className="text-xs text-slate-300 mt-1">
-                Klicke unten auf <b className="text-white">„Tiere platzieren“</b>, um deine süßen Weggefährten hier frei herumlaufen zu lassen!
+                Klicke unten auf <b className="text-white">„Tiere platzieren“</b>, um deine süßen
+                Weggefährten hier frei herumlaufen zu lassen!
               </p>
             </div>
           )}
@@ -896,12 +1280,17 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
       <footer className="w-full bg-slate-900 border-t border-slate-800/85 px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-inner z-10">
         <div id="gehege-stats" className="flex items-center gap-4 text-xs font-mono text-slate-400">
           <div>
-            Platziert: <span className={`${placedAnimals.length >= 20 ? "text-amber-400 animate-pulse font-black" : "text-indigo-300 font-black"}`}>{placedAnimals.length} / 20</span>
+            Platziert:{" "}
+            <span
+              className={`${placedAnimals.length >= 20 ? "text-amber-400 animate-pulse font-black" : "text-indigo-300 font-black"}`}
+            >
+              {placedAnimals.length} / 20
+            </span>
           </div>
           <div>
             Besessen:{" "}
             <span className="text-indigo-300 font-black">
-              {Object.values(purchasedAnimals).reduce((a, b) => a + b, 0)}
+              {(Object.values(purchasedAnimals) as number[]).reduce((a, b) => a + b, 0)}
             </span>
           </div>
         </div>
@@ -965,7 +1354,9 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
               {placedAnimals.length >= 20 && (
                 <div className="mb-4 p-3 bg-amber-500/10 border border-amber-300/20 rounded-xl text-xs text-amber-200 font-bold flex items-center justify-between gap-2">
                   <span>⚠️ Maximale Anzahl von 20 platzierten Tieren im Gehege erreicht!</span>
-                  <span className="text-[10px] uppercase font-mono bg-amber-500/20 px-2 py-0.5 rounded-md text-amber-300 whitespace-nowrap">Gehege Voll</span>
+                  <span className="text-[10px] uppercase font-mono bg-amber-500/20 px-2 py-0.5 rounded-md text-amber-300 whitespace-nowrap">
+                    Gehege Voll
+                  </span>
                 </div>
               )}
 
@@ -1050,9 +1441,12 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
                 {purchasedList.length === 0 ? (
                   <div className="text-center py-12">
                     <span className="text-4xl">🌵</span>
-                    <p className="text-slate-400 font-extrabold uppercase text-xs mt-3">Keine Tiere besessen</p>
+                    <p className="text-slate-400 font-extrabold uppercase text-xs mt-3">
+                      Keine Tiere besessen
+                    </p>
                     <p className="text-slate-500 text-[11px] mt-1 max-w-xs mx-auto">
-                      Adoptiere zuerst liebevolle Begleiter über das „Tiere züchten“ Menü, um sie zu liebkosen!
+                      Adoptiere zuerst liebevolle Begleiter über das „Tiere züchten“ Menü, um sie zu
+                      liebkosen!
                     </p>
                   </div>
                 ) : (
@@ -1077,14 +1471,14 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
               {/* Tips footer */}
               <div className="p-4 bg-slate-950/40 border-t border-slate-800/80 text-center">
                 <p className="text-[9px] text-slate-400 font-semibold max-w-md mx-auto leading-normal">
-                  💡 <b>Tipp:</b> Um ein Tier zu streicheln, platziere es zuerst im Gehege und klicke es direkt mit der Maus/dem Finger an! Alle 30 Min steigt die Zuneigung.
+                  💡 <b>Tipp:</b> Um ein Tier zu streicheln, platziere es zuerst im Gehege und
+                  klicke es direkt mit der Maus/dem Finger an! Alle 30 Min steigt die Zuneigung.
                 </p>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
     </div>
   );
 };

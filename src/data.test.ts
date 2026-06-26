@@ -1,5 +1,12 @@
+import fs from "node:fs";
+import path from "node:path";
 import { describe, it, expect } from "vitest";
-import { calculateCost, formatCompactNumber, getPrestigeRequirement } from "./data";
+import {
+  INITIAL_ANIMALS,
+  calculateCost,
+  formatCompactNumber,
+  getPrestigeRequirement,
+} from "./data";
 
 describe("calculateCost", () => {
   it("returns baseCost when count is 0", () => {
@@ -74,5 +81,32 @@ describe("getPrestigeRequirement", () => {
     for (let i = 0; i < 5; i++) {
       expect(getPrestigeRequirement(i + 1)).toBeGreaterThan(getPrestigeRequirement(i));
     }
+  });
+});
+
+describe("animal sprite metadata", () => {
+  it("assigns animated gegehe spritesheets to every animal image", () => {
+    const imageAnimals = INITIAL_ANIMALS.filter((animal) => animal.image);
+
+    expect(imageAnimals).toHaveLength(50);
+
+    imageAnimals.forEach((animal) => {
+      expect(animal.sheetSrc).toBe(`/assets/animals/animated/${animal.id}.png`);
+      expect(animal.frameWidth).toBe(160);
+      expect(animal.frameHeight).toBe(160);
+      expect(animal.columns).toBe(6);
+      expect(animal.walkFrames).toBe(6);
+      expect(animal.liftFrames).toBe(6);
+
+      const assetPath = path.resolve(
+        process.cwd(),
+        "public",
+        "assets",
+        "animals",
+        "animated",
+        `${animal.id}.png`,
+      );
+      expect(fs.existsSync(assetPath)).toBe(true);
+    });
   });
 });

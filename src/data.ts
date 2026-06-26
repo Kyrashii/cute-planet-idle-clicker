@@ -1,6 +1,24 @@
 import { Animal } from "./types";
 
-export const INITIAL_ANIMALS: Animal[] = [
+const ANIMAL_SPRITE_META = {
+  frameWidth: 160,
+  frameHeight: 160,
+  columns: 6,
+  walkFrames: 6,
+  liftFrames: 6,
+} as const;
+
+function withAnimalSpriteMeta(animal: Animal): Animal {
+  if (!animal.image) return animal;
+
+  return {
+    ...animal,
+    ...ANIMAL_SPRITE_META,
+    sheetSrc: `/assets/animals/animated/${animal.id}.png`,
+  };
+}
+
+const RAW_INITIAL_ANIMALS: Animal[] = [
   {
     id: "bunny",
     name: "Wooly Bunny",
@@ -702,6 +720,8 @@ export const INITIAL_ANIMALS: Animal[] = [
     color: "bg-rose-50 text-rose-800 border-rose-300",
   },
 ];
+
+export const INITIAL_ANIMALS: Animal[] = RAW_INITIAL_ANIMALS.map(withAnimalSpriteMeta);
 
 export function calculateCost(baseCost: number, count: number, multiplier: number): number {
   return Math.floor(baseCost * Math.pow(multiplier, count));

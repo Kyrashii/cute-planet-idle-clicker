@@ -4,6 +4,12 @@ export interface Animal {
   germanName: string;
   emoji: string;
   image?: string;
+  sheetSrc?: string;
+  frameWidth?: number;
+  frameHeight?: number;
+  columns?: number;
+  walkFrames?: number;
+  liftFrames?: number;
   baseCost: number;
   costMultiplier: number;
   baseLps: number; // Life Per Second
