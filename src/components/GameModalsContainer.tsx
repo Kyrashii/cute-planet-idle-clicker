@@ -18,6 +18,7 @@ import { ZodiacModal } from "./modals/ZodiacModal";
 import { LeaderboardModal } from "./modals/LeaderboardModal";
 import { PrestigeModal } from "./modals/PrestigeModal";
 import type { FontScaleOption } from "../hooks/useDisplayPreferences";
+import type { AccountSwitchPrompt } from "../hooks/useFirebaseSync";
 
 import { INITIAL_ANIMALS, calculateCost } from "../data";
 
@@ -46,8 +47,7 @@ interface GameModalsContainerProps {
   setShowMusicSettingsModal: (show: boolean) => void;
   showCloudSyncModal: boolean;
   setShowCloudSyncModal: (show: boolean) => void;
-  showConflictDialog: boolean;
-  setShowConflictDialog: (show: boolean) => void;
+  accountSwitchPrompt: AccountSwitchPrompt | null;
   showMissionsModal: boolean;
   setShowMissionsModal: (show: boolean) => void;
   openingResult: any;
@@ -122,7 +122,8 @@ interface GameModalsContainerProps {
   logout: () => Promise<void>;
   cloudSaveFound: any;
   triggerCloudStateLoad: (data: any) => void;
-  forceLocalOverwriteCloud: () => void;
+  continueWithCurrentAccount: () => void;
+  adoptPreviousLocalSave: () => void;
   missionSetNumber: number;
   claimedMissionIds: string[];
   missionsCooldownEnd: number | null;
@@ -161,8 +162,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
     setShowMusicSettingsModal,
     showCloudSyncModal,
     setShowCloudSyncModal,
-    showConflictDialog,
-    setShowConflictDialog,
+    accountSwitchPrompt,
     showMissionsModal,
     setShowMissionsModal,
     openingResult,
@@ -228,7 +228,8 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
     logout,
     cloudSaveFound,
     triggerCloudStateLoad,
-    forceLocalOverwriteCloud,
+    continueWithCurrentAccount,
+    adoptPreviousLocalSave,
     missionSetNumber,
     claimedMissionIds,
     missionsCooldownEnd,
@@ -391,20 +392,17 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {showConflictDialog && (
+        {accountSwitchPrompt && (
           <SyncConflictDialog
-            isOpen={showConflictDialog}
-            cloudData={cloudSaveFound}
+            isOpen={Boolean(accountSwitchPrompt)}
+            mode="account-switch"
+            previousLocalSave={accountSwitchPrompt.previousLocalSave}
             purchasedUpgrades={purchasedUpgrades}
-            onKeepLocal={() => {
-              forceLocalOverwriteCloud();
-              setShowConflictDialog(false);
+            onKeepCurrentAccount={() => {
+              continueWithCurrentAccount();
             }}
-            onKeepCloud={() => {
-              if (cloudSaveFound) {
-                triggerCloudStateLoad(cloudSaveFound);
-              }
-              setShowConflictDialog(false);
+            onAdoptPreviousLocalSave={() => {
+              adoptPreviousLocalSave();
             }}
           />
         )}
