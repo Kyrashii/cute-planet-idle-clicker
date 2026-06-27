@@ -148,7 +148,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
                   <li className="flex items-start gap-2">
                     <span className="text-sky-305 mt-0.5">•</span>
                     <span>
-                      Automatisches Backup im Hintergrund alle 20 Sekunden und nach grossen
+                      Automatisches Backup im Hintergrund alle 60 Sekunden und nach grossen
                       Einkaeufen.
                     </span>
                   </li>

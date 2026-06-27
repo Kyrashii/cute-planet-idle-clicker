@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-const SAVE_KEY = "cute_planet_save";
+const SAVE_KEY = "cute_planet_save_guest";
 
 test.describe("cute planet smoke", () => {
   // Each test gets a fresh browser context, so localStorage already starts empty

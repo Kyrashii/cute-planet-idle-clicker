@@ -55,7 +55,15 @@ import { STATIC_UPGRADES } from "./data/upgrades";
 import { useFirebaseSync } from "./hooks/useFirebaseSync";
 import { Cloud, Trophy } from "lucide-react";
 import { calculateOfflineLps } from "./utils/offline";
-import { SAVE_KEY, migrateSave, withSaveVersion } from "./utils/persistence";
+import {
+  migrateLegacyGlobalSave,
+  migrateSave,
+  normalizeCloudTimestamp,
+  readSave,
+  removeSave,
+  writeMeta,
+  writeSave,
+} from "./utils/persistence";
 import { generateMissionsForSet } from "./data/missions";
 import { TutorialModal } from "./components/modals/TutorialModal";
 import { GalaxyVoyageModal } from "./components/modals/GalaxyVoyageModal";
@@ -113,16 +121,6 @@ export default function App() {
   const [cycleProgress, setCycleProgress] = useState<number>(0);
 
   // UI States
-  // Offline earnings (state + one-shot on-load check owned by the hook)
-  const {
-    offlineSeconds,
-    setOfflineSeconds,
-    offlineLpsRate,
-    setOfflineLpsRate,
-    offlineEarnedLife,
-    setOfflineEarnedLife,
-  } = useOfflineEarnings(isLoaded);
-
   // All modal / dialog / overlay visibility flags + simple openers
   const {
     showAnimalsModal,
@@ -540,64 +538,153 @@ export default function App() {
     loginWithGoogle,
     logout,
     cloudSaveFound,
-    showConflictDialog,
-    setShowConflictDialog,
+    accountSwitchPrompt,
+    continueWithCurrentAccount,
+    adoptPreviousLocalSave,
     saveStateToCloud,
-    forceLocalOverwriteCloud,
     triggerCloudStateLoad,
   } = useFirebaseSync();
+  const activeSaveOwnerId = user?.uid ?? null;
+  const currentSaveOwnerRef = useRef<string | null>(null);
+
+  // Offline earnings (state + one-shot on-load check owned by the hook)
+  const {
+    offlineSeconds,
+    setOfflineSeconds,
+    offlineLpsRate,
+    setOfflineLpsRate,
+    offlineEarnedLife,
+    setOfflineEarnedLife,
+  } = useOfflineEarnings(isLoaded, activeSaveOwnerId);
+
+  const resetHydratedClientState = useCallback(() => {
+    setPlacedAnimals([]);
+    setAnimalLove({});
+    setAnimalLastPet({});
+    setBowlLastFed(0);
+    setBowlFedMinutesCredited(0);
+    setUnlockedCosmetics([]);
+    setActiveStarColor("default");
+    setActiveAccessory("none");
+    setActiveFrame("default");
+    setActiveMoonSkin("default");
+    setShootingStarsCount(0);
+    setMissionSetNumber(1);
+    setClaimedMissionIds([]);
+    setMissionsCooldownEnd(null);
+    setMoonsCount(0);
+    setConstellations({});
+    setCraftedItems({});
+    setGlitterDust(0);
+    setCosmeticRarityLevels({});
+    setBlackHoleSize(1);
+    setActiveZodiacId("katze");
+    setGalaxyShards(0);
+    setZodiacLevels({});
+    setSlummerGlassLevel(1);
+    setCatalystLevel(0);
+    setDoubleStellarLevel(0);
+    setInGlitchGalaxy(false);
+    setGlitchPending(false);
+    setUnlockedGlitchGalaxy(false);
+    setSpentGalaxyShards(0);
+    setGlitchBenchmarks({});
+    setGlitchCooldown(0);
+  }, []);
+
+  const hydrateClientStateFromSave = useCallback(
+    (rawSave: Record<string, any> | null) => {
+      resetHydratedClientState();
+      if (!rawSave) {
+        return null;
+      }
+
+      if (rawSave.placedAnimals) setPlacedAnimals(rawSave.placedAnimals);
+      if (rawSave.animalLove) setAnimalLove(rawSave.animalLove);
+      if (rawSave.animalLastPet) setAnimalLastPet(rawSave.animalLastPet);
+      if (rawSave.bowlLastFed !== undefined) setBowlLastFed(rawSave.bowlLastFed);
+      if (rawSave.bowlFedMinutesCredited !== undefined)
+        setBowlFedMinutesCredited(rawSave.bowlFedMinutesCredited);
+      if (rawSave.unlockedCosmetics) setUnlockedCosmetics(rawSave.unlockedCosmetics);
+      if (rawSave.activeStarColor) setActiveStarColor(rawSave.activeStarColor);
+      if (rawSave.activeAccessory) setActiveAccessory(rawSave.activeAccessory);
+      if (rawSave.activeFrame) setActiveFrame(rawSave.activeFrame);
+      if (rawSave.activeMoonSkin) setActiveMoonSkin(rawSave.activeMoonSkin);
+      if (rawSave.shootingStarsCount !== undefined)
+        setShootingStarsCount(rawSave.shootingStarsCount);
+      if (rawSave.missionSetNumber !== undefined) setMissionSetNumber(rawSave.missionSetNumber);
+      if (rawSave.claimedMissionIds) setClaimedMissionIds(rawSave.claimedMissionIds);
+      if (rawSave.missionsCooldownEnd !== undefined)
+        setMissionsCooldownEnd(rawSave.missionsCooldownEnd);
+      if (rawSave.moonsCount !== undefined) setMoonsCount(rawSave.moonsCount);
+      if (rawSave.constellations) setConstellations(rawSave.constellations);
+      if (rawSave.craftedItems) setCraftedItems(rawSave.craftedItems);
+      if (rawSave.glitterDust !== undefined) setGlitterDust(rawSave.glitterDust);
+      if (rawSave.cosmeticRarityLevels) setCosmeticRarityLevels(rawSave.cosmeticRarityLevels);
+      if (rawSave.blackHoleSize !== undefined) setBlackHoleSize(rawSave.blackHoleSize || 1);
+      if (rawSave.zodiac !== undefined) setActiveZodiacId(rawSave.zodiac);
+      if (rawSave.galaxyShards !== undefined) setGalaxyShards(rawSave.galaxyShards || 0);
+      if (rawSave.zodiacLevels !== undefined) setZodiacLevels(rawSave.zodiacLevels || {});
+      if (rawSave.slummerGlassLevel !== undefined)
+        setSlummerGlassLevel(rawSave.slummerGlassLevel || 1);
+      if (rawSave.catalystLevel !== undefined) setCatalystLevel(rawSave.catalystLevel || 0);
+      if (rawSave.doubleStellarLevel !== undefined)
+        setDoubleStellarLevel(rawSave.doubleStellarLevel || 0);
+      if (rawSave.inGlitchGalaxy !== undefined) setInGlitchGalaxy(rawSave.inGlitchGalaxy);
+      if (rawSave.glitchPending !== undefined) setGlitchPending(rawSave.glitchPending);
+      if (rawSave.unlockedGlitchGalaxy !== undefined)
+        setUnlockedGlitchGalaxy(rawSave.unlockedGlitchGalaxy);
+      if (rawSave.spentGalaxyShards !== undefined)
+        setSpentGalaxyShards(rawSave.spentGalaxyShards || 0);
+      if (rawSave.glitchBenchmarks !== undefined) setGlitchBenchmarks(rawSave.glitchBenchmarks);
+      if (rawSave.glitchCooldown !== undefined) setGlitchCooldown(rawSave.glitchCooldown);
+
+      return rawSave;
+    },
+    [resetHydratedClientState],
+  );
+
+  const loadSaveIntoGame = useCallback(
+    (rawData: unknown, ownerId: string | null) => {
+      const savedState = migrateSave(rawData, ownerId);
+      const cloudUpdatedAt =
+        rawData && typeof rawData === "object" && !Array.isArray(rawData)
+          ? normalizeCloudTimestamp((rawData as Record<string, unknown>).updatedAt)
+          : null;
+      currentSaveOwnerRef.current = ownerId;
+      writeMeta({ activeOwnerId: ownerId });
+      hydrateClientStateFromSave(savedState);
+      setIsLoaded(false);
+
+      workerRef.current?.postMessage({
+        type: "INIT",
+        savedState,
+      });
+
+      if (savedState) {
+        writeSave(ownerId, {
+          ...savedState,
+          lastSavedAt: Number(savedState.lastSavedAt) || Date.now(),
+          lastCloudUpdatedAt:
+            cloudUpdatedAt ?? normalizeCloudTimestamp(savedState.lastCloudUpdatedAt),
+        });
+      }
+    },
+    [hydrateClientStateFromSave],
+  );
 
   useEffect(() => {
     const handleFirebaseLoad = (e: Event) => {
       const data = (e as CustomEvent).detail;
       if (data && workerRef.current) {
-        workerRef.current.postMessage({
-          type: "INIT",
-          savedState: migrateSave(data),
-        });
-        const fullSaveData = withSaveVersion({
-          ...data,
-          lastSavedAt: data.lastSavedAt || Date.now(),
-        });
-        localStorage.setItem(SAVE_KEY, JSON.stringify(fullSaveData));
-
-        // Hydrate Cosmetics & Missions
-        if (data.placedAnimals) setPlacedAnimals(data.placedAnimals);
-        if (data.animalLove) setAnimalLove(data.animalLove);
-        if (data.animalLastPet) setAnimalLastPet(data.animalLastPet);
-        if (data.bowlLastFed !== undefined) setBowlLastFed(data.bowlLastFed);
-        if (data.bowlFedMinutesCredited !== undefined)
-          setBowlFedMinutesCredited(data.bowlFedMinutesCredited);
-        if (data.unlockedCosmetics) setUnlockedCosmetics(data.unlockedCosmetics);
-        if (data.activeStarColor) setActiveStarColor(data.activeStarColor);
-        if (data.activeAccessory) setActiveAccessory(data.activeAccessory);
-        if (data.activeFrame) setActiveFrame(data.activeFrame);
-        if (data.activeMoonSkin) setActiveMoonSkin(data.activeMoonSkin);
-        if (data.shootingStarsCount !== undefined) setShootingStarsCount(data.shootingStarsCount);
-        if (data.missionSetNumber !== undefined) setMissionSetNumber(data.missionSetNumber);
-        if (data.claimedMissionIds) setClaimedMissionIds(data.claimedMissionIds);
-        if (data.missionsCooldownEnd !== undefined)
-          setMissionsCooldownEnd(data.missionsCooldownEnd);
-        if (data.moonsCount !== undefined) setMoonsCount(data.moonsCount);
-        if (data.constellations) setConstellations(data.constellations);
-        if (data.craftedItems) setCraftedItems(data.craftedItems);
-        if (data.glitterDust !== undefined) setGlitterDust(data.glitterDust);
-        if (data.cosmeticRarityLevels) setCosmeticRarityLevels(data.cosmeticRarityLevels);
-        if (data.blackHoleSize !== undefined) setBlackHoleSize(data.blackHoleSize || 1);
-        if (data.zodiac !== undefined) setActiveZodiacId(data.zodiac);
-        if (data.galaxyShards !== undefined) setGalaxyShards(data.galaxyShards || 0);
-        if (data.zodiacLevels !== undefined) setZodiacLevels(data.zodiacLevels || {});
-        if (data.slummerGlassLevel !== undefined) setSlummerGlassLevel(data.slummerGlassLevel || 1);
-        if (data.catalystLevel !== undefined) setCatalystLevel(data.catalystLevel || 0);
-        if (data.doubleStellarLevel !== undefined)
-          setDoubleStellarLevel(data.doubleStellarLevel || 0);
+        loadSaveIntoGame(data, currentSaveOwnerRef.current);
       }
     };
     window.addEventListener("firebase-load-state", handleFirebaseLoad);
     return () => {
       window.removeEventListener("firebase-load-state", handleFirebaseLoad);
     };
-  }, []);
+  }, [loadSaveIntoGame]);
 
   useEffect(() => {
     // Instantiate web worker
@@ -605,71 +692,6 @@ export default function App() {
       type: "module",
     });
     workerRef.current = worker;
-
-    // Load initial save from localStorage and hydrate worker state
-    let savedStateObj = null;
-    try {
-      const saved = localStorage.getItem(SAVE_KEY);
-      if (saved) {
-        savedStateObj = migrateSave(JSON.parse(saved));
-
-        // Hydrate local cosmetics
-        if (savedStateObj.unlockedCosmetics) setUnlockedCosmetics(savedStateObj.unlockedCosmetics);
-        if (savedStateObj.activeStarColor) setActiveStarColor(savedStateObj.activeStarColor);
-        if (savedStateObj.activeAccessory) setActiveAccessory(savedStateObj.activeAccessory);
-        if (savedStateObj.activeFrame) setActiveFrame(savedStateObj.activeFrame);
-        if (savedStateObj.activeMoonSkin) setActiveMoonSkin(savedStateObj.activeMoonSkin);
-        if (savedStateObj.shootingStarsCount !== undefined)
-          setShootingStarsCount(savedStateObj.shootingStarsCount);
-        if (savedStateObj.missionSetNumber !== undefined)
-          setMissionSetNumber(savedStateObj.missionSetNumber);
-        if (savedStateObj.claimedMissionIds) setClaimedMissionIds(savedStateObj.claimedMissionIds);
-        if (savedStateObj.missionsCooldownEnd !== undefined)
-          setMissionsCooldownEnd(savedStateObj.missionsCooldownEnd);
-        if (savedStateObj.moonsCount !== undefined) setMoonsCount(savedStateObj.moonsCount);
-        if (savedStateObj.constellations) setConstellations(savedStateObj.constellations);
-        if (savedStateObj.craftedItems) setCraftedItems(savedStateObj.craftedItems);
-        if (savedStateObj.placedAnimals) setPlacedAnimals(savedStateObj.placedAnimals);
-        if (savedStateObj.animalLove) setAnimalLove(savedStateObj.animalLove);
-        if (savedStateObj.animalLastPet) setAnimalLastPet(savedStateObj.animalLastPet);
-        if (savedStateObj.bowlLastFed !== undefined) setBowlLastFed(savedStateObj.bowlLastFed);
-        if (savedStateObj.bowlFedMinutesCredited !== undefined)
-          setBowlFedMinutesCredited(savedStateObj.bowlFedMinutesCredited);
-        if (savedStateObj.glitterDust !== undefined) setGlitterDust(savedStateObj.glitterDust);
-        if (savedStateObj.cosmeticRarityLevels)
-          setCosmeticRarityLevels(savedStateObj.cosmeticRarityLevels);
-        setActiveZodiacId(savedStateObj.zodiac || "katze");
-        if (savedStateObj.galaxyShards !== undefined)
-          setGalaxyShards(savedStateObj.galaxyShards || 0);
-        if (savedStateObj.zodiacLevels !== undefined)
-          setZodiacLevels(savedStateObj.zodiacLevels || {});
-        if (savedStateObj.slummerGlassLevel !== undefined)
-          setSlummerGlassLevel(savedStateObj.slummerGlassLevel || 1);
-        if (savedStateObj.catalystLevel !== undefined)
-          setCatalystLevel(savedStateObj.catalystLevel || 0);
-        if (savedStateObj.doubleStellarLevel !== undefined)
-          setDoubleStellarLevel(savedStateObj.doubleStellarLevel || 0);
-        if (savedStateObj.inGlitchGalaxy !== undefined)
-          setInGlitchGalaxy(savedStateObj.inGlitchGalaxy);
-        if (savedStateObj.glitchPending !== undefined)
-          setGlitchPending(savedStateObj.glitchPending);
-        if (savedStateObj.unlockedGlitchGalaxy !== undefined)
-          setUnlockedGlitchGalaxy(savedStateObj.unlockedGlitchGalaxy);
-        if (savedStateObj.spentGalaxyShards !== undefined)
-          setSpentGalaxyShards(savedStateObj.spentGalaxyShards || 0);
-        if (savedStateObj.glitchBenchmarks !== undefined)
-          setGlitchBenchmarks(savedStateObj.glitchBenchmarks);
-        if (savedStateObj.glitchCooldown !== undefined)
-          setGlitchCooldown(savedStateObj.glitchCooldown);
-      }
-    } catch (e) {
-      console.error("Failed to parse initial save for Web Worker:", e);
-    }
-
-    worker.postMessage({
-      type: "INIT",
-      savedState: savedStateObj,
-    });
 
     // Fan worker events out into React state (logic lives in applyWorkerEvent).
     const workerEventHandlers: WorkerEventHandlers = {
@@ -730,6 +752,15 @@ export default function App() {
       worker.terminate();
     };
   }, []);
+
+  useEffect(() => {
+    if (!workerRef.current || authLoading) {
+      return;
+    }
+
+    migrateLegacyGlobalSave();
+    loadSaveIntoGame(readSave(activeSaveOwnerId), activeSaveOwnerId);
+  }, [activeSaveOwnerId, authLoading, loadSaveIntoGame]);
 
   // Tab visibility — pause/resume the worker loop to avoid backlog + freeze on return
   useWorkerVisibility(workerRef);
@@ -936,8 +967,8 @@ export default function App() {
   // Keep save variables stored in a ref so the autosave interval doesn't rebuild 50 times a second
   const autoSaveStateRef = useRef<any>(null);
   const lastCloudSyncTimeRef = useRef<number>(0);
-  const showConflictRef = useRef(false);
-  showConflictRef.current = showConflictDialog;
+  const showAccountSwitchPromptRef = useRef(false);
+  showAccountSwitchPromptRef.current = Boolean(accountSwitchPrompt);
   useEffect(() => {
     autoSaveStateRef.current = {
       isLoaded,
@@ -1097,11 +1128,11 @@ export default function App() {
           glitchCooldown: s.glitchCooldown,
           lastSavedAt: Date.now(),
         };
-        localStorage.setItem(SAVE_KEY, JSON.stringify(withSaveVersion(stateToSave)));
+        writeSave(activeSaveOwnerId, stateToSave);
 
-        // Sync with cloud every 60 seconds; skip while conflict dialog is open
+        // Sync with cloud every 60 seconds; skip while the account-switch dialog is open
         const now = Date.now();
-        if (now - lastCloudSyncTimeRef.current >= 60000 && !showConflictRef.current) {
+        if (now - lastCloudSyncTimeRef.current >= 60000 && !showAccountSwitchPromptRef.current) {
           lastCloudSyncTimeRef.current = now;
 
           setAutosaveNotification({
@@ -1147,7 +1178,7 @@ export default function App() {
 
     const interval = setInterval(saveState, 5000);
     return () => clearInterval(interval);
-  }, [user]);
+  }, [activeSaveOwnerId, user]);
 
   // ----------------------------------------------------
   // Local Memoization calculations (Extremely light)
@@ -1447,7 +1478,8 @@ export default function App() {
   // Full Game hard Reset trigger
   const handleGameReset = useCallback(() => {
     playLevelUp();
-    localStorage.removeItem(SAVE_KEY);
+    removeSave(currentSaveOwnerRef.current);
+    writeMeta({ activeOwnerId: currentSaveOwnerRef.current });
     workerRef.current?.postMessage({
       type: "RESET",
     });
@@ -1462,7 +1494,7 @@ export default function App() {
     setClaimedMissionIds([]);
 
     setShowResetDialog(false);
-  }, []);
+  }, [playLevelUp, setShowResetDialog]);
 
   const handleEnterGlitchGalaxy = useCallback(() => {
     playLevelUp();
@@ -1498,6 +1530,7 @@ export default function App() {
     life,
     totalLifeEarned,
     starsCount,
+    moonsCount,
     purchasedAnimals,
     purchasedUpgrades,
     planetLevel,
@@ -1515,8 +1548,29 @@ export default function App() {
     claimedMissionIds,
     missionsCooldownEnd,
     prestigeCount,
-    moonsCount,
+    galaxyShards,
     constellations,
+    craftedItems,
+    placedAnimals,
+    animalLove,
+    animalLastPet,
+    bowlLastFed,
+    bowlFedMinutesCredited,
+    glitterDust,
+    cosmeticRarityLevels,
+    blackHoleSize,
+    zodiac: activeZodiacId,
+    zodiacLevels,
+    slummerGlassLevel,
+    catalystLevel,
+    doubleStellarLevel,
+    inGlitchGalaxy,
+    glitchPending,
+    unlockedGlitchGalaxy,
+    spentGalaxyShards,
+    glitchBenchmarks,
+    glitchCooldown,
+    lastSavedAt: Date.now(),
   };
   const handleForceSaveToCloud = useCallback(() => {
     saveStateToCloud(latestCloudSaveRef.current);
@@ -1674,8 +1728,7 @@ export default function App() {
             setShowMusicSettingsModal={setShowMusicSettingsModal}
             showCloudSyncModal={showCloudSyncModal}
             setShowCloudSyncModal={setShowCloudSyncModal}
-            showConflictDialog={showConflictDialog}
-            setShowConflictDialog={setShowConflictDialog}
+            accountSwitchPrompt={accountSwitchPrompt}
             showMissionsModal={showMissionsModal}
             setShowMissionsModal={setShowMissionsModal}
             openingResult={openingResult}
@@ -1739,7 +1792,8 @@ export default function App() {
             logout={logout}
             cloudSaveFound={cloudSaveFound}
             triggerCloudStateLoad={triggerCloudStateLoad}
-            forceLocalOverwriteCloud={forceLocalOverwriteCloud}
+            continueWithCurrentAccount={continueWithCurrentAccount}
+            adoptPreviousLocalSave={adoptPreviousLocalSave}
             missionSetNumber={missionSetNumber}
             claimedMissionIds={claimedMissionIds}
             missionsCooldownEnd={missionsCooldownEnd}
