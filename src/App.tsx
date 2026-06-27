@@ -1538,21 +1538,14 @@ export default function App() {
       type: "RESET",
     });
 
-    // Reset Cosmetics & Missions State
-    setUnlockedCosmetics([]);
-    setActiveStarColor("default");
-    setActiveAccessory("none");
-    setActiveFrame("default");
-    setActivePlanetSkin("default");
-    setShootingStarsCount(0);
-    setMissionSetNumber(1);
-    setClaimedMissionIds([]);
-    setRogueliteMeta(createRogueliteMetaState());
-    setActiveRogueliteRun(null);
+    // Clear every piece of hydrated client-side state — enclosure (placedAnimals), animal love,
+    // cosmetics, missions, currencies, zodiac, glitch + roguelite state — then close the roguelite
+    // screen. Previously handleGameReset reset only a handful of these fields by hand.
+    resetHydratedClientState();
     setShowRogueliteScreen(false);
 
     setShowResetDialog(false);
-  }, [playLevelUp, setShowResetDialog]);
+  }, [playLevelUp, setShowResetDialog, resetHydratedClientState]);
 
   const handleEnterGlitchGalaxy = useCallback(() => {
     playLevelUp();
