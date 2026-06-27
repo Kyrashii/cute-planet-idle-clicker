@@ -25,7 +25,7 @@ const baseAnimal: Animal = {
   baseLps: 1,
   count: 0,
   description: "cute",
-  germanDescription: "süß",
+  germanDescription: "suess",
   color: "bg-pink-50",
 };
 

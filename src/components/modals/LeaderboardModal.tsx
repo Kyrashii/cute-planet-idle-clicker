@@ -88,7 +88,7 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
             <Trophy className="w-6 h-6 text-amber-400 select-none animate-bounce" />
             <div>
               <span className="text-[10px] uppercase font-black tracking-wider text-amber-300 block">
-                Galerie der Schöpfer
+                Galerie der Schoepfer
               </span>
               <h4 className="font-sans font-black text-cosmic-text text-sm uppercase tracking-wide">
                 Globale Bestenliste
@@ -132,7 +132,7 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
             <div className="flex-grow flex flex-col items-center justify-center text-center space-y-2 py-10">
               <span className="text-3xl">🌌</span>
               <p className="text-xs text-cosmic-accent-muted font-mono">
-                Bisher keine Einträge auf der Bestenliste.
+                Bisher keine Eintraege auf der Bestenliste.
               </p>
               <p className="text-[10px] text-gray-400">
                 Verbinde dein Google-Konto, um dich zu registrieren!

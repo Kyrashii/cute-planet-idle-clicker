@@ -70,7 +70,7 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = React.m
             <span
               className={`text-[9px] uppercase font-black tracking-wider block ${isNight ? "text-purple-300" : "text-amber-700"}`}
             >
-              Willkommen zurück!
+              Willkommen zurueck!
             </span>
             <h4 className="font-sans font-black text-sm uppercase tracking-wide">
               Schlummer-Einkommen
@@ -83,8 +83,8 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = React.m
           <p
             className={`text-xs text-center leading-relaxed font-medium ${isNight ? "text-purple-150" : "text-slate-600"}`}
           >
-            Dein Planet hat geschlafen, aber deine süßen Tierchen und funkelnden Sterne waren
-            fleißig!
+            Dein Planet hat geschlafen, aber deine suessen Tierchen und funkelnden Sterne waren
+            fleissig!
           </p>
 
           {/* Large display of earned life */}
@@ -145,14 +145,14 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = React.m
                   <strong className="text-amber-300">
                     +{prestigeBonusPercent}% Prestige-Booster
                   </strong>{" "}
-                  hat dein Offline-Einkommen um ein Vielfaches verstärkt! ✨
+                  hat dein Offline-Einkommen um ein Vielfaches verstaerkt! ✨
                 </p>
               </div>
             )}
           </div>
 
           <p className="text-[10px] text-center italic text-slate-400 font-bold select-none">
-            (Maximale Schlummerzeit beträgt 5 Stunden)
+            (Maximale Schlummerzeit betraegt 5 Stunden)
           </p>
         </div>
 

@@ -13,28 +13,28 @@ interface GalaxyVoyageModalProps {
 // A list of extra cute, comforting pastel German stories that vary with prestige level
 const VOYAGE_STORIES = [
   // Prestige 0 -> 1st voyager
-  "Dein Planet strahlt im sanftesten Pastellrosa, bereit für ein neues Abenteuer! Die Tierchen kuscheln sich fest in weiche Traumwölkchen, während wir leise die Segel setzen. Ein glitzernder Kometenstaub-Schweif weist uns den Weg in eine vollkommen neue, unentdeckte Ecke des glitzernden Pastell-Kosmos. Reiche deine Pfötchen, nimm tiefe Atemzüge und lass uns gemeinsam zu den Sternen aufbrechen!",
+  "Dein Planet strahlt im sanftesten Pastellrosa, bereit fuer ein neues Abenteuer! Die Tierchen kuscheln sich fest in weiche Traumwoelkchen, waehrend wir leise die Segel setzen. Ein glitzernder Kometenstaub-Schweif weist uns den Weg in eine vollkommen neue, unentdeckte Ecke des glitzernden Pastell-Kosmos. Reiche deine Pfoetchen, nimm tiefe Atemzuege und lass uns gemeinsam zu den Sternen aufbrechen!",
 
   // Prestige 1
-  "Die Kirschblüten deines wunderschönen Planeten tanzen sanft im kosmischen Wind und weben einen Pfad des Abschieds. Alle deine gezüchteten Fröschlein und Kätzchen schauen mit glänzenden Augen empor. Sie wissen, dass du bereit für noch schönere Sternengärten bist! Wir packen Sternenwatte und Honigsterne ein, schließen die Augen und reisen dorthin, wo die funkelnde Aurora die Nacht in zartes Lila taucht...",
+  "Die Kirschblueten deines wunderschoenen Planeten tanzen sanft im kosmischen Wind und weben einen Pfad des Abschieds. Alle deine gezuechteten Froeschlein und Kaetzchen schauen mit glaenzenden Augen empor. Sie wissen, dass du bereit fuer noch schoenere Sternengaerten bist! Wir packen Sternenwatte und Honigsterne ein, schliessen die Augen und reisen dorthin, wo die funkelnde Aurora die Nacht in zartes Lila taucht...",
 
   // Prestige 2
-  "Ein warmer, goldener Honigduft breitet sich aus – dein Kosmos hat seine süßeste Reife erlangt! Der kleine Waschbär wischt sich eine Träne der Freude weg, denn er weiß, dass deine Magie nun eine neue Galaxie wecken wird. Jedes Aufsteigen hinterlässt ein funkelndes Lichtband, das die Sterne für immer verbindet. Pack deine Träume in die Tasche, wir springen mitten in das Herz eines glitzernden Lavendelnebels!",
+  "Ein warmer, goldener Honigduft breitet sich aus – dein Kosmos hat seine suesseste Reife erlangt! Der kleine Waschbaer wischt sich eine Traene der Freude weg, denn er weiss, dass deine Magie nun eine neue Galaxie wecken wird. Jedes Aufsteigen hinterlaesst ein funkelndes Lichtband, das die Sterne fuer immer verbindet. Pack deine Traeume in die Tasche, wir springen mitten in das Herz eines glitzernden Lavendelnebels!",
 
   // Prestige 3
-  "Die Traumblasen tanzen im Takt deines Herzschlags, während ein sanfter Glanz den Horizont einhüllt. Dein treuer Begleiter, der kleine Panda, hält ein flauschiges Abschiedsgeschenk bereit. Jeder Schritt, den du tust, hinterlässt glitzernden Staub im unendlichen All. Eine verborgene Sternenbrücke entfaltet sich vor uns und lädt uns ein, das nächste bunte Kapitel unserer Kuschelreise zu zeichnen!",
+  "Die Traumblasen tanzen im Takt deines Herzschlags, waehrend ein sanfter Glanz den Horizont einhuellt. Dein treuer Begleiter, der kleine Panda, haelt ein flauschiges Abschiedsgeschenk bereit. Jeder Schritt, den du tust, hinterlaesst glitzernden Staub im unendlichen All. Eine verborgene Sternenbruecke entfaltet sich vor uns und laedt uns ein, das naechste bunte Kapitel unserer Kuschelreise zu zeichnen!",
 
   // Prestige 4
-  "Die Melodie deines Planeten summt friedlich in der unendlichen Stille. Die kleinen Axolotl tanzen ein letztes Mal im glitzernden Wasserbett. Du hast dieses Reich mit so viel Liebe gefüllt, dass herabfallende Sternschnuppen die gesamte Milchstraße erleuchten. Uns ruft ein neues, magisches Abenteuer auf weichen Wollkometen – lass uns losfliegen und neue kosmische Wunder säen!",
+  "Die Melodie deines Planeten summt friedlich in der unendlichen Stille. Die kleinen Axolotl tanzen ein letztes Mal im glitzernden Wasserbett. Du hast dieses Reich mit so viel Liebe gefuellt, dass herabfallende Sternschnuppen die gesamte Milchstrasse erleuchten. Uns ruft ein neues, magisches Abenteuer auf weichen Wollkometen – lass uns losfliegen und neue kosmische Wunder saeen!",
 
   // Prestige 5
-  "Sanfte Pastellfarben fließen wie flüssiger Regenbogen durch die Flüsse deines Sternenreichs. Die gemütlichsten Koalas winken dir zu, während die Sterne leise im Schlaf wispern. Deine Reise war bisher ein reines Meisterwerk der Harmonie. Nun ruft eine neue Galaxie, die noch darauf wartet, von deiner unendlichen Wärme und Liebe wachgeküsst zu werden. Bereit für den nächsten federleichten Sprung?",
+  "Sanfte Pastellfarben fliessen wie fluessiger Regenbogen durch die Fluesse deines Sternenreichs. Die gemuetlichsten Koalas winken dir zu, waehrend die Sterne leise im Schlaf wispern. Deine Reise war bisher ein reines Meisterwerk der Harmonie. Nun ruft eine neue Galaxie, die noch darauf wartet, von deiner unendlichen Waerme und Liebe wachgekuesst zu werden. Bereit fuer den naechsten federleichten Sprung?",
 
   // Prestige 6
-  "Ein kosmisches Schlaflied erklingt aus den Tiefen deines Kuschel-Utopias. Sternenpartikel funkeln wie kleine Diamanten auf der Nase des schlummernden Fuchses. Mit jedem Prestige schreibst du ein neues, wunderschönes Märchenbuch im Kosmos. Lass uns das nächste Kapitel aufschlagen, wo die Galaxien wie bunte Farbpunkte auf einer weichen Leinwand strahlen. Flieg mit uns!",
+  "Ein kosmisches Schlaflied erklingt aus den Tiefen deines Kuschel-Utopias. Sternenpartikel funkeln wie kleine Diamanten auf der Nase des schlummernden Fuchses. Mit jedem Prestige schreibst du ein neues, wunderschoenes Maerchenbuch im Kosmos. Lass uns das naechste Kapitel aufschlagen, wo die Galaxien wie bunte Farbpunkte auf einer weichen Leinwand strahlen. Flieg mit uns!",
 
   // Prestige 7
-  "Die gesamte Galaxie summt vor Glück und Dankbarkeit. Aus jedem Winkel deiner Himmelskörper leuchten süße Lämpchen der Liebe auf. Du hast eine perfekte Sinfonie des Pastells kreiert! Doch der Kosmos ist unendlich groß, und neue flauschige Geheimnisse warten hinter dem funkelnden Horizont darauf, von deinem liebenswerten Geist entdeckt zu werden. Vorwärts zu neuen Träumen!",
+  "Die gesamte Galaxie summt vor Glueck und Dankbarkeit. Aus jedem Winkel deiner Himmelskoerper leuchten suesse Laempchen der Liebe auf. Du hast eine perfekte Sinfonie des Pastells kreiert! Doch der Kosmos ist unendlich gross, und neue flauschige Geheimnisse warten hinter dem funkelnden Horizont darauf, von deinem liebenswerten Geist entdeckt zu werden. Vorwaerts zu neuen Traeumen!",
 ];
 
 export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(
@@ -112,7 +112,7 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(
               <span
                 className={`text-[10px] font-mono font-black uppercase tracking-[0.2em] ${inGlitchGalaxy ? "text-cyan-300" : "text-[#ffcbdc]"}`}
               >
-                {inGlitchGalaxy ? "⚡ QUANTUM_RECONSTRUCTION_READY ⚡" : "Evolutionäre Vollendung"}
+                {inGlitchGalaxy ? "⚡ QUANTUM_RECONSTRUCTION_READY ⚡" : "Evolutionaere Vollendung"}
               </span>
             </motion.div>
 
@@ -133,7 +133,7 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(
             </h1>
             <p className="font-mono text-[10px] sm:text-xs text-cosmic-accent font-black tracking-wider uppercase opacity-90 mt-1">
               Planet Level 20 erreicht •{" "}
-              {inGlitchGalaxy ? "REALITÄT STABILISIEREN" : "Bereit für den nächsten Kosmos"}
+              {inGlitchGalaxy ? "REALITAeT STABILISIEREN" : "Bereit fuer den naechsten Kosmos"}
             </p>
           </div>
 
@@ -168,7 +168,7 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(
               className={`font-sans font-semibold text-xs sm:text-sm leading-relaxed italic ${inGlitchGalaxy ? "text-rose-300 font-mono" : "text-cosmic-text"}`}
             >
               {inGlitchGalaxy
-                ? "[PROTOKOLL: OK] - Die kosmische Anomalie wurde erfolgreich gezähmt. Durch Zünden des Hyper-Quantum-Reboots wird dieser Glitch-Sektor geheilt. Du kehrst reich beschenkt in den intakten Pastell-Kosmos zurück!"
+                ? "[PROTOKOLL: OK] - Die kosmische Anomalie wurde erfolgreich gezaehmt. Durch Zuenden des Hyper-Quantum-Reboots wird dieser Glitch-Sektor geheilt. Du kehrst reich beschenkt in den intakten Pastell-Kosmos zurueck!"
                 : `"${selectStory}"`}
             </p>
           </div>
@@ -203,7 +203,7 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(
               <Sparkles className="w-4 h-4 text-fuchsia-300 shrink-0" />
               <div className="text-left">
                 <span className="block text-[8px] font-mono leading-none font-bold text-cosmic-accent-muted uppercase">
-                  {inGlitchGalaxy ? "SPLITTER & DUST" : "Währung"}
+                  {inGlitchGalaxy ? "SPLITTER & DUST" : "Waehrung"}
                 </span>
                 <span className="text-[10px] sm:text-xs font-black font-sans text-fuchsia-350 shrink-0">
                   {inGlitchGalaxy ? "+2 🏺 & +77 ✨" : "1x Splitter 🌌"}
@@ -233,8 +233,8 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(
 
           <p className="font-mono text-[9px] text-cosmic-accent-muted/70 uppercase tracking-widest font-bold">
             {inGlitchGalaxy
-              ? "Effekt: Heilt den Sektor, gewährt +2 Splitter, +77 Glitzerstaub und steigert deine Reisestufe."
-              : "Hinweis: Setzt Leben, LPS, Tiere & Planetenstufe für dauerhaften Bonus zurück."}
+              ? "Effekt: Heilt den Sektor, gewaehrt +2 Splitter, +77 Glitzerstaub und steigert deine Reisestufe."
+              : "Hinweis: Setzt Leben, LPS, Tiere & Planetenstufe fuer dauerhaften Bonus zurueck."}
           </p>
         </div>
       </Modal>

@@ -28,7 +28,7 @@ export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(
             <p className="text-[10px] sm:text-[10.5px] mt-1 font-semibold leading-snug text-cosmic-accent-muted">
               {isNight
                 ? "Sterne leuchten prachtvoll und sammeln heute Nacht +50% Energie."
-                : "Der Planet erwacht! Deine händischen Klicks sind 1.5x stärker."}
+                : "Der Planet erwacht! Deine haendischen Klicks sind 1.5x staerker."}
             </p>
           </div>
         </div>
@@ -111,7 +111,7 @@ export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(
         {/* Cycle Progress Bar */}
         <div className="w-full md:w-32 flex flex-col items-end gap-1.5 shrink-0">
           <div className="flex items-center justify-between w-full text-[9px] font-mono uppercase font-black tracking-wider leading-none text-cosmic-accent-muted">
-            <span>Nächster Wechsel</span>
+            <span>Naechster Wechsel</span>
             <span className="text-cosmic-text">
               {Math.ceil(((100 - cycleProgress) / 100) * 60)}s
             </span>

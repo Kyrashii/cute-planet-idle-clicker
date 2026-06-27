@@ -21,6 +21,10 @@
   --color-cosmic-yellow: #fef08a; /* warm yellow / star accents */
 }
 
+:root {
+  --game-font-scale: 1;
+}
+
 body {
   background-color: var(--color-brand-bg);
   color: var(--color-brand-brown);
@@ -34,6 +38,51 @@ body {
     "Helvetica Neue",
     Arial,
     sans-serif;
+}
+
+html {
+  font-size: 100%;
+}
+
+:is(#root, #modal-root)
+  :is(.text-\[7px\], .text-\[8px\], .text-\[9px\], .text-\[10px\], .text-\[11px\], .text-\[12px\]) {
+  font-size: calc(var(--game-font-scale) * var(--tw-text-size, 1rem));
+  line-height: calc(var(--game-font-scale) * var(--tw-leading, 1.25));
+}
+
+:is(#root, #modal-root) .text-\[7px\] {
+  --tw-text-size: 0.4375rem;
+  --tw-leading: 0.625rem;
+}
+
+:is(#root, #modal-root) .text-\[8px\] {
+  --tw-text-size: 0.5rem;
+  --tw-leading: 0.75rem;
+}
+
+:is(#root, #modal-root) .text-\[9px\] {
+  --tw-text-size: 0.5625rem;
+  --tw-leading: 0.8rem;
+}
+
+:is(#root, #modal-root) .text-\[10px\] {
+  --tw-text-size: 0.625rem;
+  --tw-leading: 0.9rem;
+}
+
+:is(#root, #modal-root) .text-\[11px\] {
+  --tw-text-size: 0.6875rem;
+  --tw-leading: 1rem;
+}
+
+:is(#root, #modal-root) .text-\[12px\] {
+  --tw-text-size: 0.75rem;
+  --tw-leading: 1.05rem;
+}
+
+:is(#root, #modal-root) button,
+:is(#root, #modal-root) [role="button"] {
+  line-height: 1.2;
 }
 
 /* Custom gorgeous aesthetic scrollbar fitting the Artistic Flair theme */
@@ -1668,4 +1717,3 @@ body[class*="active-frame-"] button.modal-frame-target {
 body[class*="active-frame-"] button.modal-frame-target:hover {
   background-color: rgba(255, 255, 255, 0.05) !important;
 }
-

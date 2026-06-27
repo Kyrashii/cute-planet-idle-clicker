@@ -187,7 +187,7 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(
               </h6>
               <p className="font-sans text-xs text-gray-400 mt-1.5 max-w-sm">
                 Heureka! Du hast bereits alle magischen Upgrades und jegliche Forschung in diesem
-                Universum gemeistert! Du bist ein wahrer Kosmos-Hüter!
+                Universum gemeistert! Du bist ein wahrer Kosmos-Hueter!
               </p>
             </div>
           )}

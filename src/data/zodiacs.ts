@@ -39,7 +39,7 @@ export const ZODIACS: ZodiacSpec[] = [
     name: "Mond",
     emoji: "🌙",
     description:
-      "Mond-Sturm: Erhöht deine maximale Anzahl an Monden um +1 und verstärkt den Produktionsbonus um +50% absoluten Multiplikator pro Mond.",
+      "Mond-Sturm: Erhoeht deine maximale Anzahl an Monden um +1 und verstaerkt den Produktionsbonus um +50% absoluten Multiplikator pro Mond.",
     bonusDesc: "+1 Mondlimit & +225% Mondmultiplikator",
     bonusType: "all_passive_boost",
   },
@@ -48,8 +48,8 @@ export const ZODIACS: ZodiacSpec[] = [
     name: "Drache",
     emoji: "🐉",
     description:
-      "Events stärker: Alle kosmischen Event-Boni (Meteor, Aurora, Supernova) sind um +40% stärker.",
-    bonusDesc: "+40% stärkere Events",
+      "Events staerker: Alle kosmischen Event-Boni (Meteor, Aurora, Supernova) sind um +40% staerker.",
+    bonusDesc: "+40% staerkere Events",
     bonusType: "events_boost",
   },
   {
@@ -64,7 +64,7 @@ export const ZODIACS: ZodiacSpec[] = [
     id: "fuchs",
     name: "Fuchs",
     emoji: "🦊",
-    description: "Durchtriebener Clicker: Erhöht deine manuelle Click-Kraft dauerhaft um +40%.",
+    description: "Durchtriebener Clicker: Erhoeht deine manuelle Click-Kraft dauerhaft um +40%.",
     bonusDesc: "+40% Klick-Kraft",
     bonusType: "click_flat",
   },
@@ -73,15 +73,15 @@ export const ZODIACS: ZodiacSpec[] = [
     name: "Eule",
     emoji: "🦉",
     description:
-      "Nächtliche Weisheit: Erhöht die Energie-Produktion deiner Sterne um +30% mehr LPS.",
+      "Naechtliche Weisheit: Erhoeht die Energie-Produktion deiner Sterne um +30% mehr LPS.",
     bonusDesc: "+30% Sternen-Produktion",
     bonusType: "stars_boost",
   },
   {
     id: "schildkroete",
-    name: "Schildkröte",
+    name: "Schildkroete",
     emoji: "🐢",
-    description: "Bedächtiges Wachstum: Erhöht dein passives Gesamteinkommen (LPS) um +20%.",
+    description: "Bedaechtiges Wachstum: Erhoeht dein passives Gesamteinkommen (LPS) um +20%.",
     bonusDesc: "+20% Gesamt-LPS",
     bonusType: "all_passive_boost",
   },
@@ -95,7 +95,7 @@ export const ZODIACS: ZodiacSpec[] = [
   },
   {
     id: "phoenix",
-    name: "Phönix",
+    name: "Phoenix",
     emoji: "🐦‍🔥",
     description: "Heilige Asche: Erhalte +35% mehr Glitzerstaub aus allen Quellen.",
     bonusDesc: "+35% Glitzerstaub-Ausbeute",

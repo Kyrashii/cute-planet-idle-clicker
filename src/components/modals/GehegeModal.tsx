@@ -24,7 +24,7 @@ export const getAuraConfig = (love: number): AuraConfig | null => {
       classes:
         "shadow-[0_0_25px_rgba(255,255,255,0.75),inset_0_0_12px_rgba(255,255,255,0.4)] bg-white/20 border-2 border-white/50",
       name: "Sanfter Hauch Aura 🤍",
-      colorName: "Weiß",
+      colorName: "Weiss",
     };
   }
   if (love < 60) {
@@ -56,7 +56,7 @@ export const getAuraConfig = (love: number): AuraConfig | null => {
       classes:
         "shadow-[0_0_35px_rgba(52,211,153,0.95),inset_0_0_18px_rgba(52,211,153,0.55)] bg-emerald-400/20 border-2 border-emerald-400/65",
       name: "Naturkraft Aura 💚",
-      colorName: "Smaragdgrün",
+      colorName: "Smaragdgruen",
     };
   }
   if (love < 220) {
@@ -607,14 +607,14 @@ const FeedBowlComponent = React.memo<FeedBowlComponentProps>(
       const remainingMs = 25 * 60 * 1000 - elapsedMsSinceFeed;
       const mins = Math.floor(remainingMs / 60000);
       const secs = Math.floor((remainingMs % 60000) / 1000);
-      bowlTooltip = `Tiere fressen... 😋 (Voll für ${mins}m ${secs}s)`;
+      bowlTooltip = `Tiere fressen... 😋 (Voll fuer ${mins}m ${secs}s)`;
     } else if (hasCooldown) {
       const remainingMs = 30 * 60 * 1000 - elapsedMsSinceFeed;
       const mins = Math.floor(remainingMs / 60000);
       const secs = Math.floor((remainingMs % 60000) / 1000);
       bowlTooltip = `Kuschelpause ⏱️ (Bereit in ${mins}m ${secs}s)`;
     } else {
-      bowlTooltip = "Klicke den Futternapf an, um die Tiere zu füttern! 🍲 (+1 Liebe pro Minute)";
+      bowlTooltip = "Klicke den Futternapf an, um die Tiere zu fuettern! 🍲 (+1 Liebe pro Minute)";
     }
 
     const handleFeedBowlClick = (e: React.MouseEvent) => {
@@ -623,13 +623,13 @@ const FeedBowlComponent = React.memo<FeedBowlComponentProps>(
       const elapsed = currentNow - bowlLastFed;
       if (elapsed < 30 * 60 * 1000) {
         if (elapsed < 25 * 60 * 1000) {
-          onTriggerError("Die Tiere fressen bereits genüsslich! 🍲");
+          onTriggerError("Die Tiere fressen bereits genuesslich! 🍲");
         } else {
           const remainingMs = 30 * 60 * 1000 - elapsed;
           const mins = Math.floor(remainingMs / 60000);
           const secs = Math.floor((remainingMs % 60000) / 1000);
           onTriggerError(
-            `Kuschelpause! Der Napf kann erst in ${mins}m ${secs}s wieder befüllt werden.`,
+            `Kuschelpause! Der Napf kann erst in ${mins}m ${secs}s wieder befuellt werden.`,
           );
         }
         return;
@@ -693,12 +693,12 @@ const FeedBowlComponent = React.memo<FeedBowlComponentProps>(
 
           <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-slate-950/95 text-slate-100 text-[10px] font-bold rounded-xl border border-slate-800/80 shadow-xl opacity-0 group-hover/bowl:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-50 flex flex-col items-center gap-0.5 select-none text-center">
             <span className="text-pink-300 font-extrabold uppercase tracking-wide text-[9px]">
-              🥕 Tier-Fütterung 🥕
+              🥕 Tier-Fuetterung 🥕
             </span>
             <span className="text-white text-[10px]">{bowlTooltip}</span>
             {!hasCooldown && (
               <span className="text-indigo-300 text-[8px] font-medium font-mono uppercase mt-0.5">
-                Bereit zum Füttern!
+                Bereit zum Fuettern!
               </span>
             )}
           </div>
@@ -762,7 +762,7 @@ const PurchasedAnimalCard = React.memo<PurchasedAnimalCardProps>(
           }`}
         >
           {isFullyPlaced
-            ? "Vollständig"
+            ? "Vollstaendig"
             : isGehegeFull
               ? "Gehege voll"
               : isSelected
@@ -800,7 +800,7 @@ const LoveGalleryCard = React.memo<LoveGalleryCardProps>(({ def, loveVal, lastPe
   const cooldownMs = 30 * 60 * 1000;
   const hasCooldown = now - lastPetTime < cooldownMs;
 
-  let cooldownText = "Prächtig gelaunt ✨";
+  let cooldownText = "Praechtig gelaunt ✨";
   if (hasCooldown) {
     const diffMs = cooldownMs - (now - lastPetTime);
     const mins = Math.floor(diffMs / 60000);
@@ -1123,7 +1123,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
           id="btn-close-gehege"
           className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-black uppercase tracking-wider border border-slate-700 shadow transition-all duration-150 cursor-pointer"
         >
-          Zurück 🌌
+          Zurueck 🌌
         </button>
       </header>
 
@@ -1252,8 +1252,8 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
                 Dein Gehege ist leer
               </p>
               <p className="text-xs text-slate-300 mt-1">
-                Klicke unten auf <b className="text-white">„Tiere platzieren“</b>, um deine süßen
-                Weggefährten hier frei herumlaufen zu lassen!
+                Klicke unten auf <b className="text-white">„Tiere platzieren“</b>, um deine suessen
+                Weggefaehrten hier frei herumlaufen zu lassen!
               </p>
             </div>
           )}
@@ -1344,7 +1344,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
             <div className="w-full max-w-4xl mx-auto">
               <div className="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
                 <h3 className="text-sm font-black uppercase tracking-wider text-slate-300">
-                  Wähle ein Tier zum Platzieren
+                  Waehle ein Tier zum Platzieren
                 </h3>
                 <span className="text-[10px] text-slate-500 font-mono">
                   (Nach Auswahl auf die Landschaft klicken)
@@ -1367,7 +1367,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
                     Du hast noch keine Tiere gekauft!
                   </p>
                   <p className="text-slate-500 text-[11px] mt-1">
-                    Brüte zuerst Tiere im Menü „Tiere züchten“ aus!
+                    Bruete zuerst Tiere im Menue „Tiere zuechten“ aus!
                   </p>
                 </div>
               ) : (
@@ -1432,7 +1432,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
                   onClick={() => setShowLoveGallery(false)}
                   className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-black uppercase tracking-wider border border-slate-700/80 shadow-md transition-all cursor-pointer"
                 >
-                  Schließen ✕
+                  Schliessen ✕
                 </button>
               </div>
 
@@ -1445,8 +1445,8 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
                       Keine Tiere besessen
                     </p>
                     <p className="text-slate-500 text-[11px] mt-1 max-w-xs mx-auto">
-                      Adoptiere zuerst liebevolle Begleiter über das „Tiere züchten“ Menü, um sie zu
-                      liebkosen!
+                      Adoptiere zuerst liebevolle Begleiter ueber das „Tiere zuechten“ Menue, um sie
+                      zu liebkosen!
                     </p>
                   </div>
                 ) : (

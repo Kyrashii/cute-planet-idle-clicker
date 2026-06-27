@@ -114,7 +114,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
             <div className="py-12 flex flex-col items-center justify-center gap-3">
               <RefreshCcw className="w-8 h-8 text-cosmic-accent animate-spin" />
               <p className="text-cosmic-accent-muted text-xs font-semibold uppercase tracking-wider">
-                Verbindung prüfen...
+                Verbindung pruefen...
               </p>
             </div>
           ) : !user ? (
@@ -148,8 +148,8 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
                   <li className="flex items-start gap-2">
                     <span className="text-sky-305 mt-0.5">•</span>
                     <span>
-                      Automatisches Backup im Hintergrund alle 20 Sekunden und nach großen
-                      Einkäufen.
+                      Automatisches Backup im Hintergrund alle 20 Sekunden und nach grossen
+                      Einkaeufen.
                     </span>
                   </li>
                 </ul>
@@ -159,8 +159,8 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
               <div className="flex items-center gap-2.5 px-3 py-2 bg-emerald-500/10 border border-emerald-550/20 rounded-xl text-[10px] text-emerald-300 font-bold leading-snug">
                 <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
                 <span>
-                  Zero-Trust Security: Deine Daten werden verschlüsselt gespeichert und sind nur für
-                  dich zugänglich.
+                  Zero-Trust Security: Deine Daten werden verschluesselt gespeichert und sind nur
+                  fuer dich zugaenglich.
                 </span>
               </div>
 
@@ -250,7 +250,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
                 <div className="p-3.5 rounded-2xl bg-[#090616]/70 border border-slate-500/15 text-left">
                   <div className="flex items-center gap-1.5 text-[10px] text-sky-305 font-bold mb-1.5">
                     <Monitor className="w-3.5 h-3.5 text-sky-400" />
-                    <span>Lokal am Gerät</span>
+                    <span>Lokal am Geraet</span>
                   </div>
                   <div className="space-y-1 font-mono text-[10px] font-black text-slate-350">
                     <div className="flex justify-between">

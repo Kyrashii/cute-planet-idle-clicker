@@ -27,7 +27,7 @@ export const CONSTELLATIONS_LIST: ConstellationDef[] = [
     maxLevel: 5,
     bonusText: "+10% Tier-Produktion pro Stufe",
     germanDescription:
-      "Eine kuschelige Himmelsgruppe, die eine schützende Aura spendet. Sie ermutigt alle deine Tiere, glücklicher zu sein und passive Lebensenergie zu produzieren.",
+      "Eine kuschelige Himmelsgruppe, die eine schuetzende Aura spendet. Sie ermutigt alle deine Tiere, gluecklicher zu sein und passive Lebensenergie zu produzieren.",
   },
   {
     id: "mondhasen",
@@ -37,9 +37,9 @@ export const CONSTELLATIONS_LIST: ConstellationDef[] = [
     baseStarsCost: 25,
     baseMoonsCost: 1,
     maxLevel: 3,
-    bonusText: "+25% längere Nachtphase pro Stufe",
+    bonusText: "+25% laengere Nachtphase pro Stufe",
     germanDescription:
-      "Die Gestalt eines flinken Mondhasen. Verlängert die wunderschöne Nacht-Phase, in der deine Sterne mit +50% erhöhter Kraft leuchten.",
+      "Die Gestalt eines flinken Mondhasen. Verlaengert die wunderschoene Nacht-Phase, in der deine Sterne mit +50% erhoehter Kraft leuchten.",
   },
   {
     id: "supernova",
@@ -49,9 +49,9 @@ export const CONSTELLATIONS_LIST: ConstellationDef[] = [
     baseStarsCost: 100,
     baseMoonsCost: 0,
     maxLevel: 3,
-    bonusText: "+20% stärkere kosmische Events pro Stufe",
+    bonusText: "+20% staerkere kosmische Events pro Stufe",
     germanDescription:
-      "Eine energetische Kraftquelle am Himmelszelt. verstärkt die Erträge und Effekte aller aktiven Events (z.B. Sternschnuppen, Polarlichter und Meteoritenstürme).",
+      "Eine energetische Kraftquelle am Himmelszelt. verstaerkt die Ertraege und Effekte aller aktiven Events (z.B. Sternschnuppen, Polarlichter und Meteoritenstuerme).",
   },
   {
     id: "stardust_rain",
@@ -63,7 +63,7 @@ export const CONSTELLATIONS_LIST: ConstellationDef[] = [
     maxLevel: 5,
     bonusText: "+15% mehr Planeten-EXP pro Stufe",
     germanDescription:
-      "Eine funkelnde Kaskade von Sternenlicht. Lässt deinen Planeten beim Klicken und automatischen Tappen deutlich schneller Erfahrung sammeln.",
+      "Eine funkelnde Kaskade von Sternenlicht. Laesst deinen Planeten beim Klicken und automatischen Tappen deutlich schneller Erfahrung sammeln.",
   },
   {
     id: "cosmic_harmony",
@@ -75,7 +75,7 @@ export const CONSTELLATIONS_LIST: ConstellationDef[] = [
     maxLevel: 3,
     bonusText: "+8% Klick- & Star-Schlagkraft pro Stufe",
     germanDescription:
-      "Die perfekte Ausrichtung von Sternen und Monden im Einklang. Erhöht die manuelle Schlagkraft deiner Klicks sowie den Ertrag deiner Gravitations-Sterne.",
+      "Die perfekte Ausrichtung von Sternen und Monden im Einklang. Erhoeht die manuelle Schlagkraft deiner Klicks sowie den Ertrag deiner Gravitations-Sterne.",
   },
   {
     id: "ewiges_polarlicht",
@@ -87,7 +87,7 @@ export const CONSTELLATIONS_LIST: ConstellationDef[] = [
     maxLevel: 3,
     bonusText: "-15% Wartezeit zwischen Events pro Stufe",
     germanDescription:
-      "Ein unaufhörliches kosmisches Leuchten. Zieht kosmische Ereignisse magisch an, sodass die coolen Events deutlich schneller hintereinander auftreten.",
+      "Ein unaufhoerliches kosmisches Leuchten. Zieht kosmische Ereignisse magisch an, sodass die coolen Events deutlich schneller hintereinander auftreten.",
   },
 ];
 
@@ -141,7 +141,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
             <span className="text-2xl select-none animate-pulse">🌌</span>
             <div>
               <span className="text-[10px] uppercase font-black tracking-wider text-amber-300 block">
-                Kosmisches Gewölbe
+                Kosmisches Gewoelbe
               </span>
               <h4 className="font-sans font-black text-cosmic-text text-sm uppercase tracking-wide">
                 Umlaufbahnen &amp; Sternzeichen
@@ -193,7 +193,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                   : "text-[#978aac] hover:text-white"
               }`}
             >
-              🌌 Sternbilder füllen
+              🌌 Sternbilder fuellen
             </button>
           </div>
         </div>
@@ -216,8 +216,8 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                   </span>
                   <p className="font-semibold text-[11px] text-cosmic-accent-muted leading-relaxed">
                     Sterne kreisen zierlich um deinen Planeten und tippen ihn passiv an.{" "}
-                    <b>Synergie:</b> Deine Klick-Stärken-Upgrades verstärken deine Sterne zusätzlich
-                    (+20% der Klick-Upgrades)!
+                    <b>Synergie:</b> Deine Klick-Staerken-Upgrades verstaerken deine Sterne
+                    zusaetzlich (+20% der Klick-Upgrades)!
                   </p>
                   <div className="pt-1.5 text-[11.5px] font-mono font-black flex items-center justify-between border-t border-cosmic-accent/25 text-amber-200">
                     <span>Stern-Schlagkraft:</span>
@@ -233,7 +233,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                     </div>
                     <div className="min-w-0 flex-grow">
                       <h5 className="font-sans font-black text-xs sm:text-sm text-cosmic-text uppercase tracking-wide truncate">
-                        Orbitaler Sternenläufer
+                        Orbitaler Sternenlaeufer
                       </h5>
                       <p className="font-sans text-[11px] font-semibold text-cosmic-accent-muted mt-0.5 leading-tight">
                         Rufe einen kleinen schwebenden Stern herbei.
@@ -283,7 +283,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                         </span>
                       </div>
                       <p className="font-sans text-[11.5px] font-semibold text-[#c8bdf4] mt-0.5 leading-tight">
-                        Verschmelze <b className="text-white">50 Sterne</b> zu einem mächtigen
+                        Verschmelze <b className="text-white">50 Sterne</b> zu einem maechtigen
                         umkreisenden Mond (Trabant).
                       </p>
                       <div className="mt-2 text-xs text-purple-300 font-mono font-black border-b border-purple-500/20 pb-1.5 flex justify-between">
@@ -331,7 +331,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                         ? `${maxMoons}/${maxMoons} Monde aktiv 🌙`
                         : starsCount >= 50
                           ? "Fliegenden Mond schmieden! ✨"
-                          : `Benötigt 50 Sterne (${starsCount}/50)`}
+                          : `Benoetigt 50 Sterne (${starsCount}/50)`}
                     </span>
                   </button>
                 </div>
@@ -353,8 +353,8 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                     Sterne &amp; Monde dauerhaft investieren!
                   </b>
                   <p className="text-cosmic-accent-muted text-[10.5px] mt-0.5 leading-tight">
-                    Investiere deine gesammelten Sterne und Monde permanent in wunderschöne
-                    kosmische Konstellationen. Sie geben dir mächtige, dauerhafte Multiplikatoren,
+                    Investiere deine gesammelten Sterne und Monde permanent in wunderschoene
+                    kosmische Konstellationen. Sie geben dir maechtige, dauerhafte Multiplikatoren,
                     die auch nach einem Prestige aktiv bleiben!
                   </p>
                 </div>
@@ -468,7 +468,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                               }`}
                             >
                               <span className="text-[8px] uppercase font-mono tracking-wider font-semibold text-cyan-300">
-                                Sternbild füllen
+                                Sternbild fuellen
                               </span>
                               <div className="flex gap-1.5 items-center mt-0.5 text-[9px] font-mono font-black text-white">
                                 <span

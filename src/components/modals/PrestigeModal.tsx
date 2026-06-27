@@ -99,7 +99,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
             <h6
               className={`font-sans font-black text-[10px] uppercase tracking-wider font-mono ${isNight ? "text-purple-300" : "text-amber-700"}`}
             >
-              Über das Prestige-System
+              Ueber das Prestige-System
             </h6>
             <div
               className={`p-3.5 rounded-2xl border text-xs leading-relaxed space-y-2 font-semibold ${
@@ -111,12 +111,12 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
               <div className="flex gap-2">
                 <span className="text-amber-400">✦</span>
                 <p>
-                  Du kannst das Prestige durchführen, sobald du mindestens
+                  Du kannst das Prestige durchfuehren, sobald du mindestens
                   <strong className="text-amber-400">
                     {" "}
                     {formatCompactNumber(PRESTIGE_REQUIREMENT)} Leben{" "}
                   </strong>{" "}
-                  besitzt. Mit jedem Aufstieg wird diese Anforderung höher.
+                  besitzt. Mit jedem Aufstieg wird diese Anforderung hoeher.
                 </p>
               </div>
               <div className="flex gap-2">
@@ -124,7 +124,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
                 <p>
                   Ein Prestige setzt dein aktuelles{" "}
                   <strong className="text-pink-400">Leben, LPS, Tiere, Sterne</strong> und{" "}
-                  <strong className="text-pink-400">Planeten-Level</strong> zurück.
+                  <strong className="text-pink-400">Planeten-Level</strong> zurueck.
                 </p>
               </div>
               <div className="flex gap-2">
@@ -138,9 +138,9 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
               <div className="flex gap-2">
                 <span className="text-sky-400">✦</span>
                 <p>
-                  Außerdem erhältst du bei jedem Aufstieg{" "}
+                  Ausserdem erhaeltst du bei jedem Aufstieg{" "}
                   <strong className="text-sky-400">1x Sternschnuppen-Lootbox 🌠</strong>, die du im
-                  Inventar für neue Kosmetika öffnen kannst.
+                  Inventar fuer neue Kosmetika oeffnen kannst.
                 </p>
               </div>
             </div>
@@ -168,8 +168,8 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
             </div>
             <p className="text-[9px] text-cosmic-accent-muted font-semibold text-center italic">
               {canPrestige
-                ? "Bereit für den Aufstieg in den unendlichen Kosmos! ✨"
-                : `Sammle noch ${formatCompactNumber(PRESTIGE_REQUIREMENT - life)} Leben für das Prestige.`}
+                ? "Bereit fuer den Aufstieg in den unendlichen Kosmos! ✨"
+                : `Sammle noch ${formatCompactNumber(PRESTIGE_REQUIREMENT - life)} Leben fuer das Prestige.`}
             </p>
           </div>
         </div>
@@ -196,7 +196,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
               disabled
               className="w-full py-3 rounded-2xl bg-slate-850/40 border border-slate-700/30 text-gray-400 font-sans font-black text-xs uppercase tracking-widest cursor-not-allowed select-none text-center"
             >
-              Kriterium nicht erfüllt (Benötigt {formatCompactNumber(PRESTIGE_REQUIREMENT)} Leben)
+              Kriterium nicht erfuellt (Benoetigt {formatCompactNumber(PRESTIGE_REQUIREMENT)} Leben)
             </button>
           )}
 
@@ -208,7 +208,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
                 : "hover:bg-slate-200/40 text-slate-500"
             }`}
           >
-            Zurück zum Planeten
+            Zurueck zum Planeten
           </button>
         </div>
       </Modal>

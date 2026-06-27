@@ -73,7 +73,7 @@ export function generateAchievements(state: any) {
       emoji: "✧",
       titlePrefix: "Sternenstaub-Sammler",
       desc: (target: number) =>
-        `Sterne brüten und klicken ${target.toLocaleString()} Mal automatisch`,
+        `Sterne brueten und klicken ${target.toLocaleString()} Mal automatisch`,
       currentValue: starClicksTriggered,
       targets: [
         10, 50, 200, 1000, 5000, 20000, 100000, 500000, 2000000, 10000000, 50000000, 200000000,
@@ -83,7 +83,7 @@ export function generateAchievements(state: any) {
     {
       category: "planet_level",
       emoji: "🪐",
-      titlePrefix: "Welten-Evolutionär",
+      titlePrefix: "Welten-Evolutionaer",
       desc: (target: number) => `Entwickle deinen niedlichen Planeten bis auf Stufe ${target}`,
       currentValue: planetLevel,
       targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 18, 20],
@@ -109,7 +109,7 @@ export function generateAchievements(state: any) {
       emoji: "⏳",
       titlePrefix: "Zeit-Reisender",
       desc: (target: number) =>
-        `Spielzeit insgesamt im gemütlichen Kosmos: ${target >= 3600 ? Math.floor(target / 3600) + " Std." : Math.floor(target / 60) + " Min."}`,
+        `Spielzeit insgesamt im gemuetlichen Kosmos: ${target >= 3600 ? Math.floor(target / 3600) + " Std." : Math.floor(target / 60) + " Min."}`,
       currentValue: secondsPlayed,
       targets: [
         10, 30, 60, 120, 300, 600, 1200, 2400, 3600, 7200, 14400, 28800, 57600, 86400, 172800,

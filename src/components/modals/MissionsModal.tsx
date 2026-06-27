@@ -125,10 +125,10 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
                 Sternen-Aufladung
               </span>
               <h4 className="font-sans font-black text-md text-cosmic-text uppercase tracking-wide mt-3.5">
-                Nächste Aufgaben laden...
+                Naechste Aufgaben laden...
               </h4>
               <p className="text-[11px] font-bold text-[#b4addd] max-w-sm mx-auto leading-relaxed">
-                Der Himmel kalibriert sich neu. In Kürze erwarten dich 3 neue Abenteuer!
+                Der Himmel kalibriert sich neu. In Kuerze erwarten dich 3 neue Abenteuer!
               </p>
             </div>
 
@@ -159,11 +159,11 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
           /* Normal Missions List UI */
           <div className="p-4 sm:p-6 overflow-y-auto flex-grow space-y-4">
             <p className="text-[11px] sm:text-xs leading-relaxed text-center font-bold px-3 py-2.5 rounded-2xl text-cosmic-accent bg-[#221c48]/55 border border-cosmic-accent/20">
-              Löse diese schnuckeligen Aufgaben, um wertvolle{" "}
+              Loese diese schnuckeligen Aufgaben, um wertvolle{" "}
               <strong className="text-cosmic-accent font-black underline decoration-pink-300">
                 Sternschnuppen (Lootboxen)
               </strong>{" "}
-              zu verdienen! Öffne sie im Inventar für exklusive Farben, Accessoires und
+              zu verdienen! Oeffne sie im Inventar fuer exklusive Farben, Accessoires und
               Fensterrahmen! 🌠
             </p>
 
@@ -202,7 +202,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
                     {/* Status Overlay Ribbon for Claimed */}
                     {isClaimed && (
                       <div className="absolute right-3 top-3 px-2 py-0.5 rounded-full text-[9px] font-mono font-black uppercase text-green-300 bg-green-950/60 flex items-center gap-1 border border-green-500/40">
-                        <Check className="w-3 h-3" /> Eingelöst
+                        <Check className="w-3 h-3" /> Eingeloest
                       </div>
                     )}
 

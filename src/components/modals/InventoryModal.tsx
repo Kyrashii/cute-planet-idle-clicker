@@ -100,7 +100,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
           details = { nextRarity: "epic", cost: 50, name: "Episch" };
           break;
         case "epic":
-          details = { nextRarity: "legendary", cost: 120, name: "Legendär" };
+          details = { nextRarity: "legendary", cost: 120, name: "Legendaer" };
           break;
         default:
           return null;
@@ -174,7 +174,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
     // Tabs translation helpers
     const tabs = [
       { id: "star_color", label: "🪄 Click-Sterne" },
-      { id: "planet_accessory", label: "👒 Planet-Hüte" },
+      { id: "planet_accessory", label: "👒 Planet-Huete" },
       { id: "frame_style", label: "🖼️ Fensterrahmen" },
       { id: "moon_skin", label: "🌙 Mond-Skins" },
       { id: "crafted", label: "🔮 Kreationen" },
@@ -214,7 +214,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
               ☄️
             </motion.div>
             <p className="font-mono text-center font-black text-sm text-yellow-300 uppercase tracking-widest animate-pulse">
-              Öffne Sternenstaub... ✨
+              Oeffne Sternenstaub... ✨
             </p>
           </div>
         )}
@@ -338,7 +338,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
               <p
                 className={`text-[10px] font-bold opacity-75 max-w-sm ${isNight ? "text-slate-400" : "text-slate-600"}`}
               >
-                Öffne eine Sternschnuppe, um Farben für deine Autoclicker-Sterne, Hüte für den
+                Oeffne eine Sternschnuppe, um Farben fuer deine Autoclicker-Sterne, Huete fuer den
                 Planeten oder edle Fensterrahmen freizuschalten!
               </p>
             </div>
@@ -362,7 +362,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-450 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-sans font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2 border-2 border-yellow-300"
                 >
                   <Sparkles className="w-4 h-4 text-yellow-105 animate-spin" />
-                  Öffnen!
+                  Oeffnen!
                 </motion.button>
               ) : null}
             </div>
@@ -618,7 +618,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                 {(() => {
                   const items = [
                     { id: "star_gold", name: "Goldene Pracht 👑" },
-                    { id: "acc_star_crown", name: "Krönchen ♛" },
+                    { id: "acc_star_crown", name: "Kroenchen ♛" },
                     { id: "moon_gold", name: "Gold-Mond 👑" },
                   ];
                   const unlockedCount = items.filter((it) =>
@@ -723,7 +723,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                       <p className="text-[10px] text-purple-200/90 font-mono mt-1.5 bg-purple-950/25 p-1.5 rounded-lg border border-purple-500/10">
                         🎁 Vorteil:{" "}
                         <strong className="text-purple-300 font-extrabold">
-                          Stärkerer Nacht-Ertrag
+                          Staerkerer Nacht-Ertrag
                         </strong>
                       </p>
                     </div>
@@ -734,7 +734,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                 {(() => {
                   const items = [
                     { id: "star_butterfly", name: "Hauch 🦋" },
-                    { id: "acc_butterfly_wings", name: "Flügel 🦋" },
+                    { id: "acc_butterfly_wings", name: "Fluegel 🦋" },
                     { id: "frame_butterfly", name: "Garten 🦋" },
                     { id: "moon_butterfly", name: "Traum 🦋" },
                   ];
@@ -868,12 +868,12 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                             onClick={() => onUseCraftedItem?.(item.id, 1)}
                             className="flex-1 py-2 rounded-xl text-[10px] font-black uppercase text-white transition-all bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-sm cursor-pointer active:scale-[0.98] border border-green-400"
                           >
-                            1x Öffnen
+                            1x Oeffnen
                           </button>
                           <button
                             onClick={() => onUseCraftedItem?.(item.id, qty)}
                             className="flex-1 py-2 rounded-xl text-[10px] font-black uppercase text-white transition-all bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 shadow-sm cursor-pointer active:scale-[0.98] border border-teal-400"
-                            title={`Öffnet alle ${qty} Exemplare auf einmal`}
+                            title={`Oeffnet alle ${qty} Exemplare auf einmal`}
                           >
                             Alle ({qty}x)
                           </button>
@@ -883,7 +883,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                           onClick={() => onUseCraftedItem?.(item.id, 1)}
                           className="w-full py-2 rounded-xl text-[10px] font-black uppercase text-white transition-all bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-md cursor-pointer active:scale-[0.98] border border-green-450"
                         >
-                          1x Öffnen ✨
+                          1x Oeffnen ✨
                         </button>
                       )}
                     </div>
@@ -1111,7 +1111,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                             ? "bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 border-pink-400 shadow-md scale-105 active:scale-95 cursor-pointer"
                             : "bg-slate-800 text-slate-500 border-slate-700 cursor-not-allowed"
                         }`}
-                        title={`Upgrade zu ${upgradeDetails.name} (+5% global LPS Boost) für ${upgradeDetails.cost} ✨`}
+                        title={`Upgrade zu ${upgradeDetails.name} (+5% global LPS Boost) fuer ${upgradeDetails.cost} ✨`}
                       >
                         ▲ {upgradeDetails.cost}
                       </button>
@@ -1151,7 +1151,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                         <span
                           className={`text-[9.5px] uppercase font-bold leading-none ${isNight ? "text-purple-300" : "text-amber-802"}`}
                         >
-                          Ausrüsten
+                          Ausruesten
                         </span>
                       ) : hasWishUpgrade ? (
                         <button

@@ -336,7 +336,7 @@ export function getLpsAndStats(state: any) {
     totalLps *= 1.0 + state.moonsCount * moonMultiplier;
   }
 
-  // Schildkröte zodiac total passive boost (+20% total passive LPS)
+  // Schildkroete zodiac total passive boost (+20% total passive LPS)
   if (state.zodiac === "schildkroete") {
     const lvl = state.zodiacLevels?.schildkroete || 1;
     totalLps *= 1.2 + (lvl - 1) * 0.1;

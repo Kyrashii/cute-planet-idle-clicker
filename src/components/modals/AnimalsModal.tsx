@@ -236,7 +236,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                 onClick={() => setSelectedAnimal(null)}
                 className="self-start mb-4 flex items-center gap-1.5 text-xs font-black text-purple-300 hover:text-white uppercase tracking-wider font-sans transition-all cursor-pointer bg-[#1e1a42] px-3.5 py-2 rounded-full border border-cosmic-accent/30"
               >
-                <span>← Zurück zur Übersicht</span>
+                <span>← Zurueck zur Uebersicht</span>
               </button>
 
               {/* Big Presentation Circle */}
@@ -348,7 +348,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                   </div>
                 </div>
 
-                {/* Box 2: Upgrade-Bündnisse */}
+                {/* Box 2: Upgrade-Buendnisse */}
                 <div className="bg-[#201c46]/60 p-3.5 rounded-2xl border border-cosmic-accent/30 flex flex-col justify-between">
                   <span className="text-[10px] uppercase font-black tracking-wider text-purple-300 block mb-2">
                     ✨ Booster & Boni
@@ -362,7 +362,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                       },
                       {
                         key: "chick",
-                        name: "Luxus-Sternenkörner",
+                        name: "Luxus-Sternenkoerner",
                         active: upgradesSpecs.chickBoost,
                       },
                       { key: "cat", name: "Baldrian-Kissen", active: upgradesSpecs.catBoost },
@@ -388,7 +388,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                           {
                             [
                               { key: "bunny", name: "Wattebausch-Schuhe" },
-                              { key: "chick", name: "Luxus-Sternenkörner" },
+                              { key: "chick", name: "Luxus-Sternenkoerner" },
                               { key: "cat", name: "Baldrian-Kissen" },
                               { key: "frog", name: "Seerosen-Heizung" },
                               { key: "koala", name: "Gold-Eukalyptusblatt" },

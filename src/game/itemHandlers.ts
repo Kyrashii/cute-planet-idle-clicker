@@ -261,8 +261,8 @@ export function handleUseCraftedItem(
 
   const summaryText =
     count === 1
-      ? `${itemEmoji} ${itemName} geöffnet!`
-      : `${count}x ${itemEmoji} ${itemName} geöffnet!`;
+      ? `${itemEmoji} ${itemName} geoeffnet!`
+      : `${count}x ${itemEmoji} ${itemName} geoeffnet!`;
 
   return {
     lifeGained,

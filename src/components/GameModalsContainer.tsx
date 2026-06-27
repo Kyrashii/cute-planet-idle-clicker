@@ -17,6 +17,7 @@ import { InventoryModal } from "./modals/InventoryModal";
 import { ZodiacModal } from "./modals/ZodiacModal";
 import { LeaderboardModal } from "./modals/LeaderboardModal";
 import { PrestigeModal } from "./modals/PrestigeModal";
+import type { FontScaleOption } from "../hooks/useDisplayPreferences";
 
 import { INITIAL_ANIMALS, calculateCost } from "../data";
 
@@ -111,6 +112,8 @@ interface GameModalsContainerProps {
   setMusicStyleState: any;
   isLowMemory: boolean;
   setIsLowMemory: any;
+  fontScale: FontScaleOption;
+  setFontScale: (value: FontScaleOption) => void;
   user: any;
   authLoading: boolean;
   syncing: boolean;
@@ -215,6 +218,8 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
     setMusicStyleState,
     isLowMemory,
     setIsLowMemory,
+    fontScale,
+    setFontScale,
     user,
     authLoading,
     syncing,
@@ -360,6 +365,8 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
             setMusicStyleState={setMusicStyleState}
             isLowMemory={isLowMemory}
             setIsLowMemory={setIsLowMemory}
+            fontScale={fontScale}
+            setFontScale={setFontScale}
           />
         )}
 

@@ -59,9 +59,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             referrerPolicy="no-referrer"
             className={`w-12 h-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
           />
-          <span
-            className="text-[11px] uppercase tracking-wider text-center leading-normal text-indigo-200"
-          >
+          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-indigo-200">
             Tier Gehege
           </span>
         </button>
@@ -75,14 +73,12 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         >
           <img
             src="/assets/stuff/tiere_zuechten.png"
-            alt="Tiere züchten"
+            alt="Tiere zuechten"
             referrerPolicy="no-referrer"
             className={`w-12 h-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
           />
-          <span
-            className="text-[11px] uppercase tracking-wider text-center leading-normal text-[#ffcbdc]"
-          >
-            Tiere züchten
+          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-[#ffcbdc]">
+            Tiere zuechten
           </span>
 
           {/* Dynamic badge indicator count */}
@@ -104,9 +100,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             referrerPolicy="no-referrer"
             className={`w-12 h-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-pulse"}`}
           />
-          <span
-            className="text-[11px] uppercase tracking-wider text-center leading-normal text-orange-300"
-          >
+          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-orange-300">
             Schmieden
           </span>
 
@@ -129,9 +123,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             className={`w-12 h-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-spin"}`}
             style={disableAnimations ? {} : { animationDuration: "3s" }}
           />
-          <span
-            className="text-[11px] uppercase tracking-wider text-center leading-normal text-amber-200"
-          >
+          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-amber-200">
             Sterne rufen
           </span>
 
@@ -153,9 +145,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             referrerPolicy="no-referrer"
             className={`w-12 h-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-pulse"}`}
           />
-          <span
-            className="text-[11px] uppercase tracking-wider text-center leading-normal text-[#d4c3ff]"
-          >
+          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-[#d4c3ff]">
             Forschung
           </span>
 
@@ -177,9 +167,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             referrerPolicy="no-referrer"
             className={`w-12 h-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
           />
-          <span
-            className="text-[11px] uppercase tracking-wider text-center leading-normal text-amber-250"
-          >
+          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-amber-250">
             Erfolge
           </span>
 
@@ -201,9 +189,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             referrerPolicy="no-referrer"
             className={`w-12 h-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:rotate-12 transition-transform"}`}
           />
-          <span
-            className="text-[11px] uppercase tracking-wider text-center leading-normal text-teal-200"
-          >
+          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-teal-200">
             Tagebuch
           </span>
 
@@ -225,9 +211,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             referrerPolicy="no-referrer"
             className={`w-12 h-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
           />
-          <span
-            className="text-[11px] uppercase tracking-wider text-center leading-normal text-fuchsia-200"
-          >
+          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-fuchsia-200">
             Missionen
           </span>
 
@@ -253,9 +237,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             referrerPolicy="no-referrer"
             className={`w-12 h-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
           />
-          <span
-            className="text-[11px] uppercase tracking-wider text-center leading-normal text-amber-200"
-          >
+          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-amber-200">
             Inventar
           </span>
 

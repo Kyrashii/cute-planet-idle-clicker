@@ -53,7 +53,7 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = React.memo(
 
         <p className="font-sans text-xs text-cosmic-accent-muted font-semibold mt-3 leading-relaxed">
           Es wurde ein bestehender Spielstand in der Cloud gefunden! Vergleiche die Spieldaten und
-          wähle die Spielwelt aus, mit der du fortfahren möchtest.
+          waehle die Spielwelt aus, mit der du fortfahren moechtest.
         </p>
 
         {/* Side by side comparison layout */}
@@ -127,8 +127,8 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = React.memo(
 
         {/* Warning Badge */}
         <div className="mt-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10.5px] font-bold leading-normal text-left">
-          ⚠️ Achtung: Wenn du eine Option wählst, wird die jeweils andere Spielwelt unwiderruflich
-          überschrieben. Stelle sicher, dass du den richtigen Spielstand aktivierst!
+          ⚠️ Achtung: Wenn du eine Option waehlst, wird die jeweils andere Spielwelt unwiderruflich
+          ueberschrieben. Stelle sicher, dass du den richtigen Spielstand aktivierst!
         </div>
 
         {/* Action Buttons */}

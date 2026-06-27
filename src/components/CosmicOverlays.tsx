@@ -67,7 +67,7 @@ export const CosmicOverlays: React.FC<CosmicOverlaysProps> = ({
                 ? "Ein schwerwiegender Glitch hat deinen Sektor befallen! Du kannst die instabile Glitch-Galaxie betreten — klicke unten, um das Purge-Protokoll zu starten."
                 : inGlitchGalaxy
                   ? "Die systemweite Anomalie hat ihr Maximum erreicht! Initiiere das Quanten-Repair-Protokoll, um diese Galaxie zu heilen und fortzufahren."
-                  : "Bewundere deinen vollendeten Planeten! Wenn du so weit bist, klicke auf die Schaltfläche unten, um deine kosmische Galaxiereise anzutreten."}
+                  : "Bewundere deinen vollendeten Planeten! Wenn du so weit bist, klicke auf die Schaltflaeche unten, um deine kosmische Galaxiereise anzutreten."}
             </p>
           </div>
 
@@ -155,9 +155,9 @@ export const CosmicOverlays: React.FC<CosmicOverlaysProps> = ({
                 GLI_TCH_G_ALAX_Y.EXE
               </h1>
               <p className="font-mono text-xs text-rose-100 leading-relaxed mb-6 border border-rose-500/30 p-3 bg-red-950/20 rounded-md">
-                Die Realität bricht zusammen! Ein schwerwiegender Glitch hat deinen Sektor befallen.
-                Standardoperationen sind eingefroren. Starte den Quantum-Purge, um die instabile
-                Galaxie zu infiltrieren.
+                Die Realitaet bricht zusammen! Ein schwerwiegender Glitch hat deinen Sektor
+                befallen. Standardoperationen sind eingefroren. Starte den Quantum-Purge, um die
+                instabile Galaxie zu infiltrieren.
               </p>
               <div className="flex gap-3 justify-center">
                 <button
@@ -232,11 +232,11 @@ export const CosmicOverlays: React.FC<CosmicOverlaysProps> = ({
                 </h2>
                 <p className="text-xs text-rose-100/90 leading-relaxed mb-6">
                   Durch die kosmische Reparatur des instabilen Kerns kehrst du in die
-                  Standard-Realität zurück. Alle Ressourcen des aktuellen Durchlaufs werden
-                  zurückgesetzt.
+                  Standard-Realitaet zurueck. Alle Ressourcen des aktuellen Durchlaufs werden
+                  zurueckgesetzt.
                   <br />
                   <br />
-                  Du erhältst permanent:
+                  Du erhaeltst permanent:
                   <br />
                   <span className="font-extrabold text-cyan-300 font-mono text-base block mt-2">
                     🏺 +2 Galaxie-Splitter

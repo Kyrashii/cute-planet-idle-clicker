@@ -36,7 +36,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = React.memo(
               isNight ? "text-amber-350" : "text-amber-700 font-extrabold"
             }`}
           >
-            SYSTEM START & EINFÜHRUNG
+            SYSTEM START & EINFUeHRUNG
           </span>
           <h5
             className={`font-sans font-black text-sm uppercase tracking-wide leading-tight ${
@@ -51,15 +51,16 @@ export const TutorialModal: React.FC<TutorialModalProps> = React.memo(
             }`}
           >
             Tippe auf den <b>niedlichen Planeten</b> im Zentrum, um <b>Leben (💖)</b> zu sammeln und
-            EXP für seine Evolution zu generieren.
+            EXP fuer seine Evolution zu generieren.
             <br />
             <br />
-            Kaufe niedliche, flauschige <b>Tiere</b>, die passiv Leben brüten, und hole leuchtende{" "}
-            <b>Sterne</b>, die den Planeten umkreisen und jede Sekunde automatisch für dich klicken!
+            Kaufe niedliche, flauschige <b>Tiere</b>, die passiv Leben brueten, und hole leuchtende{" "}
+            <b>Sterne</b>, die den Planeten umkreisen und jede Sekunde automatisch fuer dich
+            klicken!
             <br />
             <br />
             Erforsche neue Upgrades wie den <b>Kosmischen Funken</b>, um deine Effizienz und deinen
-            evolutionären EXP-Ertrag ins Unendliche zu steigern!
+            evolutionaeren EXP-Ertrag ins Unendliche zu steigern!
           </p>
         </div>
 

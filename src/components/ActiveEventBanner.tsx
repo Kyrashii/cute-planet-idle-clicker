@@ -75,23 +75,23 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
                 <div className="flex-grow min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-[9px] uppercase font-black tracking-widest px-2.5 py-0.5 rounded-full bg-purple-600 text-white border border-black/30 font-mono shadow-sm leading-none animate-pulse">
-                      GEFÄHRLICHE SINGULARITÄT AKTIV
+                      GEFAeHRLICHE SINGULARITAeT AKTIV
                     </span>
                     <span className="font-mono text-[9px] font-black opacity-80 uppercase tracking-wider bg-black/30 px-2 py-0.5 rounded border border-white/5">
                       Kollaps in: {Math.floor(eventTimeRemaining / 60)}:
                       {(eventTimeRemaining % 60).toString().padStart(2, "0")}
                     </span>
                     <span className="font-mono text-[9px] font-black text-purple-300 tracking-wider bg-purple-950/40 px-2 py-0.5 rounded border border-purple-500/20">
-                      Größe: St. {blackHoleSize} (+{(blackHoleSize - 1) * 25}% Bonus)
+                      Groesse: St. {blackHoleSize} (+{(blackHoleSize - 1) * 25}% Bonus)
                     </span>
                   </div>
                   <h4 className="font-sans font-black text-base uppercase mt-1.5 tracking-wide text-purple-200">
                     Das Schwarze Loch ruft nach Opfern...
                   </h4>
                   <p className="text-[11px] font-medium opacity-90 leading-relaxed mt-1 max-w-xl text-purple-200/80">
-                    Am Ereignishorizont krümmt sich alles! Du kannst dem Schwarzen Loch Ressourcen
-                    opfern, um ein geheimnisvolles Quantenergebnis auszulösen. Aber Vorsicht: Es
-                    herrscht eine exakte 50/50-Chance zwischen Segen und katastrophaler Zerstörung!
+                    Am Ereignishorizont kruemmt sich alles! Du kannst dem Schwarzen Loch Ressourcen
+                    opfern, um ein geheimnisvolles Quantenergebnis auszuloesen. Aber Vorsicht: Es
+                    herrscht eine exakte 50/50-Chance zwischen Segen und katastrophaler Zerstoerung!
                   </p>
                 </div>
               </div>
@@ -110,10 +110,10 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
                 {/* Warnmeldung */}
                 <div className="text-[9.5px] font-bold text-rose-300/90 leading-relaxed bg-red-950/20 border border-red-500/20 p-2.5 rounded-xl">
                   💥 <strong>WARNUNG:</strong> Jede Opfergabe zieht die Ressourcen unwiderruflich
-                  ab! Die 20 möglichen Ergebnisse sind zu gleichen Teilen (je 5% Chance) aufgeteilt:
-                  10 grandiose Boni (z.B. Prestige, kostenloser Trabant-Mond, riesige Kisten,
-                  seltene Cosmetics oder Staub) vs. 10 herbe Verluste (z.B. Ressourcenverlust,
-                  Schwerkraft-Paralyse, Verlust von Tieren oder Trabanten).
+                  ab! Die 20 moeglichen Ergebnisse sind zu gleichen Teilen (je 5% Chance)
+                  aufgeteilt: 10 grandiose Boni (z.B. Prestige, kostenloser Trabant-Mond, riesige
+                  Kisten, seltene Cosmetics oder Staub) vs. 10 herbe Verluste (z.B.
+                  Ressourcenverlust, Schwerkraft-Paralyse, Verlust von Tieren oder Trabanten).
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-1">
@@ -151,7 +151,7 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
                           </div>
                         ) : (
                           <div className="text-[9.5px] font-semibold mt-1 text-slate-500">
-                            Min. benötigt: 10M Leben
+                            Min. benoetigt: 10M Leben
                           </div>
                         )}
                         <span className="text-[8px] font-bold opacity-75 leading-tight mt-0.5 text-slate-300 group-hover:text-white">
@@ -189,11 +189,11 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
                           </div>
                         ) : (
                           <div className="text-[9.5px] font-semibold mt-1 text-slate-500">
-                            Min. benötigt: 10 Sterne
+                            Min. benoetigt: 10 Sterne
                           </div>
                         )}
                         <span className="text-[8px] font-bold opacity-75 leading-tight mt-0.5 text-slate-300 group-hover:text-white">
-                          Erhalt gewaltige Sternensalven, seltene Skins o.ä.!
+                          Erhalt gewaltige Sternensalven, seltene Skins o.ae.!
                         </span>
                       </button>
                     );
@@ -227,11 +227,11 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
                           </div>
                         ) : (
                           <div className="text-[9.5px] font-semibold mt-1 text-slate-500">
-                            Min. benötigt: 10 Staub
+                            Min. benoetigt: 10 Staub
                           </div>
                         )}
                         <span className="text-[8px] font-bold opacity-75 leading-tight mt-0.5 text-slate-300 group-hover:text-white">
-                          Konvertiere Staub in legendäre Aufstiege oder Wachstum!
+                          Konvertiere Staub in legendaere Aufstiege oder Wachstum!
                         </span>
                       </button>
                     );
@@ -294,12 +294,12 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
                           {activeEventDecision === "ignorieren"
                             ? "🧘 Ignorieren"
                             : activeEventDetails?.options.find((o) => o.id === activeEventDecision)
-                                ?.name || "Ausgewählt"}
+                                ?.name || "Ausgewaehlt"}
                         </strong>
                       </span>
                     ) : (
                       <span className="text-rose-300 font-extrabold animate-pulse">
-                        Wähl einen Fokus! 👇
+                        Waehl einen Fokus! 👇
                       </span>
                     )}
                   </span>
@@ -391,14 +391,14 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
                       <span>🧘</span> Ignorieren
                     </div>
                     <p className="text-[9.5px] opacity-80 leading-tight text-slate-300">
-                      Ereignis träge abwarten: Erhöht Dauer um 60s, gewährt aber einen kleinen
+                      Ereignis traege abwarten: Erhoeht Dauer um 60s, gewaehrt aber einen kleinen
                       passiven LPS-Bonus.
                     </p>
                   </button>
                 </div>
                 {activeEventDecision && (
                   <p className="text-[9px] font-mono select-none text-right text-slate-400 -mt-1">
-                    *Du kannst deinen Fokus während des Events jederzeit umentscheiden!
+                    *Du kannst deinen Fokus waehrend des Events jederzeit umentscheiden!
                   </p>
                 )}
               </div>
@@ -413,7 +413,7 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
                   KOSMISCHE PROGNOSE
                 </span>
                 <h5 className="font-sans font-black text-xs uppercase text-slate-400 dark:text-slate-300">
-                  Nächstes kosmisches Ereignis nähert sich...
+                  Naechstes kosmisches Ereignis naehert sich...
                 </h5>
               </div>
             </div>

@@ -66,8 +66,8 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
           };
         case "drache":
           return {
-            current: `+${40 + (lvl - 1) * 15}% stärkere Events`,
-            next: `+${40 + lvl * 15}% stärkere Events`,
+            current: `+${40 + (lvl - 1) * 15}% staerkere Events`,
+            next: `+${40 + lvl * 15}% staerkere Events`,
           };
         case "frosch":
           return {
@@ -143,7 +143,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
             </div>
             <div>
               <span className="text-[10px] uppercase font-bold text-fuchsia-250 block leading-tight">
-                Dein kosmisches Vermögen
+                Dein kosmisches Vermoegen
               </span>
               <div className="flex items-baseline gap-1.5 mt-0.5">
                 <span className="font-mono text-2xl font-black text-[#f5d0fe]">{galaxyShards}</span>
@@ -248,7 +248,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                         </div>
                         {!isMaxLevel && (
                           <div className="flex justify-between items-center text-fuchsia-350">
-                            <span>Nächste Stufe:</span>
+                            <span>Naechste Stufe:</span>
                             <span className="font-bold text-fuchsia-300">{benefits.next}</span>
                           </div>
                         )}
@@ -293,7 +293,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                       Unendliches Schlummer-Glas
                     </h5>
                     <p className="text-[10px] sm:text-xs text-fuchsia-100/75 mt-1 leading-relaxed max-w-sm">
-                      Erhöht die maximale Kapazität der Offline-Ruhe um{" "}
+                      Erhoeht die maximale Kapazitaet der Offline-Ruhe um{" "}
                       <span className="text-amber-300 font-extrabold">+2 Stunden</span> pro Stufe!
                       Damit dehnst du deine Erntezeiten dramatisch aus.
                     </p>
@@ -406,7 +406,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                 </div>
               </div>
 
-              {/* 🌠 Sternen-Glitzer-Fänger Upgrade */}
+              {/* 🌠 Sternen-Glitzer-Faenger Upgrade */}
               <div
                 id="shard_shop_utility_catcher"
                 className="bg-[#211640] rounded-2xl border-2 border-purple-500/20 p-4 flex flex-col sm:flex-row items-center justify-between gap-4"
@@ -485,7 +485,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
         {/* Close and Bottom Panel */}
         <div className="p-4 bg-[#100824] border-t border-fuchsia-500/15 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-1.5 text-[10px] text-fuchsia-200/50 font-bold">
-            <span>Süßes Universum</span>
+            <span>Suesses Universum</span>
             <span>•</span>
             <span>Spezial-Forschung v2.0</span>
           </div>

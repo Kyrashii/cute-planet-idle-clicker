@@ -10,7 +10,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🍭",
     category: "click",
     effectDescription: "+1 click power",
-    germanEffectDescription: "+1 Klick-Stärke",
+    germanEffectDescription: "+1 Klick-Staerke",
     effect: (s) => s,
   },
   {
@@ -22,7 +22,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🧦",
     category: "animals",
     effectDescription: "Doubles Wooly Bunny speed",
-    germanEffectDescription: "Verdoppelt Häschen-Produktion",
+    germanEffectDescription: "Verdoppelt Haeschen-Produktion",
     effect: (s) => s,
   },
   {
@@ -40,13 +40,13 @@ export const STATIC_UPGRADES: Upgrade[] = [
   {
     id: "upg-chick-1",
     name: "Gourmet Seeds",
-    germanName: "Luxus-Sternenkörner",
+    germanName: "Luxus-Sternenkoerner",
     cost: 650,
     purchased: false,
     emoji: "🌾",
     category: "animals",
     effectDescription: "Doubles Pastel Chick productivity",
-    germanEffectDescription: "Verdoppelt Küken-Produktion",
+    germanEffectDescription: "Verdoppelt Kueken-Produktion",
     effect: (s) => s,
   },
   {
@@ -58,7 +58,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🧤",
     category: "click",
     effectDescription: "+5 click power",
-    germanEffectDescription: "+5 Klick-Stärke",
+    germanEffectDescription: "+5 Klick-Staerke",
     effect: (s) => s,
   },
   {
@@ -82,7 +82,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🛌",
     category: "animals",
     effectDescription: "Doubles Slumber Kitten sweetness",
-    germanEffectDescription: "Verdoppelt Kätzchen-Produktion",
+    germanEffectDescription: "Verdoppelt Kaetzchen-Produktion",
     effect: (s) => s,
   },
   {
@@ -94,7 +94,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🪄",
     category: "click",
     effectDescription: "+25 click power",
-    germanEffectDescription: "+25 Klick-Stärke",
+    germanEffectDescription: "+25 Klick-Staerke",
     effect: (s) => s,
   },
   {
@@ -112,7 +112,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
   {
     id: "upg-star-supercharger",
     name: "Constellation Charger",
-    germanName: "Sternbild-Verstärker",
+    germanName: "Sternbild-Verstaerker",
     cost: 40000,
     purchased: false,
     emoji: "🛰️",
@@ -142,7 +142,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🏹",
     category: "click",
     effectDescription: "+150 click power",
-    germanEffectDescription: "+150 Klick-Stärke",
+    germanEffectDescription: "+150 Klick-Staerke",
     effect: (s) => s,
   },
   {
@@ -166,7 +166,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "💖",
     category: "click",
     effectDescription: "Doubles your final Click Power",
-    germanEffectDescription: "Verdoppelt deine Gesamt-Klickstärke",
+    germanEffectDescription: "Verdoppelt deine Gesamt-Klickstaerke",
     effect: (s) => s,
   },
   {
@@ -184,13 +184,13 @@ export const STATIC_UPGRADES: Upgrade[] = [
   {
     id: "upg-click-5",
     name: "Divine Touch",
-    germanName: "Göttlicher Fingertipp",
+    germanName: "Goettlicher Fingertipp",
     cost: 5000000,
     purchased: false,
     emoji: "👉",
     category: "click",
     effectDescription: "+1000 click power",
-    germanEffectDescription: "+1000 Klick-Stärke",
+    germanEffectDescription: "+1000 Klick-Staerke",
     effect: (s) => s,
   },
   {
@@ -274,7 +274,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "⏳",
     category: "special",
     effectDescription: "All cosmic events last 60 seconds longer",
-    germanEffectDescription: "Alle kosmischen Ereignisse dauern 60 Sekunden länger",
+    germanEffectDescription: "Alle kosmischen Ereignisse dauern 60 Sekunden laenger",
     effect: (s) => s,
   },
   {
@@ -286,7 +286,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🧭",
     category: "special",
     effectDescription: "Reduces wait time between cosmic events by 50 seconds",
-    germanEffectDescription: "Verkürzt die Pause zwischen kosmischen Ereignissen um 50 Sekunden",
+    germanEffectDescription: "Verkuerzt die Pause zwischen kosmischen Ereignissen um 50 Sekunden",
     effect: (s) => s,
   },
   {
@@ -304,7 +304,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
   {
     id: "upg-event-aurora",
     name: "Neon Resonance Booster",
-    germanName: "Neon-Resonanzverstärker",
+    germanName: "Neon-Resonanzverstaerker",
     cost: 55000,
     purchased: false,
     emoji: "📡",
@@ -312,7 +312,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     effectDescription:
       "Stars generate double passive life during Nebelwolken events (6x instead of 3x)",
     germanEffectDescription:
-      "Sterne brüten während Nebelwolken-Events 6x mehr passive Energie (statt 3x!)",
+      "Sterne brueten waehrend Nebelwolken-Events 6x mehr passive Energie (statt 3x!)",
     effect: (s) => s,
   },
   {
@@ -336,7 +336,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🤝",
     category: "special",
     effectDescription: "Each animal breeds 33% faster during a Shooting Star Night",
-    germanEffectDescription: "Jedes Tier brütet 33% schneller während einer Sternschnuppennacht",
+    germanEffectDescription: "Jedes Tier bruetet 33% schneller waehrend einer Sternschnuppennacht",
     effect: (s) => s,
   },
   {
@@ -374,7 +374,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "💎",
     category: "special",
     effectDescription: "An eternal crystalline generator boosts total passive production by +40%!",
-    germanEffectDescription: "Erhöht deine gesamte passive Produktion dauerhaft um +40%!",
+    germanEffectDescription: "Erhoeht deine gesamte passive Produktion dauerhaft um +40%!",
     effect: (s) => s,
   },
   {
@@ -400,7 +400,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🌙",
     category: "special",
     effectDescription: "Expands orbital capacity to allow a 4th moon to orbit!",
-    germanEffectDescription: "Erweitert die Umlaufbahn, so dass Platz für einen 4. Mond entsteht!",
+    germanEffectDescription: "Erweitert die Umlaufbahn, so dass Platz fuer einen 4. Mond entsteht!",
     effect: (s) => s,
   },
   {
@@ -412,7 +412,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🌙",
     category: "special",
     effectDescription: "Expands orbital capacity to allow a 5th moon to orbit!",
-    germanEffectDescription: "Erweitert die Umlaufbahn, so dass Platz für einen 5. Mond entsteht!",
+    germanEffectDescription: "Erweitert die Umlaufbahn, so dass Platz fuer einen 5. Mond entsteht!",
     effect: (s) => s,
   },
   {
@@ -424,7 +424,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🌙",
     category: "special",
     effectDescription: "Expands orbital capacity to allow a 6th moon to orbit!",
-    germanEffectDescription: "Erweitert die Umlaufbahn, so dass Platz für einen 6. Mond entsteht!",
+    germanEffectDescription: "Erweitert die Umlaufbahn, so dass Platz fuer einen 6. Mond entsteht!",
     effect: (s) => s,
   },
   {
@@ -436,7 +436,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🌙",
     category: "special",
     effectDescription: "Expands orbital capacity to allow a 7th moon to orbit!",
-    germanEffectDescription: "Erweitert die Umlaufbahn, so dass Platz für einen 7. Mond entsteht!",
+    germanEffectDescription: "Erweitert die Umlaufbahn, so dass Platz fuer einen 7. Mond entsteht!",
     effect: (s) => s,
   },
   {
@@ -448,7 +448,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🌙",
     category: "special",
     effectDescription: "Expands orbital capacity to allow an 8th moon to orbit!",
-    germanEffectDescription: "Erweitert die Umlaufbahn, so dass Platz für einen 8. Mond entsteht!",
+    germanEffectDescription: "Erweitert die Umlaufbahn, so dass Platz fuer einen 8. Mond entsteht!",
     effect: (s) => s,
   },
   {
@@ -460,7 +460,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🌙",
     category: "special",
     effectDescription: "Expands orbital capacity to allow a 9th moon to orbit!",
-    germanEffectDescription: "Erweitert die Umlaufbahn, so dass Platz für einen 9. Mond entsteht!",
+    germanEffectDescription: "Erweitert die Umlaufbahn, so dass Platz fuer einen 9. Mond entsteht!",
     effect: (s) => s,
   },
   {
@@ -472,7 +472,8 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "🌙",
     category: "special",
     effectDescription: "Expands orbital capacity to allow a 10th moon to orbit!",
-    germanEffectDescription: "Erweitert die Umlaufbahn, so dass Platz für einen 10. Mond entsteht!",
+    germanEffectDescription:
+      "Erweitert die Umlaufbahn, so dass Platz fuer einen 10. Mond entsteht!",
     effect: (s) => s,
   },
   {
@@ -497,7 +498,7 @@ export const STATIC_UPGRADES: Upgrade[] = [
     emoji: "✨",
     category: "special",
     effectDescription: "Unlocks rarity upgrading for owned cosmetic items",
-    germanEffectDescription: "Ermöglicht das Upgraden der Seltenheit von eigenen Cosmetics",
+    germanEffectDescription: "Ermoeglicht das Upgraden der Seltenheit von eigenen Cosmetics",
     effect: (s) => s,
     costResource: "glitterDust",
   },
@@ -518,14 +519,14 @@ export const STATIC_UPGRADES: Upgrade[] = [
   {
     id: "upg-glitter-gacha",
     name: "Supercharged Gacha Magnet",
-    germanName: "Glücksbox-Magnet",
+    germanName: "Gluecksbox-Magnet",
     cost: 25,
     purchased: false,
     emoji: "🧲",
     category: "special",
     effectDescription: "Increases Legendary drop rates of Shooting Star boxes (+50% weight)",
     germanEffectDescription:
-      "Erhöht die Chance auf legendäre kosmetische Beute aus Sternschnuppen-Boxen um +50%",
+      "Erhoeht die Chance auf legendaere kosmetische Beute aus Sternschnuppen-Boxen um +50%",
     effect: (s) => s,
     costResource: "glitterDust",
   },

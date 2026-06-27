@@ -17,7 +17,15 @@ import {
   Music,
 } from "lucide-react";
 
-import { Animal, FloatingText, GameState, Upgrade, PlanetTask, ActiveCosmicEvent, PlacedAnimal } from "./types";
+import {
+  Animal,
+  FloatingText,
+  GameState,
+  Upgrade,
+  PlanetTask,
+  ActiveCosmicEvent,
+  PlacedAnimal,
+} from "./types";
 import {
   INITIAL_ANIMALS,
   calculateCost,
@@ -173,8 +181,9 @@ export default function App() {
     openInventoryModal,
   } = useModalState();
 
-  // Display / performance preferences (low-memory toggle + reduced motion)
-  const { isLowMemory, setIsLowMemory, disableAnimations } = useDisplayPreferences();
+  // Display / performance preferences (low-memory toggle, font scale + reduced motion)
+  const { isLowMemory, setIsLowMemory, fontScale, setFontScale, disableAnimations } =
+    useDisplayPreferences();
 
   // Floating "+N" reward particles (state + lifecycle owned by the hook)
   const { floatingTexts, setFloatingTexts, nextParticleId } = useFloatingTexts();
@@ -479,7 +488,7 @@ export default function App() {
           id: pId,
           x: 125,
           y: 95,
-          text: `Höhere Seltenheit! 👑 (+5% Boost)`,
+          text: `Hoehere Seltenheit! 👑 (+5% Boost)`,
           type: "star-click",
           createdAt: Date.now(),
         },
@@ -557,7 +566,8 @@ export default function App() {
         if (data.animalLove) setAnimalLove(data.animalLove);
         if (data.animalLastPet) setAnimalLastPet(data.animalLastPet);
         if (data.bowlLastFed !== undefined) setBowlLastFed(data.bowlLastFed);
-        if (data.bowlFedMinutesCredited !== undefined) setBowlFedMinutesCredited(data.bowlFedMinutesCredited);
+        if (data.bowlFedMinutesCredited !== undefined)
+          setBowlFedMinutesCredited(data.bowlFedMinutesCredited);
         if (data.unlockedCosmetics) setUnlockedCosmetics(data.unlockedCosmetics);
         if (data.activeStarColor) setActiveStarColor(data.activeStarColor);
         if (data.activeAccessory) setActiveAccessory(data.activeAccessory);
@@ -906,6 +916,15 @@ export default function App() {
     };
   }, [disableAnimations]);
 
+  useEffect(() => {
+    document.documentElement.style.fontSize = `${fontScale}%`;
+    document.documentElement.style.setProperty("--game-font-scale", `${fontScale / 100}`);
+    return () => {
+      document.documentElement.style.fontSize = "";
+      document.documentElement.style.removeProperty("--game-font-scale");
+    };
+  }, [fontScale]);
+
   // Toggle glitch galaxy class directly on document body
   useEffect(() => {
     document.body.classList.toggle("glitch-galaxy-active", inGlitchGalaxy);
@@ -1088,7 +1107,7 @@ export default function App() {
           setAutosaveNotification({
             show: true,
             text: user
-              ? "Lokale Daten & Cloud-Synchronisierung werden übertragen..."
+              ? "Lokale Daten & Cloud-Synchronisierung werden uebertragen..."
               : "Lokaler Spielfortschritt wird gesichert...",
             success: false,
           });
@@ -1710,6 +1729,8 @@ export default function App() {
             setMusicStyleState={setMusicStyleState}
             isLowMemory={isLowMemory}
             setIsLowMemory={setIsLowMemory}
+            fontScale={fontScale}
+            setFontScale={setFontScale}
             user={user}
             authLoading={authLoading}
             syncing={syncing}

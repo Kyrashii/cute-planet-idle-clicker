@@ -15,27 +15,27 @@ export interface MusicStyleDef {
 export const MUSIC_STYLES: MusicStyleDef[] = [
   {
     id: "classic",
-    name: "Gemütlicher Klassiker",
+    name: "Gemuetlicher Klassiker",
     emoji: "🌸",
-    description: "Warme, entspannende Jazz-Akkorde für kuscheliges Wohlfühlen.",
+    description: "Warme, entspannende Jazz-Akkorde fuer kuscheliges Wohlfuehlen.",
   },
   {
     id: "rainy",
     name: "Regnerisches Café",
     emoji: "☕🌧️",
-    description: "Sanfte Melodien untermalt von echtem, gemütlichem Regenrauschen.",
+    description: "Sanfte Melodien untermalt von echtem, gemuetlichem Regenrauschen.",
   },
   {
     id: "space",
     name: "Kosmischer Traum",
     emoji: "🌌",
-    description: "Tiefe, schwebende Sphärenklänge für traumfeste Sternenwanderer.",
+    description: "Tiefe, schwebende Sphaerenklaenge fuer traumfeste Sternenwanderer.",
   },
   {
     id: "chiptune",
     name: "Retro Pixel-Lofi",
     emoji: "🎮",
-    description: "Süßer 8-Bit Lofi-Charme mit nostalgischen Konsolen-Keys.",
+    description: "Suesser 8-Bit Lofi-Charme mit nostalgischen Konsolen-Keys.",
   },
   {
     id: "zen",

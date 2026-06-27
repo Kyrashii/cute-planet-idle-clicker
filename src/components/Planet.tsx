@@ -153,7 +153,7 @@ export const PLANET_THEMES = [
   {
     levelRange: [1, 1],
     name: "Pastell-Eierchen-Planet",
-    subName: "Ein junger, unberührter Planet voll sanfter Liebe.",
+    subName: "Ein junger, unberuehrter Planet voll sanfter Liebe.",
     image: "/assets/planets/01_pastell_eierchen_planet.png",
     bgColor: "from-pink-200 to-rose-300",
     continents: "rgba(255, 235, 235, 0.4)",
@@ -166,7 +166,7 @@ export const PLANET_THEMES = [
   },
   {
     levelRange: [2, 2],
-    name: "Moos-Blüten-Welt",
+    name: "Moos-Blueten-Welt",
     subName: "Kleine weiche Grasinseln und zarte Knospen erwachen.",
     image: "/assets/planets/02_moos_blueten_welt.png",
     bgColor: "from-emerald-100 to-teal-200",
@@ -180,8 +180,8 @@ export const PLANET_THEMES = [
   },
   {
     levelRange: [3, 3],
-    name: "Ozean-Wölkchen-Garten",
-    subName: "Sanfte Wölkchen gleiten über himmelblaue Ozeane.",
+    name: "Ozean-Woelkchen-Garten",
+    subName: "Sanfte Woelkchen gleiten ueber himmelblaue Ozeane.",
     image: "/assets/planets/03_ozean_woelkchen_garten.png",
     bgColor: "from-sky-200 to-blue-300",
     continents: "rgba(255, 255, 255, 0.35)",
@@ -208,8 +208,8 @@ export const PLANET_THEMES = [
   },
   {
     levelRange: [5, 5],
-    name: "Lollipop-Süßwald",
-    subName: "Kandierte Ozeane und Wälder aus bunter Zuckerwatte.",
+    name: "Lollipop-Suesswald",
+    subName: "Kandierte Ozeane und Waelder aus bunter Zuckerwatte.",
     image: "/assets/planets/05_lollipop_suesswald.png",
     bgColor: "from-[#fef08a] via-[#fbcfe8] to-[#f472b6]",
     continents: "rgba(253, 242, 248, 0.5)",
@@ -223,7 +223,7 @@ export const PLANET_THEMES = [
   {
     levelRange: [6, 6],
     name: "Cyber-Neon-Oase",
-    subName: "Ein digitaler Traum aus flüssigem Licht und glühendem Neon-Raster.",
+    subName: "Ein digitaler Traum aus fluessigem Licht und gluehendem Neon-Raster.",
     image: "/assets/planets/06_cyber_neon_oase.png",
     bgColor: "from-[#06b6d4] to-[#1e1b4b]",
     continents: "rgba(6, 182, 212, 0.25)",
@@ -251,7 +251,7 @@ export const PLANET_THEMES = [
   {
     levelRange: [8, 8],
     name: "Lava-Karit-Grotte",
-    subName: "Feuriges flüssiges Gestein glimmt harmonisch in der Nacht.",
+    subName: "Feuriges fluessiges Gestein glimmt harmonisch in der Nacht.",
     image: "/assets/planets/08_lava_karit_grotte.png",
     bgColor: "from-[#f97316] via-[#ef4444] to-[#451a03]",
     continents: "rgba(254, 215, 170, 0.3)",
@@ -265,7 +265,7 @@ export const PLANET_THEMES = [
   {
     levelRange: [9, 9],
     name: "Auroras Goldene Krone",
-    subName: "Königliches Schimmern umgibt den von Sternenwind umwehten Götterplaneten.",
+    subName: "Koenigliches Schimmern umgibt den von Sternenwind umwehten Goetterplaneten.",
     image: "/assets/planets/09_auroras_goldene_krone.png",
     bgColor: "from-[#fef08a] via-[#fbbf24] to-[#78350f]",
     continents: "rgba(254, 243, 199, 0.5)",
@@ -279,7 +279,7 @@ export const PLANET_THEMES = [
   {
     levelRange: [10, 10],
     name: "Kuschel-Utopia",
-    subName: "Die ultimative Komfort-Zone voll Glück, Sternenstaub und Harmonie.",
+    subName: "Die ultimative Komfort-Zone voll Glueck, Sternenstaub und Harmonie.",
     image: "/assets/planets/10_kuschel_utopia.png",
     bgColor: "from-[#fef3c7] via-[#fecdd3] to-[#ec4899] animate-pulse",
     continents: "rgba(254, 243, 199, 0.5)",
@@ -307,7 +307,7 @@ export const PLANET_THEMES = [
   {
     levelRange: [12, 12],
     name: "Kirschmond-Planet",
-    subName: "Zarte Kirschblütenblätter glitzern im ewigen Schein des roten Begleiters.",
+    subName: "Zarte Kirschbluetenblaetter glitzern im ewigen Schein des roten Begleiters.",
     image: "/assets/planets/12_kirschmond_planet.png",
     bgColor: "from-rose-100 via-pink-200 to-red-300",
     continents: "rgba(254, 226, 226, 0.4)",
@@ -321,7 +321,7 @@ export const PLANET_THEMES = [
   {
     levelRange: [13, 13],
     name: "Glitzerpfoten-Planet",
-    subName: "Ein magischer Kosmos, geformt wie die weichste aller Pfötchen.",
+    subName: "Ein magischer Kosmos, geformt wie die weichste aller Pfoetchen.",
     image: "/assets/planets/13_glitzerpfoten_planet.png",
     bgColor: "from-purple-100 via-fuchsia-200 to-indigo-300",
     continents: "rgba(245, 243, 255, 0.45)",
@@ -335,7 +335,7 @@ export const PLANET_THEMES = [
   {
     levelRange: [14, 14],
     name: "Traumblasen-Planet",
-    subName: "Irisierende schillernde Blasen platzen friedlich und verstreuen süße Träume.",
+    subName: "Irisierende schillernde Blasen platzen friedlich und verstreuen suesse Traeume.",
     image: "/assets/planets/14_traumblasen_planet.png",
     bgColor: "from-teal-100 via-[#e0f2fe] to-[#caa5fe]",
     continents: "rgba(204, 251, 241, 0.4)",
@@ -349,7 +349,7 @@ export const PLANET_THEMES = [
   {
     levelRange: [15, 15],
     name: "Honigstern-Planet",
-    subName: "Klebrig-süßer goldener Nektar fließt durch schillernde Honigwaben.",
+    subName: "Klebrig-suesser goldener Nektar fliesst durch schillernde Honigwaben.",
     image: "/assets/planets/15_honigstern_planet.png",
     bgColor: "from-[#fef3c7] via-[#fde68a] to-[#d97706]",
     continents: "rgba(254, 243, 199, 0.5)",
@@ -377,7 +377,7 @@ export const PLANET_THEMES = [
   {
     levelRange: [17, 17],
     name: "Kuschelkomet-Planet",
-    subName: "Ein kometenhafter Schweif aus bunten Plüsch-Kristallen tanzt am Horizont.",
+    subName: "Ein kometenhafter Schweif aus bunten Pluesch-Kristallen tanzt am Horizont.",
     image: "/assets/planets/17_kuschelkomet_planet.png",
     bgColor: "from-[#fdf2f8] via-[#fbcfe8] to-[#9d174d]",
     continents: "rgba(253, 242, 248, 0.45)",
@@ -391,7 +391,7 @@ export const PLANET_THEMES = [
   {
     levelRange: [18, 18],
     name: "Zuckerstern-Garten",
-    subName: "Pastellene Pfade führen durch spielerisch gewachsene Zuckerbaum-Kapriolen.",
+    subName: "Pastellene Pfade fuehren durch spielerisch gewachsene Zuckerbaum-Kapriolen.",
     image: "/assets/planets/18_zuckerstern_garten.png",
     bgColor: "from-[#fff7ed] via-[#ffedd5] to-[#ea580c]",
     continents: "rgba(255, 247, 237, 0.5)",
@@ -405,7 +405,7 @@ export const PLANET_THEMES = [
   {
     levelRange: [19, 19],
     name: "Aurora-Flausch-Planet",
-    subName: "Die magischsten Polarfarben hüllen diesen ultra-weichen Kuschelkern ein.",
+    subName: "Die magischsten Polarfarben huellen diesen ultra-weichen Kuschelkern ein.",
     image: "/assets/planets/19_aurora_flausch_planet.png",
     bgColor: "from-[#e0f7fa] via-[#e8eaf6] to-[#ab47bc]",
     continents: "rgba(224, 242, 241, 0.45)",
@@ -419,7 +419,7 @@ export const PLANET_THEMES = [
   {
     levelRange: [20, Infinity],
     name: "Herzgalaxie-Planet",
-    subName: "Das pulsierende Liebes-Zentrum der gesamten Galaxie – ewiges Glück ist vollendet.",
+    subName: "Das pulsierende Liebes-Zentrum der gesamten Galaxie – ewiges Glueck ist vollendet.",
     image: "/assets/planets/20_herzgalaxie_planet.png",
     bgColor: "from-[#fff1f2] via-[#fecdd3] to-[#e11d48] animate-pulse",
     continents: "rgba(255, 241, 242, 0.55)",
@@ -851,7 +851,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(
             return (
               <button
                 onClick={onOpenZodiacModal}
-                title="Klicke für Details"
+                title="Klicke fuer Details"
                 className={`mt-4 w-full flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-[11px] font-bold border shadow-sm transition-all hover:scale-[1.01] active:scale-95 cursor-pointer ${
                   isNight
                     ? "bg-[#251f4d]/85 hover:bg-[#322769] text-purple-200 border-purple-500/30 hover:border-purple-400/50"

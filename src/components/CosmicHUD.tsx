@@ -87,7 +87,7 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(
         <div
           id="hud-prestige-btn"
           className="flex items-center gap-1 sm:gap-1.5 text-xs font-semibold py-1 px-2.5 rounded-xl border border-purple-500/20 bg-[#181333]/40 text-cosmic-accent-muted select-none cursor-help"
-          title="Dauerhafter Bonus durch Vollendung deines Planeten auf Level 20! Jede Galaxiereise erhöht deine Prestige-Stufe."
+          title="Dauerhafter Bonus durch Vollendung deines Planeten auf Level 20! Jede Galaxiereise erhoeht deine Prestige-Stufe."
         >
           <Award className="w-3.5 h-3.5 shrink-0 text-amber-300 fill-amber-300/10" />
           <span className="text-[10px] hidden md:inline text-cosmic-accent-muted">Prestige:</span>

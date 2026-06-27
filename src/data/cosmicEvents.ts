@@ -24,13 +24,13 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
     id: "solar_storm",
     name: "Solarer Supersturm",
     description:
-      "Ein gewaltiger Sonnenwind lädt das Magnetfeld deines Planeten auf. Strömendes Plasma wartet auf Verwertung!",
+      "Ein gewaltiger Sonnenwind laedt das Magnetfeld deines Planeten auf. Stroemendes Plasma wartet auf Verwertung!",
     emoji: "☀️",
     options: [
       {
         id: "solar_opt_1",
-        name: "Kollektoren öffnen",
-        description: "Bündelt Strahlung: Generiert massiven +400% LPS-Schub!",
+        name: "Kollektoren oeffnen",
+        description: "Buendelt Strahlung: Generiert massiven +400% LPS-Schub!",
         effectType: "lps_boost_4x",
         isInstant: false,
       },
@@ -50,8 +50,8 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       },
       {
         id: "solar_opt_4",
-        name: "Fusion zünden",
-        description: "Verschmilzt Heliumkerne: Schüttet sofort +35 Sterne aus!",
+        name: "Fusion zuenden",
+        description: "Verschmilzt Heliumkerne: Schuettet sofort +35 Sterne aus!",
         effectType: "instant_stars",
         isInstant: true,
         bonusStars: 35,
@@ -70,13 +70,13 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
     id: "nebula_cloud",
     name: "Interstellare Nebelwolke",
     description:
-      "Ein farbenfroher, dichter Nebel voller seltener Gase umhüllt die Planetenumlaufbahn.",
+      "Ein farbenfroher, dichter Nebel voller seltener Gase umhuellt die Planetenumlaufbahn.",
     emoji: "☁️",
     options: [
       {
         id: "nebula_opt_1",
         name: "Gas-Katalysator",
-        description: "Wärmt Tiere auf: Sie brüten mit genialem +500% passiven Ertrag!",
+        description: "Waermt Tiere auf: Sie brueten mit genialem +500% passiven Ertrag!",
         effectType: "animal_boost_5x",
         isInstant: false,
       },
@@ -97,7 +97,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "nebula_opt_4",
         name: "Nebelkondensat",
-        description: "Flüssiges Gas kondensieren: Bringt sofort +16 Glitzerstaub!",
+        description: "Fluessiges Gas kondensieren: Bringt sofort +16 Glitzerstaub!",
         effectType: "instant_dust",
         isInstant: true,
         bonusDust: 16,
@@ -105,7 +105,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "nebula_opt_5",
         name: "Lebensspende",
-        description: "Saugt Energie auf: Gewährt sofort +45.000.000 Lebensfunken!",
+        description: "Saugt Energie auf: Gewaehrt sofort +45.000.000 Lebensfunken!",
         effectType: "instant_life",
         isInstant: true,
         bonusLife: 45000000,
@@ -122,21 +122,21 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "comet_opt_1",
         name: "Supraleitung",
-        description: "Nutzt extreme Kälte: Erhöht deine Klickkraft um sagenhafte +600%!",
+        description: "Nutzt extreme Kaelte: Erhoeht deine Klickkraft um sagenhafte +600%!",
         effectType: "click_boost_6x",
         isInstant: false,
       },
       {
         id: "comet_opt_2",
         name: "Hydrierung",
-        description: "Wässert die Flora: Verdreifacht das passive Tier-Leben (+200% LPS)!",
+        description: "Waessert die Flora: Verdreifacht das passive Tier-Leben (+200% LPS)!",
         effectType: "lps_boost_2x",
         isInstant: false,
       },
       {
         id: "comet_opt_3",
         name: "Eiskern bergen",
-        description: "Zerschlägt Eisbrocken: Erhalte auf der Stelle +45 Sterne!",
+        description: "Zerschlaegt Eisbrocken: Erhalte auf der Stelle +45 Sterne!",
         effectType: "instant_stars",
         isInstant: true,
         bonusStars: 45,
@@ -151,8 +151,8 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       },
       {
         id: "comet_opt_5",
-        name: "Energietrümmer",
-        description: "Kosmischer Trümmersegen: Erhalte sofort +80.000.000 Lebensenergie!",
+        name: "Energietruemmer",
+        description: "Kosmischer Truemmersegen: Erhalte sofort +80.000.000 Lebensenergie!",
         effectType: "instant_life",
         isInstant: true,
         bonusLife: 80000000,
@@ -163,19 +163,19 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
     id: "stellar_conjunction",
     name: "Stellare Konjunktion",
     description:
-      "Mehrere Nachbarsterne und Monde stehen in perfekter Flucht und bündeln die Gravitation deines Systems.",
+      "Mehrere Nachbarsterne und Monde stehen in perfekter Flucht und buendeln die Gravitation deines Systems.",
     emoji: "🪐",
     options: [
       {
         id: "conjunction_opt_1",
         name: "Gravitations-Sog",
-        description: "Kräfte konzentrieren: Bringt genialen +500% LPS-Einnahmenschub!",
+        description: "Kraefte konzentrieren: Bringt genialen +500% LPS-Einnahmenschub!",
         effectType: "lps_boost_5x",
         isInstant: false,
       },
       {
         id: "conjunction_opt_2",
-        name: "Orbitale Synchronität",
+        name: "Orbitale Synchronitaet",
         description: "Rotiert Sterne: Sternenergie steigt an (+600% Rotationsschub)!",
         effectType: "star_boost_6x",
         isInstant: false,
@@ -183,7 +183,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "conjunction_opt_3",
         name: "Glitzersand-Sog",
-        description: "Besseres Schürfen: Bringt sofort +14 Glitzerstaub!",
+        description: "Besseres Schuerfen: Bringt sofort +14 Glitzerstaub!",
         effectType: "instant_dust",
         isInstant: true,
         bonusDust: 14,
@@ -199,7 +199,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "conjunction_opt_5",
         name: "Trabantensog",
-        description: "Zieht kosmischen Mond an: Gewährt sofort +1 Trabanten-Mond!",
+        description: "Zieht kosmischen Mond an: Gewaehrt sofort +1 Trabanten-Mond!",
         effectType: "instant_moons",
         isInstant: true,
         bonusMoons: 1,
@@ -210,20 +210,20 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
     id: "wormhole",
     name: "Instabiles Wurmloch",
     description:
-      "Eine Raumzeit-Krümmung vibriert direkt am Horizont! Es ist hocheffektiv, aber schließt sich bald.",
+      "Eine Raumzeit-Kruemmung vibriert direkt am Horizont! Es ist hocheffektiv, aber schliesst sich bald.",
     emoji: "🌀",
     options: [
       {
         id: "wormhole_opt_1",
         name: "Energie-Kanalisierung",
-        description: "Zieht Kraft aus Drüsen: Klicks bringen absurd starke +800% Lebenskraft!",
+        description: "Zieht Kraft aus Druesen: Klicks bringen absurd starke +800% Lebenskraft!",
         effectType: "click_boost_8x",
         isInstant: false,
       },
       {
         id: "wormhole_opt_2",
         name: "Raumzeit-Vortex",
-        description: "Beschleunigt die Evolution: Erhöht LPS der Tiere um +450%!",
+        description: "Beschleunigt die Evolution: Erhoeht LPS der Tiere um +450%!",
         effectType: "animal_boost_4.5x",
         isInstant: false,
       },
@@ -237,8 +237,8 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       },
       {
         id: "wormhole_opt_4",
-        name: "Zukunftspäckchen",
-        description: "Zieht zukünftige Sterne an: Gewährt sofort +60 Sterne!",
+        name: "Zukunftspaeckchen",
+        description: "Zieht zukuenftige Sterne an: Gewaehrt sofort +60 Sterne!",
         effectType: "instant_stars",
         isInstant: true,
         bonusStars: 60,
@@ -263,14 +263,14 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "dust_opt_1",
         name: "Statischer Sammler",
-        description: "Zieht Partikel an: Ermöglicht satte 25% Klickchance auf +2 Glitzerstaub!",
+        description: "Zieht Partikel an: Ermoeglicht satte 25% Klickchance auf +2 Glitzerstaub!",
         effectType: "glitter_click_2",
         isInstant: false,
       },
       {
         id: "dust_opt_2",
         name: "Reibung Klicks",
-        description: "Statische Klicks: Verleiht +450% Klickstärke!",
+        description: "Statische Klicks: Verleiht +450% Klickstaerke!",
         effectType: "click_boost_4.5x",
         isInstant: false,
       },
@@ -285,7 +285,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "dust_opt_4",
         name: "Wirbel-Sterne",
-        description: "Sterne wirbeln wild auf: Schüttet direkt +35 Sterne aus!",
+        description: "Sterne wirbeln wild auf: Schuettet direkt +35 Sterne aus!",
         effectType: "instant_stars",
         isInstant: true,
         bonusStars: 35,
@@ -293,7 +293,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "dust_opt_5",
         name: "Wind-Energie",
-        description: "Kinetische Atmosphäre: Flutet das System mit +50.000.000 Leben!",
+        description: "Kinetische Atmosphaere: Flutet das System mit +50.000.000 Leben!",
         effectType: "instant_life",
         isInstant: true,
         bonusLife: 50000000,
@@ -304,27 +304,27 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
     id: "lunar_eclipse",
     name: "Seltene Mondfinsternis",
     description:
-      "Ein seltener, mystischer Schatten hüllt deine Monde ein und weckt uralte unentdeckte Kräfte.",
+      "Ein seltener, mystischer Schatten huellt deine Monde ein und weckt uralte unentdeckte Kraefte.",
     emoji: "🌑",
     options: [
       {
         id: "eclipse_opt_1",
         name: "Finsternis-Gesang",
-        description: "Uralter Flüsterton: Erhöht Tier-LPS um starke +500%!",
+        description: "Uralter Fluesterton: Erhoeht Tier-LPS um starke +500%!",
         effectType: "animal_boost_5x",
         isInstant: false,
       },
       {
         id: "eclipse_opt_2",
         name: "Schatten-Rotoren",
-        description: "Dunkle Kräfte nutzen: Sterne kreisen +500% rasanter!",
+        description: "Dunkle Kraefte nutzen: Sterne kreisen +500% rasanter!",
         effectType: "star_boost_5x",
         isInstant: false,
       },
       {
         id: "eclipse_opt_3",
         name: "Okkulter Glitzer",
-        description: "Schatten weichen auf: Gewährt sofort +15 Glitzerstaub!",
+        description: "Schatten weichen auf: Gewaehrt sofort +15 Glitzerstaub!",
         effectType: "instant_dust",
         isInstant: true,
         bonusDust: 15,
@@ -332,7 +332,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "eclipse_opt_4",
         name: "Trabantenschwung",
-        description: "Zieht einen Mond an: Gewährt +1 Mond sowie +25 Sterne!",
+        description: "Zieht einen Mond an: Gewaehrt +1 Mond sowie +25 Sterne!",
         effectType: "instant_moons",
         isInstant: true,
         bonusMoons: 1,
@@ -349,36 +349,36 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
   },
   {
     id: "precession_wave",
-    name: "Präzessions-Gravitationswelle",
+    name: "Praezessions-Gravitationswelle",
     description:
-      "Eine sanfte Schwingung der Planetenachse füllt die Natur mit herrlicher spiritueller Kraft.",
+      "Eine sanfte Schwingung der Planetenachse fuellt die Natur mit herrlicher spiritueller Kraft.",
     emoji: "🌊",
     options: [
       {
         id: "precession_opt_1",
         name: "Symphonische Welle",
-        description: "Süßer Naturklon: Verleiht sagenhafte +500% LPS-Energie!",
+        description: "Suesser Naturklon: Verleiht sagenhafte +500% LPS-Energie!",
         effectType: "lps_boost_5x",
         isInstant: false,
       },
       {
         id: "precession_opt_2",
         name: "Vibrations-Klicks",
-        description: "Klingende Hände: Verleiht +400% Klick-Power!",
+        description: "Klingende Haende: Verleiht +400% Klick-Power!",
         effectType: "click_boost_4x",
         isInstant: false,
       },
       {
         id: "precession_opt_3",
-        name: "Resonanzschürfen",
-        description: "Sand schwingt: Gewährt 15% Klickchance auf +3 Glitzerstaub!",
+        name: "Resonanzschuerfen",
+        description: "Sand schwingt: Gewaehrt 15% Klickchance auf +3 Glitzerstaub!",
         effectType: "glitter_click_3",
         isInstant: false,
       },
       {
         id: "precession_opt_4",
         name: "Kosmischer Rhythmus",
-        description: "Herztakt-Ertrag: Gewährt sofort +40 Sterne!",
+        description: "Herztakt-Ertrag: Gewaehrt sofort +40 Sterne!",
         effectType: "instant_stars",
         isInstant: true,
         bonusStars: 40,
@@ -386,7 +386,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "precession_opt_5",
         name: "Schwingungsbeute",
-        description: "Glanzfunken der Welle: Schüttet direkt +12 Glitzerstaub aus!",
+        description: "Glanzfunken der Welle: Schuettet direkt +12 Glitzerstaub aus!",
         effectType: "instant_dust",
         isInstant: true,
         bonusDust: 12,
@@ -402,8 +402,8 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
     options: [
       {
         id: "hyper_opt_1",
-        name: "Solarschilde überladen",
-        description: "Fängt Sonnenstrahlen: Bringt epische +600% LPS!",
+        name: "Solarschilde ueberladen",
+        description: "Faengt Sonnenstrahlen: Bringt epische +600% LPS!",
         effectType: "lps_boost_6x",
         isInstant: false,
       },
@@ -417,14 +417,14 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "hyper_opt_3",
         name: "Photonenladung",
-        description: "Sammele reines Licht: Fügt sofort +50 Sterne hinzu!",
+        description: "Sammele reines Licht: Fuegt sofort +50 Sterne hinzu!",
         effectType: "instant_stars",
         isInstant: true,
         bonusStars: 50,
       },
       {
         id: "hyper_opt_4",
-        name: "Strahlendes Vermächtnis",
+        name: "Strahlendes Vermaechtnis",
         description: "Gepresstes Licht: Schenkt sofort +16 Glitzerstaub!",
         effectType: "instant_dust",
         isInstant: true,
@@ -432,7 +432,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       },
       {
         id: "hyper_opt_5",
-        name: "Heißer Mega-Ertrag",
+        name: "Heisser Mega-Ertrag",
         description: "Sonnenexplosion: Spendet unschlagbare +160.000.000 Lebensfunken!",
         effectType: "instant_life",
         isInstant: true,
@@ -444,7 +444,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
     id: "galaxy_collision",
     name: "Zwerggalaxien-Verschmelzung",
     description:
-      "Im Hintergrund nähern sich dichte Sternenschweife einer fremden Zwerggalaxie und erzeugen galaktische Wunder.",
+      "Im Hintergrund naehern sich dichte Sternenschweife einer fremden Zwerggalaxie und erzeugen galaktische Wunder.",
     emoji: "🌀",
     options: [
       {
@@ -472,7 +472,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "collision_opt_4",
         name: "Sternenkongress",
-        description: "Fremdes Sternenlicht einverleiben: Gewährt direkt +55 Sterne!",
+        description: "Fremdes Sternenlicht einverleiben: Gewaehrt direkt +55 Sterne!",
         effectType: "instant_stars",
         isInstant: true,
         bonusStars: 55,
@@ -480,7 +480,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "collision_opt_5",
         name: "Verschmelzungspuls",
-        description: "Maximaler Kosmos-Ertrag: Gibt sofort fette +220.000.000 Lebenskräfte!",
+        description: "Maximaler Kosmos-Ertrag: Gibt sofort fette +220.000.000 Lebenskraefte!",
         effectType: "instant_life",
         isInstant: true,
         bonusLife: 220000000,
@@ -504,7 +504,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "gamma_opt_2",
         name: "Vorteilhafte Mutation",
-        description: "Tiere passen sich an: Gewährt sagenhafte +450% LPS-Effizienz!",
+        description: "Tiere passen sich an: Gewaehrt sagenhafte +450% LPS-Effizienz!",
         effectType: "animal_boost_4.5x",
         isInstant: false,
       },
@@ -550,8 +550,8 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       },
       {
         id: "dark_opt_2",
-        name: "Trägheits-Schleife",
-        description: "Gravitatives Momentum: Erhöht die Sternrotation permanent um +400%!",
+        name: "Traegheits-Schleife",
+        description: "Gravitatives Momentum: Erhoeht die Sternrotation permanent um +400%!",
         effectType: "star_boost_4x",
         isInstant: false,
       },
@@ -566,15 +566,15 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "dark_opt_4",
         name: "Schattenscherbe",
-        description: "Dunkle Himmelskörper bergen: Gewährt sofort +40 Sterne!",
+        description: "Dunkle Himmelskoerper bergen: Gewaehrt sofort +40 Sterne!",
         effectType: "instant_stars",
         isInstant: true,
         bonusStars: 40,
       },
       {
         id: "dark_opt_5",
-        name: "Singularität nutzen",
-        description: "Implosions-Lebensstrom: Verleiht direkt +90.000.000 Lebenskräfte!",
+        name: "Singularitaet nutzen",
+        description: "Implosions-Lebensstrom: Verleiht direkt +90.000.000 Lebenskraefte!",
         effectType: "instant_life",
         isInstant: true,
         bonusLife: 90000000,
@@ -585,7 +585,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
     id: "plasma_vortex",
     name: "Polarer Plasmastrudel",
     description:
-      "Superheißes ionisiertes Gas umströmt die wunderschönen Polarlichter deines Planeten.",
+      "Superheisses ionisiertes Gas umstroemt die wunderschoenen Polarlichter deines Planeten.",
     emoji: "🔥",
     options: [
       {
@@ -598,14 +598,14 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "plasma_opt_2",
         name: "Eis-Funken",
-        description: "Klicks sprühen Strom: Erhalte eine 20% Klickchance auf +2 Glitzerstaub!",
+        description: "Klicks spruehen Strom: Erhalte eine 20% Klickchance auf +2 Glitzerstaub!",
         effectType: "glitter_click_2",
         isInstant: false,
       },
       {
         id: "plasma_opt_3",
         name: "Plasmakern knacken",
-        description: "Direktes Plasma extrahieren: Gewährt sofort +16 Glitzerstaub!",
+        description: "Direktes Plasma extrahieren: Gewaehrt sofort +16 Glitzerstaub!",
         effectType: "instant_dust",
         isInstant: true,
         bonusDust: 16,
@@ -613,7 +613,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "plasma_opt_4",
         name: "Nordfunken-Sterne",
-        description: "Elektrische Entladung: Lädt sofort +42 Sterne im System auf!",
+        description: "Elektrische Entladung: Laedt sofort +42 Sterne im System auf!",
         effectType: "instant_stars",
         isInstant: true,
         bonusStars: 42,
@@ -669,7 +669,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "neutron_opt_5",
         name: "Frequenzheilung",
-        description: "Harmonisierte Funkenwelle: Gewährt sofort +99.999.999 Lebensenergie!",
+        description: "Harmonisierte Funkenwelle: Gewaehrt sofort +99.999.999 Lebensenergie!",
         effectType: "instant_life",
         isInstant: true,
         bonusLife: 99999999,
@@ -700,14 +700,14 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "quantum_opt_3",
         name: "Heisenbergs Schatz",
-        description: "Teilchen verdichten: Gewährt auf einen Schlag +14 Glitzerstaub!",
+        description: "Teilchen verdichten: Gewaehrt auf einen Schlag +14 Glitzerstaub!",
         effectType: "instant_dust",
         isInstant: true,
         bonusDust: 14,
       },
       {
         id: "quantum_opt_4",
-        name: "Unschärfe-Sterne",
+        name: "Unschaerfe-Sterne",
         description: "Spontaner Himmelsfunke: Verschafft sofort +36 neue Sterne!",
         effectType: "instant_stars",
         isInstant: true,
@@ -716,7 +716,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "quantum_opt_5",
         name: "Spontane Entladung",
-        description: "Teilcheneruptions-Energie: Gewährt sofort +88.888.888 Lebensfunken!",
+        description: "Teilcheneruptions-Energie: Gewaehrt sofort +88.888.888 Lebensfunken!",
         effectType: "instant_life",
         isInstant: true,
         bonusLife: 88888888,
@@ -725,7 +725,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
   },
   {
     id: "asteroid_belt",
-    name: "Asteroidengürtel-Durchquerung",
+    name: "Asteroidenguertel-Durchquerung",
     description:
       "Dein niedlicher Planet bewegt sich durch ein dichtes Feld an Asteroiden voll wertvoller Ressourcen.",
     emoji: "🧱",
@@ -740,14 +740,14 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "asteroid_opt_2",
         name: "Silikat-Filterung",
-        description: "Besseres Gestein schürfen: Gibt 15% Klickchance auf +3 Glitzerstaub!",
+        description: "Besseres Gestein schuerfen: Gibt 15% Klickchance auf +3 Glitzerstaub!",
         effectType: "glitter_click_3",
         isInstant: false,
       },
       {
         id: "asteroid_opt_3",
         name: "Meteoriten-Stau",
-        description: "Schatzkiste zerschmettern: Gewährt auf einen Schlag +45 Sterne!",
+        description: "Schatzkiste zerschmettern: Gewaehrt auf einen Schlag +45 Sterne!",
         effectType: "instant_stars",
         isInstant: true,
         bonusStars: 45,
@@ -763,7 +763,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "asteroid_opt_5",
         name: "Erzkern bergen",
-        description: "Verkauft geborgenes Gestein: Gewährt direkt +130.000.000 Lebenskräfte!",
+        description: "Verkauft geborgenes Gestein: Gewaehrt direkt +130.000.000 Lebenskraefte!",
         effectType: "instant_life",
         isInstant: true,
         bonusLife: 130000000,
@@ -774,7 +774,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
     id: "stella_nursery",
     name: "Kosmische Sternenwiege",
     description:
-      "Ein gigantischer interstellarer Nebel kollabiert direkt vor euren Augen und zündet tausende neue Sterne.",
+      "Ein gigantischer interstellarer Nebel kollabiert direkt vor euren Augen und zuendet tausende neue Sterne.",
     emoji: "🍼",
     options: [
       {
@@ -787,14 +787,14 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "nursery_opt_2",
         name: "Inkubator-Thermik",
-        description: "Verjüngendes Glimmen: Tiere steigern den Ertrag um +450%!",
+        description: "Verjuengendes Glimmen: Tiere steigern den Ertrag um +450%!",
         effectType: "animal_boost_4.5x",
         isInstant: false,
       },
       {
         id: "nursery_opt_3",
-        name: "Stellare Zündung",
-        description: "Zündet neue Gasflammen: Schenkt sofort grandiose +65 Sterne!",
+        name: "Stellare Zuendung",
+        description: "Zuendet neue Gasflammen: Schenkt sofort grandiose +65 Sterne!",
         effectType: "instant_stars",
         isInstant: true,
         bonusStars: 65,
@@ -810,7 +810,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "nursery_opt_5",
         name: "Geburt-Wachstumsschub",
-        description: "Energie der Neuschöpfung: Gibt sofort +60.000.000 Lebensenergie!",
+        description: "Energie der Neuschoepfung: Gibt sofort +60.000.000 Lebensenergie!",
         effectType: "instant_life",
         isInstant: true,
         bonusLife: 60000000,
@@ -821,12 +821,12 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
     id: "time_warp",
     name: "Verzerrte Chronos-Spalte",
     description:
-      "Ein lokales Wurmloch stört das kosmische Kontinuum und lässt die Zeit ungleichmäßig rasen.",
+      "Ein lokales Wurmloch stoert das kosmische Kontinuum und laesst die Zeit ungleichmaessig rasen.",
     emoji: "⏳",
     options: [
       {
         id: "warp_opt_1",
-        name: "Schnellzeit-Drüsen",
+        name: "Schnellzeit-Druesen",
         description: "Tiere im Zeitraffer: Generiert geniale +450% LPS!",
         effectType: "lps_boost_4.5x",
         isInstant: false,
@@ -834,7 +834,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "warp_opt_2",
         name: "Tachyonen-Tippen",
-        description: "Schnellzeitklicks: Gewährt +500% Klickkraft!",
+        description: "Schnellzeitklicks: Gewaehrt +500% Klickkraft!",
         effectType: "click_boost_5x",
         isInstant: false,
       },
@@ -849,7 +849,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "warp_opt_4",
         name: "Zeitschleifen-Sterne",
-        description: "Starrheftzerrung: Fügt sofort +35 Sterne hinzu!",
+        description: "Starrheftzerrung: Fuegt sofort +35 Sterne hinzu!",
         effectType: "instant_stars",
         isInstant: true,
         bonusStars: 35,
@@ -857,7 +857,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "warp_opt_5",
         name: "Chronos-Injektion",
-        description: "Saugt gealterte Kräfte auf: Spendet direkt +125.000.000 Lebensenergie!",
+        description: "Saugt gealterte Kraefte auf: Spendet direkt +125.000.000 Lebensenergie!",
         effectType: "instant_life",
         isInstant: true,
         bonusLife: 125000000,
@@ -874,7 +874,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "decay_opt_1",
         name: "Vakuumtriebwerke",
-        description: "Erntet Entropieenergie: Erhöht den passiven LPS-Ertrag um +450%!",
+        description: "Erntet Entropieenergie: Erhoeht den passiven LPS-Ertrag um +450%!",
         effectType: "lps_boost_4.5x",
         isInstant: false,
       },
@@ -904,7 +904,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "decay_opt_5",
         name: "Phasenwandlung",
-        description: "Entlädt Quantenspannung: Schenkt sofort +70.000.050 Lebens funken!",
+        description: "Entlaedt Quantenspannung: Schenkt sofort +70.000.050 Lebens funken!",
         effectType: "instant_life",
         isInstant: true,
         bonusLife: 70000050,
@@ -915,27 +915,27 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
     id: "zero_g",
     name: "Kosmische Schwerelosigkeit",
     description:
-      "Die Schwerkraft deines Planeten lockert sich temporär zugunsten spielerischer Leichtigkeit.",
+      "Die Schwerkraft deines Planeten lockert sich temporaer zugunsten spielerischer Leichtigkeit.",
     emoji: "🎈",
     options: [
       {
         id: "g_opt_1",
         name: "Schwebende Tiere",
-        description: "Tiere fliegen schwerelos vor Glück: Erzeugt tolle +550% passive LPS!",
+        description: "Tiere fliegen schwerelos vor Glueck: Erzeugt tolle +550% passive LPS!",
         effectType: "animal_boost_5.5x",
         isInstant: false,
       },
       {
         id: "g_opt_2",
-        name: "Trägheitsfreie Klicks",
-        description: "Reibungsloses Tippen: Erhöht deine Klickkraft um sagenhafte +450%!",
+        name: "Traegheitsfreie Klicks",
+        description: "Reibungsloses Tippen: Erhoeht deine Klickkraft um sagenhafte +450%!",
         effectType: "click_boost_4.5x",
         isInstant: false,
       },
       {
         id: "g_opt_3",
         name: "Schwebender Staub",
-        description: "Schwebende Partikel pflücken: Verleiht im Nu +12 Glitzerstaub!",
+        description: "Schwebende Partikel pfluecken: Verleiht im Nu +12 Glitzerstaub!",
         effectType: "instant_dust",
         isInstant: true,
         bonusDust: 12,
@@ -943,7 +943,7 @@ export const COSMIC_EVENTS_POOL: EventData[] = [
       {
         id: "g_opt_4",
         name: "Driftende Sterne",
-        description: "Treibt Sterne an: Schüttet direkt +35 Sterne aus!",
+        description: "Treibt Sterne an: Schuettet direkt +35 Sterne aus!",
         effectType: "instant_stars",
         isInstant: true,
         bonusStars: 35,

@@ -350,7 +350,7 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
         setBlackHoleResult({
           show: true,
           title: "Fehler beim Opfern ⚠️",
-          text: data.error || "Nicht genügend Ressourcen!",
+          text: data.error || "Nicht genuegend Ressourcen!",
           success: false,
           outcomeType: "bad",
         });

@@ -115,7 +115,7 @@ function NodeGroup({ node, have, isRoot, onDrill, formatNum }: NodeGroupProps) {
           data-uid={node.uid}
           onClick={node.kind === "craft" && !isRoot ? () => onDrill(node.id) : undefined}
           title={
-            node.kind === "craft" && !isRoot ? "Als Ziel öffnen — zur Quelle springen" : undefined
+            node.kind === "craft" && !isRoot ? "Als Ziel oeffnen — zur Quelle springen" : undefined
           }
         >
           <div className="pk-craft-node__top">
@@ -224,7 +224,7 @@ const SummaryContent = React.memo(function SummaryContent({
             <div className="pk-craft-plan">
               {plan.plan.length === 0 && (
                 <div className="pk-craft-planempty">
-                  Keine Vorstufen nötig — direkt herstellbar.
+                  Keine Vorstufen noetig — direkt herstellbar.
                 </div>
               )}
               {plan.plan.map((s, i) => (
@@ -745,7 +745,7 @@ export const CraftingModal: React.FC<CraftingModalProps> = React.memo(
               <div className="pk-craft-hd__title">Sternen-Schmiede &amp; Alchemie</div>
             </div>
           </div>
-          <button className="pk-craft-hd__close" onClick={onClose} title="Schließen">
+          <button className="pk-craft-hd__close" onClick={onClose} title="Schliessen">
             ✕
           </button>
         </div>

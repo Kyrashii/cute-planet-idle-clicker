@@ -45,7 +45,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "clicks_planet_rhythm",
     name: "Herzens-Impuls",
-    description: (t) => `Führe ${t} rhythmische Klicks auf den Planeten aus.`,
+    description: (t) => `Fuehre ${t} rhythmische Klicks auf den Planeten aus.`,
     type: "clicks",
     minLevel: 3,
     targetFormula: (lv, pr) => Math.floor((60 + lv * 50 + lv * lv * 3) * (1 + pr * 0.4)),
@@ -62,7 +62,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "no_click_zen",
-    name: "Fließendes Kosmos-Zen",
+    name: "Fliessendes Kosmos-Zen",
     description: (t) => `Halte eine Meditationsphase von ${t} Sekunden ein (nicht klicken!).`,
     type: "no_click_produce",
     minLevel: 8,
@@ -72,7 +72,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "missions_completed_base",
     name: "Missionsbereitschaft",
-    description: (t) => `Schließe ${t} galaktische Missionen über das Funkterminal ab.`,
+    description: (t) => `Schliesse ${t} galaktische Missionen ueber das Funkterminal ab.`,
     type: "missions_completed",
     minLevel: 1,
     targetFormula: (lv, pr) => Math.max(1, Math.floor((1 + lv * 0.7) * (1 + pr * 0.3))),
@@ -80,7 +80,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "missions_completed_master",
     name: "Pioniersarbeit",
-    description: (t) => `Erfülle ${t} Funk-Missionsaufträge.`,
+    description: (t) => `Erfuelle ${t} Funk-Missionsauftraege.`,
     type: "missions_completed",
     minLevel: 10,
     targetFormula: (lv, pr) => Math.floor((3 + lv * 1.1) * (1 + pr * 0.3)),
@@ -88,15 +88,15 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   // --- 5. Events Won ---
   {
     id: "events_won_explorer",
-    name: "Phänomen-Erforscher",
-    description: (t) => `Untersuche oder löse ${t} zufällige Weltraum-Events erfolgreich.`,
+    name: "Phaenomen-Erforscher",
+    description: (t) => `Untersuche oder loese ${t} zufaellige Weltraum-Events erfolgreich.`,
     type: "events_won",
     minLevel: 2,
     targetFormula: (lv, pr) => Math.max(1, Math.floor((1 + lv * 0.4) * (1 + pr * 0.2))),
   },
   {
     id: "events_won_guardian",
-    name: "Kosmischer Wächter",
+    name: "Kosmischer Waechter",
     description: (t) => `Stelle dich ${t} planetaren Ereignissen (z. B. Metoriten, Auroras).`,
     type: "events_won",
     minLevel: 11,
@@ -105,7 +105,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   // --- 6. Star Clicks ---
   {
     id: "collect_stars_catcher",
-    name: "Sternenfänger",
+    name: "Sternenfaenger",
     description: (t) => `Sammle ${t} herabfallende Sterne per Hand auf.`,
     type: "collect_stars",
     minLevel: 1,
@@ -123,7 +123,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "crafting_apprentice",
     name: "Alchemie-Lehrling",
-    description: (t) => `Schmiede insgesamt ${t} Gegenstände in der Synthese-Schmiede.`,
+    description: (t) => `Schmiede insgesamt ${t} Gegenstaende in der Synthese-Schmiede.`,
     type: "crafting",
     minLevel: 1,
     targetFormula: (lv, pr) => Math.max(1, Math.floor((1 + lv * 0.6) * (1 + pr * 0.3))),
@@ -141,7 +141,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
     id: "glitter_dust_collector",
     name: "Glitzer-Sammler",
     description: (t) =>
-      `Sammle ${t} Einheiten magischen Glitzerstaub auf dem Festgelände oder durch Sternzeichen.`,
+      `Sammle ${t} Einheiten magischen Glitzerstaub auf dem Festgelaende oder durch Sternzeichen.`,
     type: "glitter_dust",
     minLevel: 1,
     targetFormula: (lv, pr) => Math.floor((10 + lv * 8 + lv * lv * 0.5) * (1 + pr * 0.5)),
@@ -149,7 +149,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "merge_moons_astronomist",
     name: "Satelliten-Verschmelzung",
-    description: (t) => `Verschmelze ${t}-mal kleine Monde zu größeren Monden.`,
+    description: (t) => `Verschmelze ${t}-mal kleine Monde zu groesseren Monden.`,
     type: "merge_moons",
     minLevel: 1,
     targetFormula: (lv, pr) => Math.max(1, Math.floor((1 + lv * 0.5) * (1 + pr * 0.2))),
@@ -179,7 +179,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "spec_cat",
     name: "Schnurrkonzert",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} für kosmische Beruhigung.`,
+    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} fuer kosmische Beruhigung.`,
     type: "buy_animal",
     minLevel: 2,
     targetFormula: (lv) => Math.floor(6 + lv * 6),
@@ -199,7 +199,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "spec_koala",
     name: "Eukalyptus-Ernte",
-    description: (t, n, e) => `Sorge für ${t}x ${n} ${e}, die genüsslich Blätter knabbern.`,
+    description: (t, n, e) => `Sorge fuer ${t}x ${n} ${e}, die genuesslich Blaetter knabbern.`,
     type: "buy_animal",
     minLevel: 4,
     targetFormula: (lv) => Math.floor(5 + lv * 4),
@@ -219,7 +219,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "spec_unicorn",
     name: "Regenbogen-Glanzen",
-    description: (t, n, e) => `Lass ${t}x ${n} ${e} ihre magischen Regenbögen spannen.`,
+    description: (t, n, e) => `Lass ${t}x ${n} ${e} ihre magischen Regenboegen spannen.`,
     type: "buy_animal",
     minLevel: 6,
     targetFormula: (lv) => Math.floor(3 + lv * 3),
@@ -228,7 +228,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_hamster",
-    name: "Körner-Hamstern",
+    name: "Koerner-Hamstern",
     description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} im Laufrad.`,
     type: "buy_animal",
     minLevel: 7,
@@ -248,8 +248,8 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_bear",
-    name: "Bärenstark",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} für einen Winterschlaf.`,
+    name: "Baerenstark",
+    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} fuer einen Winterschlaf.`,
     type: "buy_animal",
     minLevel: 9,
     targetFormula: (lv) => Math.floor(2 + lv * 1.8),
@@ -259,7 +259,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "spec_alpaca",
     name: "Flauschparade",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} für die Wollgewinnung.`,
+    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} fuer die Wollgewinnung.`,
     type: "buy_animal",
     minLevel: 10,
     targetFormula: (lv) => Math.floor(2 + lv * 1.5),
@@ -278,8 +278,8 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_sloth",
-    name: "Gemütlichkeit",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} in den Sternenästen.`,
+    name: "Gemuetlichkeit",
+    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} in den Sternenaesten.`,
     type: "buy_animal",
     minLevel: 12,
     targetFormula: (lv) => Math.floor(1 + lv * 1.1),
@@ -289,7 +289,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "spec_hedgehog",
     name: "Glitzerstachel",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf deinen Moosflächen.`,
+    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf deinen Moosflaechen.`,
     type: "buy_animal",
     minLevel: 13,
     targetFormula: (lv) => Math.floor(1 + lv * 1.0),
@@ -299,7 +299,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "spec_seal",
     name: "Robben-Klatschen",
-    description: (t, n, e) => `Sorge für mindestens ${t}x ${n} ${e} an deinen Küsten.`,
+    description: (t, n, e) => `Sorge fuer mindestens ${t}x ${n} ${e} an deinen Kuesten.`,
     type: "buy_animal",
     minLevel: 14,
     targetFormula: (lv) => Math.floor(1 + lv * 0.9),
@@ -319,7 +319,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "spec_otter",
     name: "Otter-Kuscheln",
-    description: (t, n, e) => `Führe ${t}x ${n} ${e} auf deinem Planeten ein.`,
+    description: (t, n, e) => `Fuehre ${t}x ${n} ${e} auf deinem Planeten ein.`,
     type: "buy_animal",
     minLevel: 16,
     targetFormula: (lv) => Math.floor(1 + lv * 0.7),
@@ -338,8 +338,8 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_dino",
-    name: "Urzeit-Rückkehr",
-    description: (t, n, e) => `Züchte mindestens ${t}x ${n} ${e} auf dem Planeten.`,
+    name: "Urzeit-Rueckkehr",
+    description: (t, n, e) => `Zuechte mindestens ${t}x ${n} ${e} auf dem Planeten.`,
     type: "buy_animal",
     minLevel: 18,
     targetFormula: (lv) => Math.floor(1 + lv * 0.5),
@@ -349,7 +349,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "spec_duck",
     name: "Quak-Konzert",
-    description: (t, n, e) => `Sorge für ein munteres Treiben mit ${t}x ${n} ${e}.`,
+    description: (t, n, e) => `Sorge fuer ein munteres Treiben mit ${t}x ${n} ${e}.`,
     type: "buy_animal",
     minLevel: 19,
     targetFormula: (lv) => Math.floor(1 + lv * 0.4),
@@ -358,8 +358,8 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_ladybug",
-    name: "Glückskäfer",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf Blättern.`,
+    name: "Glueckskaefer",
+    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf Blaettern.`,
     type: "buy_animal",
     minLevel: 3,
     targetFormula: (lv) => Math.floor(3 + lv * 4),
@@ -369,7 +369,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "spec_bee",
     name: "Honig-Schatztruhe",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} für süßen Planetenhonig.`,
+    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} fuer suessen Planetenhonig.`,
     type: "buy_animal",
     minLevel: 4,
     targetFormula: (lv) => Math.floor(3 + lv * 3.5),
@@ -378,8 +378,8 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_pig",
-    name: "Glückliches Quieken",
-    description: (t, n, e) => `Lass ${t}x ${n} ${e} fröhlich im Matsch spielen.`,
+    name: "Glueckliches Quieken",
+    description: (t, n, e) => `Lass ${t}x ${n} ${e} froehlich im Matsch spielen.`,
     type: "buy_animal",
     minLevel: 5,
     targetFormula: (lv) => Math.floor(2 + lv * 3),
@@ -409,7 +409,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "spec_mouse",
     name: "Kornkammer",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf Wiesenflächen.`,
+    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf Wiesenflaechen.`,
     type: "buy_animal",
     minLevel: 8,
     targetFormula: (lv) => Math.floor(2 + lv * 2.2),
@@ -418,7 +418,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_turtle",
-    name: "Gemächliches Reisen",
+    name: "Gemaechliches Reisen",
     description: (t, n, e) => `Lass ${t}x ${n} ${e} den Planeten in Ruhe erkunden.`,
     type: "buy_animal",
     minLevel: 9,
@@ -429,7 +429,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "spec_owl",
     name: "Nachtwache",
-    description: (t, n, e) => `Lass ${t}x ${n} ${e} über deinen Planeten wachen.`,
+    description: (t, n, e) => `Lass ${t}x ${n} ${e} ueber deinen Planeten wachen.`,
     type: "buy_animal",
     minLevel: 10,
     targetFormula: (lv) => Math.floor(1 + lv * 1.8),
@@ -439,7 +439,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "spec_dolphin",
     name: "Wellenwellen",
-    description: (t, n, e) => `Lass ${t}x ${n} ${e} durch kosmische Gewässer springen.`,
+    description: (t, n, e) => `Lass ${t}x ${n} ${e} durch kosmische Gewaesser springen.`,
     type: "buy_animal",
     minLevel: 11,
     targetFormula: (lv) => Math.floor(1 + lv * 1.5),
@@ -449,7 +449,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   {
     id: "spec_whale",
     name: "Tiefseelieder",
-    description: (t, n, e) => `Sorge für mindestens ${t}x ${n} ${e} im Ozean des Planeten.`,
+    description: (t, n, e) => `Sorge fuer mindestens ${t}x ${n} ${e} im Ozean des Planeten.`,
     type: "buy_animal",
     minLevel: 12,
     targetFormula: (lv) => Math.floor(1 + lv * 1.3),
@@ -458,7 +458,7 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_butterfly",
-    name: "Farbenprächtig",
+    name: "Farbenpraechtig",
     description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} in der Luft.`,
     type: "buy_animal",
     minLevel: 13,
@@ -478,8 +478,8 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_tiger",
-    name: "Dschungelkönig",
-    description: (t, n, e) => `Sorge für ${t}x ${n} ${e} in den verborgenen Büschen.`,
+    name: "Dschungelkoenig",
+    description: (t, n, e) => `Sorge fuer ${t}x ${n} ${e} in den verborgenen Bueschen.`,
     type: "buy_animal",
     minLevel: 15,
     targetFormula: (lv) => Math.floor(1 + lv * 1.0),

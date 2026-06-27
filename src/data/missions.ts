@@ -47,7 +47,7 @@ export function generateMissionsForSet(setNumber: number): Mission[] {
     },
     {
       title: "Geborgenes Tierreich",
-      description: "Züchte glückliche Gefährten! Besitze insgesamt mindestens {target} Tiere.",
+      description: "Zuechte glueckliche Gefaehrten! Besitze insgesamt mindestens {target} Tiere.",
       englishDesc: "Hatch wonderful friends! Own at least {target} animals combined.",
       type: "animals",
       minBase: 3,
@@ -65,7 +65,7 @@ export function generateMissionsForSet(setNumber: number): Mission[] {
     },
     {
       title: "Aufstrebende Menagerie",
-      description: "Ein Zuhause für alle Kreaturen! Beherberge insgesamt {target} süße Tiere.",
+      description: "Ein Zuhause fuer alle Kreaturen! Beherberge insgesamt {target} suesse Tiere.",
       englishDesc: "A shelter for all creatures! Host at least {target} adorable animals.",
       type: "animals",
       minBase: 4,

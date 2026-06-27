@@ -1,5 +1,6 @@
 import React from "react";
 import { MUSIC_STYLES, setMusicStyle, playPop, MusicStyleId } from "../../utils/audio";
+import { FONT_SCALE_OPTIONS, type FontScaleOption } from "../../hooks/useDisplayPreferences";
 import { Modal } from "../ui/Modal";
 
 interface MusicSettingsModalProps {
@@ -10,6 +11,8 @@ interface MusicSettingsModalProps {
   setMusicStyleState: (style: MusicStyleId) => void;
   isLowMemory: boolean;
   setIsLowMemory: (val: boolean) => void;
+  fontScale: FontScaleOption;
+  setFontScale: (value: FontScaleOption) => void;
 }
 
 export const MusicSettingsModal: React.FC<MusicSettingsModalProps> = React.memo(
@@ -21,6 +24,8 @@ export const MusicSettingsModal: React.FC<MusicSettingsModalProps> = React.memo(
     setMusicStyleState,
     isLowMemory,
     setIsLowMemory,
+    fontScale,
+    setFontScale,
   }) => {
     return (
       <Modal
@@ -79,7 +84,7 @@ export const MusicSettingsModal: React.FC<MusicSettingsModalProps> = React.memo(
                 isNight ? "text-cosmic-accent-muted" : "text-amber-800"
               }`}
             >
-              🎵 Wähle deine Lofi-Atmosphäre (Procedural)
+              🎵 Waehle deine Lofi-Atmosphaere (Procedural)
             </h5>
 
             <div className="space-y-2.5">
@@ -145,6 +150,72 @@ export const MusicSettingsModal: React.FC<MusicSettingsModalProps> = React.memo(
             </div>
           </div>
 
+          <div className="space-y-3 pt-4 border-t-2 border-cosmic-accent/15">
+            <h5
+              className={`font-sans font-black text-[10px] uppercase tracking-wider font-mono px-1 ${
+                isNight ? "text-cosmic-accent-muted" : "text-amber-800"
+              }`}
+            >
+              🔤 Schriftgroesse
+            </h5>
+
+            <div
+              className={`p-3.5 rounded-2.5xl border-2 space-y-3 transition-all ${
+                isNight ? "bg-[#14112e]/55 border-cosmic-accent/10" : "bg-white/80 border-slate-200"
+              }`}
+            >
+              <div className="space-y-1">
+                <span
+                  className={`font-sans font-black text-xs uppercase tracking-wide block ${
+                    isNight ? "text-slate-200" : "text-slate-800"
+                  }`}
+                >
+                  Globale Spiel-Schrift
+                </span>
+                <p
+                  className={`text-[10px] font-semibold leading-normal ${
+                    isNight ? "text-cosmic-accent-muted/75" : "text-slate-500"
+                  }`}
+                >
+                  Passt die gesamte UI in festen Stufen an, ohne das bestehende Layout aus dem Takt
+                  zu bringen.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                {FONT_SCALE_OPTIONS.map((option) => {
+                  const isActive = option === fontScale;
+                  const label = option === 100 ? "Standard" : `${option}%`;
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => {
+                        setFontScale(option);
+                        playPop();
+                      }}
+                      className={`min-h-11 px-3 py-2 rounded-xl border-2 font-mono font-black text-[11px] leading-tight cursor-pointer transition-all duration-150 ${
+                        isActive
+                          ? isNight
+                            ? "bg-cosmic-accent/20 border-cosmic-accent text-cosmic-text shadow-[0_0_12px_rgba(202,165,254,0.22)]"
+                            : "bg-amber-100 border-amber-400 text-slate-900 shadow-sm"
+                          : isNight
+                            ? "bg-slate-900/30 border-slate-700 text-slate-300 hover:border-cosmic-accent/45 hover:bg-[#1a153b]/65"
+                            : "bg-slate-100 border-slate-300 text-slate-700 hover:bg-amber-50 hover:border-amber-300"
+                      }`}
+                      aria-pressed={isActive}
+                    >
+                      <span className="block">{label}</span>
+                      <span className="block text-[9px] opacity-80">
+                        {option < 100 ? "Kompakt" : option === 100 ? "100%" : "Groesser"}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
           {/* Performance Settings Segment */}
           <div className="space-y-3 pt-4 border-t-2 border-cosmic-accent/15">
             <h5
@@ -174,7 +245,7 @@ export const MusicSettingsModal: React.FC<MusicSettingsModalProps> = React.memo(
                   }`}
                 >
                   Reduziert schwebende Texte, kosmische Event-Partikel und Hintergrund-Tiere
-                  erheblich, um ältere Mobilgeräte zu entlasten.
+                  erheblich, um aeltere Mobilgeraete zu entlasten.
                 </p>
               </div>
 
@@ -207,7 +278,7 @@ export const MusicSettingsModal: React.FC<MusicSettingsModalProps> = React.memo(
               : "bg-amber-100/60 border-amber-200 text-amber-900"
           }`}
         >
-          Alle Klänge werden in Echtzeit berechnet und verbrauchen kein Datenvolumen. Rain-Preset
+          Alle Klaenge werden in Echtzeit berechnet und verbrauchen kein Datenvolumen. Rain-Preset
           erzeugt sanftes analoges Rauschen.
         </div>
       </Modal>

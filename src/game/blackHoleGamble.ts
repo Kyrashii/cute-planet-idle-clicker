@@ -47,7 +47,7 @@ export function executeBlackHoleGamble(
   if (!ok) {
     return {
       success: false,
-      error: "Nicht genügend Ressourcen für diese Opfergabe!",
+      error: "Nicht genuegend Ressourcen fuer diese Opfergabe!",
     };
   }
 
@@ -66,20 +66,20 @@ export function executeBlackHoleGamble(
     case 0: {
       // RIESIGER BONUS
       type = "good";
-      titleGerman = "Singularitäts-Segen 🌌";
+      titleGerman = "Singularitaets-Segen 🌌";
       if (sacrificeType === "life") {
         const reward = Math.floor(baseLps * 12000 * holeMultiplier);
         state.life += reward;
         state.totalLifeEarned += reward;
-        textGerman = `Das Schwarze Loch spuckt einen gewaltigen Lebensschwarm aus! Du erhältst +${reward.toLocaleString("de-DE")} 💖 Leben!`;
+        textGerman = `Das Schwarze Loch spuckt einen gewaltigen Lebensschwarm aus! Du erhaeltst +${reward.toLocaleString("de-DE")} 💖 Leben!`;
       } else if (sacrificeType === "stars") {
         const reward = Math.floor(50 * holeMultiplier);
         state.starsCount += reward;
-        textGerman = `Eine stellare Explosion schleudert Edelsteine heraus! Du erhältst +${reward} ⭐ Sterne!`;
+        textGerman = `Eine stellare Explosion schleudert Edelsteine heraus! Du erhaeltst +${reward} ⭐ Sterne!`;
       } else {
         const reward = Math.floor(40 * holeMultiplier);
         state.glitterDust += reward;
-        textGerman = `Ein Regen aus reinem Kristallstaub bricht aus! Du erhältst +${reward} 💫 Kosmischen Glitzerstaub!`;
+        textGerman = `Ein Regen aus reinem Kristallstaub bricht aus! Du erhaeltst +${reward} 💫 Kosmischen Glitzerstaub!`;
       }
       break;
     }
@@ -109,21 +109,21 @@ export function executeBlackHoleGamble(
       if (locked.length > 0) {
         const chosenCosmeticId = locked[Math.floor(Math.random() * locked.length)];
         state.unlockedCosmetics.push(chosenCosmeticId);
-        textGerman = `Ein schwebendes Artefakt nähert sich aus der dunklen Zone! Du schaltetest ein seltenes Cosmetic frei: "${chosenCosmeticId.replace(/_/g, " ").toUpperCase()}"! 🎨`;
+        textGerman = `Ein schwebendes Artefakt naehert sich aus der dunklen Zone! Du schaltetest ein seltenes Cosmetic frei: "${chosenCosmeticId.replace(/_/g, " ").toUpperCase()}"! 🎨`;
       } else {
         const fallbackDust = Math.floor(75 * holeMultiplier);
         state.glitterDust += fallbackDust;
-        textGerman = `Da du bereits alle Kosmetika besitzt, erstrahlt der Fund in reinem Glitzerstaub! Du erhältst +${fallbackDust} 💫 Glitzerstaub!`;
+        textGerman = `Da du bereits alle Kosmetika besitzt, erstrahlt der Fund in reinem Glitzerstaub! Du erhaeltst +${fallbackDust} 💫 Glitzerstaub!`;
       }
       break;
     }
     case 2: {
-      // PRESTIGE-WÄHRUNG
+      // PRESTIGE-WAeHRUNG
       type = "good";
       titleGerman = "Quanten-Aufstieg 🎖️";
       state.prestigeCount = (state.prestigeCount || 0) + 1;
       textGerman =
-        "Eine geheimnisvolle Hyperdimension faltet sich! Du erhältst +1 dauerhaftes Prestige-Level OHNE dein aktuelles Spiel zurückzusetzen!";
+        "Eine geheimnisvolle Hyperdimension faltet sich! Du erhaeltst +1 dauerhaftes Prestige-Level OHNE dein aktuelles Spiel zurueckzusetzen!";
       break;
     }
     case 3: {
@@ -133,15 +133,15 @@ export function executeBlackHoleGamble(
       setupActiveEvent("hyper_star");
       state.eventTimeRemaining = 180;
       textGerman =
-        "Das Schwarze Loch destabilisiert sich und bricht in einem Hyperriesen-Ausbruch aus! Ein 180-sekündiges kosmisches Event hat sofort begonnen!";
+        "Das Schwarze Loch destabilisiert sich und bricht in einem Hyperriesen-Ausbruch aus! Ein 180-sekuendiges kosmisches Event hat sofort begonnen!";
       break;
     }
     case 4: {
-      // SCHWARZES LOCH WIRD GRÖSSER
+      // SCHWARZES LOCH WIRD GROeSSER
       type = "good";
-      titleGerman = "Singularitäts-Wachstum 📈";
+      titleGerman = "Singularitaets-Wachstum 📈";
       state.blackHoleSize = (state.blackHoleSize || 1) + 1;
-      textGerman = `Das Schwarze Loch verschlingt deine Opfergabe vollständig und dehnt seinen Ereignishorizont aus! Es wächst auf Stufe ${state.blackHoleSize}. Zukünftige gute Belohnungen steigen dauerhaft um +25%!`;
+      textGerman = `Das Schwarze Loch verschlingt deine Opfergabe vollstaendig und dehnt seinen Ereignishorizont aus! Es waechst auf Stufe ${state.blackHoleSize}. Zukuenftige gute Belohnungen steigen dauerhaft um +25%!`;
       break;
     }
     case 5: {
@@ -150,7 +150,7 @@ export function executeBlackHoleGamble(
       titleGerman = "Sternenregen-Symphonie 🌠";
       const rewardStars = Math.floor((3 + Math.floor(Math.random() * 5)) * holeMultiplier);
       state.shootingStarsCount = (state.shootingStarsCount || 0) + rewardStars;
-      textGerman = `Eine harmonische Erschütterung lässt Sternenstaub kondensieren! Du erhältst +${rewardStars} 🌠 Sternschnuppen-Kisten im Inventar!`;
+      textGerman = `Eine harmonische Erschuetterung laesst Sternenstaub kondensieren! Du erhaeltst +${rewardStars} 🌠 Sternschnuppen-Kisten im Inventar!`;
       break;
     }
     case 6: {
@@ -159,7 +159,7 @@ export function executeBlackHoleGamble(
       titleGerman = "Glitzer-Explosion 💫";
       const rewardDust = Math.floor((20 + Math.floor(Math.random() * 25)) * holeMultiplier);
       state.glitterDust = (state.glitterDust || 0) + rewardDust;
-      textGerman = `Die Singularität entlädt eine funkelnde Staubwolke! Du erhältst +${rewardDust} 💫 Kosmischen Glitzerstaub!`;
+      textGerman = `Die Singularitaet entlaedt eine funkelnde Staubwolke! Du erhaeltst +${rewardDust} 💫 Kosmischen Glitzerstaub!`;
       break;
     }
     case 7: {
@@ -180,11 +180,11 @@ export function executeBlackHoleGamble(
       if ((state.moonsCount || 0) < maxMoons) {
         state.moonsCount = (state.moonsCount || 0) + 1;
         textGerman =
-          "Ein vollkommen intakter Trabant löst sich aus dem Gravitationsfeld! Du erhältst +1 🌙 Mond gratis!";
+          "Ein vollkommen intakter Trabant loest sich aus dem Gravitationsfeld! Du erhaeltst +1 🌙 Mond gratis!";
       } else {
         const fallbackStars = Math.floor(35 * holeMultiplier);
         state.starsCount = (state.starsCount || 0) + fallbackStars;
-        textGerman = `Der Ereignishorizont versucht einen Mond abzuspalten, aber deine Umlaufbahnen sind voll! Stattdessen erhältst du +${fallbackStars} ⭐ Sterne!`;
+        textGerman = `Der Ereignishorizont versucht einen Mond abzuspalten, aber deine Umlaufbahnen sind voll! Stattdessen erhaeltst du +${fallbackStars} ⭐ Sterne!`;
       }
       break;
     }
@@ -195,7 +195,7 @@ export function executeBlackHoleGamble(
       const reward = Math.floor(baseLps * 3600 * holeMultiplier);
       state.life += reward;
       state.totalLifeEarned += reward;
-      textGerman = `Das Schwarze Loch krümmt die Zeitlinie positiv! Du erhältst die Ausbeute von 1 Stunde Slumber-Ruhe: +${reward.toLocaleString("de-DE")} 💖 Leben!`;
+      textGerman = `Das Schwarze Loch kruemmt die Zeitlinie positiv! Du erhaeltst die Ausbeute von 1 Stunde Slumber-Ruhe: +${reward.toLocaleString("de-DE")} 💖 Leben!`;
       break;
     }
     case 9: {
@@ -207,7 +207,7 @@ export function executeBlackHoleGamble(
       state.life += lifeReward;
       state.totalLifeEarned += lifeReward;
       state.starsCount += starReward;
-      textGerman = `Die feindliche Gravitation harmonisiert with deinen Upgrades! Du erhältst +${lifeReward.toLocaleString("de-DE")} 💖 Leben und +${starReward} ⭐ Sterne!`;
+      textGerman = `Die feindliche Gravitation harmonisiert with deinen Upgrades! Du erhaeltst +${lifeReward.toLocaleString("de-DE")} 💖 Leben und +${starReward} ⭐ Sterne!`;
       break;
     }
 
@@ -217,7 +217,7 @@ export function executeBlackHoleGamble(
       type = "bad";
       titleGerman = "Ewiges Schweigen 🧘";
       textGerman =
-        "Das Schwarze Loch absorbiert deine Opfergabe lautlos. Nichts passiert. Nur die eisige Kälte des ewigen Nichts vibriert im Raum...";
+        "Das Schwarze Loch absorbiert deine Opfergabe lautlos. Nichts passiert. Nur die eisige Kaelte des ewigen Nichts vibriert im Raum...";
       break;
     }
     case 11: {
@@ -228,7 +228,7 @@ export function executeBlackHoleGamble(
       state.starsCount -= starsLoss;
       const dustLoss = Math.min(10, state.glitterDust);
       state.glitterDust -= dustLoss;
-      textGerman = `Eine massive Gravitationswelle verzerrt deine planetare Schwerkraft! Du verlierst zusätzlich ${starsLoss} Sterne und ${dustLoss} Glitzerstaub!`;
+      textGerman = `Eine massive Gravitationswelle verzerrt deine planetare Schwerkraft! Du verlierst zusaetzlich ${starsLoss} Sterne und ${dustLoss} Glitzerstaub!`;
       break;
     }
     case 12: {
@@ -237,7 +237,7 @@ export function executeBlackHoleGamble(
       titleGerman = "Materie-Verschlingung 🌀";
       const lifeLoss = Math.floor(state.life * 0.15);
       state.life -= lifeLoss;
-      textGerman = `Der Gravitationsstrudel ergreift deinen Planeten! Er saugt zusätzlich ${lifeLoss.toLocaleString("de-DE")} 💖 Leben direkt aus deiner Planetenkruste!`;
+      textGerman = `Der Gravitationsstrudel ergreift deinen Planeten! Er saugt zusaetzlich ${lifeLoss.toLocaleString("de-DE")} 💖 Leben direkt aus deiner Planetenkruste!`;
       break;
     }
     case 13: {
@@ -246,7 +246,7 @@ export function executeBlackHoleGamble(
       titleGerman = "Sternen-Vakuum ✨";
       const sLoss = Math.min(8, state.starsCount);
       state.starsCount -= sLoss;
-      textGerman = `Die unbarmherzige Anziehungskraft bricht Sterne aus ihrer Kreisbahn! ${sLoss} Sterne stürzen unaufhaltsam in den Abgrund der Singularität.`;
+      textGerman = `Die unbarmherzige Anziehungskraft bricht Sterne aus ihrer Kreisbahn! ${sLoss} Sterne stuerzen unaufhaltsam in den Abgrund der Singularitaet.`;
       break;
     }
     case 14: {
@@ -261,9 +261,9 @@ export function executeBlackHoleGamble(
       state.life -= lifeDrain;
 
       if (previousSize > 1) {
-        textGerman = `Das Schwarze Loch kollabiert unter seiner eigenen Last und schrumpft zurück auf Stufe ${newSize}! Du verlierst zudem ${lifeDrain.toLocaleString("de-DE")} 💖 Leben.`;
+        textGerman = `Das Schwarze Loch kollabiert unter seiner eigenen Last und schrumpft zurueck auf Stufe ${newSize}! Du verlierst zudem ${lifeDrain.toLocaleString("de-DE")} 💖 Leben.`;
       } else {
-        textGerman = `Das Schwarze Loch spuckt antimaterische Störstrahlung aus! Es kann nicht weiter schrumpfen, aber du verlierst zusätzliche ${lifeDrain.toLocaleString("de-DE")} 💖 Leben.`;
+        textGerman = `Das Schwarze Loch spuckt antimaterische Stoerstrahlung aus! Es kann nicht weiter schrumpfen, aber du verlierst zusaetzliche ${lifeDrain.toLocaleString("de-DE")} 💖 Leben.`;
       }
       break;
     }
@@ -306,11 +306,11 @@ export function executeBlackHoleGamble(
       }
       if (highestAnimal && highestQty > 0) {
         state.purchasedAnimals[highestAnimal]--;
-        textGerman = `Das raue Gravitationsfeld verwirrt deine Biosphäre! Eines deiner wertvollen Tiere (${highestAnimal.toUpperCase()}) verschwindet im Hyperraum!`;
+        textGerman = `Das raue Gravitationsfeld verwirrt deine Biosphaere! Eines deiner wertvollen Tiere (${highestAnimal.toUpperCase()}) verschwindet im Hyperraum!`;
       } else {
         const lifeLoss = Math.min(state.life, 50000000);
         state.life -= lifeLoss;
-        textGerman = `Das Gesetz der Schwerkraft dekomprimiert deine Planetenatmosphäre! Du verlierst ${lifeLoss.toLocaleString("de-DE")} 💖 Leben!`;
+        textGerman = `Das Gesetz der Schwerkraft dekomprimiert deine Planetenatmosphaere! Du verlierst ${lifeLoss.toLocaleString("de-DE")} 💖 Leben!`;
       }
       break;
     }
@@ -321,7 +321,7 @@ export function executeBlackHoleGamble(
       const starsLoss = Math.min(15, Math.floor(state.starsCount * 0.35));
       if (starsLoss > 0) {
         state.starsCount -= starsLoss;
-        textGerman = `Eine schattenhafte Anomalie schlängelt sich durch den Horizont und stiehlt wertvolle Sternenkristalle! Du verlierst ${starsLoss} ⭐ Sterne.`;
+        textGerman = `Eine schattenhafte Anomalie schlaengelt sich durch den Horizont und stiehlt wertvolle Sternenkristalle! Du verlierst ${starsLoss} ⭐ Sterne.`;
       } else {
         const lifeLoss = Math.floor(state.life * 0.1);
         state.life -= lifeLoss;
@@ -340,7 +340,7 @@ export function executeBlackHoleGamble(
       } else {
         const lifeLoss = Math.floor(state.life * 0.25);
         state.life -= lifeLoss;
-        textGerman = `Eine heisenbergsche Massenkompression erschüttert den Planetenkern! Du verlierst -25% deines gesamten angesammelten Lebens: -${lifeLoss.toLocaleString("de-DE")} 💖 Leben!`;
+        textGerman = `Eine heisenbergsche Massenkompression erschuettert den Planetenkern! Du verlierst -25% deines gesamten angesammelten Lebens: -${lifeLoss.toLocaleString("de-DE")} 💖 Leben!`;
       }
       break;
     }

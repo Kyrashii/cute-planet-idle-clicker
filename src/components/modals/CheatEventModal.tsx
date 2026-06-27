@@ -42,7 +42,7 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
         id: "comet_tail",
         emoji: "☄️",
         title: "Eisiger Kometenschweif",
-        desc: "Massiver +800% Klick-Segen & epische Sternenbrösel-EXP!",
+        desc: "Massiver +800% Klick-Segen & epische Sternenbroesel-EXP!",
         color: "border-red-500 hover:bg-red-500/10 text-red-100",
       },
       {
@@ -56,7 +56,7 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
         id: "stella_nursery",
         emoji: "🍼",
         title: "Kosmische Sternenwiege",
-        desc: "Tiere brüten +550% passiv, reichlicher Kistensturz!",
+        desc: "Tiere brueten +550% passiv, reichlicher Kistensturz!",
         color: "border-cyan-400 hover:bg-cyan-400/10 text-cyan-100",
       },
       {
@@ -91,7 +91,7 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
               UGUU EDIT-MODUS 🧙‍♀️
             </span>
             <h5 className="font-sans font-black text-[#ffcbdc] text-base uppercase tracking-wider mt-1">
-              Kosmisches Ereignis auslösen
+              Kosmisches Ereignis ausloesen
             </h5>
           </div>
           <button
@@ -103,7 +103,7 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
         </div>
 
         <p className="font-sans text-[11px] text-cosmic-accent-muted font-semibold leading-relaxed mb-4">
-          Wähle ein stellares Ereignis, das sofort im Himmel erblühen soll. Keine Wartezeit, pure
+          Waehle ein stellares Ereignis, das sofort im Himmel erbluehen soll. Keine Wartezeit, pure
           Magie!
         </p>
 
@@ -172,7 +172,7 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
             onClick={onClose}
             className="py-2 px-5 bg-cosmic-surface-mid hover:bg-[#2d225c] text-[11px] border-2 border-cosmic-accent/60 rounded-xl font-black transition-all active:scale-95 cursor-pointer shadow-md text-white"
           >
-            Schließen
+            Schliessen
           </button>
         </div>
       </Modal>

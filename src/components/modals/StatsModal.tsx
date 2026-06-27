@@ -68,7 +68,7 @@ export const StatsModal: React.FC<StatsModalProps> = React.memo(
             </div>
             <div className="bg-cosmic-surface p-3 rounded-2xl border-2 border-cosmic-accent/20">
               <span className="text-[9px] text-cosmic-accent-muted font-mono uppercase font-black tracking-wider">
-                Händische Klicks
+                Haendische Klicks
               </span>
               <p
                 className="font-mono text-sm font-black text-cosmic-text mt-1"
@@ -117,7 +117,7 @@ export const StatsModal: React.FC<StatsModalProps> = React.memo(
           {/* Cutest Achievements Checkup */}
           <div className="bg-cosmic-surface-mid/50 border-2 border-cosmic-accent/40 rounded-2.5xl p-4 space-y-3">
             <h6 className="font-sans font-black text-[10px] uppercase text-cosmic-pink tracking-wider font-mono">
-              Süße Meilensteine
+              Suesse Meilensteine
             </h6>
             <div className="space-y-2.5 text-xs font-semibold text-cosmic-text">
               <div className="flex items-center justify-between border-b border-cosmic-accent/10 pb-2">
@@ -152,7 +152,7 @@ export const StatsModal: React.FC<StatsModalProps> = React.memo(
 
               <div className="flex items-center justify-between border-b border-cosmic-accent/10 pb-2">
                 <span className="flex items-center gap-1.5 text-cosmic-text">
-                  🪐 Evolutionär (Planet Lv. 4)
+                  🪐 Evolutionaer (Planet Lv. 4)
                 </span>
                 <span
                   className={
@@ -167,7 +167,7 @@ export const StatsModal: React.FC<StatsModalProps> = React.memo(
 
               <div className="flex items-center justify-between pb-1">
                 <span className="flex items-center gap-1.5 text-cosmic-text">
-                  🧬 Lebensfülle (1M Gesamt)
+                  🧬 Lebensfuelle (1M Gesamt)
                 </span>
                 <span
                   className={
@@ -186,7 +186,7 @@ export const StatsModal: React.FC<StatsModalProps> = React.memo(
         {/* Modal Footer */}
         <div className="p-3 bg-[#13112a] border-t border-teal-300/40 flex justify-between items-center text-[10px] text-cosmic-accent-muted font-semibold px-5">
           <span>
-            Evolutionäre Stufe: <b className="text-teal-300 font-black">Level {planetLevel}</b>
+            Evolutionaere Stufe: <b className="text-teal-300 font-black">Level {planetLevel}</b>
           </span>
           <span>
             Aktuelles Einkommen:{" "}

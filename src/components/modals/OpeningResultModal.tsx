@@ -247,7 +247,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
             >
               <span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-rose-500">
                 <Flame className="w-4 h-4 fill-rose-500/10 animate-bounce" />
-                Atmosphärisches Event Entfesselt!
+                Atmosphaerisches Event Entfesselt!
               </span>
               <ul className="list-disc list-inside text-xs font-bold space-y-1 pl-1">
                 {rewards.eventsTriggered.map((evt, id) => (
@@ -267,7 +267,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
               }`}
             >
               <span className="block text-[10px] uppercase font-black tracking-wider text-purple-300 mb-2.5">
-                💎 Kosmetische Fundstücke ({rewards.unlockedCosmeticsList.length}x):
+                💎 Kosmetische Fundstuecke ({rewards.unlockedCosmeticsList.length}x):
               </span>
               <div className="space-y-2">
                 {rewards.unlockedCosmeticsList.map((cosm, id) => (
@@ -348,7 +348,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
                 : "bg-amber-500 hover:bg-amber-600 text-amber-950 border-2 border-amber-400"
             }`}
           >
-            Süß, her damit! 🎉
+            Suess, her damit! 🎉
           </button>
         </div>
       </Modal>
