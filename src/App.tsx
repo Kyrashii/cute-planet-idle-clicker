@@ -207,6 +207,11 @@ export default function App() {
   const [animalLastPet, setAnimalLastPet] = useState<Record<string, number>>({});
   const [bowlLastFed, setBowlLastFed] = useState<number>(0);
   const [bowlFedMinutesCredited, setBowlFedMinutesCredited] = useState<number>(0);
+
+  // Mirror of the live enclosure cluster. Lets a same-owner cloud load that resolves late
+  // re-merge it instead of wiping animals the player just placed (see hydrateClientStateFromSave).
+  const liveEnclosureRef = useRef({ placedAnimals, animalLove, animalLastPet });
+  liveEnclosureRef.current = { placedAnimals, animalLove, animalLastPet };
   const [autosaveNotification, setAutosaveNotification] = useState<{
     show: boolean;
     text: string;
@@ -617,15 +622,33 @@ export default function App() {
   }, []);
 
   const hydrateClientStateFromSave = useCallback(
-    (rawSave: Record<string, any> | null) => {
+    (rawSave: Record<string, any> | null, preserveEnclosure = false) => {
       resetHydratedClientState();
       if (!rawSave) {
         return null;
       }
 
-      if (rawSave.placedAnimals) setPlacedAnimals(rawSave.placedAnimals);
-      if (rawSave.animalLove) setAnimalLove(rawSave.animalLove);
-      if (rawSave.animalLastPet) setAnimalLastPet(rawSave.animalLastPet);
+      // Enclosure cluster: a same-owner cloud load that resolves late must not clobber animals
+      // the player just placed. Prefer the incoming save, but when it carries no enclosure data
+      // and we're preserving (same owner), keep the live state rather than the empty reset default.
+      // An actual account switch arrives with preserveEnclosure=false and fully replaces.
+      const live = liveEnclosureRef.current;
+      const incomingPlaced = Array.isArray(rawSave.placedAnimals) ? rawSave.placedAnimals : [];
+      if (incomingPlaced.length > 0) setPlacedAnimals(incomingPlaced);
+      else if (preserveEnclosure && live.placedAnimals.length > 0)
+        setPlacedAnimals(live.placedAnimals);
+
+      const incomingLove = rawSave.animalLove;
+      if (incomingLove && Object.keys(incomingLove).length > 0) setAnimalLove(incomingLove);
+      else if (preserveEnclosure && Object.keys(live.animalLove).length > 0)
+        setAnimalLove(live.animalLove);
+
+      const incomingLastPet = rawSave.animalLastPet;
+      if (incomingLastPet && Object.keys(incomingLastPet).length > 0)
+        setAnimalLastPet(incomingLastPet);
+      else if (preserveEnclosure && Object.keys(live.animalLastPet).length > 0)
+        setAnimalLastPet(live.animalLastPet);
+
       if (rawSave.bowlLastFed !== undefined) setBowlLastFed(rawSave.bowlLastFed);
       if (rawSave.bowlFedMinutesCredited !== undefined)
         setBowlFedMinutesCredited(rawSave.bowlFedMinutesCredited);
@@ -702,9 +725,10 @@ export default function App() {
         rawData && typeof rawData === "object" && !Array.isArray(rawData)
           ? normalizeCloudTimestamp((rawData as Record<string, unknown>).updatedAt)
           : null;
+      const previousOwnerId = currentSaveOwnerRef.current;
       currentSaveOwnerRef.current = ownerId;
       writeMeta({ activeOwnerId: ownerId });
-      hydrateClientStateFromSave(savedState);
+      hydrateClientStateFromSave(savedState, previousOwnerId === ownerId);
       setIsLoaded(false);
 
       workerRef.current?.postMessage({
