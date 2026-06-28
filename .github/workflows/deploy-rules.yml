@@ -27,19 +27,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
+      # firebase-tools v15 can silently drop a service-account credential passed via
+      # GOOGLE_APPLICATION_CREDENTIALS in CI (an autoAuth timeout reports the generic
+      # "have you run firebase login?"), so authenticate with the dedicated Firebase
+      # action, which reads the SA key from GCP_SA_KEY and runs the CLI in one shot.
       - name: Deploy Firestore rules to prod
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only firestore:rules --project prod
         env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        run: |
-          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
-          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
-          npm run deploy:rules -- --project prod --non-interactive
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
