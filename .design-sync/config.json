@@ -1,0 +1,7 @@
+{
+  "projectId": "f18f45b6-211d-4aad-b64e-66701c2b50ab",
+  "projectName": "Pastell-Kosmos Design System",
+  "shape": "package",
+  "layout": "bespoke",
+  "notes": "Hand-authored DS layout (not converter output). See NOTES.md before any re-sync — do NOT run the converter."
+}
