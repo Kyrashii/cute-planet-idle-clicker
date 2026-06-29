@@ -31,7 +31,7 @@ export const StatsModal: React.FC<StatsModalProps> = React.memo(
         panelClassName="bg-[#1a163a]/95 border-3 border-teal-300 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-3.5xl"
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b-3 border-teal-300/60 bg-gradient-to-r from-[#10192e] via-[#12233c] to-[#10192e] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b-3 border-teal-300/60 bg-linear-to-r from-[#10192e] via-[#12233c] to-[#10192e] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-2xl select-none">📊</span>
             <div>
@@ -45,14 +45,14 @@ export const StatsModal: React.FC<StatsModalProps> = React.memo(
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#1b1836] border-2 border-teal-300 flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
+            className="size-8  rounded-full bg-[#1b1836] border-2 border-teal-300 flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
           >
             ✕
           </button>
         </div>
 
         {/* Modal Content */}
-        <div className="p-4 sm:p-5 flex-grow overflow-y-auto space-y-4">
+        <div className="p-4 sm:p-5 grow overflow-y-auto space-y-4">
           {/* Mini Stats Card Grid */}
           <div className="grid grid-cols-2 gap-3 font-bold">
             <div className="bg-cosmic-surface p-3 rounded-2xl border-2 border-cosmic-accent/20">

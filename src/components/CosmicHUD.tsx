@@ -33,7 +33,7 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(
           className="flex items-center gap-1.5 text-xs font-semibold py-0.5 min-w-0"
           title={Math.floor(life).toLocaleString("de-DE")}
         >
-          <Heart className="w-3.5 h-3.5 text-cosmic-pink fill-cosmic-pink/60 shrink-0 animate-pulse" />
+          <Heart className="size-3.5  text-cosmic-pink fill-cosmic-pink/60 shrink-0 animate-pulse" />
           <span
             className={`text-[10px] hidden sm:inline ${isNightStyle ? "text-cosmic-accent-muted" : ""}`}
           >
@@ -51,7 +51,7 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(
           className="flex items-center gap-1.5 text-xs font-semibold py-0.5 min-w-0"
           title={totalLps.toLocaleString("de-DE")}
         >
-          <TrendingUp className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+          <TrendingUp className="size-3.5  text-sky-400 shrink-0" />
           <span
             className={`text-[10px] hidden sm:inline ${isNightStyle ? "text-cosmic-accent-muted" : ""}`}
           >
@@ -68,7 +68,7 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(
 
         {/* Autoclick Stars HUD panel */}
         <div className="flex items-center gap-1.5 text-xs font-semibold py-0.5 min-w-0">
-          <StarIcon className="w-3.5 h-3.5 text-amber-405 fill-amber-300/30 shrink-0" />
+          <StarIcon className="size-3.5  text-amber-405 fill-amber-300/30 shrink-0" />
           <span
             className={`text-[10px] hidden sm:inline ${isNightStyle ? "text-cosmic-accent-muted" : ""}`}
           >
@@ -89,7 +89,7 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(
           className="flex items-center gap-1 sm:gap-1.5 text-xs font-semibold py-1 px-2.5 rounded-xl border border-purple-500/20 bg-[#181333]/40 text-cosmic-accent-muted select-none cursor-help"
           title="Dauerhafter Bonus durch Vollendung deines Planeten auf Level 20! Jede Galaxiereise erhoeht deine Prestige-Stufe."
         >
-          <Award className="w-3.5 h-3.5 shrink-0 text-amber-300 fill-amber-300/10" />
+          <Award className="size-3.5  shrink-0 text-amber-300 fill-amber-300/10" />
           <span className="text-[10px] hidden md:inline text-cosmic-accent-muted">Prestige:</span>
           <span className="font-mono text-[10px] sm:text-[11px] font-black text-amber-300">
             {prestigeCount > 0 ? `Lv. ${prestigeCount}` : "Aufstieg"}

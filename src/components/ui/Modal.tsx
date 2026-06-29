@@ -241,7 +241,7 @@ export const Modal: React.FC<ModalProps> = ({
             transition={{ duration: 0.18, ease: "easeOut" }}
             className={`${skipFrameTarget ? "" : "modal-frame-target "}${panelClassName} ${
               isGlitchedCtx
-                ? " !bg-black !text-cyan-400 !border-cyan-500 shadow-[0_0_35px_rgba(6,182,212,0.6)] border-4 select-none glitch-text-anim font-mono "
+                ? " bg-black! text-cyan-400! border-cyan-500! shadow-[0_0_35px_rgba(6,182,212,0.6)] border-4 select-none glitch-text-anim font-mono "
                 : ""
             }`}
             style={panelStyle}

@@ -107,7 +107,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
           </div>
           <button
             onClick={onClose}
-            className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer bg-[#1a1738] border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover`}
+            className={`size-8  rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer bg-[#1a1738] border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover`}
           >
             ✕
           </button>
@@ -115,8 +115,8 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
 
         {/* Cooldown Screen UI */}
         {isCooldownActive ? (
-          <div className="p-6 overflow-y-auto flex-grow flex flex-col items-center justify-center py-10 space-y-6">
-            <div className="w-21 h-21 rounded-full bg-purple-500/15 border-2 border-cosmic-accent/40 flex items-center justify-center text-4xl animate-pulse select-none shadow-[0_0_24px_rgba(202,165,254,0.35)]">
+          <div className="p-6 overflow-y-auto grow flex flex-col items-center justify-center py-10 space-y-6">
+            <div className="size-21  rounded-full bg-purple-500/15 border-2 border-cosmic-accent/40 flex items-center justify-center text-4xl animate-pulse select-none shadow-[0_0_24px_rgba(202,165,254,0.35)]">
               🌠
             </div>
 
@@ -133,7 +133,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
             </div>
 
             {/* Live Countdown Display */}
-            <div className="bg-gradient-to-r from-[#14102c] to-cosmic-surface-mid border-2 border-cosmic-accent/40 rounded-3xl px-12 py-5 shadow-lg text-center flex flex-col items-center justify-center">
+            <div className="bg-linear-to-r from-[#14102c] to-cosmic-surface-mid border-2 border-cosmic-accent/40 rounded-3xl px-12 py-5 shadow-lg text-center flex flex-col items-center justify-center">
               <span className="text-[9.5px] font-mono font-black uppercase text-cosmic-accent-muted tracking-wider block">
                 Umlaufzeit verbleibend:
               </span>
@@ -146,7 +146,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
             <div className="w-full max-w-xs space-y-1.5 flex flex-col items-center">
               <div className="w-full h-3 rounded-full overflow-hidden p-0.5 border bg-[#090715] border-cosmic-accent-muted/25">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-cosmic-accent to-cosmic-pink h-3"
+                  className="h-full rounded-full bg-linear-to-r from-cosmic-accent to-cosmic-pink h-3"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -157,7 +157,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
           </div>
         ) : (
           /* Normal Missions List UI */
-          <div className="p-4 sm:p-6 overflow-y-auto flex-grow space-y-4">
+          <div className="p-4 sm:p-6 overflow-y-auto grow space-y-4">
             <p className="text-[11px] sm:text-xs leading-relaxed text-center font-bold px-3 py-2.5 rounded-2xl text-cosmic-accent bg-[#221c48]/55 border border-cosmic-accent/20">
               Loese diese schnuckeligen Aufgaben, um wertvolle{" "}
               <strong className="text-cosmic-accent font-black underline decoration-pink-300">
@@ -195,21 +195,21 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
                       isClaimed
                         ? "bg-[#14122d]/40 border-green-500/20 opacity-50"
                         : isDone
-                          ? "bg-gradient-to-r from-[#201d4a] to-[#271d49] border-green-400/80 shadow-[0_4px_12px_rgba(74,222,128,0.15)]"
+                          ? "bg-linear-to-r from-[#201d4a] to-[#271d49] border-green-400/80 shadow-[0_4px_12px_rgba(74,222,128,0.15)]"
                           : "bg-cosmic-surface-mid/50 border-cosmic-accent/20 hover:bg-cosmic-surface-mid/70"
                     }`}
                   >
                     {/* Status Overlay Ribbon for Claimed */}
                     {isClaimed && (
                       <div className="absolute right-3 top-3 px-2 py-0.5 rounded-full text-[9px] font-mono font-black uppercase text-green-300 bg-green-950/60 flex items-center gap-1 border border-green-500/40">
-                        <Check className="w-3 h-3" /> Eingeloest
+                        <Check className="size-3 " /> Eingeloest
                       </div>
                     )}
 
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <div
-                          className={`w-11 h-11 rounded-2xl flex items-center justify-center text-2xl shrink-0 select-none border-2 ${
+                          className={`size-11  rounded-2xl flex items-center justify-center text-2xl shrink-0 select-none border-2 ${
                             isClaimed
                               ? "bg-gray-800/10 border-gray-600/20"
                               : isDone
@@ -273,8 +273,8 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
                           <div
                             className={`h-full rounded-full transition-all duration-300 ${
                               isDone
-                                ? "bg-gradient-to-r from-green-400 to-emerald-500"
-                                : "bg-gradient-to-r from-purple-400 to-pink-500"
+                                ? "bg-linear-to-r from-green-400 to-emerald-500"
+                                : "bg-linear-to-r from-purple-400 to-pink-500"
                             }`}
                             style={{ width: `${percent}%` }}
                           />
@@ -286,9 +286,9 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
                     {isDone && !isClaimed && (
                       <button
                         onClick={() => onClaimReward(mission.id, mission.rewardShootingStars)}
-                        className="w-full py-2.5 mt-1 rounded-xl bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white font-sans font-black text-xs uppercase tracking-wider shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
+                        className="w-full py-2.5 mt-1 rounded-xl bg-linear-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white font-sans font-black text-xs uppercase tracking-wider shadow-lg hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
                       >
-                        <Sparkles className="w-4 h-4 text-yellow-250 animate-bounce" />
+                        <Sparkles className="size-4  text-yellow-250 animate-bounce" />
                         Belohnung einfordern!
                       </button>
                     )}

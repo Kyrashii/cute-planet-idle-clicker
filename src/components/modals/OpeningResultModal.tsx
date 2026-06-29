@@ -63,10 +63,10 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
       >
         {/* Sparkles / Aura Effects in Background */}
         <div
-          className={`absolute -top-12 -left-12 w-32 h-32 rounded-full blur-3xl opacity-25 ${isNight ? "bg-purple-500" : "bg-yellow-405"}`}
+          className={`absolute -top-12 -left-12 size-32  rounded-full blur-3xl opacity-25 ${isNight ? "bg-purple-500" : "bg-yellow-405"}`}
         />
         <div
-          className={`absolute -bottom-12 -right-12 w-32 h-32 rounded-full blur-3xl opacity-25 ${isNight ? "bg-pink-500" : "bg-orange-400"}`}
+          className={`absolute -bottom-12 -right-12 size-32  rounded-full blur-3xl opacity-25 ${isNight ? "bg-pink-500" : "bg-orange-400"}`}
         />
 
         {/* Close Header button */}
@@ -78,7 +78,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
               : "border-amber-300 hover:border-amber-500 text-amber-950"
           }`}
         >
-          <X className="w-5 h-5 stroke-[2.5]" />
+          <X className="size-5  stroke-[2.5]" />
         </button>
 
         {/* Header Block */}
@@ -87,7 +87,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
             initial={{ y: -10, scale: 0.8 }}
             animate={{ y: 0, scale: 1 }}
             transition={{ type: "spring", delay: 0.1 }}
-            className={`p-3.5 rounded-3xl bg-gradient-to-tr ${
+            className={`p-3.5 rounded-3xl bg-linear-to-tr ${
               isNight
                 ? "from-purple-900 to-indigo-950 border border-purple-500/20"
                 : "from-amber-100 to-amber-50 border border-amber-200"
@@ -105,9 +105,9 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
           </span>
 
           <h3
-            className={`font-sans font-black text-xl md:text-2xl mt-1 leading-snug tracking-tight ${
+            className={`font-sans font-black text-xl/snug md:text-2xl mt-1  tracking-tight ${
               isNight
-                ? "bg-gradient-to-r from-purple-200 via-cosmic-accent to-pink-200 bg-clip-text text-transparent"
+                ? "bg-linear-to-r from-purple-200 via-cosmic-accent to-pink-200 bg-clip-text text-transparent"
                 : "text-amber-900"
             }`}
           >
@@ -130,7 +130,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
                   isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
                 }`}
               >
-                <Heart className="w-5 h-5 text-rose-500 fill-rose-500/25 mb-1" />
+                <Heart className="size-5  text-rose-500 fill-rose-500/25 mb-1" />
                 <span
                   className={`text-[9px] uppercase font-bold text-cosmic-text-muted ${!isNight && "text-slate-500"}`}
                 >
@@ -167,7 +167,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
                 }`}
               >
                 <Sparkles
-                  className="w-5 h-5 text-pink-400 fill-pink-500/10 mb-1 animate-spin"
+                  className="size-5  text-pink-400 fill-pink-500/10 mb-1 animate-spin"
                   style={{ animationDuration: "12s" }}
                 />
                 <span
@@ -187,7 +187,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
                   isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
                 }`}
               >
-                <Gift className="w-5 h-5 text-indigo-400 mb-1" />
+                <Gift className="size-5  text-indigo-400 mb-1" />
                 <span
                   className={`text-[9px] uppercase font-bold text-cosmic-text-muted ${!isNight && "text-slate-500"}`}
                 >
@@ -223,7 +223,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
                   isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
                 }`}
               >
-                <Trophy className="w-5 h-5 text-amber-500 mb-1" />
+                <Trophy className="size-5  text-amber-500 mb-1" />
                 <span
                   className={`text-[9px] uppercase font-bold text-cosmic-text-muted ${!isNight && "text-slate-500"}`}
                 >
@@ -246,7 +246,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
               }`}
             >
               <span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-rose-500">
-                <Flame className="w-4 h-4 fill-rose-500/10 animate-bounce" />
+                <Flame className="size-4  fill-rose-500/10 animate-bounce" />
                 Atmosphaerisches Event Entfesselt!
               </span>
               <ul className="list-disc list-inside text-xs font-bold space-y-1 pl-1">
@@ -344,7 +344,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
             onClick={onClose}
             className={`w-full py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest transition-all active:scale-98 cursor-pointer shadow-md hover:shadow-lg text-center ${
               isNight
-                ? "bg-gradient-to-r from-purple-550 to-indigo-650 hover:from-purple-650 hover:to-indigo-750 text-white border-2 border-purple-400/40"
+                ? "bg-linear-to-r from-purple-550 to-indigo-650 hover:from-purple-650 hover:to-indigo-750 text-white border-2 border-purple-400/40"
                 : "bg-amber-500 hover:bg-amber-600 text-amber-950 border-2 border-amber-400"
             }`}
           >

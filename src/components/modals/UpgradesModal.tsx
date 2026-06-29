@@ -67,7 +67,7 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(
         panelClassName="bg-[#1a163a]/95 rounded-3.5xl border-3 border-cosmic-accent flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b-3 border-cosmic-accent/60 bg-gradient-to-r from-[#171430] via-[#211a3d] to-[#171430] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b-3 border-cosmic-accent/60 bg-linear-to-r from-[#171430] via-[#211a3d] to-[#171430] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-2xl">🔬</span>
             <div>
@@ -81,7 +81,7 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#1b1836] border-2 border-cosmic-accent flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
+            className="size-8  rounded-full bg-[#1b1836] border-2 border-cosmic-accent flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
           >
             ✕
           </button>
@@ -97,7 +97,7 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(
             onClick={handleBuyAll}
             className={`p-1.5 px-4 rounded-full border transition-all text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-sm ${
               affordableList.length > 0
-                ? "bg-gradient-to-r from-[#8b5cf6] to-[#ec4899] border-purple-400 text-white hover:scale-103 hover:shadow-purple-500/10"
+                ? "bg-linear-to-r from-[#8b5cf6] to-[#ec4899] border-purple-400 text-white hover:scale-103 hover:shadow-purple-500/10"
                 : "bg-[#18162f]/80 text-cosmic-accent-muted/40 border-cosmic-accent/10 opacity-50 cursor-not-allowed"
             }`}
           >
@@ -109,7 +109,7 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(
         </div>
 
         {/* Modal Content - Scrollable upgrades list */}
-        <div className="p-4 sm:p-5 flex-grow overflow-y-auto space-y-3">
+        <div className="p-4 sm:p-5 grow overflow-y-auto space-y-3">
           {/* Unpurchased Upgrades list */}
           {staticUpgrades
             .filter((upg) => !purchasedUpgrades.includes(upg.id))
@@ -133,7 +133,7 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(
                   className="flex items-center justify-between p-3 rounded-2xl border-2 border-cosmic-accent/45 bg-cosmic-surface-mid/50 hover:bg-cosmic-surface-mid/80 transition-all gap-4"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-xl bg-cosmic-surface border-2 border-cosmic-accent flex items-center justify-center text-xl shadow-md shrink-0">
+                    <div className="size-11  rounded-xl bg-cosmic-surface border-2 border-cosmic-accent flex items-center justify-center text-xl shadow-md shrink-0">
                       {upg.emoji}
                     </div>
                     <div>
@@ -159,8 +159,8 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(
                     className={`px-3 py-2 rounded-xl font-black flex flex-col items-center justify-center min-w-[90px] shrink-0 transition-all select-none border-2 cursor-pointer ${
                       hasMoney
                         ? isGlitterCost
-                          ? "bg-gradient-to-b from-[#4d214a] to-[#251128] text-cosmic-text border-pink-400 hover:from-[#5e2b5b] hover:to-[#2e1632] hover:scale-103 shadow-[2.5px_2.5px_0px_#fca5a5] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#fca5a5]"
-                          : "bg-gradient-to-b from-[#24214e] to-[#12112b] text-cosmic-text border-cosmic-accent hover:from-[#353174] hover:to-[#171638] hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
+                          ? "bg-linear-to-b from-[#4d214a] to-[#251128] text-cosmic-text border-pink-400 hover:from-[#5e2b5b] hover:to-[#2e1632] hover:scale-103 shadow-[2.5px_2.5px_0px_#fca5a5] active:translate-px  active:shadow-[1px_1px_0px_#fca5a5]"
+                          : "bg-linear-to-b from-[#24214e] to-[#12112b] text-cosmic-text border-cosmic-accent hover:from-[#353174] hover:to-[#171638] hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-px  active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
                         : "bg-[#18162f]/80 text-cosmic-accent-muted/40 border-cosmic-accent/20 shadow-none cursor-not-allowed opacity-40"
                     }`}
                   >

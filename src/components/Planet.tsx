@@ -438,7 +438,7 @@ const getMoonSkinGraphic = (skin: string) => {
   switch (skin) {
     case "blood":
       return {
-        element: <Moon className="w-4 h-4 fill-red-500 text-red-600 stroke-[1.2] animate-pulse" />,
+        element: <Moon className="size-4  fill-red-500 text-red-600 stroke-[1.2] animate-pulse" />,
         shadow: "0 0 7px rgba(239, 68, 68, 0.9)",
         pingBg: "bg-red-500/30",
       };
@@ -451,7 +451,7 @@ const getMoonSkinGraphic = (skin: string) => {
     case "neon":
       return {
         element: (
-          <Moon className="w-4 h-4 fill-cyan-400 text-cyan-300 stroke-[1.2] brightness-125" />
+          <Moon className="size-4  fill-cyan-400 text-cyan-300 stroke-[1.2] brightness-125" />
         ),
         shadow: "0 0 8px rgba(6, 182, 212, 0.9)",
         pingBg: "bg-cyan-400/30",
@@ -459,7 +459,7 @@ const getMoonSkinGraphic = (skin: string) => {
     case "gold":
       return {
         element: (
-          <Moon className="w-4 h-4 fill-amber-300 text-amber-500 stroke-[1.5] brightness-110" />
+          <Moon className="size-4  fill-amber-300 text-amber-500 stroke-[1.5] brightness-110" />
         ),
         shadow: "0 0 8px rgba(245, 158, 11, 0.9)",
         pingBg: "bg-amber-400/35",
@@ -478,7 +478,7 @@ const getMoonSkinGraphic = (skin: string) => {
       };
     case "lavender":
       return {
-        element: <Moon className="w-4 h-4 fill-fuchsia-300 text-cosmic-accent stroke-[1.2]" />,
+        element: <Moon className="size-4  fill-fuchsia-300 text-cosmic-accent stroke-[1.2]" />,
         shadow: "0 0 6px rgba(217, 70, 239, 0.8)",
         pingBg: "bg-purple-400/30",
       };
@@ -495,7 +495,7 @@ const getMoonSkinGraphic = (skin: string) => {
     case "prism":
       return {
         element: (
-          <Moon className="w-4 h-4 fill-transparent text-cosmic-pink stroke-[2] animate-rainbow-star" />
+          <Moon className="size-4  fill-transparent text-cosmic-pink stroke-2 animate-rainbow-star" />
         ),
         shadow: "0 0 8px rgba(236, 72, 153, 0.8)",
         pingBg: "bg-pink-400/30",
@@ -569,7 +569,7 @@ const getMoonSkinGraphic = (skin: string) => {
     case "classic":
     default:
       return {
-        element: <Moon className="w-4 h-4 fill-purple-200 text-purple-300 stroke-[1.2]" />,
+        element: <Moon className="size-4  fill-purple-200 text-purple-300 stroke-[1.2]" />,
         shadow: "0 0 5px rgba(212, 195, 255, 0.8)",
         pingBg: "bg-purple-400/30",
       };
@@ -642,12 +642,12 @@ export const Planet: React.FC<PlanetProps> = React.memo(
     return (
       <div className="relative flex flex-col items-center select-none py-6 px-4">
         {/* Visual background atmospheric glow */}
-        <div className="absolute -inset-4 rounded-full bg-gradient-to-tr from-pink-200/40 via-purple-200/30 to-teal-200/40 blur-3xl opacity-90 -z-10" />
+        <div className="absolute -inset-4 rounded-full bg-linear-to-tr from-pink-200/40 via-purple-200/30 to-teal-200/40 blur-3xl opacity-90 -z-10" />
 
         {/* Central Cosmic System Wrapper: perfectly binds everything to the exact same center anchor point */}
-        <div className="relative w-44 h-44 sm:w-56 sm:h-56 flex items-center justify-center">
+        <div className="relative size-44  sm:size-56  flex items-center justify-center">
           {/* Orbit Rings Container */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-[660px] h-[660px] flex items-center justify-center z-20">
+          <div className="absolute left-1/2 top-1/2 -translate-1/2  pointer-events-none size-[660px]  flex items-center justify-center z-20">
             {/* Render Concentric Orbits if Stars exist */}
             {orbits.map((val) => {
               const starStyle = STAR_STYLES[activeStarColor] || STAR_STYLES.default;
@@ -663,7 +663,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(
                 >
                   {/* Spinning Star Wrapper */}
                   <div
-                    className="absolute w-full h-full animate-spin"
+                    className="absolute size-full  animate-spin"
                     style={{
                       animationDuration: `${val.duration}s`,
                       animationTimingFunction: "linear",
@@ -673,17 +673,17 @@ export const Planet: React.FC<PlanetProps> = React.memo(
                   >
                     {/* Real physical orbiting star */}
                     <div
-                      className="absolute left-1/2 -top-1.5 w-3 h-3 flex items-center justify-center -translate-x-1/2"
+                      className="absolute left-1/2 -top-1.5 size-3  flex items-center justify-center -translate-x-1/2"
                       style={{
                         filter: `drop-shadow(0 0 2px ${starStyle.glow})`,
                       }}
                     >
                       <Star
-                        className={`w-2.5 h-2.5 ${starStyle.fill} ${starStyle.border} stroke-[1.5] ${starStyle.extraClass || ""}`}
+                        className={`size-2.5  ${starStyle.fill} ${starStyle.border} stroke-[1.5] ${starStyle.extraClass || ""}`}
                       />
                       {/* Subtle emission pulse radiating from the star occasionally */}
                       <span
-                        className={`absolute animate-ping inline-flex h-full w-full rounded-full ${starStyle.ping} opacity-20 pointer-events-none`}
+                        className={`absolute animate-ping inline-flex size-full  rounded-full ${starStyle.ping} opacity-20 pointer-events-none`}
                       />
                     </div>
                   </div>
@@ -706,7 +706,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(
                 >
                   {/* Spinning Moon Wrapper */}
                   <div
-                    className="absolute w-full h-full animate-spin"
+                    className="absolute size-full  animate-spin"
                     style={{
                       animationDuration: `${val.duration}s`,
                       animationTimingFunction: "linear",
@@ -716,7 +716,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(
                   >
                     {/* Glowing physical orbiting moon */}
                     <div
-                      className="absolute left-1/2 -top-2.5 w-5 h-5 flex items-center justify-center -translate-x-1/2 rotate-45"
+                      className="absolute left-1/2 -top-2.5 size-5  flex items-center justify-center -translate-x-1/2 rotate-45"
                       style={{
                         filter: isLowMemory ? "" : `drop-shadow(${skinGraphic.shadow})`,
                       }}
@@ -725,7 +725,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(
                       {/* Ping radiant aura */}
                       {!isLowMemory && (
                         <span
-                          className={`absolute animate-ping inline-flex h-full w-full rounded-full ${skinGraphic.pingBg} opacity-25 pointer-events-none`}
+                          className={`absolute animate-ping inline-flex size-full  rounded-full ${skinGraphic.pingBg} opacity-25 pointer-events-none`}
                         />
                       )}
                     </div>
@@ -742,7 +742,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(
             whileHover={{ scale: 1.03 }}
             transition={{ type: "spring", stiffness: 450, damping: 15 }}
             onClick={onPlanetClick}
-            className="cursor-pointer relative z-10 w-full h-full rounded-full flex items-center justify-center filter drop-shadow-[0_8px_24px_rgba(244,143,177,0.3)] touch-manipulation"
+            className="cursor-pointer relative z-10 size-full  rounded-full flex items-center justify-center filter drop-shadow-[0_8px_24px_rgba(244,143,177,0.3)] touch-manipulation"
           >
             {/* Level Up Flash / Glow Aura */}
             <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
@@ -750,7 +750,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(
             {/* Planet SVG representation */}
             <svg
               viewBox="0 0 200 200"
-              className="w-full h-full select-none"
+              className="size-full  select-none"
               xmlns="http://www.w3.org/2000/svg"
             >
               <defs>
@@ -826,7 +826,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(
             </div>
 
             <p
-              className={`font-sans text-xs font-semibold mb-2 mt-0.5 transition-colors leading-relaxed ${
+              className={`font-sans text-xs/relaxed font-semibold mb-2 mt-0.5 transition-colors  ${
                 isNight ? "text-purple-200" : "text-slate-800"
               }`}
             >
@@ -834,7 +834,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(
             </p>
 
             <div
-              className={`w-full h-4 border-2 rounded-full overflow-hidden p-[1px] transition-colors duration-500 ${
+              className={`w-full h-4 border-2 rounded-full overflow-hidden p-px transition-colors duration-500 ${
                 isNight ? "border-cosmic-accent/45 bg-[#090715]" : "border-amber-305 bg-amber-50"
               }`}
             >
@@ -846,8 +846,8 @@ export const Planet: React.FC<PlanetProps> = React.memo(
                 transition={{ type: "spring", stiffness: 80, damping: 15 }}
                 className={`h-full rounded-full border-r ${
                   isNight
-                    ? "bg-gradient-to-r from-cosmic-accent via-violet-400 to-cosmic-pink border-cosmic-bg"
-                    : "bg-gradient-to-r from-yellow-300 to-amber-500 border-amber-950"
+                    ? "bg-linear-to-r from-cosmic-accent via-violet-400 to-cosmic-pink border-cosmic-bg"
+                    : "bg-linear-to-r from-yellow-300 to-amber-500 border-amber-950"
                 }`}
               />
             </div>

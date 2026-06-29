@@ -11,7 +11,7 @@ const PreviewRow: React.FC<{ icon: LucideIcon; text: string; tone: string }> = (
 }) => {
   return (
     <div className="flex items-start gap-2">
-      <Icon className={cx("mt-0.5 h-3.5 w-3.5 shrink-0", tone)} />
+      <Icon className={cx("mt-0.5 size-3.5  shrink-0", tone)} />
       <span className="text-[12px] leading-snug text-cosmic-text/90">{text}</span>
     </div>
   );
@@ -66,7 +66,7 @@ export const ChoiceCard: React.FC<{
         <div className="mt-auto space-y-1.5 pt-3">
           {preview?.synergyHint && (
             <div className="flex items-start gap-2 rounded-xl border border-cosmic-accent/20 bg-cosmic-accent/7 px-2.5 py-1.5">
-              <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cosmic-accent" />
+              <Sparkles className="mt-0.5 size-3.5  shrink-0 text-cosmic-accent" />
               <span className="text-[11px] leading-snug text-cosmic-text/90">
                 {preview.synergyHint}
               </span>
@@ -74,7 +74,7 @@ export const ChoiceCard: React.FC<{
           )}
           {preview?.rewardPreview && (
             <div className="flex items-start gap-2 rounded-xl border border-pink-300/20 bg-pink-400/8 px-2.5 py-1.5">
-              <Gift className="mt-0.5 h-3.5 w-3.5 shrink-0 text-pink-300" />
+              <Gift className="mt-0.5 size-3.5  shrink-0 text-pink-300" />
               <span className="text-[11px] leading-snug text-cosmic-text/90">
                 {preview.rewardPreview}
               </span>

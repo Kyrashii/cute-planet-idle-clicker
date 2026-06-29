@@ -18,7 +18,7 @@ export const ResetDialog: React.FC<ResetDialogProps> = React.memo(
         <h5 className="font-sans font-black text-[#ffcbdc] text-base uppercase tracking-wider">
           Spielstand zuruecksetzen?
         </h5>
-        <p className="font-sans text-xs text-cosmic-accent-muted font-semibold mt-2.5 leading-relaxed">
+        <p className="font-sans text-xs/relaxed text-cosmic-accent-muted font-semibold mt-2.5 ">
           Moechtest du deinen suessen Kosmos wirklich zuruecksetzen? Alle deine gezuechteten
           Haeschen, Kueken und helfenden Sterne werden geloescht. Dies kann nicht aufgehoben werden!
         </p>

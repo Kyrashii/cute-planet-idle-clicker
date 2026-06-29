@@ -55,11 +55,11 @@ function RewardCard({
     >
       <div
         className={cx(
-          "flex h-10 w-10 items-center justify-center rounded-2xl border bg-black/25",
+          "flex size-10  items-center justify-center rounded-2xl border bg-black/25",
           tone,
         )}
       >
-        <Icon className="h-5 w-5" />
+        <Icon className="size-5 " />
       </div>
       <div>
         <div className="text-2xl font-black leading-none text-cosmic-text">{value}</div>
@@ -102,7 +102,7 @@ function BuildRecap({ activeRun }: { activeRun: ActiveRogueliteRun }) {
                   cat.text,
                 )}
               >
-                <Icon className="h-3 w-3" />
+                <Icon className="size-3 " />
                 {cat.label} ×{count}
               </span>
             );
@@ -141,7 +141,7 @@ export const Results: React.FC<{
   const boss = ROGUELITE_BOSSES.find((entry) => entry.id === activeRun.boss.bossId);
 
   return (
-    <Panel className="mx-auto flex h-full w-full max-w-5xl flex-col overflow-hidden p-5 sm:p-6">
+    <Panel className="mx-auto flex size-full  max-w-5xl flex-col overflow-hidden p-5 sm:p-6">
       {/* Banner */}
       <motion.div
         initial={reducedMotion ? false : { opacity: 0, y: -8 }}
@@ -156,16 +156,16 @@ export const Results: React.FC<{
       >
         <div
           className={cx(
-            "flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border",
+            "flex size-16  shrink-0 items-center justify-center rounded-2xl border",
             isVictory
               ? "border-cosmic-yellow/45 bg-cosmic-yellow/15 shadow-[0_0_28px_rgba(254,240,138,0.5)]"
               : "border-rose-300/35 bg-rose-400/12",
           )}
         >
           {isVictory ? (
-            <Crown className="h-8 w-8 text-cosmic-yellow" />
+            <Crown className="size-8  text-cosmic-yellow" />
           ) : (
-            <Frown className="h-8 w-8 text-rose-200" />
+            <Frown className="size-8  text-rose-200" />
           )}
         </div>
         <div className="min-w-0">
@@ -204,7 +204,7 @@ export const Results: React.FC<{
             <img
               src={REWARD_CHEST}
               alt="Roguelite Siegestruhe"
-              className="mx-auto hidden w-full max-w-[12rem] object-contain drop-shadow-[0_16px_36px_rgba(0,0,0,0.45)] lg:block"
+              className="mx-auto hidden w-full max-w-48 object-contain drop-shadow-[0_16px_36px_rgba(0,0,0,0.45)] lg:block"
             />
           )}
         </div>
@@ -214,7 +214,7 @@ export const Results: React.FC<{
           {isVictory && rewardPackage && onSelectRelic ? (
             <>
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-cosmic-accent" />
+                <Sparkles className="size-4  text-cosmic-accent" />
                 <Eyebrow className="text-cosmic-accent">Reliktwahl</Eyebrow>
               </div>
               <p className="mt-1 text-[12.5px] text-cosmic-text-muted">
@@ -236,7 +236,7 @@ export const Results: React.FC<{
               <img
                 src={REWARD_CHEST}
                 alt="Roguelite Trosttruhe"
-                className="w-full max-w-[11rem] object-contain drop-shadow-[0_16px_36px_rgba(0,0,0,0.45)]"
+                className="w-full max-w-44 object-contain drop-shadow-[0_16px_36px_rgba(0,0,0,0.45)]"
               />
               <p className="mt-3 max-w-sm text-[13px] leading-relaxed text-cosmic-text-muted">
                 Auch ein verlorener Lauf lässt dir noch etwas Sinnvolles – sichere deine Trostbeute

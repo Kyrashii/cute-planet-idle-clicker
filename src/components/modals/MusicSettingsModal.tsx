@@ -64,7 +64,7 @@ export const MusicSettingsModal: React.FC<MusicSettingsModalProps> = React.memo(
           </div>
           <button
             onClick={onClose}
-            className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer ${
+            className={`size-8  rounded-full flex items-center justify-center font-bold text-lg hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer ${
               isNight
                 ? "bg-[#14102d] border-2 border-cosmic-accent/60 text-cosmic-text hover:bg-[#201b44]"
                 : "bg-white border-2 border-amber-300 text-amber-955 hover:bg-amber-50"
@@ -76,7 +76,7 @@ export const MusicSettingsModal: React.FC<MusicSettingsModalProps> = React.memo(
         </div>
 
         {/* Modal Content */}
-        <div className="p-4 sm:p-5 flex-grow overflow-y-auto space-y-4">
+        <div className="p-4 sm:p-5 grow overflow-y-auto space-y-4">
           {/* Lo-Fi Music Channel Presets */}
           <div className="space-y-3">
             <h5
@@ -101,15 +101,15 @@ export const MusicSettingsModal: React.FC<MusicSettingsModalProps> = React.memo(
                     className={`w-full text-left p-3 rounded-2xl border-2 flex items-start gap-3 transition-all active:scale-[0.99] cursor-pointer ${
                       isActive
                         ? isNight
-                          ? "bg-gradient-to-r from-[#2a1b4e] to-[#15112f] border-cosmic-accent shadow-[0_0_12px_rgba(202,165,254,0.25)]"
-                          : "bg-gradient-to-r from-amber-100 to-amber-50/50 border-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.15)]"
+                          ? "bg-linear-to-r from-[#2a1b4e] to-[#15112f] border-cosmic-accent shadow-[0_0_12px_rgba(202,165,254,0.25)]"
+                          : "bg-linear-to-r from-amber-100 to-amber-50/50 border-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.15)]"
                         : isNight
                           ? "bg-[#14112e]/55 border-cosmic-accent/10 text-slate-300 hover:border-cosmic-accent/45 hover:bg-[#1a153b]/65 text-cosmic-text"
                           : "bg-white/80 border-slate-200 text-slate-700 hover:border-amber-300 hover:bg-amber-50"
                     }`}
                   >
                     <span className="text-3xl select-none shrink-0 mt-0.5">{style.emoji}</span>
-                    <div className="flex-grow">
+                    <div className="grow">
                       <div className="flex items-center justify-between">
                         <span
                           className={`font-sans font-black text-xs uppercase tracking-wide leading-none ${
@@ -231,7 +231,7 @@ export const MusicSettingsModal: React.FC<MusicSettingsModalProps> = React.memo(
                 isNight ? "bg-[#14112e]/55 border-cosmic-accent/10" : "bg-white/80 border-slate-200"
               }`}
             >
-              <div className="flex-grow">
+              <div className="grow">
                 <span
                   className={`font-sans font-black text-xs uppercase tracking-wide block ${
                     isNight ? "text-slate-200" : "text-slate-800"

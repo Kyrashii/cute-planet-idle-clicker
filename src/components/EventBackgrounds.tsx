@@ -32,7 +32,7 @@ export const EventBackgrounds: React.FC<EventBackgroundsProps> = React.memo(
                   ease: "linear",
                   delay: i * 0.7,
                 }}
-                className="absolute w-36 h-2 rounded-full bg-gradient-to-r from-red-500 via-orange-450 to-transparent blur-[1.5px] rotate-[-45deg]"
+                className="absolute w-36 h-2 rounded-full bg-linear-to-r from-red-500 via-orange-450 to-transparent blur-[1.5px] -rotate-45"
                 style={{ left: `${i * 10 - 20}%`, top: `${(i % 3) * 15}%` }}
               />
             ))}
@@ -41,7 +41,7 @@ export const EventBackgrounds: React.FC<EventBackgroundsProps> = React.memo(
 
         {(activeEvent === "aurora" || activeEvent === "nebula_cloud") && !isLowMemory && (
           <div
-            className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-gradient-to-t from-teal-500/10 via-purple-500/10 to-transparent"
+            className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-linear-to-t from-teal-500/10 via-purple-500/10 to-transparent"
             id="bg-effect-nebula-cloud"
           >
             <motion.div
@@ -54,7 +54,7 @@ export const EventBackgrounds: React.FC<EventBackgroundsProps> = React.memo(
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="absolute inset-0 bg-gradient-to-r from-teal-400/20 via-cosmic-pink/15 to-emerald-400/20 blur-3xl mix-blend-screen"
+              className="absolute inset-0 bg-linear-to-r from-teal-400/20 via-cosmic-pink/15 to-emerald-400/20 blur-3xl mix-blend-screen"
               style={{ backgroundSize: "300% 300%" }}
             />
           </div>
@@ -79,7 +79,7 @@ export const EventBackgrounds: React.FC<EventBackgroundsProps> = React.memo(
                   ease: "easeInOut",
                   delay: i * 0.5,
                 }}
-                className="absolute w-28 h-[3px] bg-gradient-to-l from-white via-cyan-200 to-transparent blur-[0.5px]"
+                className="absolute w-28 h-[3px] bg-linear-to-l from-white via-cyan-200 to-transparent blur-[0.5px]"
                 style={{ top: `${(i * 9) % 100}%` }}
               />
             ))}
@@ -105,7 +105,7 @@ export const EventBackgrounds: React.FC<EventBackgroundsProps> = React.memo(
                   ease: "easeOut",
                   delay: i * 1.0,
                 }}
-                className="absolute rounded-full border-4 border-dashed border-amber-300/40 w-[400px] h-[400px] blur-[1px]"
+                className="absolute rounded-full border-4 border-dashed border-amber-300/40 size-[400px]  blur-[1px]"
               />
             ))}
           </div>

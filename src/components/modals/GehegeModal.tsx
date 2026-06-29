@@ -503,8 +503,8 @@ const PlacedAnimalItem = React.memo<PlacedAnimalItemProps>(
               <div className="relative bg-white text-slate-800 text-[10px] px-1.5 py-0.5 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.3)] flex items-center justify-center border border-pink-100 font-bold min-w-[24px] h-6 select-none">
                 ❤️
                 {/* Tail circles for thought bubble pointing to animal */}
-                <div className="absolute -bottom-0.5 right-1.5 w-1.5 h-1.5 bg-white rounded-full border border-pink-100/50" />
-                <div className="absolute -bottom-1.5 right-1 w-1 h-1 bg-white rounded-full border border-pink-100/50" />
+                <div className="absolute -bottom-0.5 right-1.5 size-1.5  bg-white rounded-full border border-pink-100/50" />
+                <div className="absolute -bottom-1.5 right-1 size-1  bg-white rounded-full border border-pink-100/50" />
               </div>
             </div>
           )}
@@ -554,7 +554,7 @@ const PlacedAnimalItem = React.memo<PlacedAnimalItemProps>(
               e.stopPropagation();
               onRemove(pa.id);
             }}
-            className="absolute -top-2 -right-2 bg-red-500/95 hover:bg-red-600 border border-white text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center opacity-100 sm:opacity-0 group-hover/animal:opacity-100 transition-opacity duration-150 shadow-md cursor-pointer z-20"
+            className="absolute -top-2 -right-2 bg-red-500/95 hover:bg-red-600 border border-white text-white font-black text-[9px] size-5  rounded-full flex items-center justify-center opacity-100 sm:opacity-0 group-hover/animal:opacity-100 transition-opacity duration-150 shadow-md cursor-pointer z-20"
             title="Tier entfernen"
           >
             ✕
@@ -675,12 +675,12 @@ const FeedBowlComponent = React.memo<FeedBowlComponentProps>(
           <img
             src={isVoll ? "/assets/stuff/futternapf_voll.png" : "/assets/stuff/futternapf_leer.png"}
             alt="Futternapf"
-            className="w-14 h-14 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]"
+            className="size-14  object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]"
             referrerPolicy="no-referrer"
           />
 
           <div
-            className={`absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] text-white border border-white/20 shadow-md ${
+            className={`absolute -top-1.5 -right-1.5 size-5  rounded-full flex items-center justify-center font-bold text-[10px] text-white border border-white/20 shadow-md ${
               isVoll
                 ? "bg-emerald-500"
                 : hasCooldown
@@ -843,7 +843,7 @@ const LoveGalleryCard = React.memo<LoveGalleryCardProps>(({ def, loveVal, lastPe
 
         <div className="w-full bg-slate-900/90 border border-slate-800 rounded-full h-2 overflow-hidden mt-1 shadow-inner">
           <div
-            className="bg-gradient-to-r from-pink-500 to-rose-400 h-full rounded-full transition-all duration-500"
+            className="bg-linear-to-r from-pink-500 to-rose-400 h-full rounded-full transition-all duration-500"
             style={{ width: `${percent}%` }}
           />
         </div>
@@ -1128,11 +1128,11 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
       </header>
 
       {/* Main Enclosure Canvas Screen */}
-      <div className="flex-grow relative overflow-hidden flex items-center justify-center bg-slate-950">
+      <div className="grow relative overflow-hidden flex items-center justify-center bg-slate-950">
         <div
           ref={landscapeRef}
           onClick={handleLandscapeClick}
-          className={`relative w-full h-full max-w-5xl md:max-h-[80vh] md:rounded-3xl overflow-hidden shadow-2xl transition-all duration-150 ${
+          className={`relative size-full  max-w-5xl md:max-h-[80vh] md:rounded-3xl overflow-hidden shadow-2xl transition-all duration-150 ${
             placingAnimalId
               ? "cursor-crosshair border-2 border-indigo-500"
               : "border border-slate-800"
@@ -1146,7 +1146,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="absolute top-4 left-4 right-4 z-40 mx-auto max-w-md bg-amber-500 border border-amber-400 text-slate-950 font-black px-4 py-2.5 rounded-2xl shadow-xl flex items-center justify-between text-xs cursor-default"
+                className="absolute top-4 inset-x-4  z-40 mx-auto max-w-md bg-amber-500 border border-amber-400 text-slate-950 font-black px-4 py-2.5 rounded-2xl shadow-xl flex items-center justify-between text-xs cursor-default"
                 onClick={(e) => e.stopPropagation()}
               >
                 <span className="flex items-center gap-1.5">
@@ -1172,7 +1172,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
                   : "/assets/stuff/gehegelandschaft_tag.png"
               }
               alt="Gehegelandschaft"
-              className="w-full h-full object-cover transition-opacity duration-1000"
+              className="size-full  object-cover transition-opacity duration-1000"
               referrerPolicy="no-referrer"
             />
           </div>
@@ -1203,7 +1203,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
           {/* Feed Bowl Exclusion Zone Indicator (only visible when placing) */}
           {placingAnimalId && (
             <div
-              className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-dashed border-rose-500/80 bg-rose-500/10 flex flex-col items-center justify-center pointer-events-none select-none z-20 animate-pulse"
+              className="absolute -translate-1/2  rounded-full border-2 border-dashed border-rose-500/80 bg-rose-500/10 flex flex-col items-center justify-center pointer-events-none select-none z-20 animate-pulse"
               style={{
                 left: "50%",
                 top: "78%",
@@ -1277,7 +1277,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
       )}
 
       {/* Enclosure Lower Command Bar */}
-      <footer className="w-full bg-slate-900 border-t border-slate-800/85 px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-inner z-10">
+      <footer className="w-full bg-slate-900 border-t border-slate-800/85 p-4  flex flex-col sm:flex-row items-center justify-between gap-4 shadow-inner z-10">
         <div id="gehege-stats" className="flex items-center gap-4 text-xs font-mono text-slate-400">
           <div>
             Platziert:{" "}
@@ -1402,7 +1402,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 cursor-default"
+            className="fixed inset-0 z-60 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 cursor-default"
             onClick={(e) => {
               e.stopPropagation();
             }}
@@ -1437,7 +1437,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
               </div>
 
               {/* Contents scroll area */}
-              <div className="p-6 overflow-y-auto flex-grow bg-slate-900/40">
+              <div className="p-6 overflow-y-auto grow bg-slate-900/40">
                 {purchasedList.length === 0 ? (
                   <div className="text-center py-12">
                     <span className="text-4xl">🌵</span>

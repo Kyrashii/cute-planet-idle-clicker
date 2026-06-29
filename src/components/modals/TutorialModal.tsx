@@ -21,7 +21,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = React.memo(
       >
         {/* Cute floating icon badge */}
         <div
-          className={`w-16 h-16 rounded-2.5xl flex items-center justify-center text-4xl shadow-inner select-none animate-bounce ${
+          className={`size-16  rounded-2.5xl flex items-center justify-center text-4xl shadow-inner select-none animate-bounce ${
             isNight
               ? "bg-[#252048] border-2 border-cosmic-accent/50"
               : "bg-amber-100 border-2 border-amber-300"
@@ -39,7 +39,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = React.memo(
             SYSTEM START & EINFUeHRUNG
           </span>
           <h5
-            className={`font-sans font-black text-sm uppercase tracking-wide leading-tight ${
+            className={`font-sans font-black text-sm/tight uppercase tracking-wide  ${
               isNight ? "text-white" : "text-amber-950"
             }`}
           >

@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal } from "../ui/Modal";
-import { Clock, Sparkles, Flame, Coins, Award } from "lucide-react";
+import { Clock, Sparkles, Flame, Award } from "lucide-react";
 import { useGameState } from "../../contexts/GameStateContext";
 
 interface OfflineEarningsModalProps {
@@ -55,7 +55,7 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = React.m
         }`}
       >
         {/* Subtle glowing sparks in background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-yellow-300/10 via-[#0d0a20]/0 to-indigo-900/10 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-yellow-300/10 via-[#0d0a20]/0 to-indigo-900/10 pointer-events-none" />
 
         {/* Header */}
         <div
@@ -81,7 +81,7 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = React.m
         {/* Content */}
         <div className="p-5 overflow-y-auto max-h-[60vh] space-y-4.5 relative z-10">
           <p
-            className={`text-xs text-center leading-relaxed font-medium ${isNight ? "text-purple-150" : "text-slate-600"}`}
+            className={`text-xs/relaxed text-center  font-medium ${isNight ? "text-purple-150" : "text-slate-600"}`}
           >
             Dein Planet hat geschlafen, aber deine suessen Tierchen und funkelnden Sterne waren
             fleissig!
@@ -107,7 +107,7 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = React.m
               }`}
             >
               <span className="flex items-center gap-1.5 font-bold text-gray-500 text-[11px]">
-                <Clock className="w-3.5 h-3.5 text-pink-400" />
+                <Clock className="size-3.5  text-pink-400" />
                 Zeit abwesend:
               </span>
               <span className="font-mono font-black text-[12px] text-pink-400">
@@ -121,7 +121,7 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = React.m
               }`}
             >
               <span className="flex items-center gap-1.5 font-bold text-gray-500 text-[11px]">
-                <Flame className="w-3.5 h-3.5 text-amber-400" />
+                <Flame className="size-3.5  text-amber-400" />
                 Aktive LPS Rate:
               </span>
               <span className="font-mono font-black text-[12px] text-amber-400">
@@ -130,10 +130,10 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = React.m
             </div>
 
             {prestigeCount > 0 && (
-              <div className="p-3 rounded-2xl border bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-300/20 space-y-1">
+              <div className="p-3 rounded-2xl border bg-linear-to-r from-purple-500/10 to-pink-500/10 border-purple-300/20 space-y-1">
                 <div className="flex justify-between items-center">
                   <span className="flex items-center gap-1.5 font-bold text-[10px] text-purple-350 uppercase">
-                    <Award className="w-3.5 h-3.5 text-purple-300 fill-purple-300/10" />
+                    <Award className="size-3.5  text-purple-300 fill-purple-300/10" />
                     Prestige-Aktiv:
                   </span>
                   <span className="font-mono font-black text-xs text-purple-300">
@@ -164,10 +164,10 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = React.m
         >
           <button
             onClick={() => onClaim(earnedLife)}
-            className="w-full py-3 sm:py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-500 hover:to-orange-600 border-2 border-yellow-300 text-white font-sans font-black text-xs uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-2 cursor-pointer cursor-glow"
+            className="w-full py-3 sm:py-3.5 rounded-2xl bg-linear-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-500 hover:to-orange-600 border-2 border-yellow-300 text-white font-sans font-black text-xs uppercase tracking-widest shadow-lg hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center gap-2 cursor-pointer cursor-glow"
           >
             <Sparkles
-              className="w-4 h-4 text-amber-100 animate-spin"
+              className="size-4  text-amber-100 animate-spin"
               style={{ animationDuration: "3s" }}
             />
             Lebensenergie ernten!

@@ -42,13 +42,13 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = React.memo(
         panelClassName="bg-[#181335]/95 border-3 border-cosmic-accent rounded-3.5xl p-6.5 max-w-xl w-full shadow-2xl text-cosmic-text max-h-[90vh] overflow-y-auto"
       >
         <div className="flex items-center gap-2.5">
-          <Sparkles className="w-5 h-5 text-cosmic-accent" />
+          <Sparkles className="size-5  text-cosmic-accent" />
           <h5 className="font-sans font-black text-[#ffcbdc] text-base sm:text-lg uppercase tracking-wider">
             Anderer lokaler Spielstand erkannt
           </h5>
         </div>
 
-        <p className="font-sans text-xs text-cosmic-accent-muted font-semibold mt-3 leading-relaxed">
+        <p className="font-sans text-xs/relaxed text-cosmic-accent-muted font-semibold mt-3 ">
           Dein aktueller Account hat einen eigenen Spielstand. Lokal liegt aber noch Fortschritt von
           einem Gast oder einem anderen Account. Entscheide, ob du mit dem aktuellen Account
           weiterspielst oder den vorherigen lokalen Stand in diesen Account uebernimmst.
@@ -57,7 +57,7 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = React.memo(
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
           <div className="p-4 rounded-2xl bg-[#0e0a24]/90 border-2 border-cosmic-accent/30 transition-all text-left">
             <div className="flex items-center gap-1.5 text-xs text-cosmic-accent font-bold mb-2">
-              <UserRound className="w-4 h-4 text-cosmic-accent" />
+              <UserRound className="size-4  text-cosmic-accent" />
               <span>AKTUELLER ACCOUNT</span>
             </div>
             <div className="space-y-1.5 font-mono text-[11px] font-black text-slate-350">
@@ -88,7 +88,7 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = React.memo(
 
           <div className="p-4 rounded-2xl bg-[#0e0a24]/90 border-2 border-slate-500/20 transition-all text-left">
             <div className="flex items-center gap-1.5 text-xs text-sky-305 font-bold mb-2">
-              <Monitor className="w-4 h-4 text-sky-400" />
+              <Monitor className="size-4  text-sky-400" />
               <span>VORHERIGER LOKALER STAND</span>
             </div>
             <div className="space-y-1.5 font-mono text-[11px] font-black text-slate-350">
@@ -139,16 +139,16 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = React.memo(
         <div className="mt-6 flex flex-col sm:flex-row gap-3 font-black">
           <button
             onClick={onKeepCurrentAccount}
-            className="flex-1 py-3 px-4 bg-gradient-to-r from-purple-650 to-indigo-650 hover:from-purple-700 hover:to-indigo-700 text-white border-2 border-cosmic-accent/60 rounded-xl text-xs font-black transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
+            className="flex-1 py-3 px-4 bg-linear-to-r from-purple-650 to-indigo-650 hover:from-purple-700 hover:to-indigo-700 text-white border-2 border-cosmic-accent/60 rounded-xl text-xs font-black transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
           >
-            <UserRound className="w-4 h-4 shrink-0" />
+            <UserRound className="size-4  shrink-0" />
             Aktuellen Account fortsetzen
           </button>
           <button
             onClick={onAdoptPreviousLocalSave}
             className="flex-1 py-3 px-4 bg-cosmic-surface-mid hover:bg-[#2d225c] text-slate-200 border-2 border-slate-500/40 rounded-xl text-xs font-black transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
           >
-            <Monitor className="w-4 h-4 shrink-0" />
+            <Monitor className="size-4  shrink-0" />
             Vorherigen lokalen Stand uebernehmen
           </button>
         </div>

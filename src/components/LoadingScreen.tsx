@@ -18,7 +18,7 @@ export const LoadingScreen: React.FC = () => {
             rotate: { repeat: Infinity, duration: 15, ease: "linear" },
             scale: { repeat: Infinity, duration: 3, ease: "easeInOut" },
           }}
-          className="w-24 h-24 rounded-full border-4 border-dashed border-cosmic-accent/50 flex items-center justify-center relative shadow-[0_0_40px_rgba(202,165,254,0.15)]"
+          className="size-24  rounded-full border-4 border-dashed border-cosmic-accent/50 flex items-center justify-center relative shadow-[0_0_40px_rgba(202,165,254,0.15)]"
         >
           <span className="text-4xl">🪐</span>
         </motion.div>
@@ -29,7 +29,7 @@ export const LoadingScreen: React.FC = () => {
           transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
           className="absolute inset-0"
         >
-          <div className="absolute -top-1 left-1/2 -ml-2.5 w-5 h-5 rounded-full bg-cosmic-pink border-2 border-cosmic-bg shadow-[0_0_12px_var(--color-cosmic-pink)]" />
+          <div className="absolute -top-1 left-1/2 -ml-2.5 size-5  rounded-full bg-cosmic-pink border-2 border-cosmic-bg shadow-[0_0_12px_var(--color-cosmic-pink)]" />
         </motion.div>
       </div>
 
@@ -43,17 +43,17 @@ export const LoadingScreen: React.FC = () => {
           <motion.span
             animate={{ opacity: [1, 0.2, 1] }}
             transition={{ repeat: Infinity, duration: 1.2, delay: 0 }}
-            className="w-1.5 h-1.5 bg-cosmic-accent rounded-full"
+            className="size-1.5  bg-cosmic-accent rounded-full"
           />
           <motion.span
             animate={{ opacity: [1, 0.2, 1] }}
             transition={{ repeat: Infinity, duration: 1.2, delay: 0.3 }}
-            className="w-1.5 h-1.5 bg-cosmic-accent rounded-full"
+            className="size-1.5  bg-cosmic-accent rounded-full"
           />
           <motion.span
             animate={{ opacity: [1, 0.2, 1] }}
             transition={{ repeat: Infinity, duration: 1.2, delay: 0.6 }}
-            className="w-1.5 h-1.5 bg-cosmic-accent rounded-full"
+            className="size-1.5  bg-cosmic-accent rounded-full"
           />
         </span>
       </div>

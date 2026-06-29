@@ -9,7 +9,6 @@ import {
   BOSS_VISUAL,
   DangerBadge,
   GhostButton,
-  IconBadge,
   type NodeVisual,
   cx,
   nodeVisual,
@@ -95,14 +94,14 @@ function EncounterHero({
             visual.text,
           )}
         >
-          <visual.icon className="h-3.5 w-3.5" />
+          <visual.icon className="size-3.5 " />
           {kicker}
         </span>
         <DangerBadge danger={encounter.danger} />
       </div>
 
       {/* The dominant ask */}
-      <h3 className="mt-2 text-2xl font-black leading-tight tracking-[0.01em] text-cosmic-text sm:text-[2rem]">
+      <h3 className="mt-2 text-2xl/tight font-black  tracking-[0.01em] text-cosmic-text sm:text-[2rem]">
         {promptHeadline(encounter, isBoss)}
       </h3>
 
@@ -112,7 +111,7 @@ function EncounterHero({
       </p>
       {encounter.rewardHint && (
         <div className="mt-1.5 flex items-center gap-1.5 text-[12px] text-pink-200">
-          <Gift className="h-3.5 w-3.5 shrink-0" />
+          <Gift className="size-3.5  shrink-0" />
           <span className="leading-snug">{encounter.rewardHint}</span>
         </div>
       )}
@@ -189,15 +188,15 @@ export const EncounterStage: React.FC<{
 
             {canReroll && (
               <GhostButton onClick={onRerollEncounter} className="mt-3 shrink-0 self-start">
-                <RotateCcw className="h-3.5 w-3.5" />
+                <RotateCcw className="size-3.5 " />
                 Angebote neu würfeln ({activeRun.stats.rerolls})
               </GhostButton>
             )}
           </>
         ) : (
           <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-white/10 bg-black/15 px-6 py-10 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-cosmic-accent/30 bg-cosmic-accent/10">
-              <Sparkles className="h-6 w-6 text-cosmic-accent" />
+            <div className="flex size-14  items-center justify-center rounded-2xl border border-cosmic-accent/30 bg-cosmic-accent/10">
+              <Sparkles className="size-6  text-cosmic-accent" />
             </div>
             <h4 className="mt-4 text-xl font-black tracking-[0.01em] text-cosmic-text">
               Run wird vorbereitet

@@ -50,7 +50,7 @@ function LoopStep({
 }) {
   return (
     <div className="flex items-start gap-2.5 rounded-xl border border-white/10 bg-black/20 px-3 py-2">
-      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-cosmic-accent" />
+      <Icon className="mt-0.5 size-4  shrink-0 text-cosmic-accent" />
       <div>
         <div className="text-[13px] font-black text-cosmic-text">{title}</div>
         <div className="text-[11.5px] leading-snug text-cosmic-text-muted">{body}</div>
@@ -150,9 +150,9 @@ export const HelpLegend: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
           type="button"
           onClick={onClose}
           aria-label="Hilfe schliessen"
-          className="flex h-9 w-9 items-center justify-center rounded-2xl border border-white/12 bg-white/4 text-cosmic-text-muted transition hover:border-cosmic-accent/40 hover:text-cosmic-text"
+          className="flex size-9  items-center justify-center rounded-2xl border border-white/12 bg-white/4 text-cosmic-text-muted transition hover:border-cosmic-accent/40 hover:text-cosmic-text"
         >
-          <X className="h-4 w-4" />
+          <X className="size-4 " />
         </button>
       </div>
       <div className="max-h-[70vh] overflow-y-auto px-5 py-4">

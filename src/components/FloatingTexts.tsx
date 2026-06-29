@@ -91,13 +91,13 @@ export const FloatingTexts: React.FC<FloatingTextsProps> = React.memo(
             >
               {item.type === "click" && (
                 <div className="font-sans font-black text-2.5xl text-[#f15e75] flex items-center gap-1 filter drop-shadow-[0_2px_4px_rgba(241,94,117,0.3)]">
-                  <Heart className="w-5 h-5 fill-[#FFD1DC] stroke-[#f15e75] stroke-[2.5] inline animate-bounce" />{" "}
+                  <Heart className="size-5  fill-[#FFD1DC] stroke-[#f15e75] stroke-[2.5] inline animate-bounce" />{" "}
                   {item.text}
                 </div>
               )}
               {item.type === "crit-click" && (
                 <div className="font-sans font-black text-3xl text-amber-500 flex items-center gap-1.5 filter drop-shadow-[0_3px_6px_rgba(245,158,11,0.5)] scale-110">
-                  <Sparkles className="w-5.5 h-5.5 text-amber-300 fill-amber-100 inline animate-[spin_3s_linear_infinite]" />{" "}
+                  <Sparkles className="size-5.5  text-amber-300 fill-amber-100 inline animate-[spin_3s_linear_infinite]" />{" "}
                   {item.text}
                 </div>
               )}
@@ -110,7 +110,7 @@ export const FloatingTexts: React.FC<FloatingTextsProps> = React.memo(
                       style={{ filter: `drop-shadow(0 1px 4px ${sStyle.glow})` }}
                     >
                       <Star
-                        className={`w-4 h-4 inline stroke-[2] ${sStyle.fill} ${sStyle.border} ${sStyle.extraClass || ""}`}
+                        className={`size-4  inline stroke-2 ${sStyle.fill} ${sStyle.border} ${sStyle.extraClass || ""}`}
                       />
                       <span
                         className={
@@ -127,7 +127,7 @@ export const FloatingTexts: React.FC<FloatingTextsProps> = React.memo(
                   className="font-mono text-sm leading-none font-bold flex items-center gap-1 filter"
                   style={{ filter: "drop-shadow(0 1px 6px rgba(192, 132, 252, 0.8))" }}
                 >
-                  <Moon className="w-4 h-4 inline stroke-[1.5] fill-purple-200 text-purple-400" />
+                  <Moon className="size-4  inline stroke-[1.5] fill-purple-200 text-purple-400" />
                   <span
                     className={
                       isNight ? "text-purple-250 font-black" : "text-purple-950 font-black"
@@ -145,7 +145,7 @@ export const FloatingTexts: React.FC<FloatingTextsProps> = React.memo(
                       : "text-[#6D4C41] bg-[#FFF9C4] border-[#6D4C41] shadow-[4px_4px_0px_#6D4C41]"
                   }`}
                 >
-                  <Sparkles className={`w-4 h-4 ${isNight ? "text-teal-300" : "text-[#6D4C41]"}`} />{" "}
+                  <Sparkles className={`size-4  ${isNight ? "text-teal-300" : "text-[#6D4C41]"}`} />{" "}
                   {item.text}
                 </div>
               )}

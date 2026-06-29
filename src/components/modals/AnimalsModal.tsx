@@ -138,7 +138,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
         panelClassName="bg-[#1a163a]/95 rounded-3.5xl border-3 border-cosmic-accent flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b-3 border-cosmic-accent/60 bg-gradient-to-r from-[#171430] via-[#211a3d] to-[#171430] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b-3 border-cosmic-accent/60 bg-linear-to-r from-[#171430] via-[#211a3d] to-[#171430] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-2xl select-none">
               {selectedAnimal ? selectedAnimal.emoji : "🐾"}
@@ -157,7 +157,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
               setSelectedAnimal(null);
               onClose();
             }}
-            className="w-8 h-8 rounded-full bg-[#1b1836] border-2 border-cosmic-accent flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
+            className="size-8  rounded-full bg-[#1b1836] border-2 border-cosmic-accent flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
           >
             ✕
           </button>
@@ -178,7 +178,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                     onClick={() => setBuyAmount(amt)}
                     className={`px-3 py-1 text-[10px] font-black rounded-full uppercase tracking-wider transition-all cursor-pointer ${
                       buyAmount === amt
-                        ? "bg-gradient-to-r from-[#8b5cf6] to-[#ec4899] text-white shadow-md font-extrabold"
+                        ? "bg-linear-to-r from-[#8b5cf6] to-[#ec4899] text-white shadow-md font-extrabold"
                         : "text-slate-400 hover:text-white"
                     }`}
                   >
@@ -228,7 +228,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
         )}
 
         {/* Modal Content */}
-        <div className="p-4 sm:p-5 flex-grow overflow-y-auto pr-2">
+        <div className="p-4 sm:p-5 grow overflow-y-auto pr-2">
           {selectedAnimal ? (
             <div className="flex flex-col items-center py-2 px-1">
               {/* Back button */}
@@ -243,10 +243,10 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="w-40 h-40 rounded-3xl bg-cosmic-surface border-3 border-cosmic-accent flex items-center justify-center shadow-lg relative shrink-0 overflow-hidden"
+                className="size-40  rounded-3xl bg-cosmic-surface border-3 border-cosmic-accent flex items-center justify-center shadow-lg relative shrink-0 overflow-hidden"
               >
                 {/* Ambient lighting backdrop */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/40 to-pink-900/20 opacity-60" />
+                <div className="absolute inset-0 bg-linear-to-tr from-purple-900/40 to-pink-900/20 opacity-60" />
                 <motion.div
                   animate={{ y: [0, -6, 0] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -260,7 +260,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                   />
                 </motion.div>
                 {(purchasedAnimals[selectedAnimal.id] || 0) > 0 && (
-                  <span className="absolute top-2 right-2 bg-gradient-to-r from-[#f15e75] to-rose-600 text-white font-mono font-black text-xs px-2.5 py-1 rounded-full border-2 border-cosmic-accent shadow-md animate-pulse z-20">
+                  <span className="absolute top-2 right-2 bg-linear-to-r from-[#f15e75] to-rose-600 text-white font-mono font-black text-xs px-2.5 py-1 rounded-full border-2 border-cosmic-accent shadow-md animate-pulse z-20">
                     Bestand: {purchasedAnimals[selectedAnimal.id] || 0}
                   </span>
                 )}
@@ -270,7 +270,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
               <h4 className="text-xl sm:text-2xl font-black text-cosmic-text text-center mt-4 uppercase tracking-wide">
                 {selectedAnimal.germanName}
               </h4>
-              <p className="text-xs text-center text-[#d1cbeb] font-bold italic max-w-sm px-4 mt-1.5 leading-relaxed">
+              <p className="text-xs/relaxed text-center text-[#d1cbeb] font-bold italic max-w-sm px-4 mt-1.5 ">
                 "{selectedAnimal.germanDescription || selectedAnimal.description}"
               </p>
 
@@ -585,7 +585,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                         onClick={() => onBuyAnimal(selectedAnimal.id, totalCostMax, countToBuyMax)}
                         className={`p-2.5 rounded-xl border-2 flex flex-col items-center justify-center transition-all cursor-pointer ${
                           life >= totalCostMax && countToBuyMax > 0
-                            ? "bg-gradient-to-r from-[#8b5cf6] to-[#ec4899] border-cosmic-accent text-white hover:scale-102 shadow-md active:scale-97"
+                            ? "bg-linear-to-r from-[#8b5cf6] to-[#ec4899] border-cosmic-accent text-white hover:scale-102 shadow-md active:scale-97"
                             : "bg-[#18162e]/40 border-slate-700/30 text-cosmic-accent-muted/40 cursor-not-allowed opacity-50"
                         }`}
                       >
@@ -662,8 +662,8 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                     className="flex items-center justify-between p-3.5 rounded-3xl border-2 border-cosmic-accent/35 bg-cosmic-surface-mid/55 hover:bg-cosmic-surface-mid/85 hover:border-cosmic-accent/80 transition-all gap-4 group cursor-pointer"
                   >
                     {/* Animal visual thumbnail - SIZED UP */}
-                    <div className="flex items-center gap-4 min-w-0 flex-grow">
-                      <div className="w-18 h-18 rounded-2xl bg-cosmic-surface border-2 border-cosmic-accent flex items-center justify-center shadow-lg relative shrink-0">
+                    <div className="flex items-center gap-4 min-w-0 grow">
+                      <div className="size-18  rounded-2xl bg-cosmic-surface border-2 border-cosmic-accent flex items-center justify-center shadow-lg relative shrink-0">
                         <AnimalImage
                           image={animal.image}
                           emoji={animal.emoji}
@@ -671,7 +671,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                           emojiSizeClassName="text-4xl select-none"
                         />
                         {count > 0 && (
-                          <span className="absolute -top-1.5 -right-1.5 bg-[#f15e75] text-white font-mono font-black text-[9.5px] h-5.5 w-5.5 rounded-full flex items-center justify-center border-2 border-cosmic-accent shadow-sm animate-pulse">
+                          <span className="absolute -top-1.5 -right-1.5 bg-[#f15e75] text-white font-mono font-black text-[9.5px] size-5.5  rounded-full flex items-center justify-center border-2 border-cosmic-accent shadow-sm animate-pulse">
                             {count}
                           </span>
                         )}
@@ -714,7 +714,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                       }}
                       className={`px-3 py-2.5 sm:px-4 rounded-xl font-black flex flex-col items-center justify-center min-w-[98px] shrink-0 transition-all select-none border-2 cursor-pointer ${
                         hasMoney
-                          ? "bg-gradient-to-b from-[#24214e] to-[#12112b] text-cosmic-text border-cosmic-accent hover:from-[#353174] hover:to-[#171638] hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
+                          ? "bg-linear-to-b from-[#24214e] to-[#12112b] text-cosmic-text border-cosmic-accent hover:from-[#353174] hover:to-[#171638] hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-px  active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
                           : "bg-[#18162f]/80 text-cosmic-accent-muted/40 border-cosmic-accent/20 shadow-none cursor-not-allowed opacity-40 opacity-50"
                       }`}
                     >

@@ -61,9 +61,9 @@ const StepPill: React.FC<{ active: boolean; label: string }> = ({ active, label 
 
 function PreparingPanel() {
   return (
-    <Panel className="mx-auto flex h-full w-full max-w-3xl flex-col items-center justify-center p-8 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-cosmic-accent/30 bg-cosmic-accent/10">
-        <Sparkles className="h-6 w-6 text-cosmic-accent" />
+    <Panel className="mx-auto flex size-full  max-w-3xl flex-col items-center justify-center p-8 text-center">
+      <div className="flex size-14  items-center justify-center rounded-2xl border border-cosmic-accent/30 bg-cosmic-accent/10">
+        <Sparkles className="size-6  text-cosmic-accent" />
       </div>
       <h3 className="mt-4 text-2xl font-black tracking-[0.01em] text-cosmic-text">
         Run wird vorbereitet
@@ -128,7 +128,7 @@ export const RogueliteScreen: React.FC<RogueliteScreenProps> = React.memo(
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[120] overflow-y-auto text-cosmic-text md:overflow-hidden"
+          className="fixed inset-0 z-120 overflow-y-auto text-cosmic-text md:overflow-hidden"
           style={{
             backgroundColor: "#0c0a1c",
             backgroundImage: `radial-gradient(circle at 50% -8%, rgba(202,165,254,0.14), transparent 58%), linear-gradient(180deg, rgba(16,13,35,0.92), rgba(12,10,28,0.97)), url(${ART.particles}), url(${ART.backdrop})`,
@@ -136,7 +136,7 @@ export const RogueliteScreen: React.FC<RogueliteScreenProps> = React.memo(
             backgroundPosition: "center",
           }}
         >
-          <div className="flex min-h-screen flex-col gap-2.5 px-2.5 py-2.5 md:h-screen md:min-h-0 md:px-3.5 md:py-3.5">
+          <div className="flex min-h-screen flex-col gap-2.5 p-2.5  md:h-screen md:min-h-0 md:p-3.5 ">
             {/* Shell header */}
             <Panel className="flex shrink-0 items-center justify-between gap-3 px-4 py-3">
               <div className="min-w-0">
@@ -161,18 +161,18 @@ export const RogueliteScreen: React.FC<RogueliteScreenProps> = React.memo(
                   title="Hilfe & Legende"
                   aria-label="Hilfe öffnen"
                   data-testid="roguelite-help-button"
-                  className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/12 bg-white/4 text-cosmic-text-muted transition hover:border-cosmic-accent/40 hover:text-cosmic-text"
+                  className="flex size-10  items-center justify-center rounded-2xl border border-white/12 bg-white/4 text-cosmic-text-muted transition hover:border-cosmic-accent/40 hover:text-cosmic-text"
                 >
-                  <CircleHelp className="h-5 w-5" />
+                  <CircleHelp className="size-5 " />
                 </button>
                 <button
                   type="button"
                   onClick={onClose}
                   title="Roguelite schliessen"
                   aria-label="Roguelite schliessen"
-                  className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/12 bg-white/4 text-cosmic-text-muted transition hover:border-cosmic-accent/40 hover:text-cosmic-text"
+                  className="flex size-10  items-center justify-center rounded-2xl border border-white/12 bg-white/4 text-cosmic-text-muted transition hover:border-cosmic-accent/40 hover:text-cosmic-text"
                 >
-                  <X className="h-5 w-5" />
+                  <X className="size-5 " />
                 </button>
               </div>
             </Panel>

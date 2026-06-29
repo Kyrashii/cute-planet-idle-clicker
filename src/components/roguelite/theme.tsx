@@ -138,7 +138,7 @@ export function IconButton({ className, children, ...rest }: ButtonProps) {
     <button
       type="button"
       className={cx(
-        "flex h-10 w-10 items-center justify-center rounded-2xl border border-white/12 bg-white/4 text-cosmic-text-muted transition",
+        "flex size-10  items-center justify-center rounded-2xl border border-white/12 bg-white/4 text-cosmic-text-muted transition",
         "hover:border-cosmic-accent/40 hover:bg-white/8 hover:text-cosmic-text",
         className,
       )}
@@ -388,7 +388,7 @@ export const DangerBadge: React.FC<{ danger: RogueliteDanger }> = ({ danger }) =
           <span
             key={i}
             className={cx(
-              "h-1.5 w-1.5 rounded-full",
+              "size-1.5  rounded-full",
               i < v.pips ? cx(v.text, "bg-current") : "bg-white/15",
             )}
           />

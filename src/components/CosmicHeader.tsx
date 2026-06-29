@@ -95,7 +95,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
     return (
       <>
         <header
-          className={`sticky top-0 z-20 backdrop-blur-md py-4 px-4 sm:px-6 shadow-md transition-all duration-500 border-b-4 ${
+          className={`sticky top-0 z-20 backdrop-blur-md p-4  sm:px-6 shadow-md transition-all duration-500 border-b-4 ${
             isNightStyle ? "bg-[#110e26]/85 border-cosmic-accent/50 text-cosmic-text" : ""
           } ${showTutorial ? "blur-md pointer-events-none select-none" : ""}`}
         >
@@ -137,13 +137,13 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                 data-testid="open-roguelite-button"
                 className={`group relative flex items-center gap-2 rounded-xl border-2 px-3 py-2 transition-all shadow-sm cursor-pointer ${
                   hasActiveRogueliteRun
-                    ? "border-fuchsia-300/70 bg-gradient-to-r from-[#261343] via-[#1b1539] to-[#152a44] text-white shadow-[0_0_30px_rgba(202,165,254,0.22)]"
+                    ? "border-fuchsia-300/70 bg-linear-to-r from-[#261343] via-[#1b1539] to-[#152a44] text-white shadow-[0_0_30px_rgba(202,165,254,0.22)]"
                     : "border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
                 }`}
                 title="Galaxie-Roguelite oeffnen"
               >
                 <Swords
-                  className={`h-4 w-4 ${hasActiveRogueliteRun ? "text-fuchsia-200" : "text-cosmic-pink"} ${hasActiveRogueliteRun ? "animate-pulse" : ""}`}
+                  className={`size-4  ${hasActiveRogueliteRun ? "text-fuchsia-200" : "text-cosmic-pink"} ${hasActiveRogueliteRun ? "animate-pulse" : ""}`}
                 />
                 <div className="hidden text-left sm:block">
                   <div className="text-[9px] font-mono font-black uppercase tracking-[0.18em] text-cosmic-accent-muted">
@@ -154,7 +154,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                   </div>
                 </div>
                 {hasActiveRogueliteRun && (
-                  <span className="absolute -right-1.5 -top-1.5 h-3.5 w-3.5 rounded-full border border-white/30 bg-fuchsia-400 animate-pulse" />
+                  <span className="absolute -right-1.5 -top-1.5 size-3.5  rounded-full border border-white/30 bg-fuchsia-400 animate-pulse" />
                 )}
               </button>
 
@@ -207,73 +207,73 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                   >
                     {galaxyShards} 🌌
                   </span>
-                  <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-fuchsia-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-x-0 bottom-0 h-[2px] bg-linear-to-r from-transparent via-fuchsia-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </button>
               )}
 
               {/* Quiet Mute Switch */}
               <button
                 onClick={handleToggleMute}
-                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
+                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
                 title={isMutedState ? "Ton einschalten" : "Ton stummschalten"}
               >
                 {isMutedState ? (
-                  <VolumeX className="w-4 h-4 text-rose-350" />
+                  <VolumeX className="size-4  text-rose-350" />
                 ) : (
-                  <Volume2 className="w-4 h-4 text-cosmic-pink animate-pulse" />
+                  <Volume2 className="size-4  text-cosmic-pink animate-pulse" />
                 )}
               </button>
 
               {/* Soundtrack Settings Window trigger */}
               <button
                 onClick={() => setShowMusicSettingsModal(true)}
-                className="group p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
+                className="group p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
                 title="Sound & Einstellungen oeffnen"
                 id="header_lofi_music_btn"
               >
-                <Settings className="w-4 h-4 text-cosmic-accent transition-transform duration-500 group-hover:rotate-90" />
+                <Settings className="size-4  text-cosmic-accent transition-transform duration-500 group-hover:rotate-90" />
               </button>
 
               {/* Cloud Sync/Storage toggle */}
               <button
                 onClick={() => setShowCloudSyncModal(true)}
-                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer relative border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
+                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer relative border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
                 title="Cloud Backup & Synchronisation oeffnen"
                 id="header_cloud_sync_btn"
               >
-                <Cloud className="w-4 h-4 text-sky-400" />
+                <Cloud className="size-4  text-sky-400" />
                 {user && (
-                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 border border-black rounded-full animate-pulse" />
+                  <span className="absolute -top-1 -right-1 size-2.5  bg-emerald-400 border border-black rounded-full animate-pulse" />
                 )}
               </button>
 
               {/* Global Leaderboard trigger */}
               <button
                 onClick={() => setShowLeaderboardModal(true)}
-                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
+                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
                 title="Globale Bestenliste oeffnen"
                 id="header_leaderboard_btn"
               >
-                <Trophy className="w-4 h-4 text-amber-400" />
+                <Trophy className="size-4  text-amber-400" />
               </button>
 
               {/* Quick Tutorial drawer toggle */}
               <button
                 onClick={() => setShowTutorial((prev) => !prev)}
-                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
+                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
                 title="Anleitung"
               >
-                <Info className="w-4 h-4 text-cosmic-accent" />
+                <Info className="size-4  text-cosmic-accent" />
               </button>
 
               {/* Reset check trigger */}
               {!inGlitchGalaxy ? (
                 <button
                   onClick={() => setShowResetDialog(true)}
-                  className="p-2.5 rounded-xl border-2 active:scale-92 active:translate-y-[1px] transition-all shadow-sm cursor-pointer border-cosmic-pink/50 bg-red-950/40 hover:bg-red-900/40 text-red-300"
+                  className="p-2.5 rounded-xl border-2 active:scale-92 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-pink/50 bg-red-950/40 hover:bg-red-900/40 text-red-300"
                   title="Spiel zuruecksetzen"
                 >
-                  <RotateCcw className="w-4 h-4 text-red-400" />
+                  <RotateCcw className="size-4  text-red-400" />
                 </button>
               ) : (
                 <button
@@ -282,7 +282,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                   title="Zuruecksetzen blockiert in instabiler Galaxie"
                 >
                   <RotateCcw
-                    className="w-4 h-4 text-gray-550 animate-spin"
+                    className="size-4  text-gray-550 animate-spin"
                     style={{ animationDuration: "6s" }}
                   />
                 </button>
@@ -298,7 +298,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.35 }}
-              className="fixed inset-0 z-[9999] flex items-center justify-center bg-transparent pointer-events-none select-none"
+              className="fixed inset-0 z-9999 flex items-center justify-center bg-transparent pointer-events-none select-none"
             >
               {/* Close button with interactive state */}
               <button
@@ -306,17 +306,17 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                   e.stopPropagation();
                   setShowVideo(false);
                 }}
-                className="absolute top-6 right-6 z-[10000] p-3 rounded-full bg-black/65 border border-white/20 text-white hover:bg-black/85 hover:scale-105 active:scale-95 transition-all shadow-lg pointer-events-auto cursor-pointer flex items-center justify-center animate-bounce"
+                className="absolute top-6 right-6 z-10000 p-3 rounded-full bg-black/65 border border-white/20 text-white hover:bg-black/85 hover:scale-105 active:scale-95 transition-all shadow-lg pointer-events-auto cursor-pointer flex items-center justify-center animate-bounce"
                 title="Schliessen"
                 style={{ animationDuration: "3s" }}
                 id="close-secret-video"
               >
-                <X className="w-6 h-6" />
+                <X className="size-6 " />
               </button>
 
               {/* Immersive Video frame container */}
               <div
-                className="relative w-full h-full max-w-full max-h-full flex items-center justify-center p-4 md:p-8 pointer-events-none"
+                className="relative size-full  max-w-full max-h-full flex items-center justify-center p-4 md:p-8 pointer-events-none"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
@@ -337,7 +337,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
 
                 {/* Custom volume controller locked from pausing/seeking */}
                 <div
-                  className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[10000] flex items-center gap-3 px-4 py-2 bg-black/85 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg pointer-events-auto"
+                  className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10000 flex items-center gap-3 px-4 py-2 bg-black/85 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg pointer-events-auto"
                   id="custom-video-volume-controls"
                 >
                   <button
@@ -346,9 +346,9 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                     title={videoMuted ? "Ton einschalten" : "Ton stummschalten"}
                   >
                     {videoMuted || videoVolume === 0 ? (
-                      <VolumeX className="w-5 h-5 text-rose-400" />
+                      <VolumeX className="size-5  text-rose-400" />
                     ) : (
-                      <Volume2 className="w-5 h-5 text-cosmic-pink animate-pulse" />
+                      <Volume2 className="size-5  text-cosmic-pink animate-pulse" />
                     )}
                   </button>
                   <input

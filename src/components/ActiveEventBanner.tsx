@@ -72,7 +72,7 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
               {/* Header section with Details */}
               <div className="flex items-start gap-4 w-full">
                 <div className="text-5xl shrink-0 select-none animate-pulse mt-1">🕳️</div>
-                <div className="flex-grow min-w-0">
+                <div className="grow min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-[9px] uppercase font-black tracking-widest px-2.5 py-0.5 rounded-full bg-purple-600 text-white border border-black/30 font-mono shadow-sm leading-none animate-pulse">
                       GEFAeHRLICHE SINGULARITAeT AKTIV
@@ -260,7 +260,7 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
                 <div className="text-4xl shrink-0 select-none animate-bounce mt-1">
                   {activeEventDetails?.emoji || "🌌"}
                 </div>
-                <div className="flex-grow min-w-0">
+                <div className="grow min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-[9px] uppercase font-black tracking-widest px-2.5 py-0.5 rounded-full bg-indigo-600/90 text-white border border-black/30 font-mono shadow-sm leading-none">
                       KOSMISCHES EREIGNIS AKTIV
