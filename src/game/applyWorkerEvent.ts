@@ -1,6 +1,12 @@
 import type { Dispatch, SetStateAction } from "react";
-import type { PlanetTask, ActiveCosmicEvent, FloatingText } from "../types";
-import type { WorkerEvent } from "./protocol";
+import type { PlanetTask, ActiveCosmicEvent, FloatingText, Achievement } from "../types";
+import type {
+  WorkerEvent,
+  GlitchBenchmarks,
+  CalculationsSnapshot,
+  OpeningResult,
+  BlackHoleResultState,
+} from "./protocol";
 import { formatCompactNumber } from "../utils/format";
 import { isObjEqual, isArrEqual } from "../utils/equality";
 
@@ -37,7 +43,7 @@ export interface WorkerEventHandlers {
   setGlitchPending: Dispatch<SetStateAction<boolean>>;
   setUnlockedGlitchGalaxy: Dispatch<SetStateAction<boolean>>;
   setSpentGalaxyShards: Dispatch<SetStateAction<number>>;
-  setGlitchBenchmarks: Dispatch<SetStateAction<any>>;
+  setGlitchBenchmarks: Dispatch<SetStateAction<GlitchBenchmarks | undefined>>;
   setGlitchCooldown: Dispatch<SetStateAction<boolean>>;
   setConstellations: Dispatch<SetStateAction<Record<string, number>>>;
   setCraftedItems: Dispatch<SetStateAction<Record<string, number>>>;
@@ -48,11 +54,11 @@ export interface WorkerEventHandlers {
   setUnlockedCosmetics: Dispatch<SetStateAction<string[]>>;
   setShootingStarsCount: Dispatch<SetStateAction<number>>;
   setActiveZodiacId: Dispatch<SetStateAction<string>>;
-  setCalculations: Dispatch<SetStateAction<any>>;
-  setAchievements: Dispatch<SetStateAction<any[]>>;
+  setCalculations: Dispatch<SetStateAction<CalculationsSnapshot>>;
+  setAchievements: Dispatch<SetStateAction<Achievement[]>>;
   setIsLoaded: Dispatch<SetStateAction<boolean>>;
-  setOpeningResult: Dispatch<SetStateAction<any>>;
-  setBlackHoleResult: Dispatch<SetStateAction<any>>;
+  setOpeningResult: Dispatch<SetStateAction<OpeningResult | null>>;
+  setBlackHoleResult: Dispatch<SetStateAction<BlackHoleResultState | null>>;
   playTick: () => void;
   playPop: () => void;
   playLevelUp: () => void;
@@ -170,7 +176,7 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
       if (ws.shootingStarsCount !== undefined) setShootingStarsCount(ws.shootingStarsCount);
       if (ws.zodiac !== undefined) setActiveZodiacId(ws.zodiac || "katze");
 
-      setCalculations((prevCalculations: any) => {
+      setCalculations((prevCalculations: CalculationsSnapshot) => {
         if (
           prevCalculations.totalLps === data.calculations.totalLps &&
           prevCalculations.clickPower === data.calculations.clickPower &&
@@ -186,13 +192,14 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
       });
 
       if (data.achievements !== undefined) {
+        const next = data.achievements;
         setAchievements((prev) => {
-          const prevUnlocked = prev.filter((a) => a.unlocked).length;
-          const nextUnlocked = data.achievements.filter((a: any) => a.unlocked).length;
-          if (prevUnlocked === nextUnlocked && prev.length === data.achievements.length) {
+          const prevUnlocked = prev.filter((a) => a.isUnlocked).length;
+          const nextUnlocked = next.filter((a) => a.isUnlocked).length;
+          if (prevUnlocked === nextUnlocked && prev.length === next.length) {
             return prev;
           }
-          return data.achievements;
+          return next;
         });
       }
 

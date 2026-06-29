@@ -1,5 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
+import type { User } from "firebase/auth";
 import {
   Volume2,
   VolumeX,
@@ -18,7 +19,7 @@ interface CosmicHeaderProps {
   life: number;
   galaxyShards: number;
   isMutedState: boolean;
-  user: any;
+  user: User | null;
   handleToggleMute: () => void;
   setShowMusicSettingsModal: (show: boolean) => void;
   setShowCloudSyncModal: (show: boolean) => void;

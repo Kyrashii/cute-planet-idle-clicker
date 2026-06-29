@@ -1,5 +1,6 @@
 import { CRAFTING_RECIPES } from "../data/recipes";
 import { COSMETIC_ITEMS } from "../data/cosmetics";
+import type { WorkerGameState, StatsResult } from "./protocol";
 
 export interface CraftedItemRewardResult {
   lifeGained: number;
@@ -19,10 +20,10 @@ export interface CraftedItemRewardResult {
  * Executes item usage logic for a given crafted item. Modifies state in-place.
  */
 export function handleUseCraftedItem(
-  state: any,
+  state: WorkerGameState,
   itemId: string,
   requestedCount: number,
-  getLpsAndStats: (state: any) => any,
+  getLpsAndStats: (state: WorkerGameState) => StatsResult,
   setupActiveEvent: (eventId: string) => void,
   addPlanetExp: (amount: number) => void,
 ): CraftedItemRewardResult {

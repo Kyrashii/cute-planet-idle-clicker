@@ -65,7 +65,7 @@ export default tseslint.config(
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
 
       // Pragmatic relaxations for the existing code (tighten incrementally).
-      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-explicit-any": "error",
 
       // Unused imports are auto-removed on `--fix` (the base no-unused-vars rule has no
       // fixer); unused locals are reported but left for a human to delete or prefix with `_`.

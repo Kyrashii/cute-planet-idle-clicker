@@ -3,6 +3,7 @@ import { onAuthStateChanged, signInWithPopup, signOut, User } from "firebase/aut
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { auth, db, googleProvider, OperationType, handleFirestoreError } from "../lib/firebase";
 import { buildPublicProfile } from "../utils/publicProfile";
+import type { GameSaveSnapshot } from "../types";
 import {
   type RawSave,
   type SaveOwnerId,
@@ -42,6 +43,7 @@ export interface CloudSaveData {
   glitterDust?: number;
   cosmeticRarityLevels?: Record<string, string>;
   blackHoleSize?: number;
+  zodiac?: string;
   galaxyShards?: number;
   zodiacLevels?: Record<string, number>;
   slummerGlassLevel?: number;
@@ -339,7 +341,7 @@ export function useFirebaseSync() {
     }
   };
 
-  const saveStateToCloud = async (state: Omit<CloudSaveData, "userId"> & Partial<RawSave>) => {
+  const saveStateToCloud = async (state: GameSaveSnapshot) => {
     const activeUser = userRef.current;
     if (!activeUser || isSavingRef.current) return;
     isSavingRef.current = true;

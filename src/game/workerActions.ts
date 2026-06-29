@@ -583,7 +583,7 @@ export function handleWorkerAction(
       state.activeEventDecision = decision;
 
       if (state.activeEvent && state.activeEventDetails && decision && decision !== "ignorieren") {
-        const option = state.activeEventDetails.options.find((o: any) => o.id === decision);
+        const option = state.activeEventDetails.options.find((o) => o.id === decision);
         if (option && !state.activeEventInstantClaimed) {
           const eff = option.effectType;
           let rewardDesc = "";

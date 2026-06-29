@@ -39,7 +39,10 @@ const isAiStudio =
 const dbId =
   envDatabaseId ||
   (isAiStudio
-    ? (firebaseConfig as any).firestoreDatabaseId || (firebaseConfig as any).databaseId
+    ? (() => {
+        const cfg = firebaseConfig as { firestoreDatabaseId?: string; databaseId?: string };
+        return cfg.firestoreDatabaseId || cfg.databaseId;
+      })()
     : undefined);
 
 export const db = dbId ? getFirestore(app, dbId) : getFirestore(app);

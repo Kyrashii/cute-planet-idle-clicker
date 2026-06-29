@@ -3,34 +3,13 @@ import { motion } from "motion/react";
 import { Modal } from "../ui/Modal";
 import { Sparkles, Trophy, X, Gift, Flame, Heart } from "lucide-react";
 import { formatCompactNumber } from "../../data";
+import type { OpeningResult } from "../../game/protocol";
 
 interface OpeningResultModalProps {
   isOpen: boolean;
   onClose: () => void;
   isNight: boolean;
-  result: {
-    itemId: string;
-    itemName: string;
-    itemEmoji: string;
-    count: number;
-    rewards: {
-      lifeGained: number;
-      starsGained: number;
-      moonsGained: number;
-      glitterGained: number;
-      lootboxesGained: number;
-      xpGained: number;
-      prestigeGained: number;
-      unlockedCosmeticsList: {
-        id: string;
-        name: string;
-        emoji: string;
-        duplicateRefund: boolean;
-      }[];
-      animalsSpawned: Record<string, number>;
-      eventsTriggered: string[];
-    };
-  } | null;
+  result: OpeningResult | null;
 }
 
 export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(

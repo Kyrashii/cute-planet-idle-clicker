@@ -1,5 +1,7 @@
 import { getLpsAndStats } from "./statsCalculator";
 import { formatCompactNumber } from "../utils/format";
+import type { Achievement } from "../types";
+import type { WorkerGameState } from "./protocol";
 
 // ROMAN NUMERAL LIST for Achievements
 export const ROMAN_NUMERALS = [
@@ -26,7 +28,7 @@ export { formatCompactNumber };
 /**
  * Recreation of state-independent achievements generation. Recalculates in Worker thread
  */
-export function generateAchievements(state: any) {
+export function generateAchievements(state: WorkerGameState): Achievement[] {
   const stats = getLpsAndStats(state);
   const totalLifeEarned = state.totalLifeEarned || 0;
   const clicksCount = state.clicksCount || 0;
@@ -117,7 +119,7 @@ export function generateAchievements(state: any) {
     },
   ];
 
-  const list: any[] = [];
+  const list: Achievement[] = [];
   families.forEach((fam) => {
     fam.targets.forEach((target, idx) => {
       const roman = ROMAN_NUMERALS[idx] || (idx + 1).toString();

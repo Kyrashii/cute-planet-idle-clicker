@@ -1,4 +1,17 @@
 import type { ActiveRogueliteRun, RogueliteMetaState } from "./roguelite/types";
+import type { GlitchBenchmarks } from "./game/protocol";
+
+/** A single generated achievement (produced by `generateAchievements`, rendered by the modal). */
+export interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  progress: number;
+  target: number;
+  isUnlocked: boolean;
+  emoji: string;
+}
 
 export interface Animal {
   id: string;
@@ -39,7 +52,7 @@ export interface Upgrade {
   germanName: string;
   cost: number;
   purchased: boolean;
-  effect: (state: any) => any;
+  effect: (state: GameState) => GameState;
   effectDescription: string;
   germanEffectDescription: string;
   category: "click" | "animals" | "stars" | "special";
@@ -148,3 +161,67 @@ export interface ActiveCosmicEvent {
   emoji: string;
   options: CosmicEventOption[];
 }
+
+/**
+ * The persisted game-save shape assembled by the autosave / cloud-sync path (see the
+ * `autoSaveStateRef` / `latestCloudSaveRef` literals and `writeSave`). Every field is optional so
+ * the same type serves the slightly different snapshots written for local autosave vs. cloud sync,
+ * and so partial snapshots (e.g. the cheat handler's offline recompute) remain assignable.
+ */
+export type GameSaveSnapshot = {
+  isLoaded?: boolean;
+  life?: number;
+  totalLifeEarned?: number;
+  starsCount?: number;
+  moonsCount?: number;
+  purchasedAnimals?: Record<string, number>;
+  purchasedUpgrades?: string[];
+  planetLevel?: number;
+  planetExp?: number;
+  planetTask?: PlanetTask;
+  clicksCount?: number;
+  starClicksTriggered?: number;
+  secondsPlayed?: number;
+  isNight?: boolean;
+  unlockedCosmetics?: string[];
+  activeStarColor?: string;
+  activeAccessory?: string;
+  activeFrame?: string;
+  activeMoonSkin?: string;
+  activePlanetSkin?: string;
+  shootingStarsCount?: number;
+  missionSetNumber?: number;
+  claimedMissionIds?: string[];
+  missionsCooldownEnd?: number | null;
+  prestigeCount?: number;
+  galaxyShards?: number;
+  offlineSeconds?: number;
+  offlineLpsRate?: number;
+  offlineEarnedLife?: number;
+  constellations?: Record<string, number>;
+  craftedItems?: Record<string, number>;
+  placedAnimals?: PlacedAnimal[];
+  animalLove?: Record<string, number>;
+  animalLastPet?: Record<string, number>;
+  bowlLastFed?: number;
+  bowlFedMinutesCredited?: number;
+  glitterDust?: number;
+  cosmeticRarityLevels?: Record<string, string>;
+  blackHoleSize?: number;
+  /** Local-autosave snapshots carry the zodiac id under `activeZodiacId`; cloud uses `zodiac`. */
+  activeZodiacId?: string;
+  zodiac?: string;
+  zodiacLevels?: Record<string, number>;
+  slummerGlassLevel?: number;
+  catalystLevel?: number;
+  doubleStellarLevel?: number;
+  inGlitchGalaxy?: boolean;
+  glitchPending?: boolean;
+  unlockedGlitchGalaxy?: boolean;
+  spentGalaxyShards?: number;
+  glitchBenchmarks?: GlitchBenchmarks;
+  glitchCooldown?: boolean;
+  rogueliteMeta?: RogueliteMetaState;
+  activeRogueliteRun?: ActiveRogueliteRun | null;
+  lastSavedAt?: number;
+};

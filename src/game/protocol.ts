@@ -11,7 +11,7 @@
  * compile error rather than a silent runtime break. Types are erased at build
  * time, so adopting this contract changes no runtime behaviour.
  */
-import type { PlanetTask, ActiveCosmicEvent } from "../types";
+import type { PlanetTask, ActiveCosmicEvent, Achievement } from "../types";
 import type { getLpsAndStats } from "./statsCalculator";
 
 // ---------------------------------------------------------------------------
@@ -59,6 +59,11 @@ export interface WorkerGameState {
   spentGalaxyShards?: number;
   glitchBenchmarks?: GlitchBenchmarks;
   glitchCooldown?: boolean;
+  /**
+   * Per-species "love" levels. Not managed by the worker loop, but merged in via `INIT.savedState`
+   * and read by `getLpsAndStats` (max-love yield bonus), so it belongs on the state contract.
+   */
+  animalLove?: Record<string, number>;
 }
 
 export interface GlitchBenchmarks {
@@ -119,18 +124,6 @@ export type StatsResult = ReturnType<typeof getLpsAndStats>;
 export type CalculationsSnapshot = StatsResult & {
   unlockedAchievementsCount: number;
 };
-
-/**
- * One generated achievement. The underlying generator is loosely typed, so the
- * index signature keeps the snapshot flexible while still documenting the
- * fields readers rely on.
- */
-export interface AchievementSnapshot {
-  id: string;
-  isUnlocked?: boolean;
-  unlocked?: boolean;
-  [key: string]: unknown;
-}
 
 export interface CraftedItemRewards {
   lifeGained: number;
@@ -215,7 +208,25 @@ export interface StateUpdateEvent {
   type: "STATE_UPDATE";
   state: WorkerStatePayload;
   calculations: CalculationsSnapshot;
-  achievements?: AchievementSnapshot[];
+  achievements?: Achievement[];
+}
+
+/** Result payload the UI's opening-result modal renders after a crafted item is opened. */
+export interface OpeningResult {
+  itemId: string;
+  itemName?: string;
+  itemEmoji?: string;
+  count: number;
+  rewards: CraftedItemRewards;
+}
+
+/** UI state for the black-hole gamble result dialog. */
+export interface BlackHoleResultState {
+  show: boolean;
+  title?: string;
+  text?: string;
+  success: boolean;
+  outcomeType?: "good" | "bad";
 }
 
 export type WorkerEvent =
@@ -240,7 +251,7 @@ export type WorkerEvent =
       type: "BLACK_HOLE_GAMBLE_RESULT";
       success: boolean;
       roll?: number;
-      outcomeType?: string;
+      outcomeType?: "good" | "bad";
       title?: string;
       text?: string;
       error?: string;

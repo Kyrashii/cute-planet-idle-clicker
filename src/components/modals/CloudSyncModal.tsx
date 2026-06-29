@@ -15,13 +15,15 @@ import {
   Sparkles,
   Monitor,
 } from "lucide-react";
+import type { User } from "firebase/auth";
 import { formatCompactNumber } from "../../data";
 import { getMaxMoons } from "../../game/maxMoons";
+import type { CloudSaveData } from "../../hooks/useFirebaseSync";
 
 interface CloudSyncModalProps {
   isOpen: boolean;
   onClose: () => void;
-  user: any; // User | null
+  user: User | null;
   authLoading: boolean;
   syncing: boolean;
   lastSynced: Date | null;
@@ -30,7 +32,7 @@ interface CloudSyncModalProps {
   onForceSave: () => void;
   onForceLoad: () => void;
   purchasedUpgrades: string[];
-  cloudStats: any; // CloudSaveData | null
+  cloudStats: CloudSaveData | null;
 }
 
 export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
@@ -61,7 +63,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
     const getSyncTimeString = () => {
       if (!lastSynced) return "Noch nicht synchronisiert";
       try {
-        const date = lastSynced instanceof Date ? lastSynced : new Date(lastSynced as any);
+        const date = lastSynced instanceof Date ? lastSynced : new Date(lastSynced as string);
         if (isNaN(date.getTime())) {
           return "Noch nicht synchronisiert";
         }

@@ -1,11 +1,13 @@
 import { INITIAL_ANIMALS } from "../data";
+import type { CosmicEventOption } from "../types";
+import type { WorkerGameState } from "./protocol";
 import { expForLevel } from "./engine";
 
 /**
  * Pure, side-effect-free helper to compute LPS, click power,
- * multipliers, and progress values based on any WorkerState / GameState.
+ * multipliers, and progress values based on the worker's game state.
  */
-export function getLpsAndStats(state: any) {
+export function getLpsAndStats(state: WorkerGameState) {
   const purchasedUpgrades = state.purchasedUpgrades || [];
   // O(1) membership for the many upgrade checks below (js-set-map-lookups).
   const upgradeSet = new Set<string>(purchasedUpgrades);
@@ -123,7 +125,9 @@ export function getLpsAndStats(state: any) {
       // Ignorieren grants a small global passive contribution to acknowledge the patience (+20% LPS)
       lpsMultiplierForEvents *= 1.2;
     } else {
-      const selectedOpt = state.activeEventDetails.options.find((o: any) => o.id === decision);
+      const selectedOpt = state.activeEventDetails.options.find(
+        (o: CosmicEventOption) => o.id === decision,
+      );
       if (selectedOpt) {
         const eff = selectedOpt.effectType;
         if (eff === "lps_boost_4x") {
@@ -349,7 +353,7 @@ export function getLpsAndStats(state: any) {
 
   // Aggregate quantities
   const totalAnimalsCount = Object.values(purchasedAnimals).reduce(
-    (sum: number, qty: any) => sum + qty,
+    (sum: number, qty: number) => sum + qty,
     0,
   );
   const researchedUpgradesCount = purchasedUpgrades.length;
