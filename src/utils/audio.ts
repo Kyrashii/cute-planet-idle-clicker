@@ -54,7 +54,7 @@ let musicVolume = 0.35; // default cozy low volume
 let musicPlaying = false;
 let currentStyle: MusicStyleId = "chiptune";
 
-let nextChordTimeout: any = null;
+let nextChordTimeout: ReturnType<typeof setTimeout> | null = null;
 let currentChordIndex = 0;
 
 let rainSource: AudioBufferSourceNode | null = null;
@@ -100,7 +100,9 @@ const PENTATONIC_BELLS = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5, 1174.66
 export function getAudioContext(): AudioContext | null {
   if (typeof window === "undefined") return null;
   if (!sharedCtx) {
-    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    const AudioContextClass =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!AudioContextClass) return null;
     sharedCtx = new AudioContextClass();
 

@@ -5,8 +5,8 @@
  */
 
 export const isObjEqual = (
-  a: Record<string, any> | undefined,
-  b: Record<string, any> | undefined,
+  a: Record<string, unknown> | undefined,
+  b: Record<string, unknown> | undefined,
 ): boolean => {
   if (!a || !b) return a === b;
   const keysA = Object.keys(a);
@@ -15,7 +15,7 @@ export const isObjEqual = (
   return keysA.every((k) => a[k] === b[k]);
 };
 
-export const isArrEqual = (a: any[] | undefined, b: any[] | undefined): boolean => {
+export const isArrEqual = (a: unknown[] | undefined, b: unknown[] | undefined): boolean => {
   if (!a || !b) return a === b;
   if (a.length !== b.length) return false;
   return a.every((v, i) => v === b[i]);

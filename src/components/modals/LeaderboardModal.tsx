@@ -9,7 +9,7 @@ interface LeaderboardEntry {
   userName: string;
   totalLifeEarned: number;
   prestigeCount: number;
-  updatedAt?: any;
+  updatedAt?: unknown;
 }
 
 interface LeaderboardModalProps {

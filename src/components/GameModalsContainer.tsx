@@ -18,8 +18,13 @@ import { ZodiacModal } from "./modals/ZodiacModal";
 import { LeaderboardModal } from "./modals/LeaderboardModal";
 import { ProfileModal } from "./modals/ProfileModal";
 import { PrestigeModal } from "./modals/PrestigeModal";
+import type { User } from "firebase/auth";
 import type { FontScaleOption } from "../hooks/useDisplayPreferences";
-import type { AccountSwitchPrompt } from "../hooks/useFirebaseSync";
+import type { AccountSwitchPrompt, CloudSaveData } from "../hooks/useFirebaseSync";
+import type { Achievement, Upgrade } from "../types";
+import type { OpeningResult, StatsResult } from "../game/protocol";
+import type { CosmeticItem } from "../data/cosmetics";
+import type { MusicStyleId } from "../utils/audio";
 
 import { INITIAL_ANIMALS, calculateCost } from "../data";
 
@@ -51,8 +56,8 @@ interface GameModalsContainerProps {
   accountSwitchPrompt: AccountSwitchPrompt | null;
   showMissionsModal: boolean;
   setShowMissionsModal: (show: boolean) => void;
-  openingResult: any;
-  setOpeningResult: (res: any) => void;
+  openingResult: OpeningResult | null;
+  setOpeningResult: (res: OpeningResult | null) => void;
   showInventoryModal: boolean;
   setShowInventoryModal: (show: boolean) => void;
   showZodiacModal: boolean;
@@ -79,7 +84,11 @@ interface GameModalsContainerProps {
   handleCraftRecursive: (targetItemId: string, count?: number) => void;
   handleClaimOfflineEarnings: (earnedLife: number) => void;
   handleClaimMissionReward: (missionId: string, starsReward: number) => void;
-  handleOpenShootingStar: (cosmetic: any, alreadyUnlocked: boolean, refundAmt: number) => void;
+  handleOpenShootingStar: (
+    cosmetic: CosmeticItem,
+    alreadyUnlocked: boolean,
+    refundAmt: number,
+  ) => void;
   handleApplyCosmetic: (
     id: string,
     type: "star_color" | "planet_accessory" | "frame_style" | "moon_skin",
@@ -94,7 +103,7 @@ interface GameModalsContainerProps {
 
   // Stable state — referentially guarded or changes only on user actions
   purchasedUpgrades: string[];
-  staticUpgrades: any;
+  staticUpgrades: Upgrade[];
   purchasedAnimals: Record<string, number>;
   constellations: Record<string, number>;
   isNightStyle: boolean;
@@ -104,26 +113,26 @@ interface GameModalsContainerProps {
   offlineSeconds: number;
   offlineLpsRate: number;
   offlineEarnedLife: number;
-  achievements: any[];
+  achievements: Achievement[];
   achievementCategoryFilter: string;
   setAchievementCategoryFilter: (filter: string) => void;
   achievementSearch: string;
   setAchievementSearch: (search: string) => void;
   playUpgrade: () => void;
-  musicStyleState: any;
-  setMusicStyleState: any;
+  musicStyleState: MusicStyleId;
+  setMusicStyleState: React.Dispatch<React.SetStateAction<MusicStyleId>>;
   isLowMemory: boolean;
-  setIsLowMemory: any;
+  setIsLowMemory: React.Dispatch<React.SetStateAction<boolean>>;
   fontScale: FontScaleOption;
   setFontScale: (value: FontScaleOption) => void;
-  user: any;
+  user: User | null;
   authLoading: boolean;
   syncing: boolean;
   lastSynced: Date | null;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
-  cloudSaveFound: any;
-  triggerCloudStateLoad: (data: any) => void;
+  cloudSaveFound: CloudSaveData | null;
+  triggerCloudStateLoad: (data: CloudSaveData) => void;
   continueWithCurrentAccount: () => void;
   adoptPreviousLocalSave: () => void;
   missionSetNumber: number;
@@ -138,7 +147,7 @@ interface GameModalsContainerProps {
   unlockedPlanetSkins: string[];
   activeZodiacId: string;
   cosmeticRarityLevels: Record<string, string>;
-  upgradesSpecs: any;
+  upgradesSpecs: StatsResult["upgradesSpecs"];
 }
 
 export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.memo(

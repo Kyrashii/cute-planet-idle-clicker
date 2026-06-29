@@ -1,4 +1,5 @@
 import { getMaxMoons } from "./maxMoons";
+import type { WorkerGameState, StatsResult } from "./protocol";
 
 export interface BlackHoleGambleResult {
   success: boolean;
@@ -13,9 +14,9 @@ export interface BlackHoleGambleResult {
  * Executes black hole gamble logic. Modifies state in-place.
  */
 export function executeBlackHoleGamble(
-  state: any,
+  state: WorkerGameState,
   sacrificeType: "life" | "stars" | "dust",
-  getLpsAndStats: (state: any) => any,
+  getLpsAndStats: (state: WorkerGameState) => StatsResult,
   setupActiveEvent: (eventId: string) => void,
 ): BlackHoleGambleResult {
   let cost = 0;

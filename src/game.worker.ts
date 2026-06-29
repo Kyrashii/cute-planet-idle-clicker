@@ -12,6 +12,7 @@ import type {
   WorkerGameState,
   StateUpdateEvent,
 } from "./game/protocol";
+import type { Achievement } from "./types";
 
 /** Typed wrapper around the worker's global postMessage. */
 function emit(event: WorkerEvent) {
@@ -69,7 +70,7 @@ let state: WorkerGameState = {
 };
 
 // Timers refs
-let gameTimerId: any = null;
+let gameTimerId: ReturnType<typeof setInterval> | null = null;
 // Timestamp when the tab was hidden (for batched catch-up on resume)
 let hiddenAt: number | null = null;
 
@@ -105,10 +106,10 @@ function checkGlitchGalaxyTrigger() {
     broadcastStateUpdate(true);
   }
 }
-let secondaryTimerId: any = null;
-let starTimerId: any = null;
-let cycleTimerId: any = null;
-let eventTimerId: any = null;
+let secondaryTimerId: ReturnType<typeof setInterval> | null = null;
+let starTimerId: ReturnType<typeof setInterval> | null = null;
+let cycleTimerId: ReturnType<typeof setInterval> | null = null;
+let eventTimerId: ReturnType<typeof setInterval> | null = null;
 
 // --- Task-Based Progressive Leveling System ---
 let secondsNoClick = 0;
@@ -219,7 +220,7 @@ function addPlanetExp(amount: number) {
   // Silent legacy no-op since leveling is now entirely task-driven
 }
 
-let cachedAchievementsObj: any[] = [];
+let cachedAchievementsObj: Achievement[] = [];
 let lastAchievementsCalcTime = 0;
 
 // State Broadcaster
@@ -239,7 +240,7 @@ function broadcastStateUpdate(
 
   // Throttle achievements calculation to once every 1250ms unless forced by a buy/click event
   const now = Date.now();
-  let freshAchievements: any[] | undefined;
+  let freshAchievements: Achievement[] | undefined;
   if (
     forceRecalculateAchievements ||
     cachedAchievementsObj.length === 0 ||
@@ -250,7 +251,7 @@ function broadcastStateUpdate(
     freshAchievements = cachedAchievementsObj;
   }
 
-  const unlockedAchievementsCount = cachedAchievementsObj.filter((a: any) => a.isUnlocked).length;
+  const unlockedAchievementsCount = cachedAchievementsObj.filter((a) => a.isUnlocked).length;
 
   const msg: StateUpdateEvent = {
     type: "STATE_UPDATE",

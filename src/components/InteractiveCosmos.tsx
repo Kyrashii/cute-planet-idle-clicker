@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
+import type { ActiveCosmicEvent, PlanetTask, FloatingText } from "../types";
 import { CosmicHUD } from "./CosmicHUD";
 import { ActiveEventBanner } from "./ActiveEventBanner";
 import { DayNightIndicator } from "./DayNightIndicator";
@@ -15,9 +16,9 @@ interface InteractiveCosmosProps {
   starsCount: number;
   prestigeCount: number;
   glitchedFormatCompactNumber: (num: number) => string;
-  activeEvent: any;
-  activeEventDecision: any;
-  activeEventDetails: any;
+  activeEvent: string | null;
+  activeEventDecision: string | null;
+  activeEventDetails: ActiveCosmicEvent | null;
   eventTimeRemaining: number;
   handleSelectEventDecision: (decisionId: string) => void;
   glitterDust: number;
@@ -33,7 +34,7 @@ interface InteractiveCosmosProps {
   openOfflineModal: () => void;
   planetExp: number;
   planetExpNeeded: number;
-  planetTask: any;
+  planetTask: PlanetTask | undefined;
   moonsCount: number;
   starPowerPerStar: number;
   handlePlanetClick: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -44,7 +45,7 @@ interface InteractiveCosmosProps {
   isLowMemory: boolean;
   activeZodiacId: string;
   openZodiacModal: () => void;
-  floatingTexts: any[];
+  floatingTexts: FloatingText[];
   clickPower: number;
   openGehegeModal: () => void;
   openAnimalsModal: () => void;

@@ -1,7 +1,21 @@
 import React, { startTransition, useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 
-import { PlanetTask, ActiveCosmicEvent, PlacedAnimal, FloatingText } from "./types";
+import {
+  PlanetTask,
+  ActiveCosmicEvent,
+  PlacedAnimal,
+  FloatingText,
+  Achievement,
+  GameSaveSnapshot,
+} from "./types";
+import type {
+  CalculationsSnapshot,
+  GlitchBenchmarks,
+  OpeningResult,
+  BlackHoleResultState,
+} from "./game/protocol";
+import type { CosmeticItem } from "./data/cosmetics";
 import {
   INITIAL_ANIMALS,
   calculateCost,
@@ -170,7 +184,7 @@ export default function App() {
   } | null>(null);
 
   // Calculated cache state from worker
-  const [calculations, setCalculations] = useState<any>({
+  const [calculations, setCalculations] = useState<CalculationsSnapshot>({
     upgradesSpecs: {
       bunnyBoost: false,
       chickBoost: false,
@@ -194,14 +208,19 @@ export default function App() {
     starPowerPerStar: 1.0,
     totalStarsLps: 0,
     totalAnimalsLps: 0,
+    flatMoonLps: 0,
     totalLps: 0,
     totalAnimalsCount: 0,
     researchedUpgradesCount: 0,
     planetExpNeeded: 1500,
+    prestigeCount: 0,
+    prestigeMultiplier: 1,
+    moonsCount: 0,
+    zodiac: "katze",
     unlockedAchievementsCount: 0,
   });
 
-  const [achievements, setAchievements] = useState<any[]>([]);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
 
   // 3. Missions & Cosmetics States
   const isNightStyle = true; // Design choice: the core game elements always adopt the beautiful night mode.
@@ -225,20 +244,14 @@ export default function App() {
   const [catalystLevel, setCatalystLevel] = useState<number>(0);
   const [doubleStellarLevel, setDoubleStellarLevel] = useState<number>(0);
   const [blackHoleSize, setBlackHoleSize] = useState<number>(1);
-  const [blackHoleResult, setBlackHoleResult] = useState<{
-    show: boolean;
-    title: string;
-    text: string;
-    success: boolean;
-    outcomeType?: "good" | "bad";
-  } | null>(null);
+  const [blackHoleResult, setBlackHoleResult] = useState<BlackHoleResultState | null>(null);
 
   // Modals Visibility
   const [inGlitchGalaxy, setInGlitchGalaxy] = useState<boolean>(false);
   const [glitchPending, setGlitchPending] = useState<boolean>(false);
   const [unlockedGlitchGalaxy, setUnlockedGlitchGalaxy] = useState<boolean>(false);
   const [spentGalaxyShards, setSpentGalaxyShards] = useState<number>(0);
-  const [glitchBenchmarks, setGlitchBenchmarks] = useState<any>(undefined);
+  const [glitchBenchmarks, setGlitchBenchmarks] = useState<GlitchBenchmarks | undefined>(undefined);
   const [glitchCooldown, setGlitchCooldown] = useState<boolean>(false);
   const [rogueliteMeta, setRogueliteMeta] = useState<RogueliteMetaState>(
     createRogueliteMetaState(),
@@ -247,29 +260,7 @@ export default function App() {
   const [showRogueliteScreen, setShowRogueliteScreen] = useState(false);
   const [rogueliteViewState, setRogueliteViewState] = useState<RogueliteViewState>("intro");
 
-  const [openingResult, setOpeningResult] = useState<{
-    itemId: string;
-    itemName: string;
-    itemEmoji: string;
-    count: number;
-    rewards: {
-      lifeGained: number;
-      starsGained: number;
-      moonsGained: number;
-      glitterGained: number;
-      lootboxesGained: number;
-      xpGained: number;
-      prestigeGained: number;
-      unlockedCosmeticsList: {
-        id: string;
-        name: string;
-        emoji: string;
-        duplicateRefund: boolean;
-      }[];
-      animalsSpawned: Record<string, number>;
-      eventsTriggered: string[];
-    };
-  } | null>(null);
+  const [openingResult, setOpeningResult] = useState<OpeningResult | null>(null);
 
   const handleClaimOfflineEarnings = useCallback((earnedLife: number) => {
     playBuy();
@@ -386,7 +377,7 @@ export default function App() {
   }, [missionsCooldownEnd]);
 
   const handleOpenShootingStar = useCallback(
-    (cosmetic: any, alreadyUnlocked: boolean, refundAmt: number) => {
+    (cosmetic: CosmeticItem, alreadyUnlocked: boolean, refundAmt: number) => {
       playTick();
       setShootingStarsCount((prev) => {
         const nextCount = Math.max(0, prev - 1);
@@ -561,14 +552,14 @@ export default function App() {
     setGlitchPending(false);
     setUnlockedGlitchGalaxy(false);
     setSpentGalaxyShards(0);
-    setGlitchBenchmarks({});
+    setGlitchBenchmarks(undefined);
     setGlitchCooldown(false);
     setRogueliteMeta(createRogueliteMetaState());
     setActiveRogueliteRun(null);
   }, []);
 
   const hydrateClientStateFromSave = useCallback(
-    (rawSave: Record<string, any> | null, preserveEnclosure = false) => {
+    (rawSave: GameSaveSnapshot | null, preserveEnclosure = false) => {
       resetHydratedClientState();
       if (!rawSave) {
         return null;
@@ -674,7 +665,10 @@ export default function App() {
       const previousOwnerId = currentSaveOwnerRef.current;
       currentSaveOwnerRef.current = ownerId;
       writeMeta({ activeOwnerId: ownerId });
-      hydrateClientStateFromSave(savedState, previousOwnerId === ownerId);
+      hydrateClientStateFromSave(
+        savedState as GameSaveSnapshot | null,
+        previousOwnerId === ownerId,
+      );
       setIsLoaded(false);
 
       workerRef.current?.postMessage({
@@ -986,7 +980,7 @@ export default function App() {
   }, [inGlitchGalaxy]);
 
   // Keep save variables stored in a ref so the autosave interval doesn't rebuild 50 times a second
-  const autoSaveStateRef = useRef<any>(null);
+  const autoSaveStateRef = useRef<GameSaveSnapshot | null>(null);
   const lastCloudSyncTimeRef = useRef<number>(0);
   const showAccountSwitchPromptRef = useRef(false);
   showAccountSwitchPromptRef.current = Boolean(accountSwitchPrompt);
@@ -1531,7 +1525,7 @@ export default function App() {
 
   // Stable force-save callback — reads current state from a ref so the identity
   // never changes even though the saved values are always fresh.
-  const latestCloudSaveRef = useRef<any>({});
+  const latestCloudSaveRef = useRef<GameSaveSnapshot>({});
   latestCloudSaveRef.current = {
     life,
     totalLifeEarned,

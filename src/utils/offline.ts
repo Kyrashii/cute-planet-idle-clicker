@@ -1,6 +1,7 @@
 import { INITIAL_ANIMALS } from "../data";
+import type { GameSaveSnapshot } from "../types";
 
-export function calculateOfflineLps(savedState: any): number {
+export function calculateOfflineLps(savedState: GameSaveSnapshot | null): number {
   if (!savedState) return 0;
   const purchasedAnimals = savedState.purchasedAnimals || {};
   const purchasedUpgrades = savedState.purchasedUpgrades || [];
