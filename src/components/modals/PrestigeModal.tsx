@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { Modal } from "../ui/Modal";
-import { Sparkles, Award, RotateCcw, HelpCircle, Flame, Check } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { getPrestigeRequirement } from "../../data";
 import { useGameState } from "../../contexts/GameStateContext";
 
@@ -61,7 +61,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
           </div>
           <button
             onClick={onClose}
-            className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
+            className={`size-8  rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
               isNight
                 ? "bg-[#1b1937] border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover"
                 : "bg-white border-2 border-amber-450 text-amber-900 hover:bg-amber-100"
@@ -102,7 +102,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
               Ueber das Prestige-System
             </h6>
             <div
-              className={`p-3.5 rounded-2xl border text-xs leading-relaxed space-y-2 font-semibold ${
+              className={`p-3.5 rounded-2xl border text-xs/relaxed  space-y-2 font-semibold ${
                 isNight
                   ? "bg-[#201c40]/30 border-cosmic-accent/15 text-purple-100"
                   : "bg-white border-amber-100 text-slate-700"
@@ -162,7 +162,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
                 initial={{ width: 0 }}
                 animate={{ width: `${progressPercent}%` }}
                 transition={{ duration: 1 }}
-                className="h-full bg-gradient-to-r from-cosmic-accent-muted via-cosmic-accent to-amber-300 rounded-full"
+                className="h-full bg-linear-to-r from-cosmic-accent-muted via-cosmic-accent to-amber-300 rounded-full"
               />
               {canPrestige && <div className="absolute inset-0 bg-[#ffffff1c] animate-pulse" />}
             </div>
@@ -183,10 +183,10 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
           {canPrestige ? (
             <button
               onClick={onPrestigeConfirm}
-              className="w-full py-3 rounded-2xl bg-gradient-to-r from-amber-450 via-amber-500 to-orange-500 hover:from-amber-500 hover:to-orange-600 border-2 border-yellow-300 text-white font-sans font-black text-xs uppercase tracking-widest shadow-lg active:scale-95 transition-all text-center flex items-center justify-center gap-2 cursor-pointer cursor-glow"
+              className="w-full py-3 rounded-2xl bg-linear-to-r from-amber-450 via-amber-500 to-orange-500 hover:from-amber-500 hover:to-orange-600 border-2 border-yellow-300 text-white font-sans font-black text-xs uppercase tracking-widest shadow-lg active:scale-95 transition-all text-center flex items-center justify-center gap-2 cursor-pointer cursor-glow"
             >
               <Sparkles
-                className="w-4 h-4 text-amber-100 animate-spin"
+                className="size-4  text-amber-100 animate-spin"
                 style={{ animationDuration: "4s" }}
               />
               Kosmisch Aufsteigen! (Stufe {prestigeCount + 1})

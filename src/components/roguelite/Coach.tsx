@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
-import { Crown, MousePointerClick, PanelRight, Route } from "lucide-react";
+import { MousePointerClick, PanelRight, Route } from "lucide-react";
 
 import { Eyebrow, GhostButton, PrimaryButton, cx, usePrefersReducedMotion } from "./theme";
 
@@ -83,8 +83,8 @@ export const Coach: React.FC<{
         className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-md rounded-3xl border border-cosmic-accent/40 bg-cosmic-surface p-4 shadow-[0_24px_70px_rgba(6,4,16,0.7)] sm:p-5"
       >
         <div className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-2xl border border-cosmic-accent/40 bg-cosmic-accent/12">
-            <Icon className="h-4 w-4 text-cosmic-accent" />
+          <span className="flex size-9  items-center justify-center rounded-2xl border border-cosmic-accent/40 bg-cosmic-accent/12">
+            <Icon className="size-4  text-cosmic-accent" />
           </span>
           <Eyebrow>
             Tipp {stepIndex + 1} / {COACH_STEPS.length}

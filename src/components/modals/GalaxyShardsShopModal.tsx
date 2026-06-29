@@ -1,17 +1,7 @@
 import React, { useState } from "react";
 import { Modal } from "../ui/Modal";
-import { useGameState } from "../../contexts/GameStateContext";
-import { ZODIACS, getZodiac } from "../../data/zodiacs";
-import {
-  Sparkles,
-  X,
-  Flame,
-  ShieldAlert,
-  Award,
-  Star,
-  History,
-  BatteryCharging,
-} from "lucide-react";
+import { ZODIACS } from "../../data/zodiacs";
+import { Sparkles, Award } from "lucide-react";
 
 interface GalaxyShardsShopModalProps {
   isOpen: boolean;
@@ -111,7 +101,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
         panelClassName="bg-[#191336]/95 rounded-3.5xl border-3 border-fuchsia-400 flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b-3 border-fuchsia-400/50 bg-gradient-to-r from-[#171430] via-[#241744] to-[#171430] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b-3 border-fuchsia-400/50 bg-linear-to-r from-[#171430] via-[#241744] to-[#171430] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <span className="text-3xl select-none animate-bounce">🌌</span>
             <div>
@@ -129,7 +119,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
           <button
             onClick={onClose}
             id="shard_shop_close_btn"
-            className="w-8 h-8 rounded-full bg-[#1b153b] border-2 border-fuchsia-400 flex items-center justify-center font-bold text-base text-[#f5d0fe] hover:bg-fuchsia-900 active:scale-95 transition-all shadow-md cursor-pointer"
+            className="size-8  rounded-full bg-[#1b153b] border-2 border-fuchsia-400 flex items-center justify-center font-bold text-base text-[#f5d0fe] hover:bg-fuchsia-900 active:scale-95 transition-all shadow-md cursor-pointer"
           >
             ✕
           </button>
@@ -138,7 +128,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
         {/* Galaxy Shard Balance Summary Panel */}
         <div className="bg-[#120a28] border-b border-fuchsia-500/20 p-4 shrink-0 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="p-2 bg-gradient-to-tr from-fuchsia-800 to-indigo-950 rounded-xl border border-fuchsia-500/30">
+            <div className="p-2 bg-linear-to-tr from-fuchsia-800 to-indigo-950 rounded-xl border border-fuchsia-500/30">
               <span className="text-lg">🌌</span>
             </div>
             <div>
@@ -171,7 +161,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                 : "text-[#8d82bd] hover:text-cosmic-text hover:bg-white/5"
             }`}
           >
-            <Award className="w-3.5 h-3.5" />
+            <Award className="size-3.5 " />
             Sternzeichen-Tiere ({ZODIACS.length})
           </button>
           <button
@@ -183,7 +173,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                 : "text-[#8d82bd] hover:text-cosmic-text hover:bg-white/5"
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            <Sparkles className="size-3.5 " />
             Kosmische Meilensteine
           </button>
         </div>
@@ -214,7 +204,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                         <div className="flex items-center gap-2">
                           <span className="text-2xl select-none">{zod.emoji}</span>
                           <div>
-                            <h5 className="font-sans font-black text-xs text-white leading-tight">
+                            <h5 className="font-sans font-black text-xs/tight text-white ">
                               {zod.name}
                             </h5>
                             <span className="text-[9px] font-mono px-2 py-0.25 bg-fuchsia-500/20 text-[#f5d0fe] rounded-full border border-fuchsia-500/20 font-bold">
@@ -263,7 +253,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                         isMaxLevel
                           ? "bg-[#18122d]/60 text-slate-500 border border-slate-750 cursor-not-allowed"
                           : hasEnough
-                            ? "bg-gradient-to-r from-fuchsia-600 to-indigo-600 hover:scale-[1.02] text-white border border-fuchsia-400/40 shadow-md"
+                            ? "bg-linear-to-r from-fuchsia-600 to-indigo-600 hover:scale-[1.02] text-white border border-fuchsia-400/40 shadow-md"
                             : "bg-[#1e133a]/80 text-[#8d82bd]/45 border border-purple-900/40 opacity-70 cursor-not-allowed"
                       }`}
                     >
@@ -285,7 +275,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                 className="bg-[#211640] rounded-2xl border-2 border-purple-500/20 p-4 flex flex-col sm:flex-row items-center justify-between gap-4"
               >
                 <div className="flex items-center gap-3.5 self-start">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-400/35 flex items-center justify-center text-2xl shadow-inner shrink-0 select-none">
+                  <div className="size-12  rounded-2xl bg-amber-500/10 border border-amber-400/35 flex items-center justify-center text-2xl shadow-inner shrink-0 select-none">
                     🏺
                   </div>
                   <div>
@@ -332,7 +322,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                     onClick={() => onUpgradeSlummerGlass(slummerGlassLevel)}
                     className={`w-full sm:w-40 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
                       galaxyShards >= slummerGlassLevel
-                        ? "bg-gradient-to-r from-amber-500 to-fuchsia-600 hover:scale-[1.02] text-white border border-amber-400/30 shadow-md"
+                        ? "bg-linear-to-r from-amber-500 to-fuchsia-600 hover:scale-[1.02] text-white border border-amber-400/30 shadow-md"
                         : "bg-[#1e133a]/80 text-[#8d82bd]/45 border border-purple-900/40 opacity-70 cursor-not-allowed"
                     }`}
                   >
@@ -349,7 +339,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                 className="bg-[#211640] rounded-2xl border-2 border-purple-500/20 p-4 flex flex-col sm:flex-row items-center justify-between gap-4"
               >
                 <div className="flex items-center gap-3.5 self-start">
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-400/35 flex items-center justify-center text-2xl shadow-inner shrink-0 select-none">
+                  <div className="size-12  rounded-2xl bg-indigo-500/10 border border-indigo-400/35 flex items-center justify-center text-2xl shadow-inner shrink-0 select-none">
                     📈
                   </div>
                   <div>
@@ -397,7 +387,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                     onClick={() => onUpgradeCatalyst(catalystLevel + 1)}
                     className={`w-full sm:w-40 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
                       galaxyShards >= catalystLevel + 1
-                        ? "bg-gradient-to-r from-indigo-500 to-purple-600 hover:scale-[1.02] text-white border border-indigo-400/30 shadow-md"
+                        ? "bg-linear-to-r from-indigo-500 to-purple-600 hover:scale-[1.02] text-white border border-indigo-400/30 shadow-md"
                         : "bg-[#1e133a]/80 text-[#8d82bd]/45 border border-purple-900/40 opacity-70 cursor-not-allowed"
                     }`}
                   >
@@ -412,7 +402,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                 className="bg-[#211640] rounded-2xl border-2 border-purple-500/20 p-4 flex flex-col sm:flex-row items-center justify-between gap-4"
               >
                 <div className="flex items-center gap-3.5 self-start">
-                  <div className="w-12 h-12 rounded-2xl bg-pink-500/10 border border-pink-400/35 flex items-center justify-center text-2xl shadow-inner shrink-0 select-none">
+                  <div className="size-12  rounded-2xl bg-pink-500/10 border border-pink-400/35 flex items-center justify-center text-2xl shadow-inner shrink-0 select-none">
                     🌠
                   </div>
                   <div>
@@ -468,7 +458,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                     onClick={() => onUpgradeDoubleStellar(doubleStellarLevel + 1)}
                     className={`w-full sm:w-40 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
                       galaxyShards >= doubleStellarLevel + 1
-                        ? "bg-gradient-to-r from-pink-500 to-indigo-600 hover:scale-[1.02] text-white border border-pink-400/30 shadow-md"
+                        ? "bg-linear-to-r from-pink-500 to-indigo-600 hover:scale-[1.02] text-white border border-pink-400/30 shadow-md"
                         : "bg-[#1e133a]/80 text-[#8d82bd]/45 border border-purple-900/40 opacity-70 cursor-not-allowed"
                     }`}
                   >
@@ -492,7 +482,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
           <button
             onClick={onClose}
             id="shard_shop_bottom_close"
-            className="px-6 py-2 bg-gradient-to-r from-purple-800 to-fuchsia-900 hover:from-purple-750 hover:to-fuchsia-850 rounded-xl text-xs font-black uppercase tracking-wider transition-all active:scale-95 text-[#f5d0fe] border border-fuchsia-500/25 shadow-lg cursor-pointer"
+            className="px-6 py-2 bg-linear-to-r from-purple-800 to-fuchsia-900 hover:from-purple-750 hover:to-fuchsia-850 rounded-xl text-xs font-black uppercase tracking-wider transition-all active:scale-95 text-[#f5d0fe] border border-fuchsia-500/25 shadow-lg cursor-pointer"
           >
             Fertig gelernt! 🌌
           </button>

@@ -25,11 +25,11 @@ function Step({
       </span>
       <div
         className={cx(
-          "flex h-11 w-11 items-center justify-center rounded-2xl border bg-black/25",
+          "flex size-11  items-center justify-center rounded-2xl border bg-black/25",
           tint,
         )}
       >
-        <Icon className="h-5 w-5" />
+        <Icon className="size-5 " />
       </div>
       <h4 className="mt-3 text-[15px] font-black tracking-[0.01em] text-cosmic-text">{title}</h4>
       <p className="mt-1 text-[12.5px] leading-snug text-cosmic-text-muted">{body}</p>
@@ -53,10 +53,10 @@ export const IntroHub: React.FC<{
   onBeginRunSetup: () => void;
 }> = ({ meta, onBeginRunSetup }) => {
   return (
-    <Panel className="mx-auto flex h-full w-full max-w-5xl flex-col overflow-y-auto p-6 sm:p-8">
+    <Panel className="mx-auto flex size-full  max-w-5xl flex-col overflow-y-auto p-6 sm:p-8">
       <div className="mx-auto w-full max-w-3xl text-center">
         <div className="inline-flex items-center gap-2 rounded-full border border-cosmic-accent/30 bg-cosmic-accent/10 px-3 py-1">
-          <Sparkles className="h-3.5 w-3.5 text-cosmic-accent" />
+          <Sparkles className="size-3.5  text-cosmic-accent" />
           <Eyebrow className="text-cosmic-accent">Galaxie-Roguelite</Eyebrow>
         </div>
         <h2 className="mt-4 text-3xl font-black leading-[1.05] tracking-[0.01em] text-cosmic-text sm:text-5xl">
@@ -72,7 +72,7 @@ export const IntroHub: React.FC<{
         </p>
 
         <div className="mx-auto mt-5 inline-flex items-center gap-2 rounded-2xl border border-cosmic-yellow/30 bg-cosmic-yellow/8 px-4 py-2">
-          <Target className="h-4 w-4 text-cosmic-yellow" />
+          <Target className="size-4  text-cosmic-yellow" />
           <span className="text-[12.5px] font-bold text-cosmic-text">
             Ziel: Erreiche Station {ROGUELITE_TOTAL_STATIONS} und besiege die drei Bosse.
           </span>
@@ -119,7 +119,7 @@ export const IntroHub: React.FC<{
 
       <div className="mx-auto mt-7 w-full max-w-md">
         <PrimaryButton onClick={onBeginRunSetup} className="w-full py-4">
-          <Rocket className="h-4 w-4" />
+          <Rocket className="size-4 " />
           Start
         </PrimaryButton>
       </div>

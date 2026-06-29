@@ -52,23 +52,23 @@ export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(
           }
         >
           <div
-            className={`group/pot relative flex flex-col items-center justify-end w-10 h-13 rounded-b-xl rounded-t-sm border-2 p-[1px] transition-all duration-300 overflow-hidden bg-slate-950/60 ${
+            className={`group/pot relative flex flex-col items-center justify-end w-10 h-13 rounded-b-xl rounded-t-sm border-2 p-px transition-all duration-300 overflow-hidden bg-slate-950/60 ${
               offlineEarnedLife > 0 ? "border-amber-400" : "border-slate-500/30"
             }`}
           >
             {/* Bottle neck cork collar */}
             <div
-              className={`absolute top-0 left-1/2 -translate-x-1/2 w-3.5 h-1.5 border border-b-0 rounded bg-slate-950 -mt-[1px] ${
+              className={`absolute top-0 left-1/2 -translate-x-1/2 w-3.5 h-1.5 border border-b-0 rounded bg-slate-950 -mt-px ${
                 offlineEarnedLife > 0 ? "border-amber-400" : "border-slate-500/30"
               }`}
             />
             {/* Cork plug */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-1 bg-amber-700/85 rounded-xs -mt-[1.5px] opacity-85 animate-pulse" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-1 bg-amber-700/85 rounded-xs mt-[-1.5px] opacity-85 animate-pulse" />
 
             {/* Glowing Liquid Fill */}
             {offlineEarnedLife > 0 && (
               <motion.div
-                className="w-full bg-gradient-to-t from-pink-500 via-amber-400 to-yellow-300 rounded-b px-[0.5px] relative"
+                className="w-full bg-linear-to-t from-pink-500 via-amber-400 to-yellow-300 rounded-b px-[0.5px] relative"
                 style={{
                   height: `${Math.max(15, Math.min(100, (offlineSeconds / 18000) * 100))}%`,
                 }}
@@ -82,7 +82,7 @@ export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(
                 }}
               >
                 <div className="absolute top-0 inset-x-0 h-0.5 bg-white/50 animate-pulse" />
-                <div className="absolute bottom-1.5 left-1 w-0.5 h-0.5 rounded-full bg-white/20 animate-ping" />
+                <div className="absolute bottom-1.5 left-1 size-0.5  rounded-full bg-white/20 animate-ping" />
               </motion.div>
             )}
 
@@ -116,9 +116,9 @@ export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(
               {Math.ceil(((100 - cycleProgress) / 100) * 60)}s
             </span>
           </div>
-          <div className="w-full h-2 rounded-full overflow-hidden p-[1px] border bg-[#090715] border-cosmic-accent-muted/30">
+          <div className="w-full h-2 rounded-full overflow-hidden p-px border bg-[#090715] border-cosmic-accent-muted/30">
             <motion.div
-              className={`h-full rounded-full ${isNight ? "bg-gradient-to-r from-cosmic-accent to-cosmic-pink" : "bg-gradient-to-r from-yellow-400 to-amber-500"}`}
+              className={`h-full rounded-full ${isNight ? "bg-linear-to-r from-cosmic-accent to-cosmic-pink" : "bg-linear-to-r from-yellow-400 to-amber-500"}`}
               style={{ width: `${cycleProgress}%` }}
               transition={{ ease: "linear" }}
             />

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal } from "../ui/Modal";
 import { collection, query, orderBy, limit, getDocs, doc, getDoc } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType } from "../../lib/firebase";
-import { Trophy, RefreshCw, Medal } from "lucide-react";
+import { Trophy, RefreshCw } from "lucide-react";
 
 interface LeaderboardEntry {
   userId: string;
@@ -84,9 +84,9 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
         panelClassName="bg-[#1a163a]/95 border-3 border-amber-400 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-3.5xl"
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b-3 border-amber-400/60 bg-gradient-to-r from-[#1b1c3c] via-[#212450] to-[#1b1c3c] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b-3 border-amber-400/60 bg-linear-to-r from-[#1b1c3c] via-[#212450] to-[#1b1c3c] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
-            <Trophy className="w-6 h-6 text-amber-400 select-none animate-bounce" />
+            <Trophy className="size-6  text-amber-400 select-none animate-bounce" />
             <div>
               <span className="text-[10px] uppercase font-black tracking-wider text-amber-300 block">
                 Galerie der Schoepfer
@@ -103,11 +103,11 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
               className="p-1.5 rounded-full bg-[#1b1836] border border-amber-400/50 flex items-center justify-center text-white hover:bg-cosmic-surface-hover disabled:opacity-40 active:scale-95 transition-all shadow-md cursor-pointer"
               title="Aktualisieren"
             >
-              <RefreshCw className={`w-4 h-4 text-amber-400 ${loading ? "animate-spin" : ""}`} />
+              <RefreshCw className={`size-4  text-amber-400 ${loading ? "animate-spin" : ""}`} />
             </button>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-[#1b1836] border-2 border-amber-400 flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
+              className="size-8  rounded-full bg-[#1b1836] border-2 border-amber-400 flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
             >
               ✕
             </button>
@@ -115,7 +115,7 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
         </div>
 
         {/* Modal Content */}
-        <div className="p-4 sm:p-5 flex-grow overflow-y-auto min-h-[300px] flex flex-col">
+        <div className="p-4 sm:p-5 grow overflow-y-auto min-h-[300px] flex flex-col">
           {error && (
             <div className="bg-red-950/40 border border-red-500/50 p-3 rounded-xl text-center text-red-300 text-xs font-bold my-4">
               {error}
@@ -123,14 +123,14 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
           )}
 
           {loading && entries.length === 0 ? (
-            <div className="flex-grow flex flex-col items-center justify-center space-y-3 py-10">
-              <RefreshCw className="w-8 h-8 text-amber-400 animate-spin" />
+            <div className="grow flex flex-col items-center justify-center space-y-3 py-10">
+              <RefreshCw className="size-8  text-amber-400 animate-spin" />
               <p className="text-xs text-cosmic-accent-muted font-mono">
                 Bestenliste wird geladen...
               </p>
             </div>
           ) : entries.length === 0 ? (
-            <div className="flex-grow flex flex-col items-center justify-center text-center space-y-2 py-10">
+            <div className="grow flex flex-col items-center justify-center text-center space-y-2 py-10">
               <span className="text-3xl">🌌</span>
               <p className="text-xs text-cosmic-accent-muted font-mono">
                 Bisher keine Eintraege auf der Bestenliste.
@@ -140,7 +140,7 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
               </p>
             </div>
           ) : (
-            <div className="space-y-2 flex-grow overflow-y-auto max-h-[50vh] pr-1">
+            <div className="space-y-2 grow overflow-y-auto max-h-[50vh] pr-1">
               {entries.map((entry, index) => {
                 const rank = index + 1;
                 const isMe = entry.userId === currentUserId;
@@ -174,7 +174,7 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
                     className={`w-full text-left flex items-center justify-between p-2.5 rounded-2xl border-2 ${rankBg} transition-all hover:brightness-110 active:scale-[0.99] cursor-pointer`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#1b153b] border border-gray-700/30 flex items-center justify-center font-bold">
+                      <div className="size-8  rounded-full bg-[#1b153b] border border-gray-700/30 flex items-center justify-center font-bold">
                         {rankVisual}
                       </div>
                       <div>
@@ -218,10 +218,10 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
               <button
                 type="button"
                 onClick={() => onOpenProfile?.(currentUserEntry.userId)}
-                className="w-full text-left flex items-center justify-between p-2.5 rounded-2xl border-2 border-pink-400 bg-gradient-to-r from-[#2a1c4b] to-[#1a163a] hover:brightness-110 active:scale-[0.99] cursor-pointer"
+                className="w-full text-left flex items-center justify-between p-2.5 rounded-2xl border-2 border-pink-400 bg-linear-to-r from-[#2a1c4b] to-[#1a163a] hover:brightness-110 active:scale-[0.99] cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-pink-500/20 border border-pink-400 flex items-center justify-center font-black text-xs text-pink-300">
+                  <div className="size-8  rounded-full bg-pink-500/20 border border-pink-400 flex items-center justify-center font-black text-xs text-pink-300">
                     Rang ?
                   </div>
                   <div>
@@ -252,7 +252,7 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
         </div>
 
         {/* Modal Footer / Hint */}
-        <div className="p-4 bg-gradient-to-r from-[#101026] to-[#161334] border-t-2 border-cosmic-accent/10 flex items-center justify-center text-center shrink-0">
+        <div className="p-4 bg-linear-to-r from-[#101026] to-[#161334] border-t-2 border-cosmic-accent/10 flex items-center justify-center text-center shrink-0">
           <p className="text-[10px] text-cosmic-accent-muted/90 max-w-sm leading-relaxed">
             Deine Position wird automatisch aktualisiert, wenn deine Spieldaten in die Cloud
             synchronisiert werden.

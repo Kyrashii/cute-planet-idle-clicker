@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import { Modal } from "../ui/Modal";
-import { Sparkles, Star, ShieldAlert, Check, Lock, Backpack } from "lucide-react";
+import { Sparkles, Check, Lock } from "lucide-react";
 import { COSMETIC_ITEMS, CosmeticItem, RARITY_STYLES } from "../../data/cosmetics";
 import { CRAFTING_RECIPES } from "../../data/recipes";
-import { ZODIACS } from "../../data/zodiacs";
 import { useGameState } from "../../contexts/GameStateContext";
 import { ROGUELITE_PLANET_SKINS } from "../../roguelite/data";
 
@@ -231,7 +230,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
 
         {/* GACHA REVEALED POPUP OVERLAY */}
         {openingState === "revealed" && revealedItem && (
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a061d]/98 to-[#130d2f]/98 backdrop-blur-md flex flex-col items-center justify-center p-6 z-50">
+          <div className="absolute inset-0 bg-linear-to-b from-[#0a061d]/98 to-[#130d2f]/98 backdrop-blur-md flex flex-col items-center justify-center p-6 z-50">
             <motion.div
               initial={{ scale: 0.85, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -252,7 +251,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                 >
                   {RARITY_STYLES[revealedItem.rarity].name}
                 </span>
-                <h4 className="font-sans font-black text-xl text-amber-300 uppercase tracking-wide mt-3 leading-tight">
+                <h4 className="font-sans font-black text-xl/tight text-amber-300 uppercase tracking-wide mt-3 ">
                   {revealedItem.germanName}
                 </h4>
                 <p className="text-[12px] font-semibold text-[#c5bfe2] max-w-xs leading-relaxed px-2 text-center">
@@ -279,7 +278,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
 
               <button
                 onClick={handleCloseReveal}
-                className="px-8 py-3 rounded-2xl bg-gradient-to-r from-amber-450 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-sans font-black text-sm uppercase tracking-wider cursor-pointer shadow-lg active:scale-95 transition-all mt-4"
+                className="px-8 py-3 rounded-2xl bg-linear-to-r from-amber-450 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-sans font-black text-sm uppercase tracking-wider cursor-pointer shadow-lg active:scale-95 transition-all mt-4"
               >
                 Wie fabelhaft! ➔
               </button>
@@ -310,7 +309,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
           </div>
           <button
             onClick={onClose}
-            className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
+            className={`size-8  rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
               isNight
                 ? "bg-[#1a1738] border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover"
                 : "bg-white border-2 border-amber-450 text-amber-900 hover:bg-amber-100"
@@ -321,13 +320,13 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
         </div>
 
         {/* Content Box */}
-        <div className="p-4 sm:p-6 overflow-y-auto flex-grow flex flex-col gap-5">
+        <div className="p-4 sm:p-6 overflow-y-auto grow flex flex-col gap-5">
           {/* LOOTBOX OPENER CARD */}
           <div
             className={`p-4 rounded-3xl border-2 flex flex-col md:flex-row items-center justify-between gap-5 relative overflow-hidden transition-all ${
               isNight
-                ? "bg-gradient-to-br from-[#1c1642] to-[#26164d] border-cosmic-accent/30"
-                : "bg-gradient-to-br from-amber-100 to-orange-100/50 border-amber-300"
+                ? "bg-linear-to-br from-[#1c1642] to-[#26164d] border-cosmic-accent/30"
+                : "bg-linear-to-br from-amber-100 to-orange-100/50 border-amber-300"
             }`}
           >
             <div className="space-y-1.5 text-center md:text-left">
@@ -369,9 +368,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleOpenBox}
-                  className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-450 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-sans font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2 border-2 border-yellow-300"
+                  className="px-6 py-3.5 rounded-2xl bg-linear-to-r from-amber-450 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-sans font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2 border-2 border-yellow-300"
                 >
-                  <Sparkles className="w-4 h-4 text-yellow-105 animate-spin" />
+                  <Sparkles className="size-4  text-yellow-105 animate-spin" />
                   Oeffnen!
                 </motion.button>
               ) : null}
@@ -876,13 +875,13 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                         <div className="flex gap-1.5">
                           <button
                             onClick={() => onUseCraftedItem?.(item.id, 1)}
-                            className="flex-1 py-2 rounded-xl text-[10px] font-black uppercase text-white transition-all bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-sm cursor-pointer active:scale-[0.98] border border-green-400"
+                            className="flex-1 py-2 rounded-xl text-[10px] font-black uppercase text-white transition-all bg-linear-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-sm cursor-pointer active:scale-[0.98] border border-green-400"
                           >
                             1x Oeffnen
                           </button>
                           <button
                             onClick={() => onUseCraftedItem?.(item.id, qty)}
-                            className="flex-1 py-2 rounded-xl text-[10px] font-black uppercase text-white transition-all bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 shadow-sm cursor-pointer active:scale-[0.98] border border-teal-400"
+                            className="flex-1 py-2 rounded-xl text-[10px] font-black uppercase text-white transition-all bg-linear-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 shadow-sm cursor-pointer active:scale-[0.98] border border-teal-400"
                             title={`Oeffnet alle ${qty} Exemplare auf einmal`}
                           >
                             Alle ({qty}x)
@@ -891,7 +890,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                       ) : (
                         <button
                           onClick={() => onUseCraftedItem?.(item.id, 1)}
-                          className="w-full py-2 rounded-xl text-[10px] font-black uppercase text-white transition-all bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-md cursor-pointer active:scale-[0.98] border border-green-450"
+                          className="w-full py-2 rounded-xl text-[10px] font-black uppercase text-white transition-all bg-linear-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-md cursor-pointer active:scale-[0.98] border border-green-450"
                         >
                           1x Oeffnen ✨
                         </button>
@@ -920,7 +919,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   </div>
                   <div className="mt-2 text-center">
                     <h6
-                      className={`font-sans font-black text-[11px] leading-tight ${isNight ? "text-[#fff]" : "text-slate-800"}`}
+                      className={`font-sans font-black text-[11px] leading-tight ${isNight ? "text-white" : "text-slate-800"}`}
                     >
                       Standard-Gelb
                     </h6>
@@ -931,7 +930,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   <div className="mt-3.5 w-full">
                     {activeStarColor === "default" ? (
                       <span className="text-[10px] uppercase font-black text-green-400 flex items-center justify-center gap-1">
-                        <Check className="w-3.5 h-3.5 stroke-[3]" /> Aktiviert
+                        <Check className="size-3.5  stroke-3" /> Aktiviert
                       </span>
                     ) : (
                       <span
@@ -958,7 +957,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   <div className="text-3xl select-none">❌</div>
                   <div className="mt-2 text-center">
                     <h6
-                      className={`font-sans font-black text-[11px] leading-tight ${isNight ? "text-[#fff]" : "text-slate-800"}`}
+                      className={`font-sans font-black text-[11px] leading-tight ${isNight ? "text-white" : "text-slate-800"}`}
                     >
                       Kein Hut
                     </h6>
@@ -969,7 +968,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   <div className="mt-3.5 w-full">
                     {activeAccessory === "none" ? (
                       <span className="text-[10px] uppercase font-black text-green-400 flex items-center justify-center gap-1">
-                        <Check className="w-3.5 h-3.5 stroke-[3]" /> Aktiviert
+                        <Check className="size-3.5  stroke-3" /> Aktiviert
                       </span>
                     ) : (
                       <span
@@ -996,7 +995,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   <div className="text-3xl select-none">🖼️</div>
                   <div className="mt-2 text-center">
                     <h6
-                      className={`font-sans font-black text-[11px] leading-tight ${isNight ? "text-[#fff]" : "text-slate-800"}`}
+                      className={`font-sans font-black text-[11px] leading-tight ${isNight ? "text-white" : "text-slate-800"}`}
                     >
                       Standard-Rahmen
                     </h6>
@@ -1007,7 +1006,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   <div className="mt-3.5 w-full">
                     {activeFrame === "default" ? (
                       <span className="text-[10px] uppercase font-black text-green-400 flex items-center justify-center gap-1">
-                        <Check className="w-3.5 h-3.5 stroke-[3]" /> Aktiviert
+                        <Check className="size-3.5  stroke-3" /> Aktiviert
                       </span>
                     ) : (
                       <span
@@ -1034,7 +1033,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   <div className="text-3xl select-none">🌙</div>
                   <div className="mt-2 text-center">
                     <h6
-                      className={`font-sans font-black text-[11px] leading-tight ${isNight ? "text-[#fff]" : "text-slate-800"}`}
+                      className={`font-sans font-black text-[11px] leading-tight ${isNight ? "text-white" : "text-slate-800"}`}
                     >
                       Standard-Mond
                     </h6>
@@ -1045,7 +1044,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   <div className="mt-3.5 w-full">
                     {activeMoonSkin === "default" ? (
                       <span className="text-[10px] uppercase font-black text-green-400 flex items-center justify-center gap-1">
-                        <Check className="w-3.5 h-3.5 stroke-[3]" /> Aktiviert
+                        <Check className="size-3.5  stroke-3" /> Aktiviert
                       </span>
                     ) : (
                       <span
@@ -1072,7 +1071,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   <div className="text-3xl select-none">🪐</div>
                   <div className="mt-2 text-center">
                     <h6
-                      className={`font-sans font-black text-[11px] leading-tight ${isNight ? "text-[#fff]" : "text-slate-800"}`}
+                      className={`font-sans font-black text-[11px] leading-tight ${isNight ? "text-white" : "text-slate-800"}`}
                     >
                       Level-Skin
                     </h6>
@@ -1083,7 +1082,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   <div className="mt-3.5 w-full">
                     {activePlanetSkin === "default" ? (
                       <span className="text-[10px] uppercase font-black text-green-400 flex items-center justify-center gap-1">
-                        <Check className="w-3.5 h-3.5 stroke-[3]" /> Aktiviert
+                        <Check className="size-3.5  stroke-3" /> Aktiviert
                       </span>
                     ) : (
                       <span
@@ -1115,8 +1114,8 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                       }`}
                     >
                       {!isUnlocked && (
-                        <div className="absolute right-2 top-2 w-4 h-4 rounded-full bg-slate-900/40 flex items-center justify-center">
-                          <Lock className="w-2.5 h-2.5 text-gray-400" />
+                        <div className="absolute right-2 top-2 size-4  rounded-full bg-slate-900/40 flex items-center justify-center">
+                          <Lock className="size-2.5  text-gray-400" />
                         </div>
                       )}
                       <img
@@ -1127,7 +1126,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                       />
                       <div className="mt-3 text-center px-1">
                         <h6
-                          className={`font-sans font-black text-[11px] leading-tight ${isNight ? "text-[#fff]" : "text-slate-800"}`}
+                          className={`font-sans font-black text-[11px] leading-tight ${isNight ? "text-white" : "text-slate-800"}`}
                         >
                           {skin.name}
                         </h6>
@@ -1138,7 +1137,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                       <div className="mt-3.5 w-full">
                         {isActive ? (
                           <span className="text-[10px] uppercase font-black text-green-400 flex items-center justify-center gap-1">
-                            <Check className="w-3.5 h-3.5 stroke-[3]" /> Aktiviert
+                            <Check className="size-3.5  stroke-3" /> Aktiviert
                           </span>
                         ) : (
                           <span
@@ -1197,8 +1196,8 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   >
                     {/* Lock symbol if not unlocked */}
                     {!isUnlocked && !hasWishUpgrade && (
-                      <div className="absolute right-2 top-2 w-4 h-4 rounded-full bg-slate-900/40 flex items-center justify-center">
-                        <Lock className="w-2.5 h-2.5 text-gray-400" />
+                      <div className="absolute right-2 top-2 size-4  rounded-full bg-slate-900/40 flex items-center justify-center">
+                        <Lock className="size-2.5  text-gray-400" />
                       </div>
                     )}
 
@@ -1218,7 +1217,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                         disabled={glitterDust < upgradeDetails.cost}
                         className={`absolute top-1.5 right-1.5 p-1 px-1.5 rounded-lg text-[8px] font-sans font-black z-15 transition-all text-white flex items-center gap-0.5 border ${
                           glitterDust >= upgradeDetails.cost
-                            ? "bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 border-pink-400 shadow-md scale-105 active:scale-95 cursor-pointer"
+                            ? "bg-linear-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 border-pink-400 shadow-md scale-105 active:scale-95 cursor-pointer"
                             : "bg-slate-800 text-slate-500 border-slate-700 cursor-not-allowed"
                         }`}
                         title={`Upgrade zu ${upgradeDetails.name} (+5% global LPS Boost) fuer ${upgradeDetails.cost} ✨`}
@@ -1255,7 +1254,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                     <div className="mt-2 w-full select-none">
                       {isActive ? (
                         <span className="text-[10px] uppercase font-black text-green-400 flex items-center justify-center gap-1 leading-none">
-                          <Check className="w-3.5 h-3.5 stroke-[3]" /> Aktiviert
+                          <Check className="size-3.5  stroke-3" /> Aktiviert
                         </span>
                       ) : isUnlocked ? (
                         <span
@@ -1275,7 +1274,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                           disabled={glitterDust < getDirectPurchaseCost(cosmetic.rarity)}
                           className={`w-full py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider text-white transition-all ${
                             glitterDust >= getDirectPurchaseCost(cosmetic.rarity)
-                              ? "bg-gradient-to-r from-pink-500 to-amber-500 hover:from-pink-600 hover:to-amber-600 shadow-md cursor-pointer active:scale-95"
+                              ? "bg-linear-to-r from-pink-500 to-amber-500 hover:from-pink-600 hover:to-amber-600 shadow-md cursor-pointer active:scale-95"
                               : "bg-slate-800/80 border border-[#b4a9cc]/10 text-slate-500 cursor-not-allowed"
                           }`}
                         >

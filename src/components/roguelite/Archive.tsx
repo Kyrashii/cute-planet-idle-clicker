@@ -13,7 +13,7 @@ export const Archive: React.FC<{
   const unlocked = new Set(meta.unlockedRelics);
 
   return (
-    <Panel className="mx-auto flex h-full w-full max-w-5xl flex-col p-5 sm:p-6">
+    <Panel className="mx-auto flex size-full  max-w-5xl flex-col p-5 sm:p-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <Eyebrow>Reliktarchiv</Eyebrow>
@@ -30,7 +30,7 @@ export const Archive: React.FC<{
             {unlocked.size}/{ROGUELITE_RELICS.length} frei
           </div>
           <GhostButton onClick={onCloseArchive}>
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="size-4 " />
             Zur Reliktwahl
           </GhostButton>
         </div>

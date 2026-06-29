@@ -124,7 +124,7 @@ export const InteractiveCosmos: React.FC<InteractiveCosmosProps> = ({
 }) => {
   return (
     <main
-      className={`flex-grow w-full max-w-4xl mx-auto px-4 py-6 flex flex-col items-center justify-center gap-5 relative z-10 transition-all duration-500 ${
+      className={`grow w-full max-w-4xl mx-auto px-4 py-6 flex flex-col items-center justify-center gap-5 relative z-10 transition-all duration-500 ${
         showTutorial ? "blur-md pointer-events-none select-none" : ""
       }`}
     >
@@ -175,7 +175,7 @@ export const InteractiveCosmos: React.FC<InteractiveCosmosProps> = ({
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowVoyageModal(true)}
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-600 to-fuchsia-600 text-white font-black text-xs uppercase tracking-wider border border-cyan-300/40 cursor-pointer shadow-lg hover:shadow-cyan-500/30 transition-all pointer-events-auto"
+                className="px-4 py-2 rounded-lg bg-linear-to-r from-cyan-600 to-fuchsia-600 text-white font-black text-xs uppercase tracking-wider border border-cyan-300/40 cursor-pointer shadow-lg hover:shadow-cyan-500/30 transition-all pointer-events-auto"
               >
                 Kern Reparieren & Reisen ⚙️ (+2 Shards, +77 Dust)
               </motion.button>

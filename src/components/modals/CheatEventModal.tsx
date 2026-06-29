@@ -82,8 +82,8 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
         panelClassName="bg-[#140f30]/95 border-3 border-cosmic-accent rounded-3.5xl p-6 max-w-md w-full shadow-[0_0_40px_rgba(171,159,210,0.25)] text-[#e2dafb] relative overflow-hidden"
       >
         {/* Background glow effects */}
-        <div className="absolute -top-24 -left-24 w-48 h-48 rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-48 h-48 rounded-full bg-cosmic-pink/10 blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 -left-24 size-48  rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 size-48  rounded-full bg-cosmic-pink/10 blur-3xl pointer-events-none" />
 
         <div className="flex justify-between items-center border-b border-white/10 pb-3 mb-4">
           <div>
@@ -156,7 +156,7 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
             >
               <span className="text-3xl select-none shrink-0 mt-0.5">{ev.emoji}</span>
               <div>
-                <h6 className="font-sans font-black text-xs uppercase tracking-wide leading-tight">
+                <h6 className="font-sans font-black text-xs/tight uppercase tracking-wide ">
                   {ev.title}
                 </h6>
                 <p className="text-[10px] font-medium leading-normal opacity-85 mt-0.5">

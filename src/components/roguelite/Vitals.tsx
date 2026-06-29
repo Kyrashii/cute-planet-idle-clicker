@@ -29,7 +29,7 @@ function StatChip({
 }) {
   return (
     <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-2.5 py-1.5">
-      <Icon className={cx("h-4 w-4 shrink-0", iconClass)} />
+      <Icon className={cx("size-4  shrink-0", iconClass)} />
       <div className="min-w-0">
         <div className="truncate text-[13px] font-black leading-none text-cosmic-text">{value}</div>
         <div className="mt-0.5 truncate font-mono text-[9px] font-bold uppercase tracking-widest text-cosmic-accent-muted">
@@ -54,7 +54,7 @@ function MiniMetric({
 }) {
   return (
     <div className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-black/20 px-2.5 py-1.5">
-      <Icon className={cx("h-3.5 w-3.5 shrink-0", iconClass)} />
+      <Icon className={cx("size-3.5  shrink-0", iconClass)} />
       <span className="text-[12px] font-black leading-none text-cosmic-text">{value}</span>
       <span className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-cosmic-accent-muted">
         {label}
@@ -79,7 +79,7 @@ export const SurvivalStrip: React.FC<{ stats: RogueliteRunStats }> = ({ stats })
   return (
     <div className="flex items-center gap-2">
       <div className="flex min-w-0 flex-2 items-center gap-2.5 rounded-xl border border-white/10 bg-black/20 px-3 py-1.5">
-        <Heart className="h-4 w-4 shrink-0 text-rose-300" />
+        <Heart className="size-4  shrink-0 text-rose-300" />
         <span className="font-mono text-[9px] font-black uppercase tracking-[0.12em] text-cosmic-accent-muted">
           Leben
         </span>

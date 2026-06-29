@@ -1,8 +1,6 @@
-import { PlanetTask, ActiveCosmicEvent } from "../types";
 import { INITIAL_ANIMALS } from "../data";
 import { CRAFTING_RECIPES } from "../data/recipes";
 import { resolve, RECIPE_BY_RESULT, getItem } from "../data/craftingGraph";
-import { expForLevel, EXP_PER_LEVEL } from "./engine";
 import { rollTaskForLevel } from "./planetTasks";
 import { handleUseCraftedItem } from "./itemHandlers";
 import { executeBlackHoleGamble } from "./blackHoleGamble";

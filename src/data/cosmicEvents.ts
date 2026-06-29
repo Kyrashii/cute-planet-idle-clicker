@@ -1,5 +1,3 @@
-import { ActiveCosmicEvent, CosmicEventOption } from "../types";
-
 export interface EventData {
   id: string;
   name: string;

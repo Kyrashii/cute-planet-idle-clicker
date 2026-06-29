@@ -48,7 +48,7 @@ export const RelicCard: React.FC<{
       onClick={onClick}
       aria-pressed={selected}
       className={cx(
-        "relative flex h-full w-full flex-col rounded-2xl border p-4 text-left transition",
+        "relative flex size-full  flex-col rounded-2xl border p-4 text-left transition",
         locked
           ? "cursor-default border-white/8 bg-black/25 opacity-55"
           : selected
@@ -65,19 +65,19 @@ export const RelicCard: React.FC<{
       <div className="flex items-start gap-3">
         <div
           className={cx(
-            "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border bg-black/25",
+            "flex size-11  shrink-0 items-center justify-center rounded-2xl border bg-black/25",
             rarity.ring,
           )}
         >
           {locked ? (
-            <Lock className="h-4 w-4 text-white/40" />
+            <Lock className="size-4  text-white/40" />
           ) : (
-            <Icon className={cx("h-5 w-5", rarity.text)} />
+            <Icon className={cx("size-5 ", rarity.text)} />
           )}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <span className={cx("h-1.5 w-1.5 rounded-full", rarity.dot)} />
+            <span className={cx("size-1.5  rounded-full", rarity.dot)} />
             <span className={cx("text-[9px] font-black uppercase tracking-[0.16em]", rarity.text)}>
               {rarity.label}
             </span>
@@ -87,13 +87,13 @@ export const RelicCard: React.FC<{
           </h5>
         </div>
         {selected && (
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cosmic-accent text-cosmic-bg">
-            <Check className="h-3.5 w-3.5" strokeWidth={3} />
+          <span className="flex size-6  shrink-0 items-center justify-center rounded-full bg-cosmic-accent text-cosmic-bg">
+            <Check className="size-3.5 " strokeWidth={3} />
           </span>
         )}
       </div>
 
-      <div className="mt-3 inline-flex w-fit rounded-lg border border-white/10 bg-black/25 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-cosmic-accent-muted">
+      <div className="mt-3 inline-flex w-fit rounded-lg border border-white/10 bg-black/25 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-cosmic-accent-muted">
         {relic.shortLabel}
       </div>
       <p className="mt-2 text-[12px] leading-snug text-cosmic-text-muted">{relic.description}</p>

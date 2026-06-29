@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Star, HelpCircle, Flame, Sparkles, Orbit } from "lucide-react";
 import { Modal } from "../ui/Modal";
 import { useGameState } from "../../contexts/GameStateContext";
 
@@ -136,7 +135,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
         panelClassName="bg-[#141235]/95 rounded-3.5xl border-3 border-amber-300 flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b-3 border-amber-300/60 bg-gradient-to-r from-[#110e2f] via-[#1b1747] to-[#110e2f] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b-3 border-amber-300/60 bg-linear-to-r from-[#110e2f] via-[#1b1747] to-[#110e2f] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
             <span className="text-2xl select-none animate-pulse">🌌</span>
             <div>
@@ -150,7 +149,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#1b1836] border-2 border-amber-300 flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
+            className="size-8  rounded-full bg-[#1b1836] border-2 border-amber-300 flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
           >
             ✕
           </button>
@@ -199,7 +198,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
         </div>
 
         {/* Content Box with tabs switcher */}
-        <div className="p-4 sm:p-5 flex-grow overflow-y-auto space-y-4">
+        <div className="p-4 sm:p-5 grow overflow-y-auto space-y-4">
           <AnimatePresence mode="wait">
             {activeTab === "stars_call" ? (
               <motion.div
@@ -210,7 +209,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                 className="space-y-4"
               >
                 {/* Informative description banner */}
-                <div className="p-3.5 rounded-2xl bg-amber-400/10 border-2 border-amber-300/40 text-xs text-cosmic-text space-y-1.5 leading-relaxed shadow-md">
+                <div className="p-3.5 rounded-2xl bg-amber-400/10 border-2 border-amber-300/40 text-xs/relaxed text-cosmic-text space-y-1.5  shadow-md">
                   <span className="font-black flex items-center gap-1 select-none uppercase tracking-wide text-[11px] text-amber-200">
                     ⭐ Wie funktionieren Sterne?
                   </span>
@@ -231,7 +230,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                     <div className="p-3 rounded-xl bg-cosmic-surface border-2 border-amber-300 flex items-center justify-center text-3xl shadow-md shrink-0 select-none">
                       ⭐
                     </div>
-                    <div className="min-w-0 flex-grow">
+                    <div className="min-w-0 grow">
                       <h5 className="font-sans font-black text-xs sm:text-sm text-cosmic-text uppercase tracking-wide truncate">
                         Orbitaler Sternenlaeufer
                       </h5>
@@ -252,7 +251,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                     disabled={life < starCost}
                     className={`w-full px-4 py-3 rounded-xl font-black flex flex-col items-center justify-center transition-all select-none border-2 cursor-pointer ${
                       life >= starCost
-                        ? "bg-gradient-to-b from-[#24214e] to-[#12112b] text-cosmic-text border-cosmic-accent hover:from-[#353174] hover:to-[#171638] hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
+                        ? "bg-linear-to-b from-[#24214e] to-[#12112b] text-cosmic-text border-cosmic-accent hover:from-[#353174] hover:to-[#171638] hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-px  active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
                         : "bg-[#18162f]/80 text-cosmic-accent-muted/40 border-cosmic-accent/20 shadow-none cursor-not-allowed opacity-40"
                     }`}
                   >
@@ -266,14 +265,14 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                 </div>
 
                 {/* Mond-Verschmelzung / Moon Merger Row */}
-                <div className="bg-gradient-to-b from-[#2a174d] to-[#171131] p-4 rounded-2.5xl border-2 border-fuchsia-400/50 flex flex-col items-center justify-between gap-4 shadow-lg relative overflow-hidden">
-                  <div className="absolute -right-6 -bottom-6 w-20 h-20 rounded-full bg-purple-500/10 blur-xl pointer-events-none" />
+                <div className="bg-linear-to-b from-[#2a174d] to-[#171131] p-4 rounded-2.5xl border-2 border-fuchsia-400/50 flex flex-col items-center justify-between gap-4 shadow-lg relative overflow-hidden">
+                  <div className="absolute -right-6 -bottom-6 size-20  rounded-full bg-purple-500/10 blur-xl pointer-events-none" />
 
                   <div className="flex items-center gap-3 w-full relative z-10">
                     <div className="p-3 rounded-xl bg-cosmic-surface border-2 border-purple-400 flex items-center justify-center text-3xl shadow-md shrink-0 select-none animate-pulse">
                       🌙
                     </div>
-                    <div className="min-w-0 flex-grow">
+                    <div className="min-w-0 grow">
                       <div className="flex items-center gap-2">
                         <h5 className="font-sans font-black text-xs sm:text-sm text-fuchsia-200 uppercase tracking-wide truncate">
                           Mond-Verschmelzung
@@ -319,7 +318,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                     disabled={!canMerge}
                     className={`w-full px-4 py-3 rounded-xl font-black flex flex-col items-center justify-center transition-all select-none border-2 cursor-pointer z-10 ${
                       canMerge
-                        ? "bg-gradient-to-b from-[#6b21a8] to-[#3b0764] text-white border-purple-400 hover:from-[#7e22ce] hover:to-[#581c87] hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
+                        ? "bg-linear-to-b from-[#6b21a8] to-[#3b0764] text-white border-purple-400 hover:from-[#7e22ce] hover:to-[#581c87] hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-px  active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
                         : "bg-[#18162f]/80 text-cosmic-accent-muted/40 border-purple-400/20 shadow-none cursor-not-allowed opacity-45"
                     }`}
                   >
@@ -345,7 +344,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                 className="space-y-4"
               >
                 {/* Constellation explanation banner */}
-                <div className="p-3.5 rounded-2xl bg-cyan-400/10 border-2 border-cyan-400/30 text-xs leading-relaxed text-slate-200">
+                <div className="p-3.5 rounded-2xl bg-cyan-400/10 border-2 border-cyan-400/30 text-xs/relaxed  text-slate-200">
                   <span className="font-black text-cyan-200 flex items-center gap-1 uppercase tracking-wide text-[10.5px]">
                     🌌 Was bewirken Sternbilder?
                   </span>
@@ -389,9 +388,9 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                         )}
 
                         {/* Left Details */}
-                        <div className="flex items-start gap-3 min-w-0 flex-grow">
+                        <div className="flex items-start gap-3 min-w-0 grow">
                           <div
-                            className={`w-11 h-11 rounded-xl border-2 flex items-center justify-center text-2xl shadow-lg shrink-0 select-none ${
+                            className={`size-11  rounded-xl border-2 flex items-center justify-center text-2xl shadow-lg shrink-0 select-none ${
                               isMaxed
                                 ? "bg-slate-900 border-emerald-400"
                                 : "bg-[#18153d] border-cyan-400/60"
@@ -463,7 +462,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                               }
                               className={`w-full sm:w-auto px-3 py-2 rounded-xl font-black flex flex-col items-center justify-center transition-all select-none border-2 cursor-pointer ${
                                 canAfford
-                                  ? "bg-gradient-to-b from-[#213f56] to-[#0f1d2a] text-cosmic-text border-cyan-400 hover:from-[#2e5a7b] hover:to-[#172d3e] hover:scale-103 shadow-[2px_2px_0px_#22d3ee] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#22d3ee]"
+                                  ? "bg-linear-to-b from-[#213f56] to-[#0f1d2a] text-cosmic-text border-cyan-400 hover:from-[#2e5a7b] hover:to-[#172d3e] hover:scale-103 shadow-[2px_2px_0px_#22d3ee] active:translate-px  active:shadow-[1px_1px_0px_#22d3ee]"
                                   : "bg-[#18162f]/80 text-cosmic-accent-muted/40 border-cyan-400/20 shadow-none cursor-not-allowed opacity-40"
                               }`}
                             >

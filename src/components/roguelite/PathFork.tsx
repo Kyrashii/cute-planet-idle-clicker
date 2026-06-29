@@ -39,19 +39,19 @@ const PathCard: React.FC<{ pathChoice: RoguelitePathChoice; onClick: () => void 
 
       <div className="mt-3 space-y-1.5 border-t border-white/8 pt-3">
         <div className="flex items-start gap-2">
-          <Gift className="mt-0.5 h-3.5 w-3.5 shrink-0 text-pink-300" />
+          <Gift className="mt-0.5 size-3.5  shrink-0 text-pink-300" />
           <span className="text-[12px] leading-snug text-cosmic-text/90">
             {pathChoice.rewardPreview}
           </span>
         </div>
         <div className="flex items-start gap-2">
-          <TriangleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-rose-300" />
+          <TriangleAlert className="mt-0.5 size-3.5  shrink-0 text-rose-300" />
           <span className="text-[12px] leading-snug text-cosmic-text/90">
             {pathChoice.riskPreview}
           </span>
         </div>
         <div className="flex items-start gap-2">
-          <Route className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cosmic-accent" />
+          <Route className="mt-0.5 size-3.5  shrink-0 text-cosmic-accent" />
           <span className="text-[12px] leading-snug text-cosmic-text/90">
             {pathChoice.routeHint}
           </span>
@@ -68,7 +68,7 @@ export const PathFork: React.FC<{
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="inline-flex w-fit items-center gap-2 rounded-full border border-cosmic-accent/30 bg-cosmic-accent/10 px-3 py-1">
-        <GitFork className="h-3.5 w-3.5 text-cosmic-accent" />
+        <GitFork className="size-3.5  text-cosmic-accent" />
         <Eyebrow className="text-cosmic-accent">Weggabelung</Eyebrow>
       </div>
       <h4 className="mt-3 text-xl font-black tracking-[0.01em] text-cosmic-text sm:text-2xl">

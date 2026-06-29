@@ -83,7 +83,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = React.memo(
         panelClassName="bg-[#1a163a]/95 border-3 border-amber-400 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-3.5xl"
       >
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b-3 border-amber-400/60 bg-gradient-to-r from-[#1b1c3c] via-[#212450] to-[#1b1c3c] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b-3 border-amber-400/60 bg-linear-to-r from-[#1b1c3c] via-[#212450] to-[#1b1c3c] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2 min-w-0">
             <span className="text-2xl select-none">🪐</span>
             <div className="min-w-0">
@@ -104,21 +104,21 @@ export const ProfileModal: React.FC<ProfileModalProps> = React.memo(
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#1b1836] border-2 border-amber-400 flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer shrink-0"
+            className="size-8  rounded-full bg-[#1b1836] border-2 border-amber-400 flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer shrink-0"
           >
             ✕
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-4 sm:p-5 flex-grow overflow-y-auto min-h-[300px] flex flex-col gap-4">
+        <div className="p-4 sm:p-5 grow overflow-y-auto min-h-[300px] flex flex-col gap-4">
           {loading ? (
-            <div className="flex-grow flex flex-col items-center justify-center space-y-3 py-10">
-              <RefreshCw className="w-8 h-8 text-amber-400 animate-spin" />
+            <div className="grow flex flex-col items-center justify-center space-y-3 py-10">
+              <RefreshCw className="size-8  text-amber-400 animate-spin" />
               <p className="text-xs text-cosmic-accent-muted font-mono">Profil wird geladen...</p>
             </div>
           ) : error ? (
-            <div className="flex-grow flex flex-col items-center justify-center text-center space-y-2 py-10">
+            <div className="grow flex flex-col items-center justify-center text-center space-y-2 py-10">
               <span className="text-3xl">🌌</span>
               <p className="text-xs text-cosmic-accent-muted font-mono max-w-xs">{error}</p>
             </div>

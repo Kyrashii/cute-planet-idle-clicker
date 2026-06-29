@@ -1,15 +1,9 @@
 import { INITIAL_ANIMALS } from "./data";
-import { COSMETIC_ITEMS } from "./data/cosmetics";
-import { CRAFTING_RECIPES } from "./data/recipes";
-import { resolve, RECIPE_BY_RESULT, getItem } from "./data/craftingGraph";
 import { ZODIACS } from "./data/zodiacs";
-import { computeLevelUpResult, expForLevel, EXP_PER_LEVEL } from "./game/engine";
 import { rollTaskForLevel } from "./game/planetTasks";
 import { COSMIC_EVENTS_POOL } from "./data/cosmicEvents";
 import { getLpsAndStats as calcLpsAndStats } from "./game/statsCalculator";
-import { generateAchievements as calcAchievements, formatCompactNumber } from "./game/achievements";
-import { handleUseCraftedItem } from "./game/itemHandlers";
-import { executeBlackHoleGamble } from "./game/blackHoleGamble";
+import { generateAchievements as calcAchievements } from "./game/achievements";
 import { handleWorkerAction } from "./game/workerActions";
 import { DEFAULT_GLITCH_BENCHMARKS, hasReachedGlitchMilestone } from "./game/glitchGalaxy";
 import type {

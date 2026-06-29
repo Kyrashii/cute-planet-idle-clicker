@@ -37,7 +37,7 @@ function Bead({
         {!reducedMotion && (
           <span
             className={cx(
-              "absolute inline-flex h-9 w-9 rounded-full opacity-60",
+              "absolute inline-flex size-9  rounded-full opacity-60",
               isBoss ? "bg-cosmic-yellow/30" : "bg-cosmic-accent/30",
               "animate-ping",
             )}
@@ -45,14 +45,14 @@ function Bead({
         )}
         <span
           className={cx(
-            "relative flex h-8 w-8 items-center justify-center rounded-full border-2",
+            "relative flex size-8  items-center justify-center rounded-full border-2",
             isBoss
               ? "border-cosmic-yellow bg-cosmic-yellow/20"
               : "border-cosmic-accent bg-cosmic-accent/20",
             visual?.glow,
           )}
         >
-          <Icon className={cx("h-4 w-4", isBoss ? "text-cosmic-yellow" : "text-cosmic-text")} />
+          <Icon className={cx("size-4 ", isBoss ? "text-cosmic-yellow" : "text-cosmic-text")} />
         </span>
       </div>
     );
@@ -63,7 +63,7 @@ function Bead({
       <div ref={beadRef} className="flex items-center justify-center">
         <span
           className={cx(
-            "flex h-5 w-5 rotate-45 items-center justify-center rounded-[4px] border",
+            "flex size-5  rotate-45 items-center justify-center rounded-[4px] border",
             state === "done"
               ? "border-cosmic-yellow bg-cosmic-yellow shadow-[0_0_14px_rgba(254,240,138,0.6)]"
               : "border-cosmic-yellow/35 bg-cosmic-yellow/10",
@@ -71,7 +71,7 @@ function Bead({
         >
           <Skull
             className={cx(
-              "h-2.5 w-2.5 -rotate-45",
+              "size-2.5  -rotate-45",
               state === "done" ? "text-cosmic-bg" : "text-cosmic-yellow/60",
             )}
           />
@@ -84,7 +84,7 @@ function Bead({
     <div ref={beadRef} className="flex items-center justify-center">
       <span
         className={cx(
-          "h-2.5 w-2.5 rounded-full",
+          "size-2.5  rounded-full",
           state === "done"
             ? cx(visual?.bead ?? "bg-cosmic-accent", "shadow-[0_0_8px_rgba(202,165,254,0.4)]")
             : "border border-white/20 bg-white/6",
@@ -159,7 +159,7 @@ export const VoyageTrack: React.FC<{ activeRun: ActiveRogueliteRun }> = ({ activ
         </div>
       </div>
 
-      <div className="mt-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="mt-2 overflow-x-auto pb-1 scrollbar-none [&::-webkit-scrollbar]:hidden">
         <div className="flex min-w-max items-start gap-2 px-1">
           {acts.map((group, groupIndex) => {
             const isCurrentAct = activeRun.currentAct === group.act;

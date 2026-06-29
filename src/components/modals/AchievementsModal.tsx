@@ -73,7 +73,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
           </div>
           <button
             onClick={onClose}
-            className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
+            className={`size-8  rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
               isNight
                 ? "bg-[#1a1738] border-2 border-amber-300 text-amber-200 hover:bg-cosmic-surface-hover"
                 : "bg-white border-2 border-amber-450 text-amber-900 hover:bg-amber-100"
@@ -90,7 +90,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
           }`}
         >
           <div className="w-full sm:w-auto flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border-2 border-amber-500 flex items-center justify-center text-2.5xl shadow-inner select-none shrink-0">
+            <div className="size-12  rounded-2xl bg-amber-500/10 border-2 border-amber-500 flex items-center justify-center text-2.5xl shadow-inner select-none shrink-0">
               👑
             </div>
             <div>
@@ -111,7 +111,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
           </div>
 
           {/* Progress Bar */}
-          <div className="w-full sm:max-w-xs flex-grow">
+          <div className="w-full sm:max-w-xs grow">
             <div className="flex items-center justify-between text-[10px] font-mono font-black mb-1">
               <span className={isNight ? "text-amber-200" : "text-amber-900"}>
                 Erfolge-Fortschritt
@@ -120,7 +120,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
             </div>
             <div className="w-full h-3 rounded-full bg-slate-300/20 overflow-hidden border border-slate-305/30 p-0.5">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-500 shadow-sm transition-all duration-500"
+                className="h-full rounded-full bg-linear-to-r from-amber-400 via-yellow-400 to-orange-500 shadow-sm transition-all duration-500"
                 style={{ width: `${(unlockedAchievementsCount / achievements.length) * 100}%` }}
               />
             </div>
@@ -192,7 +192,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
         </div>
 
         {/* Modal Scrollable Content: Custom grid list */}
-        <div className="p-4 sm:p-5 flex-grow overflow-y-auto space-y-3">
+        <div className="p-4 sm:p-5 grow overflow-y-auto space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-3">
             {achievements
               .filter((ach) => {
@@ -209,8 +209,8 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
                   className={`relative overflow-hidden p-3 rounded-2.5xl border-2 flex gap-3 transition-all ${
                     ach.isUnlocked
                       ? isNight
-                        ? "bg-gradient-to-br from-[#271f49] to-[#120e2a] border-yellow-401/70 shadow-[3px_3px_0px_rgba(234,179,8,0.7)]"
-                        : "bg-gradient-to-br from-amber-50 to-yellow-50/70 border-amber-400 text-amber-950 shadow-[3px_3px_0px_rgba(217,119,6,0.6)]"
+                        ? "bg-linear-to-br from-[#271f49] to-[#120e2a] border-yellow-401/70 shadow-[3px_3px_0px_rgba(234,179,8,0.7)]"
+                        : "bg-linear-to-br from-amber-50 to-yellow-50/70 border-amber-400 text-amber-950 shadow-[3px_3px_0px_rgba(217,119,6,0.6)]"
                       : isNight
                         ? "bg-[#1a1738]/40 border-cosmic-accent/10 text-slate-500 opacity-60"
                         : "bg-slate-100 border-slate-200 text-slate-400 opacity-70"
@@ -218,7 +218,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
                 >
                   {/* Emoji Icon Container */}
                   <div
-                    className={`p-2 rounded-xl text-2xl flex items-center justify-center select-none shrink-0 w-11 h-11 ${
+                    className={`p-2 rounded-xl text-2xl flex items-center justify-center select-none shrink-0 size-11  ${
                       ach.isUnlocked
                         ? "bg-amber-500/10 border border-amber-400"
                         : "bg-slate-500/5 border border-slate-500/20 grayscale"
@@ -228,7 +228,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
                   </div>
 
                   {/* Content block */}
-                  <div className="min-w-0 flex-grow pr-1">
+                  <div className="min-w-0 grow pr-1">
                     <div className="flex items-center justify-between gap-1">
                       <h5
                         className={`font-sans font-black text-xs uppercase tracking-wide truncate ${
@@ -276,7 +276,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
                         className={`h-full rounded-full transition-all duration-300 ${
                           ach.isUnlocked
                             ? "bg-emerald-400"
-                            : "bg-gradient-to-r from-amber-500 to-orange-400"
+                            : "bg-linear-to-r from-amber-500 to-orange-400"
                         }`}
                         style={{ width: `${(ach.progress / ach.target) * 100}%` }}
                       />

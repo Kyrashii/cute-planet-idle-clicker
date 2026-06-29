@@ -17,7 +17,7 @@ const AnimalGlyph = React.memo<{ def: Animal | undefined }>(({ def }) => {
         alt={def.emoji}
         onError={() => setImgError(true)}
         referrerPolicy="no-referrer"
-        className="w-8 h-8 md:w-10 md:h-10 object-contain select-none pointer-events-none drop-shadow-[0_2px_3px_rgba(0,0,0,0.5)]"
+        className="size-8  md:size-10  object-contain select-none pointer-events-none drop-shadow-[0_2px_3px_rgba(0,0,0,0.5)]"
       />
     );
   }
@@ -61,13 +61,13 @@ export const EnclosurePreview: React.FC<EnclosurePreviewProps> = ({
         }
         alt="Gehegelandschaft"
         referrerPolicy="no-referrer"
-        className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+        className="absolute inset-0 size-full  object-cover select-none pointer-events-none"
       />
 
       {placedAnimals.map((pa) => (
         <div
           key={pa.id}
-          className="absolute -translate-x-1/2 -translate-y-1/2"
+          className="absolute -translate-1/2 "
           style={{ left: `${pa.x}%`, top: `${pa.y}%` }}
         >
           <AnimalGlyph def={animalMap.get(pa.animalId)} />

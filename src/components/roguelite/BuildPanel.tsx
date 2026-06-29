@@ -53,9 +53,9 @@ export const BuildPanel: React.FC<{
             type="button"
             onClick={onClose}
             aria-label="Info-Panel schliessen"
-            className="flex h-9 w-9 items-center justify-center rounded-2xl border border-white/12 bg-white/4 text-cosmic-text-muted transition hover:border-cosmic-accent/40 hover:text-cosmic-text"
+            className="flex size-9  items-center justify-center rounded-2xl border border-white/12 bg-white/4 text-cosmic-text-muted transition hover:border-cosmic-accent/40 hover:text-cosmic-text"
           >
-            <X className="h-4 w-4" />
+            <X className="size-4 " />
           </button>
         )}
       </div>
@@ -71,7 +71,7 @@ export const BuildPanel: React.FC<{
 
         <PanelSection title="Bossblick">
           <div className="flex items-center gap-3">
-            <img src={BOSS_COMET} alt="Boss-Komet" className="h-12 w-12 shrink-0 object-contain" />
+            <img src={BOSS_COMET} alt="Boss-Komet" className="size-12  shrink-0 object-contain" />
             <div className="min-w-0">
               <div className="truncate text-[14px] font-black text-cosmic-text">
                 {boss?.name ?? activeRun.boss.bossId.replaceAll("_", " ")}
@@ -115,11 +115,11 @@ export const BuildPanel: React.FC<{
                   >
                     <div
                       className={cx(
-                        "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border",
+                        "flex size-6  shrink-0 items-center justify-center rounded-lg border",
                         cat.soft,
                       )}
                     >
-                      <Icon className={cx("h-3 w-3", cat.text)} />
+                      <Icon className={cx("size-3 ", cat.text)} />
                     </div>
                     <div className="min-w-0">
                       <div className="truncate text-[12px] font-bold text-cosmic-text">
@@ -156,11 +156,11 @@ export const BuildPanel: React.FC<{
                   >
                     <div
                       className={cx(
-                        "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border",
+                        "flex size-6  shrink-0 items-center justify-center rounded-lg border",
                         visual.soft,
                       )}
                     >
-                      <Icon className={cx("h-3 w-3", visual.text)} />
+                      <Icon className={cx("size-3 ", visual.text)} />
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-[12px] font-bold text-cosmic-text">
