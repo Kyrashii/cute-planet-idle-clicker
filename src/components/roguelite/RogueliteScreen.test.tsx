@@ -1,9 +1,11 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { RogueliteScreen } from "./RogueliteScreen";
-import { createNewRun, createRogueliteMetaState } from "../roguelite/engine";
+import { createNewRun, createRogueliteMetaState } from "../../roguelite/engine";
+
+const COACH_SEEN_KEY = "cute_planet_roguelite_coach_seen";
 
 function makeProps() {
   return {
@@ -25,7 +27,13 @@ function makeProps() {
 }
 
 describe("RogueliteScreen", () => {
-  it("renders the victory reward panel with chest, resources, and relic choices", async () => {
+  // Most tests assume a returning player so the first-run coach doesn't cover the
+  // run targets; the dedicated coach test clears this.
+  beforeEach(() => {
+    window.localStorage.setItem(COACH_SEEN_KEY, "1");
+  });
+
+  it("renders the victory results with chest, rewards, and a relic pick", async () => {
     const user = userEvent.setup();
     const props = makeProps();
     let activeRun = createNewRun(props.meta, props.meta.unlockedRelics.slice(0, 2), 42);
@@ -45,9 +53,10 @@ describe("RogueliteScreen", () => {
 
     render(<RogueliteScreen {...props} activeRun={activeRun} />);
 
-    expect(screen.getByText("Boss gefallen")).toBeInTheDocument();
+    expect(screen.getByText(/sieg!/i)).toBeInTheDocument();
+    expect(screen.getByText(/boss gefallen/i)).toBeInTheDocument();
     expect(screen.getByAltText("Roguelite Siegestruhe")).toBeInTheDocument();
-    expect(screen.getByText("Reliktwahl")).toBeInTheDocument();
+    expect(screen.getByText(/reliktwahl/i)).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /nebelglas/i }));
     await user.click(screen.getByRole("button", { name: /belohnungen sichern/i }));
@@ -55,7 +64,7 @@ describe("RogueliteScreen", () => {
     expect(props.onClaimVictory).toHaveBeenCalledWith("nebelglas");
   });
 
-  it("renders the defeat reward panel with the consolation chest", () => {
+  it("renders the defeat results with the consolation chest", () => {
     const props = makeProps();
     let activeRun = createNewRun(props.meta, props.meta.unlockedRelics.slice(0, 2), 99);
     activeRun = {
@@ -68,12 +77,13 @@ describe("RogueliteScreen", () => {
 
     render(<RogueliteScreen {...props} activeRun={activeRun} />);
 
-    expect(screen.getByText("Tiefe Trosttruhe")).toBeInTheDocument();
+    expect(screen.getByText(/niederlage/i)).toBeInTheDocument();
+    expect(screen.getByText(/tiefe trosttruhe/i)).toBeInTheDocument();
     expect(screen.getByAltText("Roguelite Trosttruhe")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /trostbelohnung einsammeln/i })).toBeInTheDocument();
   });
 
-  it("opens on the intro step and only starts a run after relic confirmation", async () => {
+  it("opens on the intro step and only starts setup after the start button", async () => {
     const user = userEvent.setup();
     const props = { ...makeProps(), viewState: "intro" as const, activeRun: null };
 
@@ -84,7 +94,7 @@ describe("RogueliteScreen", () => {
     expect(props.onBeginRunSetup).toHaveBeenCalled();
   });
 
-  it("allows a new player with two unlocked relics to start the run", async () => {
+  it("allows a player with two unlocked relics to start the run", async () => {
     const user = userEvent.setup();
     const props = { ...makeProps(), viewState: "relic_select" as const, activeRun: null };
     props.meta.unlockedRelics = ["kometenherz", "pfotenkompass"];
@@ -100,7 +110,7 @@ describe("RogueliteScreen", () => {
     expect(props.onStartRun).toHaveBeenCalledWith(["kometenherz", "pfotenkompass"]);
   });
 
-  it("allows a new player with one unlocked relic to start the run", async () => {
+  it("allows a player with one unlocked relic to start the run", async () => {
     const user = userEvent.setup();
     const props = { ...makeProps(), viewState: "relic_select" as const, activeRun: null };
     props.meta.unlockedRelics = ["kometenherz"];
@@ -115,7 +125,7 @@ describe("RogueliteScreen", () => {
     expect(props.onStartRun).toHaveBeenCalledWith(["kometenherz"]);
   });
 
-  it("shows a visible recovery state instead of a blank panel when the run content payload is missing", () => {
+  it("shows a visible recovery state instead of a blank stage when the encounter is missing", () => {
     const props = makeProps();
     let activeRun = createNewRun(props.meta, props.meta.unlockedRelics.slice(0, 2), 123);
     activeRun = {
@@ -131,7 +141,7 @@ describe("RogueliteScreen", () => {
     expect(screen.getByText(/akt 1 von 3/i)).toBeInTheDocument();
   });
 
-  it("shows a visible preparing state if the UI is already on run but no run object is mounted yet", () => {
+  it("shows a preparing state when the run view mounts before a run object exists", () => {
     const props = { ...makeProps(), activeRun: null };
 
     render(<RogueliteScreen {...props} />);
@@ -139,31 +149,34 @@ describe("RogueliteScreen", () => {
     expect(screen.getByText(/run wird vorbereitet/i)).toBeInTheDocument();
   });
 
-  it("keeps run choices clear while the info panel starts closed and toggles open on demand", async () => {
+  it("leads with the decision prompt and tucks detail stats into the details panel", async () => {
     const user = userEvent.setup();
     const props = makeProps();
     const activeRun = createNewRun(props.meta, props.meta.unlockedRelics.slice(0, 2), 444);
 
     render(<RogueliteScreen {...props} activeRun={activeRun} />);
 
+    // The action prompt is the prominent heading (the only h3) and the choices
+    // are the focal targets.
+    const prompt = screen.getByRole("heading", { level: 3 });
+    expect(prompt.textContent).toMatch(/wähle|stelle|kaufe|opfern|forme|triff|reite|öffne|lies/i);
     expect(screen.getByText(/akt 1 von 3/i)).toBeInTheDocument();
-    expect(screen.queryByText(/run wird vorbereitet/i)).not.toBeInTheDocument();
-    expect(activeRun.currentEncounter?.choices[0]?.title).toBeTruthy();
     expect(
       screen.getByRole("button", {
         name: new RegExp(activeRun.currentEncounter!.choices[0]!.title, "i"),
       }),
     ).toBeInTheDocument();
 
+    // Detail stats live behind the details toggle, not on the main screen.
+    expect(screen.queryByText("Klicks")).not.toBeInTheDocument();
     expect(screen.queryByTestId("roguelite-run-info-panel")).not.toBeInTheDocument();
-    expect(screen.getByTestId("roguelite-primary-content")).toBeInTheDocument();
 
     await user.click(screen.getByTestId("roguelite-drawer-toggle"));
 
     expect(screen.getByTestId("roguelite-run-info-panel")).toBeInTheDocument();
+    expect(screen.getByText("Klicks")).toBeInTheDocument();
+    expect(screen.getAllByText(/werte/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/bossblick/i).length).toBeGreaterThan(0);
-    expect(screen.getByText(/buildform/i)).toBeInTheDocument();
-    expect(screen.getByText(/letzte stationen/i)).toBeInTheDocument();
 
     await user.click(screen.getByTestId("roguelite-drawer-toggle"));
 
@@ -172,7 +185,35 @@ describe("RogueliteScreen", () => {
     });
   });
 
-  it("hides the info panel toggle in victory and defeat reward states", () => {
+  it("shows the first-run coach on a fresh profile and dismisses it", async () => {
+    const user = userEvent.setup();
+    window.localStorage.removeItem(COACH_SEEN_KEY);
+    const props = makeProps();
+    const activeRun = createNewRun(props.meta, props.meta.unlockedRelics.slice(0, 2), 7);
+
+    render(<RogueliteScreen {...props} activeRun={activeRun} />);
+
+    expect(screen.getByTestId("roguelite-coach")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /berspringen/i }));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("roguelite-coach")).not.toBeInTheDocument();
+    });
+  });
+
+  it("opens the help legend from the shell header", async () => {
+    const user = userEvent.setup();
+    const props = { ...makeProps(), viewState: "intro" as const, activeRun: null };
+
+    render(<RogueliteScreen {...props} />);
+
+    await user.click(screen.getByTestId("roguelite-help-button"));
+
+    expect(screen.getByText(/hilfe & legende/i)).toBeInTheDocument();
+    expect(screen.getByText(/so läuft ein run/i)).toBeInTheDocument();
+  });
+
+  it("hides the details toggle in victory and defeat results", () => {
     const props = makeProps();
     let victoryRun = createNewRun(props.meta, props.meta.unlockedRelics.slice(0, 2), 17);
     victoryRun = {
@@ -191,7 +232,7 @@ describe("RogueliteScreen", () => {
 
     const { rerender } = render(<RogueliteScreen {...props} activeRun={victoryRun} />);
 
-    expect(screen.queryByRole("button", { name: /details/i })).not.toBeInTheDocument();
+    expect(screen.queryByTestId("roguelite-drawer-toggle")).not.toBeInTheDocument();
 
     let defeatRun = createNewRun(props.meta, props.meta.unlockedRelics.slice(0, 2), 18);
     defeatRun = {
@@ -204,6 +245,6 @@ describe("RogueliteScreen", () => {
 
     rerender(<RogueliteScreen {...props} activeRun={defeatRun} />);
 
-    expect(screen.queryByRole("button", { name: /details/i })).not.toBeInTheDocument();
+    expect(screen.queryByTestId("roguelite-drawer-toggle")).not.toBeInTheDocument();
   });
 });
