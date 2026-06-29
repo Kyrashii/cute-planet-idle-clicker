@@ -3,10 +3,11 @@ import { test, expect, type Page } from "@playwright/test";
 const SAVE_KEY = "cute_planet_save_guest";
 
 async function dismissTutorial(page: Page) {
-  const loslegenButton = page.getByRole("button", { name: /Loslegen/ });
-  if (await loslegenButton.isVisible()) {
-    await loslegenButton.click();
-  }
+  // Fresh-profile tutorial overlays the UI. click() auto-waits for the button to be actionable
+  // (avoiding a race with the modal's mount), then wait for its backdrop to fully exit so a later
+  // header click (e.g. open-roguelite) isn't intercepted by the lingering #modal-root dialog.
+  await page.getByRole("button", { name: /Loslegen/ }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
 }
 
 async function openRogueliteAndStartRun(page: Page) {
@@ -22,11 +23,11 @@ async function openRogueliteAndStartRun(page: Page) {
 async function dismissCoachIfPresent(page: Page) {
   const coach = page.getByTestId("roguelite-coach");
   if (await coach.isVisible().catch(() => false)) {
-    const skip = page.getByRole("button", { name: /berspringen/i });
+    const skip = coach.getByRole("button", { name: /berspringen/i });
     if (await skip.isVisible().catch(() => false)) {
       await skip.click();
     } else {
-      await page.getByRole("button", { name: /Los geht/i }).click();
+      await coach.getByRole("button", { name: /Los geht/i }).click();
     }
     await expect(coach).toHaveCount(0);
   }
@@ -48,7 +49,6 @@ test.describe("cute planet smoke", () => {
     // First load shows the tutorial overlay (showTutorial defaults to true); close
     // it via its "Loslegen" button so it doesn't intercept planet clicks.
     await dismissTutorial(page);
-    await expect(page.getByRole("dialog")).toHaveCount(0);
 
     // Each click round-trips through the worker (CLICK -> state.clicksCount++ ->
     // STATE_UPDATE -> setClicksCount).
@@ -129,9 +129,11 @@ test.describe("cute planet smoke", () => {
     await page.waitForTimeout(300);
     await page.screenshot({ path: "test-results/roguelite-coach.png" });
 
-    await page.getByRole("button", { name: /Weiter/i }).click();
-    await page.getByRole("button", { name: /Weiter/i }).click();
-    await page.getByRole("button", { name: /Los geht/i }).click();
+    // Scope to the coach overlay: the encounter cards behind it carry randomized German text
+    // that can contain "weiter", which would make a page-wide /Weiter/i match two buttons.
+    await coach.getByRole("button", { name: /Weiter/i }).click();
+    await coach.getByRole("button", { name: /Weiter/i }).click();
+    await coach.getByRole("button", { name: /Los geht/i }).click();
     await expect(coach).toHaveCount(0);
   });
 
