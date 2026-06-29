@@ -87,7 +87,7 @@ import { useOfflineEarnings } from "./hooks/useOfflineEarnings";
 import { applyWorkerEvent, type WorkerEventHandlers } from "./game/applyWorkerEvent";
 import { CosmicOverlays } from "./components/CosmicOverlays";
 import { InteractiveCosmos } from "./components/InteractiveCosmos";
-import { RogueliteScreen } from "./components/RogueliteScreen";
+import { RogueliteScreen } from "./components/roguelite/RogueliteScreen";
 import {
   chooseEncounterOption,
   createNewRun,
