@@ -18,6 +18,20 @@ async function openRogueliteAndStartRun(page: Page) {
   await expect(page.getByTestId("roguelite-primary-content")).toBeVisible();
 }
 
+// On a fresh profile the first-run coach overlay appears over the encounter.
+async function dismissCoachIfPresent(page: Page) {
+  const coach = page.getByTestId("roguelite-coach");
+  if (await coach.isVisible().catch(() => false)) {
+    const skip = page.getByRole("button", { name: /berspringen/i });
+    if (await skip.isVisible().catch(() => false)) {
+      await skip.click();
+    } else {
+      await page.getByRole("button", { name: /Los geht/i }).click();
+    }
+    await expect(coach).toHaveCount(0);
+  }
+}
+
 test.describe("cute planet smoke", () => {
   // Each test gets a fresh browser context, so localStorage already starts empty
   // and survives an in-test reload (which is exactly what we assert below).
@@ -79,7 +93,30 @@ test.describe("cute planet smoke", () => {
     expect(clicksAfter).toBeGreaterThanOrEqual(clicksBefore);
   });
 
-  test("desktop roguelite drawer keeps the run actions clickable", async ({ page }) => {
+  test("roguelite intro hub and relic draft read clearly", async ({ page }) => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await page.goto("/");
+    await expect(page.locator("#planet-container")).toBeVisible({ timeout: 30_000 });
+    await dismissTutorial(page);
+
+    await page.getByTestId("open-roguelite-button").click();
+    await expect(page.getByText(/30 Stationen\. 3 Akte\./)).toBeVisible();
+    await page.waitForTimeout(250);
+    await page.screenshot({ path: "test-results/roguelite-intro.png" });
+
+    await page.getByRole("button", { name: /^Start$/ }).click();
+    await expect(page.getByText(/Waehle bis zu 3 Start-Relikte/i)).toBeVisible();
+    await page.waitForTimeout(250);
+    await page.screenshot({ path: "test-results/roguelite-draft.png" });
+
+    // The persistent help legend is reachable from the shell header on any screen.
+    await page.getByTestId("roguelite-help-button").click();
+    await expect(page.getByText(/Hilfe & Legende/i)).toBeVisible();
+    await page.waitForTimeout(200);
+    await page.screenshot({ path: "test-results/roguelite-help.png" });
+  });
+
+  test("first-run coach guides the player, then dismisses", async ({ page }) => {
     await page.setViewportSize({ width: 1366, height: 768 });
     await page.goto("/");
     await expect(page.locator("#planet-container")).toBeVisible({ timeout: 30_000 });
@@ -87,45 +124,75 @@ test.describe("cute planet smoke", () => {
 
     await openRogueliteAndStartRun(page);
 
-    const primaryContent = page.getByTestId("roguelite-primary-content");
-    const firstChoice = primaryContent.getByTestId("roguelite-choice-card").first();
-
-    await expect(firstChoice).toBeVisible();
-    await expect(page.getByTestId("roguelite-run-info-panel")).toHaveCount(0);
-    await page.screenshot({ path: "test-results/roguelite-desktop-run.png" });
-
-    await page.getByTestId("roguelite-drawer-toggle").click();
-    await expect(page.getByTestId("roguelite-run-info-panel")).toBeVisible();
-    await expect(primaryContent).toBeVisible();
+    const coach = page.getByTestId("roguelite-coach");
+    await expect(coach).toBeVisible();
     await page.waitForTimeout(300);
-    await page.screenshot({ path: "test-results/roguelite-desktop-drawer-open.png" });
+    await page.screenshot({ path: "test-results/roguelite-coach.png" });
 
-    await firstChoice.click();
-    await expect(primaryContent).toContainText(/Station|Route|Weggabelung|Run wird vorbereitet/i);
+    await page.getByRole("button", { name: /Weiter/i }).click();
+    await page.getByRole("button", { name: /Weiter/i }).click();
+    await page.getByRole("button", { name: /Los geht/i }).click();
+    await expect(coach).toHaveCount(0);
   });
 
-  test.describe("roguelite drawer mobile", () => {
+  test("desktop roguelite run keeps the choices clickable with the details rail", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await page.goto("/");
+    await expect(page.locator("#planet-container")).toBeVisible({ timeout: 30_000 });
+    await dismissTutorial(page);
+
+    await openRogueliteAndStartRun(page);
+    await dismissCoachIfPresent(page);
+
+    const primaryContent = page.getByTestId("roguelite-primary-content");
+    const firstChoice = primaryContent.getByTestId("roguelite-choice-card").first();
+    await expect(firstChoice).toBeVisible();
+
+    // On desktop the build rail is open by default and sits beside (not over) the stage.
+    await expect(page.getByTestId("roguelite-run-info-panel")).toBeVisible();
+    await page.waitForTimeout(300);
+    await page.screenshot({ path: "test-results/roguelite-desktop-run.png" });
+
+    // Collapsing the rail keeps the stage usable.
+    await page.getByTestId("roguelite-drawer-toggle").click();
+    await expect(page.getByTestId("roguelite-run-info-panel")).toHaveCount(0);
+    await expect(primaryContent).toBeVisible();
+    await page.waitForTimeout(300);
+    await page.screenshot({ path: "test-results/roguelite-desktop-rail-closed.png" });
+
+    await firstChoice.click();
+    await expect(page.getByText(/Akt \d von 3/i)).toBeVisible();
+    await expect(primaryContent).toBeVisible();
+  });
+
+  test.describe("roguelite details sheet mobile", () => {
     test.use({ viewport: { width: 390, height: 844 } });
 
-    test("opens as a right drawer and closes back to the run cleanly", async ({ page }) => {
+    test("opens as a right sheet and closes back to the run cleanly", async ({ page }) => {
       await page.goto("/");
       await expect(page.locator("#planet-container")).toBeVisible({ timeout: 30_000 });
       await dismissTutorial(page);
 
       await openRogueliteAndStartRun(page);
+      await page.waitForTimeout(300);
+      await page.screenshot({ path: "test-results/roguelite-mobile-coach.png" });
+      await dismissCoachIfPresent(page);
 
-      const drawerToggle = page.getByTestId("roguelite-drawer-toggle");
+      // On mobile the details panel starts closed.
+      await expect(page.getByTestId("roguelite-run-info-panel")).toHaveCount(0);
       await page.screenshot({ path: "test-results/roguelite-mobile-run.png" });
-      await drawerToggle.click();
 
-      const drawer = page.getByTestId("roguelite-run-info-panel");
-      await expect(drawer).toBeVisible();
-      await expect(drawer).toContainText(/Bossblick/i);
+      await page.getByTestId("roguelite-drawer-toggle").click();
+      const sheet = page.getByTestId("roguelite-run-info-panel");
+      await expect(sheet).toBeVisible();
+      await expect(sheet).toContainText(/Bossblick/i);
       await page.waitForTimeout(300);
       await page.screenshot({ path: "test-results/roguelite-mobile-drawer-open.png" });
 
       await page.getByRole("button", { name: /Info-Panel schliessen/i }).click();
-      await expect(drawer).toHaveCount(0);
+      await expect(sheet).toHaveCount(0);
       await expect(page.getByTestId("roguelite-primary-content")).toBeVisible();
     });
   });
