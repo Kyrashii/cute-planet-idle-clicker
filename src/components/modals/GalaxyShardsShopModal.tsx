@@ -98,10 +98,10 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-[#191336]/95 rounded-3.5xl border-3 border-fuchsia-400 flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
+        panelClassName="bg-cosmic-bg-mid/95 rounded-3.5xl border-3 border-fuchsia-400 flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b-3 border-fuchsia-400/50 bg-linear-to-r from-[#171430] via-[#241744] to-[#171430] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b-3 border-fuchsia-400/50 bg-linear-to-r from-cosmic-bg-mid via-cosmic-surface-mid to-cosmic-bg-mid flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <span className="text-3xl select-none animate-bounce">🌌</span>
             <div>
@@ -110,7 +110,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
               </span>
               <h4
                 id="shard_shop_title"
-                className="font-sans font-black text-[#f5d0fe] text-sm uppercase tracking-wider flex items-center gap-1.5"
+                className="font-sans font-black text-fuchsia-200 text-sm uppercase tracking-wider flex items-center gap-1.5"
               >
                 Galaxie-Splitter Shop
               </h4>
@@ -119,14 +119,14 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
           <button
             onClick={onClose}
             id="shard_shop_close_btn"
-            className="size-8  rounded-full bg-[#1b153b] border-2 border-fuchsia-400 flex items-center justify-center font-bold text-base text-[#f5d0fe] hover:bg-fuchsia-900 active:scale-95 transition-all shadow-md cursor-pointer"
+            className="size-8  rounded-full bg-cosmic-bg-mid border-2 border-fuchsia-400 flex items-center justify-center font-bold text-base text-fuchsia-200 hover:bg-fuchsia-900 active:scale-95 transition-all shadow-md cursor-pointer"
           >
             ✕
           </button>
         </div>
 
         {/* Galaxy Shard Balance Summary Panel */}
-        <div className="bg-[#120a28] border-b border-fuchsia-500/20 p-4 shrink-0 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="bg-cosmic-bg border-b border-fuchsia-500/20 p-4 shrink-0 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="p-2 bg-linear-to-tr from-fuchsia-800 to-indigo-950 rounded-xl border border-fuchsia-500/30">
               <span className="text-lg">🌌</span>
@@ -136,7 +136,9 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                 Dein kosmisches Vermoegen
               </span>
               <div className="flex items-baseline gap-1.5 mt-0.5">
-                <span className="font-mono text-2xl font-black text-[#f5d0fe]">{galaxyShards}</span>
+                <span className="font-mono text-2xl font-black text-fuchsia-200">
+                  {galaxyShards}
+                </span>
                 <span className="text-xs font-semibold text-fuchsia-300">
                   Galaxie-Splitter vorhanden
                 </span>
@@ -151,14 +153,14 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex bg-[#100924] shrink-0 border-b border-fuchsia-500/10 h-10 select-none">
+        <div className="flex bg-cosmic-bg shrink-0 border-b border-fuchsia-500/10 h-10 select-none">
           <button
             onClick={() => setActiveTab("zodiacs")}
             id="shard_shop_tab_zodiacs"
             className={`flex-1 text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 ${
               activeTab === "zodiacs"
-                ? "bg-[#1d143c] border-b-2 border-fuchsia-400 text-[#f5d0fe]"
-                : "text-[#8d82bd] hover:text-cosmic-text hover:bg-white/5"
+                ? "bg-cosmic-bg-mid border-b-2 border-fuchsia-400 text-fuchsia-200"
+                : "text-cosmic-accent-muted hover:text-cosmic-text hover:bg-white/5"
             }`}
           >
             <Award className="size-3.5 " />
@@ -169,8 +171,8 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
             id="shard_shop_tab_utils"
             className={`flex-1 text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 ${
               activeTab === "utilities"
-                ? "bg-[#1d143c] border-b-2 border-fuchsia-400 text-[#f5d0fe]"
-                : "text-[#8d82bd] hover:text-cosmic-text hover:bg-white/5"
+                ? "bg-cosmic-bg-mid border-b-2 border-fuchsia-400 text-fuchsia-200"
+                : "text-cosmic-accent-muted hover:text-cosmic-text hover:bg-white/5"
             }`}
           >
             <Sparkles className="size-3.5 " />
@@ -179,7 +181,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
         </div>
 
         {/* Main shop options area with custom scrollbars */}
-        <div className="p-4 sm:p-5 overflow-y-auto flex-1 bg-[#150a2b]">
+        <div className="p-4 sm:p-5 overflow-y-auto flex-1 bg-cosmic-bg">
           {activeTab === "zodiacs" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {ZODIACS.map((zod) => {
@@ -197,7 +199,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                   <div
                     key={zod.id}
                     id={`shard_shop_zod_${zod.id}`}
-                    className="bg-[#211640] rounded-2xl border-2 border-purple-500/20 p-3.5 flex flex-col justify-between hover:border-fuchsia-400/40 transition-colors"
+                    className="bg-cosmic-surface-mid rounded-2xl border-2 border-purple-500/20 p-3.5 flex flex-col justify-between hover:border-fuchsia-400/40 transition-colors"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-2">
@@ -207,7 +209,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                             <h5 className="font-sans font-black text-xs/tight text-white ">
                               {zod.name}
                             </h5>
-                            <span className="text-[9px] font-mono px-2 py-0.25 bg-fuchsia-500/20 text-[#f5d0fe] rounded-full border border-fuchsia-500/20 font-bold">
+                            <span className="text-[9px] font-mono px-2 py-0.25 bg-fuchsia-500/20 text-fuchsia-200 rounded-full border border-fuchsia-500/20 font-bold">
                               Stufe {lvl}
                             </span>
                           </div>
@@ -231,7 +233,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                         {zod.description}
                       </p>
 
-                      <div className="p-2 rounded-xl bg-[#170e30] border border-white/5 flex flex-col gap-1 text-[9.5px]">
+                      <div className="p-2 rounded-xl bg-cosmic-bg-mid border border-white/5 flex flex-col gap-1 text-[9.5px]">
                         <div className="flex justify-between items-center text-purple-250">
                           <span>Aktuell:</span>
                           <span className="font-bold text-purple-100">{benefits.current}</span>
@@ -251,10 +253,10 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                       onClick={() => onUpgradeZodiacLevel(zod.id, cost)}
                       className={`w-full mt-3.5 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
                         isMaxLevel
-                          ? "bg-[#18122d]/60 text-slate-500 border border-slate-750 cursor-not-allowed"
+                          ? "bg-cosmic-bg-mid/60 text-slate-500 border border-slate-750 cursor-not-allowed"
                           : hasEnough
                             ? "bg-linear-to-r from-fuchsia-600 to-indigo-600 hover:scale-[1.02] text-white border border-fuchsia-400/40 shadow-md"
-                            : "bg-[#1e133a]/80 text-[#8d82bd]/45 border border-purple-900/40 opacity-70 cursor-not-allowed"
+                            : "bg-cosmic-bg-mid/80 text-cosmic-accent-muted/45 border border-purple-900/40 opacity-70 cursor-not-allowed"
                       }`}
                     >
                       {isMaxLevel
@@ -272,7 +274,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
               {/* 🏺 Schlummer-Glas Hours Upgrade */}
               <div
                 id="shard_shop_utility_glass"
-                className="bg-[#211640] rounded-2xl border-2 border-purple-500/20 p-4 flex flex-col sm:flex-row items-center justify-between gap-4"
+                className="bg-cosmic-surface-mid rounded-2xl border-2 border-purple-500/20 p-4 flex flex-col sm:flex-row items-center justify-between gap-4"
               >
                 <div className="flex items-center gap-3.5 self-start">
                   <div className="size-12  rounded-2xl bg-amber-500/10 border border-amber-400/35 flex items-center justify-center text-2xl shadow-inner shrink-0 select-none">
@@ -293,7 +295,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                       </span>
                       <span className="text-[10px] font-semibold text-purple-200">
                         Aktuell:{" "}
-                        <span className="font-extrabold text-[#f5d0fe]">
+                        <span className="font-extrabold text-fuchsia-200">
                           {5 + (slummerGlassLevel - 1) * 2} Std. Max
                         </span>
                       </span>
@@ -306,7 +308,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                 </div>
 
                 <div className="flex flex-col items-end gap-2 shrink-0 self-stretch sm:self-center justify-center">
-                  <div className="flex items-center gap-1 font-mono text-xs font-black text-[#f5d0fe] bg-[#120a28] px-3 py-1 rounded-xl border border-fuchsia-500/15">
+                  <div className="flex items-center gap-1 font-mono text-xs font-black text-fuchsia-200 bg-cosmic-bg px-3 py-1 rounded-xl border border-fuchsia-500/15">
                     <span>Upgrade:</span>
                     <span
                       className={
@@ -323,7 +325,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                     className={`w-full sm:w-40 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
                       galaxyShards >= slummerGlassLevel
                         ? "bg-linear-to-r from-amber-500 to-fuchsia-600 hover:scale-[1.02] text-white border border-amber-400/30 shadow-md"
-                        : "bg-[#1e133a]/80 text-[#8d82bd]/45 border border-purple-900/40 opacity-70 cursor-not-allowed"
+                        : "bg-cosmic-bg-mid/80 text-cosmic-accent-muted/45 border border-purple-900/40 opacity-70 cursor-not-allowed"
                     }`}
                   >
                     {galaxyShards >= slummerGlassLevel
@@ -336,7 +338,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
               {/* 📈 Kosmischer Katalysator Upgrade */}
               <div
                 id="shard_shop_utility_catalyst"
-                className="bg-[#211640] rounded-2xl border-2 border-purple-500/20 p-4 flex flex-col sm:flex-row items-center justify-between gap-4"
+                className="bg-cosmic-surface-mid rounded-2xl border-2 border-purple-500/20 p-4 flex flex-col sm:flex-row items-center justify-between gap-4"
               >
                 <div className="flex items-center gap-3.5 self-start">
                   <div className="size-12  rounded-2xl bg-indigo-500/10 border border-indigo-400/35 flex items-center justify-center text-2xl shadow-inner shrink-0 select-none">
@@ -359,7 +361,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                       </span>
                       <span className="text-[10px] font-semibold text-purple-200">
                         Aktuell:{" "}
-                        <span className="font-extrabold text-[#f5d0fe]">
+                        <span className="font-extrabold text-fuchsia-200">
                           +{catalystLevel * 15}%
                         </span>
                       </span>
@@ -371,7 +373,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                 </div>
 
                 <div className="flex flex-col items-end gap-2 shrink-0 self-stretch sm:self-center justify-center">
-                  <div className="flex items-center gap-1 font-mono text-xs font-black text-[#f5d0fe] bg-[#120a28] px-3 py-1 rounded-xl border border-fuchsia-500/15">
+                  <div className="flex items-center gap-1 font-mono text-xs font-black text-fuchsia-200 bg-cosmic-bg px-3 py-1 rounded-xl border border-fuchsia-500/15">
                     <span>Upgrade:</span>
                     <span
                       className={
@@ -388,7 +390,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                     className={`w-full sm:w-40 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
                       galaxyShards >= catalystLevel + 1
                         ? "bg-linear-to-r from-indigo-500 to-purple-600 hover:scale-[1.02] text-white border border-indigo-400/30 shadow-md"
-                        : "bg-[#1e133a]/80 text-[#8d82bd]/45 border border-purple-900/40 opacity-70 cursor-not-allowed"
+                        : "bg-cosmic-bg-mid/80 text-cosmic-accent-muted/45 border border-purple-900/40 opacity-70 cursor-not-allowed"
                     }`}
                   >
                     {galaxyShards >= catalystLevel + 1 ? "Beschleunigen ⚙️" : "Zu wenige Splitter"}
@@ -399,7 +401,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
               {/* 🌠 Sternen-Glitzer-Faenger Upgrade */}
               <div
                 id="shard_shop_utility_catcher"
-                className="bg-[#211640] rounded-2xl border-2 border-purple-500/20 p-4 flex flex-col sm:flex-row items-center justify-between gap-4"
+                className="bg-cosmic-surface-mid rounded-2xl border-2 border-purple-500/20 p-4 flex flex-col sm:flex-row items-center justify-between gap-4"
               >
                 <div className="flex items-center gap-3.5 self-start">
                   <div className="size-12  rounded-2xl bg-pink-500/10 border border-pink-400/35 flex items-center justify-center text-2xl shadow-inner shrink-0 select-none">
@@ -425,7 +427,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                       </span>
                       <span className="text-[10px] font-semibold text-purple-200">
                         Aktuell:{" "}
-                        <span className="font-extrabold text-[#f5d0fe]">
+                        <span className="font-extrabold text-fuchsia-200">
                           {doubleStellarLevel * 10}% Chance
                         </span>
                       </span>
@@ -440,7 +442,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                 </div>
 
                 <div className="flex flex-col items-end gap-2 shrink-0 self-stretch sm:self-center justify-center">
-                  <div className="flex items-center gap-1 font-mono text-xs font-black text-[#f5d0fe] bg-[#120a28] px-3 py-1 rounded-xl border border-fuchsia-500/15">
+                  <div className="flex items-center gap-1 font-mono text-xs font-black text-fuchsia-200 bg-cosmic-bg px-3 py-1 rounded-xl border border-fuchsia-500/15">
                     <span>Upgrade:</span>
                     <span
                       className={
@@ -459,7 +461,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                     className={`w-full sm:w-40 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
                       galaxyShards >= doubleStellarLevel + 1
                         ? "bg-linear-to-r from-pink-500 to-indigo-600 hover:scale-[1.02] text-white border border-pink-400/30 shadow-md"
-                        : "bg-[#1e133a]/80 text-[#8d82bd]/45 border border-purple-900/40 opacity-70 cursor-not-allowed"
+                        : "bg-cosmic-bg-mid/80 text-cosmic-accent-muted/45 border border-purple-900/40 opacity-70 cursor-not-allowed"
                     }`}
                   >
                     {galaxyShards >= doubleStellarLevel + 1
@@ -473,7 +475,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
         </div>
 
         {/* Close and Bottom Panel */}
-        <div className="p-4 bg-[#100824] border-t border-fuchsia-500/15 flex items-center justify-between shrink-0">
+        <div className="p-4 bg-cosmic-bg border-t border-fuchsia-500/15 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-1.5 text-[10px] text-fuchsia-200/50 font-bold">
             <span>Suesses Universum</span>
             <span>•</span>
@@ -482,7 +484,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
           <button
             onClick={onClose}
             id="shard_shop_bottom_close"
-            className="px-6 py-2 bg-linear-to-r from-purple-800 to-fuchsia-900 hover:from-purple-750 hover:to-fuchsia-850 rounded-xl text-xs font-black uppercase tracking-wider transition-all active:scale-95 text-[#f5d0fe] border border-fuchsia-500/25 shadow-lg cursor-pointer"
+            className="px-6 py-2 bg-linear-to-r from-purple-800 to-fuchsia-900 hover:from-purple-750 hover:to-fuchsia-850 rounded-xl text-xs font-black uppercase tracking-wider transition-all active:scale-95 text-fuchsia-200 border border-fuchsia-500/25 shadow-lg cursor-pointer"
           >
             Fertig gelernt! 🌌
           </button>

@@ -81,7 +81,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-[#181236]/95 border-3 border-cosmic-accent rounded-3.5xl p-6.5 max-w-lg w-full shadow-2xl text-cosmic-text relative"
+        panelClassName="bg-cosmic-bg-mid/95 border-3 border-cosmic-accent rounded-3.5xl p-6.5 max-w-lg w-full shadow-2xl text-cosmic-text relative"
       >
         {/* Close Button */}
         <button
@@ -94,7 +94,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
         {/* Modal Header */}
         <div className="flex items-center gap-2.5 mb-5 select-none">
           <Cloud className="size-5  text-sky-400 shrink-0" />
-          <h2 className="font-sans font-black text-sm uppercase tracking-widest text-[#ffcbdc]">
+          <h2 className="font-sans font-black text-sm uppercase tracking-widest text-brand-pink">
             Pastell-Cloud Sicherung
           </h2>
         </div>
@@ -116,8 +116,8 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
               exit={{ opacity: 0, y: -10 }}
               className="space-y-5"
             >
-              <div className="p-4.5 rounded-2.5xl bg-[#0d0a22]/85 border-2 border-white/5 space-y-3">
-                <div className="flex items-center gap-2 text-[#ffcbdc]">
+              <div className="p-4.5 rounded-2.5xl bg-cosmic-bg/85 border-2 border-white/5 space-y-3">
+                <div className="flex items-center gap-2 text-brand-pink">
                   <Sparkles className="size-4  shrink-0 text-amber-300" />
                   <h3 className="font-sans text-xs font-black uppercase tracking-wide">
                     Warum in der Cloud sichern?
@@ -178,7 +178,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
               className="space-y-4"
             >
               {/* User Profile Badge */}
-              <div className="p-4.5 rounded-2.5xl bg-[#0d0a22]/85 border-2 border-cosmic-accent/25 flex items-center justify-between gap-3 text-left">
+              <div className="p-4.5 rounded-2.5xl bg-cosmic-bg/85 border-2 border-cosmic-accent/25 flex items-center justify-between gap-3 text-left">
                 <div className="flex items-center gap-3">
                   {user.photoURL ? (
                     <img
@@ -188,12 +188,12 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <div className="size-11  rounded-full border-2 border-cosmic-accent bg-[#1a123d] flex items-center justify-center text-xl shadow-sm">
+                    <div className="size-11  rounded-full border-2 border-cosmic-accent bg-cosmic-bg-mid flex items-center justify-center text-xl shadow-sm">
                       🪐
                     </div>
                   )}
                   <div>
-                    <h4 className="font-sans font-black text-xs uppercase text-[#ffcbdc]">
+                    <h4 className="font-sans font-black text-xs uppercase text-brand-pink">
                       {user.displayName || "Kosmischer Wanderer"}
                     </h4>
                     <p className="text-[10px] text-cosmic-accent-muted font-semibold font-mono truncate max-w-[200px] sm:max-w-[240px]">
@@ -214,7 +214,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
 
               {/* Sync status section */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 rounded-2xl bg-[#090616]/70 border border-white/5 text-left flex flex-col justify-center">
+                <div className="p-3 rounded-2xl bg-cosmic-bg-deep/70 border border-white/5 text-left flex flex-col justify-center">
                   <span className="text-[9px] uppercase font-mono font-black text-cosmic-accent-muted block leading-none">
                     Letzter Sync
                   </span>
@@ -224,7 +224,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
                   </span>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-[#090616]/70 border border-white/5 text-left flex flex-col justify-center">
+                <div className="p-3 rounded-2xl bg-cosmic-bg-deep/70 border border-white/5 text-left flex flex-col justify-center">
                   <span className="text-[9px] uppercase font-mono font-black text-cosmic-accent-muted block leading-none">
                     Sync-Netzwerk
                   </span>
@@ -237,7 +237,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
 
               {/* Cloud vs Local saves layout summary */}
               <div className="grid grid-cols-2 gap-3.5 mt-2">
-                <div className="p-3.5 rounded-2xl bg-[#090616]/70 border border-slate-500/15 text-left">
+                <div className="p-3.5 rounded-2xl bg-cosmic-bg-deep/70 border border-slate-500/15 text-left">
                   <div className="flex items-center gap-1.5 text-[10px] text-sky-305 font-bold mb-1.5">
                     <Monitor className="size-3.5  text-sky-400" />
                     <span>Lokal am Geraet</span>
@@ -269,7 +269,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-[#090616]/70 border border-cosmic-accent/15 text-left">
+                <div className="p-3.5 rounded-2xl bg-cosmic-bg-deep/70 border border-cosmic-accent/15 text-left">
                   <div className="flex items-center gap-1.5 text-[10px] text-cosmic-accent font-bold mb-1.5">
                     <Cloud className="size-3.5  text-cosmic-accent" />
                     <span>In der Cloud</span>
@@ -325,7 +325,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
                 <button
                   onClick={onForceLoad}
                   disabled={syncing || !cloudStats}
-                  className="flex-1 p-3  bg-[#1d173d] hover:bg-[#2e265c] disabled:opacity-30 border-2 border-slate-500/35 rounded-xl text-[10.5px] text-cosmic-accent font-black tracking-wide uppercase transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
+                  className="flex-1 p-3  bg-cosmic-bg-mid hover:bg-cosmic-surface-hover disabled:opacity-30 border-2 border-slate-500/35 rounded-xl text-[10.5px] text-cosmic-accent font-black tracking-wide uppercase transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
                 >
                   <CloudDownload className="size-4  text-emerald-355 shrink-0" />
                   Laden

@@ -479,7 +479,7 @@ const RAW_INITIAL_ANIMALS: Animal[] = [
     count: 0,
     description: "Fiercely snuggly with super-soft velvet claws.",
     germanDescription: "Hat samtweiche Tatzen und schmust fuer sein Leben gern.",
-    color: "bg-[#FFF9C4] text-amber-800 border-amber-200",
+    color: "bg-brand-yellow text-amber-800 border-amber-200",
   },
   {
     id: "lion",
@@ -493,7 +493,7 @@ const RAW_INITIAL_ANIMALS: Animal[] = [
     count: 0,
     description: "Shakes a golden constellation mane.",
     germanDescription: "Schuettelt stolz seine Maehne voller Sonnenstrahlen.",
-    color: "bg-[#FFF9C4] text-amber-700 border-amber-200",
+    color: "bg-brand-yellow text-amber-700 border-amber-200",
   },
   {
     id: "monkey",

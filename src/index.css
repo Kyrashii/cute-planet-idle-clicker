@@ -24,6 +24,7 @@
   --color-cosmic-glow-pink: #ffc8e6; /* primary-button gradient start */
   --color-cosmic-glow-blue: #9db8ff; /* primary-button gradient end */
   --color-cosmic-ink: #241038; /* dark text on accent surfaces */
+  --color-cosmic-gold-ink: #2c1d0a; /* dark gold text on warm/amber banners */
 
   /* Semantic status colours (match the emerald/rose/amber/sky shades in use) */
   --color-success: #34d399;
@@ -97,6 +98,12 @@ input,
 select,
 textarea {
   touch-action: manipulation;
+}
+
+/* Universal press feedback so taps feel responsive even where no
+   bespoke active: style exists. Brightness composes with transforms. */
+:is(#root, #modal-root) :is(button, [role="button"]):active:not(:disabled) {
+  filter: brightness(1.12);
 }
 
 :is(#root, #modal-root)

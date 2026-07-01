@@ -71,7 +71,7 @@ export const Coach: React.FC<{
 
   return (
     <>
-      <div className="fixed inset-0 z-30 bg-[#08050f]/72" aria-hidden="true" />
+      <div className="fixed inset-0 z-30 bg-cosmic-bg-deep/72" aria-hidden="true" />
       <motion.div
         key={stepIndex}
         initial={reducedMotion ? false : { opacity: 0, y: 12 }}

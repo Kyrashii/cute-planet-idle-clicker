@@ -13,7 +13,7 @@ interface DayNightIndicatorProps {
 export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(
   ({ isNight, cycleProgress, offlineEarnedLife, offlineSeconds, onOpenOfflineModal }) => {
     return (
-      <div className="w-full max-w-2xl p-3.5 rounded-2.5xl flex flex-col md:flex-row items-center justify-between gap-3 border-2 shadow-md transition-all duration-500 bg-[#14102d]/90 border-cosmic-accent/60 text-cosmic-text">
+      <div className="w-full max-w-2xl p-3.5 rounded-2.5xl flex flex-col md:flex-row items-center justify-between gap-3 border-2 shadow-md transition-all duration-500 bg-cosmic-bg/90 border-cosmic-accent/60 text-cosmic-text">
         <div className="flex items-center gap-3">
           <div className="text-3xl select-none animate-pulse">{isNight ? "🌙" : "☀️"}</div>
           <div>
@@ -116,7 +116,7 @@ export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(
               {Math.ceil(((100 - cycleProgress) / 100) * 60)}s
             </span>
           </div>
-          <div className="w-full h-2 rounded-full overflow-hidden p-px border bg-[#090715] border-cosmic-accent-muted/30">
+          <div className="w-full h-2 rounded-full overflow-hidden p-px border bg-cosmic-bg-deep border-cosmic-accent-muted/30">
             <motion.div
               className={`h-full rounded-full ${isNight ? "bg-linear-to-r from-cosmic-accent to-cosmic-pink" : "bg-linear-to-r from-yellow-400 to-amber-500"}`}
               style={{ width: `${cycleProgress}%` }}

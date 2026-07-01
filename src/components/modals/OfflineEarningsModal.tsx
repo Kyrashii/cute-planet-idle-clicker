@@ -50,19 +50,19 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = React.m
         onClose={onClose}
         panelClassName={`flex flex-col max-w-sm w-full shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
           isNight
-            ? "bg-[#181333]/95 border-cosmic-accent"
+            ? "bg-cosmic-bg-mid/95 border-cosmic-accent"
             : "bg-amber-50 border-amber-400 text-slate-800"
         }`}
       >
         {/* Subtle glowing sparks in background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-yellow-300/10 via-[#0d0a20]/0 to-indigo-900/10 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-yellow-300/10 via-cosmic-bg/0 to-indigo-900/10 pointer-events-none" />
 
         {/* Header */}
         <div
           className={`p-4 sm:p-5 border-b-3 flex items-center gap-3 shrink-0 transition-colors duration-500 ${
             isNight
-              ? "border-cosmic-accent/40 bg-[#0d0a20]"
-              : "border-amber-300 bg-amber-100 text-[#2c1d0a]"
+              ? "border-cosmic-accent/40 bg-cosmic-bg"
+              : "border-amber-300 bg-amber-100 text-cosmic-gold-ink"
           }`}
         >
           <span className="text-3xl select-none animate-pulse">😴💤</span>
@@ -159,7 +159,7 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = React.m
         {/* Claim Action */}
         <div
           className={`p-4 border-t-2 flex flex-col transition-colors duration-500 shrink-0 ${
-            isNight ? "border-cosmic-accent/20 bg-[#0d0a20]" : "border-amber-200 bg-amber-50"
+            isNight ? "border-cosmic-accent/20 bg-cosmic-bg" : "border-amber-200 bg-amber-50"
           }`}
         >
           <button

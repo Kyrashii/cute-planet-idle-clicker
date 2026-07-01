@@ -25,7 +25,7 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(
     return (
       <section
         className={`w-full max-w-2xl flex flex-row items-center justify-around gap-2 px-3.5 py-1.5 rounded-2xl border-2 transition-all duration-500 shadow-sm ${
-          isNightStyle ? "bg-[#130f2c]/85 border-cosmic-accent/40 text-cosmic-text" : ""
+          isNightStyle ? "bg-cosmic-bg/85 border-cosmic-accent/40 text-cosmic-text" : ""
         }`}
       >
         {/* Total Life HUD panel */}
@@ -86,7 +86,7 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(
         {/* Prestige HUD Level Display (Earned only via Galaxiereise at Level 20!) */}
         <div
           id="hud-prestige-btn"
-          className="flex items-center gap-1 sm:gap-1.5 text-xs font-semibold py-1 px-2.5 rounded-xl border border-purple-500/20 bg-[#181333]/40 text-cosmic-accent-muted select-none cursor-help"
+          className="flex items-center gap-1 sm:gap-1.5 text-xs font-semibold py-1 px-2.5 rounded-xl border border-purple-500/20 bg-cosmic-bg-mid/40 text-cosmic-accent-muted select-none cursor-help"
           title="Dauerhafter Bonus durch Vollendung deines Planeten auf Level 20! Jede Galaxiereise erhoeht deine Prestige-Stufe."
         >
           <Award className="size-3.5  shrink-0 text-amber-300 fill-amber-300/10" />

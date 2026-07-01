@@ -5,7 +5,7 @@ export const LoadingScreen: React.FC = () => {
   return (
     <div className="fixed inset-0 bg-cosmic-bg flex flex-col items-center justify-center text-cosmic-text z-50 overflow-hidden select-none">
       {/* Soft elegant ambient background nebula */}
-      <div className="absolute inset-0 bg-radial-gradient from-[#22174d]/40 via-transparent to-transparent opacity-80 pointer-events-none" />
+      <div className="absolute inset-0 bg-radial-gradient from-cosmic-surface-hover/40 via-transparent to-transparent opacity-80 pointer-events-none" />
 
       {/* Animated planet logo outline in pastel glow */}
       <div className="relative mb-8">

@@ -64,10 +64,10 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-[#1a163a]/95 rounded-3.5xl border-3 border-cosmic-accent flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
+        panelClassName="bg-cosmic-bg-mid/95 rounded-3.5xl border-3 border-cosmic-accent flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b-3 border-cosmic-accent/60 bg-linear-to-r from-[#171430] via-[#211a3d] to-[#171430] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b-3 border-cosmic-accent/60 bg-linear-to-r from-cosmic-bg-mid via-cosmic-surface-mid to-cosmic-bg-mid flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-2xl">🔬</span>
             <div>
@@ -81,15 +81,15 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(
           </div>
           <button
             onClick={onClose}
-            className="size-8  rounded-full bg-[#1b1836] border-2 border-cosmic-accent flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
+            className="size-8  rounded-full bg-cosmic-surface border-2 border-cosmic-accent flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
           >
             ✕
           </button>
         </div>
 
         {/* Smart Batch Actions Toolbar */}
-        <div className="p-3 bg-[#13112a]/95 border-b border-cosmic-accent/30 px-4 sm:px-5 shrink-0 flex items-center justify-between gap-3">
-          <span className="text-[10px] font-bold text-[#b4a8e2] uppercase tracking-wider font-mono">
+        <div className="p-3 bg-cosmic-bg/95 border-b border-cosmic-accent/30 px-4 sm:px-5 shrink-0 flex items-center justify-between gap-3">
+          <span className="text-[10px] font-bold text-cosmic-accent-muted uppercase tracking-wider font-mono">
             Automatisierung:
           </span>
           <button
@@ -97,8 +97,8 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(
             onClick={handleBuyAll}
             className={`p-1.5 px-4 rounded-full border transition-all text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-sm ${
               affordableList.length > 0
-                ? "bg-linear-to-r from-[#8b5cf6] to-[#ec4899] border-purple-400 text-white hover:scale-103 hover:shadow-purple-500/10"
-                : "bg-[#18162f]/80 text-cosmic-accent-muted/40 border-cosmic-accent/10 opacity-50 cursor-not-allowed"
+                ? "bg-linear-to-r from-violet-500 to-pink-500 border-purple-400 text-white hover:scale-103 hover:shadow-purple-500/10"
+                : "bg-cosmic-bg-mid/80 text-cosmic-accent-muted/40 border-cosmic-accent/10 opacity-50 cursor-not-allowed"
             }`}
           >
             <span>✨ Kaufe alle kaufbaren Upgrades</span>
@@ -159,9 +159,10 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(
                     className={`px-3 py-2 rounded-xl font-black flex flex-col items-center justify-center min-w-[90px] shrink-0 transition-all select-none border-2 cursor-pointer ${
                       hasMoney
                         ? isGlitterCost
-                          ? "bg-linear-to-b from-[#4d214a] to-[#251128] text-cosmic-text border-pink-400 hover:from-[#5e2b5b] hover:to-[#2e1632] hover:scale-103 shadow-[2.5px_2.5px_0px_#fca5a5] active:translate-px  active:shadow-[1px_1px_0px_#fca5a5]"
-                          : "bg-linear-to-b from-[#24214e] to-[#12112b] text-cosmic-text border-cosmic-accent hover:from-[#353174] hover:to-[#171638] hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-px  active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
-                        : "bg-[#18162f]/80 text-cosmic-accent-muted/40 border-cosmic-accent/20 shadow-none cursor-not-allowed opacity-40"
+                          ? // eslint-disable-next-line better-tailwindcss/no-restricted-classes
+                            "bg-linear-to-b from-[#4d214a] to-cosmic-ink text-cosmic-text border-pink-400 hover:from-[#5e2b5b] hover:to-cosmic-border hover:scale-103 shadow-[2.5px_2.5px_0px_#fca5a5] active:translate-px  active:shadow-[1px_1px_0px_#fca5a5]"
+                          : "bg-linear-to-b from-cosmic-surface-hover to-cosmic-bg text-cosmic-text border-cosmic-accent hover:from-indigo-900 hover:to-cosmic-bg-mid hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-px  active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
+                        : "bg-cosmic-bg-mid/80 text-cosmic-accent-muted/40 border-cosmic-accent/20 shadow-none cursor-not-allowed opacity-40"
                     }`}
                   >
                     <span className="text-[9px] uppercase font-mono tracking-wider font-extrabold text-center">
@@ -180,7 +181,7 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(
 
           {/* Completed message if all unpurchased upgrades are cleared */}
           {staticUpgrades.filter((upg) => !purchasedUpgrades.includes(upg.id)).length === 0 && (
-            <div className="py-12 text-center flex flex-col items-center justify-center text-ab9fd2 bg-[#1d173c] border-2 border-dashed border-cosmic-accent/40 rounded-3xl p-6">
+            <div className="py-12 text-center flex flex-col items-center justify-center text-ab9fd2 bg-cosmic-bg-mid border-2 border-dashed border-cosmic-accent/40 rounded-3xl p-6">
               <span className="text-5xl animate-bounce">👑</span>
               <h6 className="font-bold text-yellow-300 text-sm mt-3 uppercase tracking-wider">
                 Kosmischer Meilenstein!
@@ -220,7 +221,7 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(
         </div>
 
         {/* Modal Footer helper summary info */}
-        <div className="p-3 bg-[#13112a] border-t border-cosmic-accent/40 flex flex-col sm:flex-row gap-2 justify-between items-center text-[10px] text-cosmic-accent-muted font-semibold px-5">
+        <div className="p-3 bg-cosmic-bg border-t border-cosmic-accent/40 flex flex-col sm:flex-row gap-2 justify-between items-center text-[10px] text-cosmic-accent-muted font-semibold px-5">
           <span>
             Aktuelles Einkommen:{" "}
             <b className="text-cosmic-accent font-black">+{formatCompactNumber(totalLps)} 💖/s</b>

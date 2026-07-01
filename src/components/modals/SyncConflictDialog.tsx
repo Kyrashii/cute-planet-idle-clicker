@@ -39,11 +39,11 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = React.memo(
       <Modal
         isOpen={isOpen && mode === "account-switch"}
         onClose={onKeepCurrentAccount}
-        panelClassName="bg-[#181335]/95 border-3 border-cosmic-accent rounded-3.5xl p-6.5 max-w-xl w-full shadow-2xl text-cosmic-text max-h-[90vh] overflow-y-auto"
+        panelClassName="bg-cosmic-bg-mid/95 border-3 border-cosmic-accent rounded-3.5xl p-6.5 max-w-xl w-full shadow-2xl text-cosmic-text max-h-[90vh] overflow-y-auto"
       >
         <div className="flex items-center gap-2.5">
           <Sparkles className="size-5  text-cosmic-accent" />
-          <h5 className="font-sans font-black text-[#ffcbdc] text-base sm:text-lg uppercase tracking-wider">
+          <h5 className="font-sans font-black text-brand-pink text-base sm:text-lg uppercase tracking-wider">
             Anderer lokaler Spielstand erkannt
           </h5>
         </div>
@@ -55,7 +55,7 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = React.memo(
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
-          <div className="p-4 rounded-2xl bg-[#0e0a24]/90 border-2 border-cosmic-accent/30 transition-all text-left">
+          <div className="p-4 rounded-2xl bg-cosmic-bg/90 border-2 border-cosmic-accent/30 transition-all text-left">
             <div className="flex items-center gap-1.5 text-xs text-cosmic-accent font-bold mb-2">
               <UserRound className="size-4  text-cosmic-accent" />
               <span>AKTUELLER ACCOUNT</span>
@@ -86,7 +86,7 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = React.memo(
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#0e0a24]/90 border-2 border-slate-500/20 transition-all text-left">
+          <div className="p-4 rounded-2xl bg-cosmic-bg/90 border-2 border-slate-500/20 transition-all text-left">
             <div className="flex items-center gap-1.5 text-xs text-sky-305 font-bold mb-2">
               <Monitor className="size-4  text-sky-400" />
               <span>VORHERIGER LOKALER STAND</span>
@@ -146,7 +146,7 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = React.memo(
           </button>
           <button
             onClick={onAdoptPreviousLocalSave}
-            className="flex-1 py-3 px-4 bg-cosmic-surface-mid hover:bg-[#2d225c] text-slate-200 border-2 border-slate-500/40 rounded-xl text-xs font-black transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
+            className="flex-1 py-3 px-4 bg-cosmic-surface-mid hover:bg-cosmic-surface-hover text-slate-200 border-2 border-slate-500/40 rounded-xl text-xs font-black transition-all active:scale-95 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
           >
             <Monitor className="size-4  shrink-0" />
             Vorherigen lokalen Stand uebernehmen

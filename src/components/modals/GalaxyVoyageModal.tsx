@@ -48,11 +48,11 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(
         onClose={() => {}}
         closeOnBackdrop={false}
         skipFrameTarget
-        backdropClassName="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#070512]/95 backdrop-blur-md overflow-y-auto select-none"
+        backdropClassName="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-cosmic-bg-deep/95 backdrop-blur-md overflow-y-auto select-none"
         panelClassName={`relative max-w-2xl w-full aspect-[4/5] sm:aspect-[1.4/1] rounded-[2.5rem] overflow-hidden border-4 select-none text-white p-6 sm:p-10 flex flex-col justify-end ${
           inGlitchGalaxy
             ? "border-cyan-500 shadow-[0_0_55px_rgba(6,182,212,0.4)]"
-            : "border-[#ffcbdc] shadow-[0_0_50px_rgba(255,203,220,0.35)]"
+            : "border-brand-pink shadow-[0_0_50px_rgba(255,203,220,0.35)]"
         }`}
         panelStyle={{
           backgroundImage: inGlitchGalaxy
@@ -66,7 +66,7 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(
         {inGlitchGalaxy ? (
           <>
             <div className="absolute inset-0 bg-black/65 pointer-events-none" />
-            <div className="absolute inset-0 bg-linear-to-t from-black via-black/45 to-[#09090b]/20 pointer-events-none" />
+            <div className="absolute inset-0 bg-linear-to-t from-black via-black/45 to-zinc-950/20 pointer-events-none" />
             <div className="absolute inset-0 bg-scanlines opacity-10 pointer-events-none" />
           </>
         ) : (
@@ -110,7 +110,7 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(
                 className={`size-3.5  ${inGlitchGalaxy ? "text-cyan-400 animate-pulse" : "text-cosmic-pink"}`}
               />
               <span
-                className={`text-[10px] font-mono font-black uppercase tracking-[0.2em] ${inGlitchGalaxy ? "text-cyan-300" : "text-[#ffcbdc]"}`}
+                className={`text-[10px] font-mono font-black uppercase tracking-[0.2em] ${inGlitchGalaxy ? "text-cyan-300" : "text-brand-pink"}`}
               >
                 {inGlitchGalaxy ? "⚡ QUANTUM_RECONSTRUCTION_READY ⚡" : "Evolutionaere Vollendung"}
               </span>
@@ -155,8 +155,8 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(
           <div
             className={`p-4 sm:p-6 rounded-4xl max-w-xl w-full shadow-[0_4px_30px_rgba(0,0,0,0.4)] backdrop-blur-sm self-center border-2 ${
               inGlitchGalaxy
-                ? "bg-[#09090b]/90 border-dashed border-cyan-500/50"
-                : "bg-[#120f26]/85 border-cosmic-pink/30"
+                ? "bg-zinc-950/90 border-dashed border-cyan-500/50"
+                : "bg-cosmic-bg/85 border-cosmic-pink/30"
             }`}
           >
             <div className="flex justify-center mb-2.5 text-rose-300">
@@ -175,8 +175,8 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(
 
           {/* Reward Summary Badges */}
           <div className="grid grid-cols-3 gap-2.5 max-w-lg w-full">
-            <div className="p-2 w-full bg-[#181333]/90 border border-cosmic-accent/40 rounded-xl flex items-center gap-2 justify-center">
-              <Award className="size-4  text-[#ffcbdc] shrink-0" />
+            <div className="p-2 w-full bg-cosmic-bg-mid/90 border border-cosmic-accent/40 rounded-xl flex items-center gap-2 justify-center">
+              <Award className="size-4  text-brand-pink shrink-0" />
               <div className="text-left">
                 <span className="block text-[8px] font-mono leading-none font-bold text-cosmic-accent-muted uppercase">
                   Prestige
@@ -187,7 +187,7 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(
               </div>
             </div>
 
-            <div className="p-2 w-full bg-[#181333]/90 border border-cosmic-accent/40 rounded-xl flex items-center gap-2 justify-center">
+            <div className="p-2 w-full bg-cosmic-bg-mid/90 border border-cosmic-accent/40 rounded-xl flex items-center gap-2 justify-center">
               <Gift className="size-4  text-amber-300 shrink-0" />
               <div className="text-left">
                 <span className="block text-[8px] font-mono leading-none font-bold text-cosmic-accent-muted uppercase">
@@ -199,7 +199,7 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(
               </div>
             </div>
 
-            <div className="p-2 w-full bg-[#181333]/90 border border-cosmic-accent/40 rounded-xl flex items-center gap-2 justify-center">
+            <div className="p-2 w-full bg-cosmic-bg-mid/90 border border-cosmic-accent/40 rounded-xl flex items-center gap-2 justify-center">
               <Sparkles className="size-4  text-fuchsia-300 shrink-0" />
               <div className="text-left">
                 <span className="block text-[8px] font-mono leading-none font-bold text-cosmic-accent-muted uppercase">
@@ -220,7 +220,7 @@ export const GalaxyVoyageModal: React.FC<GalaxyVoyageModalProps> = React.memo(
             className={`w-full max-w-md py-4 sm:py-5 rounded-3xl font-sans font-black text-xs sm:text-sm uppercase tracking-[0.2em] border shadow-[0_0_30px_rgba(255,157,184,0.4)] cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 ${
               inGlitchGalaxy
                 ? "bg-linear-to-r from-cyan-500 via-fuchsia-500 to-cyan-500 text-white border-cyan-300 shadow-[0_0_40px_rgba(6,182,212,0.5)]"
-                : "bg-linear-to-r from-cosmic-pink via-cosmic-accent to-cosmic-pink text-cosmic-bg hover:text-[#0b0818] border-[#ffcbdc]"
+                : "bg-linear-to-r from-cosmic-pink via-cosmic-accent to-cosmic-pink text-cosmic-bg hover:text-cosmic-bg-deep border-brand-pink"
             }`}
           >
             <Compass className="size-4  animate-spin" style={{ animationDuration: "5s" }} />

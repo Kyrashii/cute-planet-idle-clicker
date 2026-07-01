@@ -135,10 +135,10 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-[#1a163a]/95 rounded-3.5xl border-3 border-cosmic-accent flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
+        panelClassName="bg-cosmic-bg-mid/95 rounded-3.5xl border-3 border-cosmic-accent flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b-3 border-cosmic-accent/60 bg-linear-to-r from-[#171430] via-[#211a3d] to-[#171430] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b-3 border-cosmic-accent/60 bg-linear-to-r from-cosmic-bg-mid via-cosmic-surface-mid to-cosmic-bg-mid flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-2xl select-none">
               {selectedAnimal ? selectedAnimal.emoji : "🐾"}
@@ -157,7 +157,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
               setSelectedAnimal(null);
               onClose();
             }}
-            className="size-8  rounded-full bg-[#1b1836] border-2 border-cosmic-accent flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
+            className="size-8  rounded-full bg-cosmic-surface border-2 border-cosmic-accent flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
           >
             ✕
           </button>
@@ -165,20 +165,20 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
 
         {/* Multi Buy and Smart Actions Toolbar - Show only if no animal selected */}
         {!selectedAnimal && (
-          <div className="p-3 bg-[#13112a]/90 border-b border-cosmic-accent/30 flex flex-col gap-2 shrink-0 px-4 sm:px-5">
+          <div className="p-3 bg-cosmic-bg/90 border-b border-cosmic-accent/30 flex flex-col gap-2 shrink-0 px-4 sm:px-5">
             {/* Purchase Amount Selection */}
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="text-[10px] font-bold text-[#b4a8e2] uppercase tracking-wider font-mono">
+              <span className="text-[10px] font-bold text-cosmic-accent-muted uppercase tracking-wider font-mono">
                 Kauf-Menge:
               </span>
-              <div className="flex rounded-full bg-[#1c193b] border border-cosmic-accent/40 p-0.5 shadow-sm">
+              <div className="flex rounded-full bg-cosmic-surface border border-cosmic-accent/40 p-0.5 shadow-sm">
                 {([1, 10, 25, "max"] as const).map((amt) => (
                   <button
                     key={amt}
                     onClick={() => setBuyAmount(amt)}
                     className={`px-3 py-1 text-[10px] font-black rounded-full uppercase tracking-wider transition-all cursor-pointer ${
                       buyAmount === amt
-                        ? "bg-linear-to-r from-[#8b5cf6] to-[#ec4899] text-white shadow-md font-extrabold"
+                        ? "bg-linear-to-r from-violet-500 to-pink-500 text-white shadow-md font-extrabold"
                         : "text-slate-400 hover:text-white"
                     }`}
                   >
@@ -234,7 +234,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
               {/* Back button */}
               <button
                 onClick={() => setSelectedAnimal(null)}
-                className="self-start mb-4 flex items-center gap-1.5 text-xs font-black text-purple-300 hover:text-white uppercase tracking-wider font-sans transition-all cursor-pointer bg-[#1e1a42] px-3.5 py-2 rounded-full border border-cosmic-accent/30"
+                className="self-start mb-4 flex items-center gap-1.5 text-xs font-black text-purple-300 hover:text-white uppercase tracking-wider font-sans transition-all cursor-pointer bg-cosmic-surface-mid px-3.5 py-2 rounded-full border border-cosmic-accent/30"
               >
                 <span>← Zurueck zur Uebersicht</span>
               </button>
@@ -260,7 +260,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                   />
                 </motion.div>
                 {(purchasedAnimals[selectedAnimal.id] || 0) > 0 && (
-                  <span className="absolute top-2 right-2 bg-linear-to-r from-[#f15e75] to-rose-600 text-white font-mono font-black text-xs px-2.5 py-1 rounded-full border-2 border-cosmic-accent shadow-md animate-pulse z-20">
+                  <span className="absolute top-2 right-2 bg-linear-to-r from-danger to-rose-600 text-white font-mono font-black text-xs px-2.5 py-1 rounded-full border-2 border-cosmic-accent shadow-md animate-pulse z-20">
                     Bestand: {purchasedAnimals[selectedAnimal.id] || 0}
                   </span>
                 )}
@@ -270,14 +270,14 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
               <h4 className="text-xl sm:text-2xl font-black text-cosmic-text text-center mt-4 uppercase tracking-wide">
                 {selectedAnimal.germanName}
               </h4>
-              <p className="text-xs/relaxed text-center text-[#d1cbeb] font-bold italic max-w-sm px-4 mt-1.5 ">
+              <p className="text-xs/relaxed text-center text-cosmic-text-muted font-bold italic max-w-sm px-4 mt-1.5 ">
                 "{selectedAnimal.germanDescription || selectedAnimal.description}"
               </p>
 
               {/* Grid of statistics */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mt-5">
                 {/* Box 1: Einnahmen-Statistik */}
-                <div className="bg-[#201c46]/60 p-3.5 rounded-2xl border border-cosmic-accent/30 flex flex-col justify-between">
+                <div className="bg-cosmic-surface-mid/60 p-3.5 rounded-2xl border border-cosmic-accent/30 flex flex-col justify-between">
                   <span className="text-[10px] uppercase font-black tracking-wider text-purple-300 block mb-2">
                     📊 Produktion
                   </span>
@@ -349,7 +349,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                 </div>
 
                 {/* Box 2: Upgrade-Buendnisse */}
-                <div className="bg-[#201c46]/60 p-3.5 rounded-2xl border border-cosmic-accent/30 flex flex-col justify-between">
+                <div className="bg-cosmic-surface-mid/60 p-3.5 rounded-2xl border border-cosmic-accent/30 flex flex-col justify-between">
                   <span className="text-[10px] uppercase font-black tracking-wider text-purple-300 block mb-2">
                     ✨ Booster & Boni
                   </span>
@@ -467,8 +467,8 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
               </div>
 
               {/* Quick Direct Bulk Buying Section inside detail view */}
-              <div className="bg-[#141230]/70 border-2 border-cosmic-accent/30 p-3.5 rounded-2xl w-full mt-4 space-y-3">
-                <span className="text-[10px] uppercase font-black tracking-wider text-[#b4a8e2] block">
+              <div className="bg-cosmic-bg-mid/70 border-2 border-cosmic-accent/30 p-3.5 rounded-2xl w-full mt-4 space-y-3">
+                <span className="text-[10px] uppercase font-black tracking-wider text-cosmic-accent-muted block">
                   🛒 Schneller Kauf im Detailfenster
                 </span>
 
@@ -485,8 +485,8 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                         onClick={() => onBuyAnimal(selectedAnimal.id, cost1, 1)}
                         className={`p-2.5 rounded-xl border-2 flex flex-col items-center justify-center transition-all cursor-pointer ${
                           life >= cost1
-                            ? "bg-[#201c46] hover:bg-[#2b255e] border-cosmic-accent text-white hover:scale-102 shadow-md active:scale-97"
-                            : "bg-[#18162e]/40 border-slate-700/30 text-cosmic-accent-muted/40 cursor-not-allowed opacity-50"
+                            ? "bg-cosmic-surface-mid hover:bg-cosmic-surface-hover border-cosmic-accent text-white hover:scale-102 shadow-md active:scale-97"
+                            : "bg-cosmic-bg-mid/40 border-slate-700/30 text-cosmic-accent-muted/40 cursor-not-allowed opacity-50"
                         }`}
                       >
                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">
@@ -513,8 +513,8 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                         onClick={() => onBuyAnimal(selectedAnimal.id, cost10, 10)}
                         className={`p-2.5 rounded-xl border-2 flex flex-col items-center justify-center transition-all cursor-pointer ${
                           life >= cost10
-                            ? "bg-[#201c46] hover:bg-[#2b255e] border-cosmic-accent text-white hover:scale-102 shadow-md active:scale-97"
-                            : "bg-[#18162e]/40 border-slate-700/30 text-cosmic-accent-muted/40 cursor-not-allowed opacity-50"
+                            ? "bg-cosmic-surface-mid hover:bg-cosmic-surface-hover border-cosmic-accent text-white hover:scale-102 shadow-md active:scale-97"
+                            : "bg-cosmic-bg-mid/40 border-slate-700/30 text-cosmic-accent-muted/40 cursor-not-allowed opacity-50"
                         }`}
                       >
                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">
@@ -541,8 +541,8 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                         onClick={() => onBuyAnimal(selectedAnimal.id, cost25, 25)}
                         className={`p-2.5 rounded-xl border-2 flex flex-col items-center justify-center transition-all cursor-pointer ${
                           life >= cost25
-                            ? "bg-[#201c46] hover:bg-[#2b255e] border-cosmic-accent text-white hover:scale-102 shadow-md active:scale-97"
-                            : "bg-[#18162e]/40 border-slate-700/30 text-cosmic-accent-muted/40 cursor-not-allowed opacity-50"
+                            ? "bg-cosmic-surface-mid hover:bg-cosmic-surface-hover border-cosmic-accent text-white hover:scale-102 shadow-md active:scale-97"
+                            : "bg-cosmic-bg-mid/40 border-slate-700/30 text-cosmic-accent-muted/40 cursor-not-allowed opacity-50"
                         }`}
                       >
                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">
@@ -585,8 +585,8 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                         onClick={() => onBuyAnimal(selectedAnimal.id, totalCostMax, countToBuyMax)}
                         className={`p-2.5 rounded-xl border-2 flex flex-col items-center justify-center transition-all cursor-pointer ${
                           life >= totalCostMax && countToBuyMax > 0
-                            ? "bg-linear-to-r from-[#8b5cf6] to-[#ec4899] border-cosmic-accent text-white hover:scale-102 shadow-md active:scale-97"
-                            : "bg-[#18162e]/40 border-slate-700/30 text-cosmic-accent-muted/40 cursor-not-allowed opacity-50"
+                            ? "bg-linear-to-r from-violet-500 to-pink-500 border-cosmic-accent text-white hover:scale-102 shadow-md active:scale-97"
+                            : "bg-cosmic-bg-mid/40 border-slate-700/30 text-cosmic-accent-muted/40 cursor-not-allowed opacity-50"
                         }`}
                       >
                         <span className="text-[9px] font-bold uppercase tracking-wide text-white">
@@ -671,7 +671,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                           emojiSizeClassName="text-4xl select-none"
                         />
                         {count > 0 && (
-                          <span className="absolute -top-1.5 -right-1.5 bg-[#f15e75] text-white font-mono font-black text-[9.5px] size-5.5  rounded-full flex items-center justify-center border-2 border-cosmic-accent shadow-sm animate-pulse">
+                          <span className="absolute -top-1.5 -right-1.5 bg-danger text-white font-mono font-black text-[9.5px] size-5.5  rounded-full flex items-center justify-center border-2 border-cosmic-accent shadow-sm animate-pulse">
                             {count}
                           </span>
                         )}
@@ -698,7 +698,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                         </p>
                         <div className="flex items-center gap-2 mt-1.5 text-[10px] font-mono font-black text-sky-300">
                           <span>Produziert: +{formatCompactNumber(lpsDisplay)} Leben/sek</span>
-                          <span className="text-purple-400 font-sans text-[9px] uppercase font-black tracking-wider group-hover:opacity-100 opacity-65 ml-auto shrink-0 bg-[#251e44] px-1.5 py-0.5 rounded border border-cosmic-accent/20">
+                          <span className="text-purple-400 font-sans text-[9px] uppercase font-black tracking-wider group-hover:opacity-100 opacity-65 ml-auto shrink-0 bg-cosmic-surface-hover px-1.5 py-0.5 rounded border border-cosmic-accent/20">
                             Details 🔍
                           </span>
                         </div>
@@ -714,8 +714,8 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                       }}
                       className={`px-3 py-2.5 sm:px-4 rounded-xl font-black flex flex-col items-center justify-center min-w-[98px] shrink-0 transition-all select-none border-2 cursor-pointer ${
                         hasMoney
-                          ? "bg-linear-to-b from-[#24214e] to-[#12112b] text-cosmic-text border-cosmic-accent hover:from-[#353174] hover:to-[#171638] hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-px  active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
-                          : "bg-[#18162f]/80 text-cosmic-accent-muted/40 border-cosmic-accent/20 shadow-none cursor-not-allowed opacity-40 opacity-50"
+                          ? "bg-linear-to-b from-cosmic-surface-hover to-cosmic-bg text-cosmic-text border-cosmic-accent hover:from-indigo-900 hover:to-cosmic-bg-mid hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-px  active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
+                          : "bg-cosmic-bg-mid/80 text-cosmic-accent-muted/40 border-cosmic-accent/20 shadow-none cursor-not-allowed opacity-40 opacity-50"
                       }`}
                     >
                       <span className="text-[9px] uppercase font-mono tracking-wider font-extrabold text-cosmic-accent-muted">
@@ -736,7 +736,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
         </div>
 
         {/* Modal Footer helper summary info */}
-        <div className="p-3 bg-[#13112a] border-t border-cosmic-accent/40 flex justify-between items-center text-[10px] text-cosmic-accent-muted font-semibold px-5 shrink-0">
+        <div className="p-3 bg-cosmic-bg border-t border-cosmic-accent/40 flex justify-between items-center text-[10px] text-cosmic-accent-muted font-semibold px-5 shrink-0">
           <span>
             Hintergrund-Einnahmen:{" "}
             <b className="text-cosmic-pink font-black">

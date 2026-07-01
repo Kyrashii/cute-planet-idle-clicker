@@ -136,7 +136,7 @@ export const HelpLegend: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
       isOpen={isOpen}
       onClose={onClose}
       skipFrameTarget
-      backdropClassName="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-[#08050f]/80 backdrop-blur-sm overflow-y-auto"
+      backdropClassName="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-cosmic-bg-deep/80 backdrop-blur-sm overflow-y-auto"
       panelClassName="relative w-full max-w-2xl rounded-3xl border border-white/12 bg-cosmic-surface text-cosmic-text shadow-[0_30px_90px_rgba(6,4,16,0.7)]"
     >
       <div className="flex items-center justify-between gap-3 border-b border-white/10 px-5 py-4">

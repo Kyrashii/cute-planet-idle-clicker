@@ -11,7 +11,7 @@ export const CosmicFooter: React.FC = () => {
           <span className="px-2.5 py-0.5 rounded-md border-2 font-mono font-black text-[10px] bg-cosmic-surface-mid border-cosmic-accent text-white">
             Ver. 1.0.6
           </span>
-          <span className="text-[#f15e75] animate-pulse">💖</span>
+          <span className="text-danger animate-pulse">💖</span>
         </div>
       </div>
     </footer>
