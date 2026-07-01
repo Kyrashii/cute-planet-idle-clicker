@@ -96,6 +96,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
 
     return (
       <Modal
+        presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
         panelClassName="bg-cosmic-bg-mid/95 rounded-3.5xl border-3 border-fuchsia-400 flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"

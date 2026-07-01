@@ -11,6 +11,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = React.memo(
   ({ isOpen, onClose, isNight }) => {
     return (
       <Modal
+        presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
         panelClassName={`max-w-md w-full border-3 rounded-3.5xl p-6 sm:p-8 relative flex flex-col items-center text-center gap-5 shadow-2xl transition-all duration-500 selection:bg-transparent ${

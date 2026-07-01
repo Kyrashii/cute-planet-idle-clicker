@@ -78,6 +78,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = React.memo(
 
     return (
       <Modal
+        presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
         panelClassName="bg-cosmic-bg-mid/95 border-3 border-amber-400 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-3.5xl"

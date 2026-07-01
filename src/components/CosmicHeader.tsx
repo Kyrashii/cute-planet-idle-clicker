@@ -96,7 +96,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
     return (
       <>
         <header
-          className={`sticky top-0 z-20 backdrop-blur-md p-4  sm:px-6 shadow-md transition-all duration-500 border-b-4 ${
+          className={`sticky top-0 z-20 backdrop-blur-md px-4 pb-3 pt-[calc(0.75rem+env(safe-area-inset-top))] game:p-4 sm:px-6 shadow-md transition-all duration-500 border-b-4 ${
             isNightStyle ? "bg-cosmic-bg/85 border-cosmic-accent/50 text-cosmic-text" : ""
           } ${showTutorial ? "blur-md pointer-events-none select-none" : ""}`}
         >
@@ -122,7 +122,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                   </span>
                 </h1>
                 <p
-                  className={`text-[10px] sm:text-xs font-bold mt-0.5 ${
+                  className={`hidden sm:block text-[10px] sm:text-xs font-bold mt-0.5 ${
                     isNightStyle ? "text-cosmic-accent-muted" : ""
                   }`}
                 >
@@ -166,7 +166,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                 value={secretInput}
                 onChange={(e) => setSecretInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="px-2.5 py-1.5 w-24 sm:w-32 text-xs font-mono font-black border-2 border-cosmic-pink/40 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text placeholder-cosmic-pink/30 rounded-xl focus:outline-none focus:border-cosmic-pink/90 transition-all duration-300 shadow-sm text-center"
+                className="hidden sm:block px-2.5 py-1.5 w-24 sm:w-32 text-xs font-mono font-black border-2 border-cosmic-pink/40 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text placeholder-cosmic-pink/30 rounded-xl focus:outline-none focus:border-cosmic-pink/90 transition-all duration-300 shadow-sm text-center"
                 title="Geheimer Text eingeben"
                 id="secret-code-input"
               />

@@ -20,7 +20,8 @@
 
 import React, { useEffect, useRef, useCallback, useContext, createContext, ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useDragControls } from "motion/react";
+import { useIsMobile } from "../../hooks/useMediaQuery";
 
 // ---------------------------------------------------------------------------
 // ModalSettingsContext — lets GameModalsContainer set disableAnimations once
@@ -122,6 +123,14 @@ interface ModalProps {
   /** Inline styles applied to the panel motion.div (e.g. backgroundImage). */
   panelStyle?: React.CSSProperties;
 
+  /**
+   * How the modal presents:
+   *  - "dialog": centred card everywhere (default)
+   *  - "sheet":  bottom sheet with drag-to-dismiss handle
+   *  - "auto":   sheet below the game breakpoint, dialog above it
+   */
+  presentation?: "dialog" | "sheet" | "auto";
+
   children: ReactNode;
 }
 
@@ -137,12 +146,16 @@ export const Modal: React.FC<ModalProps> = ({
   skipFrameTarget = false,
   backdropClassName,
   panelStyle,
+  presentation = "dialog",
   children,
 }) => {
   const { disableAnimations: disableAnimationsCtx } = useContext(ModalSettingsContext);
   const disableAnimations = disableAnimationsProp ?? disableAnimationsCtx;
   const panelRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
+  const isMobile = useIsMobile();
+  const isSheet = presentation === "sheet" || (presentation === "auto" && isMobile);
+  const dragControls = useDragControls();
 
   // --- Scroll lock ---
   useEffect(() => {
@@ -219,6 +232,18 @@ export const Modal: React.FC<ModalProps> = ({
 
   if (!portalTarget) return null;
 
+  // Sheet layout is forced via inline styles so it wins over each modal's own
+  // dialog sizing classes (max-w-*, rounded-*) without per-modal class surgery.
+  const sheetStyle: React.CSSProperties = {
+    width: "100%",
+    maxWidth: "100%",
+    maxHeight: "94dvh",
+    margin: 0,
+    borderRadius: "1.5rem 1.5rem 0 0",
+    borderBottomWidth: 0,
+    paddingBottom: "calc(1rem + env(safe-area-inset-bottom))",
+  };
+
   return createPortal(
     <AnimatePresence>
       {isOpen && (
@@ -226,7 +251,7 @@ export const Modal: React.FC<ModalProps> = ({
         <div
           className={
             backdropClassName ??
-            `fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/65 ${disableAnimations ? "" : "backdrop-blur-sm"}`
+            `fixed inset-0 z-50 flex ${isSheet ? "items-end justify-center p-0" : "items-center justify-center p-4"} bg-gray-950/65 ${disableAnimations ? "" : "backdrop-blur-sm"}`
           }
           onClick={handleBackdropClick}
           aria-modal="true"
@@ -234,19 +259,51 @@ export const Modal: React.FC<ModalProps> = ({
         >
           <motion.div
             ref={panelRef}
-            // Standard enter/exit
-            initial={disableAnimations ? false : { scale: 0.95, opacity: 0, y: 15 }}
-            animate={disableAnimations ? {} : { scale: 1, opacity: 1, y: 0 }}
-            exit={disableAnimations ? {} : { scale: 0.95, opacity: 0, y: 10 }}
-            transition={{ duration: 0.18, ease: "easeOut" }}
-            className={`${skipFrameTarget ? "" : "modal-frame-target "}${panelClassName} ${
+            initial={
+              disableAnimations
+                ? false
+                : isSheet
+                  ? { y: "100%" }
+                  : { scale: 0.95, opacity: 0, y: 15 }
+            }
+            animate={disableAnimations ? {} : isSheet ? { y: 0 } : { scale: 1, opacity: 1, y: 0 }}
+            exit={
+              disableAnimations
+                ? {}
+                : isSheet
+                  ? { y: "100%", transition: { duration: 0.22, ease: "easeIn" } }
+                  : { scale: 0.95, opacity: 0, y: 10 }
+            }
+            transition={
+              isSheet
+                ? { type: "spring", damping: 32, stiffness: 320 }
+                : { duration: 0.18, ease: "easeOut" }
+            }
+            drag={isSheet && !disableAnimations ? "y" : false}
+            dragControls={dragControls}
+            dragListener={false}
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={{ top: 0, bottom: 0.6 }}
+            onDragEnd={(_, info) => {
+              if (info.offset.y > 120 || info.velocity.y > 800) onClose();
+            }}
+            className={`${skipFrameTarget ? "" : "modal-frame-target "}${isSheet ? "flex flex-col overflow-hidden " : ""}${panelClassName} ${
               isGlitchedCtx
                 ? " bg-black! text-cyan-400! border-cyan-500! shadow-[0_0_35px_rgba(6,182,212,0.6)] border-4 select-none glitch-text-anim font-mono "
                 : ""
             }`}
-            style={panelStyle}
+            style={isSheet ? { ...panelStyle, ...sheetStyle } : panelStyle}
             onKeyDown={handleKeyDown}
           >
+            {isSheet && (
+              <div
+                className="flex shrink-0 cursor-grab touch-none items-center justify-center pt-2.5 pb-1.5 active:cursor-grabbing"
+                onPointerDown={(e) => dragControls.start(e)}
+                aria-hidden="true"
+              >
+                <div className="h-1.5 w-12 rounded-full bg-white/25" />
+              </div>
+            )}
             {children}
           </motion.div>
         </div>

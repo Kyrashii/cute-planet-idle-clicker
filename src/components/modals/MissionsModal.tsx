@@ -82,6 +82,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
 
     return (
       <Modal
+        presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
         panelClassName="flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text bg-cosmic-bg-mid/95 border-cosmic-accent"

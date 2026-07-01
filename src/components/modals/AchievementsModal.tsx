@@ -42,6 +42,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
     const { life, unlockedAchievementsCount } = useGameState();
     return (
       <Modal
+        presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
         panelClassName={`flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl rounded-3xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text ${

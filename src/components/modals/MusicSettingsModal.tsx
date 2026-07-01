@@ -29,6 +29,7 @@ export const MusicSettingsModal: React.FC<MusicSettingsModalProps> = React.memo(
   }) => {
     return (
       <Modal
+        presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
         panelClassName={`flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl rounded-3xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text ${

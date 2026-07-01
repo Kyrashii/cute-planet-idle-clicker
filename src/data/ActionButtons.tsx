@@ -45,11 +45,11 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
     activeConstellationsCount,
   }) => {
     return (
-      <section className="w-full max-w-4xl grid grid-cols-2 sm:grid-cols-5 md:grid-cols-9 gap-2.5 mt-2">
+      <section className="fixed inset-x-0 bottom-0 z-40 flex gap-1 overflow-x-auto border-t border-white/10 bg-cosmic-bg/90 px-2 pt-1 pb-safe backdrop-blur-md game:static game:z-auto game:mt-2 game:grid game:w-full game:max-w-4xl game:grid-cols-9 game:gap-2.5 game:overflow-visible game:border-t-0 game:bg-transparent game:p-0 game:backdrop-blur-none">
         {/* Button 0: Tier Gehege (Enclosure) */}
         <button
           onClick={onShowGehege}
-          className={`group relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2.5xl border-3 border-transparent bg-transparent hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -57,9 +57,9 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             src="/assets/stuff/tier_gehege.png"
             alt="Tier Gehege"
             referrerPolicy="no-referrer"
-            className={`size-12  object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
+            className={`size-9 game:size-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
           />
-          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-indigo-200">
+          <span className="text-[9px] game:text-[11px] uppercase tracking-wider text-center leading-normal text-indigo-200">
             Tier Gehege
           </span>
         </button>
@@ -67,7 +67,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 1: Animals (Tiere) */}
         <button
           onClick={onShowAnimals}
-          className={`group relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2.5xl border-3 border-transparent bg-transparent hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -75,9 +75,9 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             src="/assets/stuff/tiere_zuechten.png"
             alt="Tiere zuechten"
             referrerPolicy="no-referrer"
-            className={`size-12  object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
+            className={`size-9 game:size-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
           />
-          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-brand-pink">
+          <span className="text-[9px] game:text-[11px] uppercase tracking-wider text-center leading-normal text-brand-pink">
             Tiere zuechten
           </span>
 
@@ -90,7 +90,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 1.5: Schmieden (Crafting) */}
         <button
           onClick={onShowCrafting}
-          className={`group relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2.5xl border-3 border-transparent bg-transparent hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -98,9 +98,9 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             src="/assets/stuff/schmieden.png"
             alt="Schmieden"
             referrerPolicy="no-referrer"
-            className={`size-12  object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-pulse"}`}
+            className={`size-9 game:size-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-pulse"}`}
           />
-          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-orange-300">
+          <span className="text-[9px] game:text-[11px] uppercase tracking-wider text-center leading-normal text-orange-300">
             Schmieden
           </span>
 
@@ -112,7 +112,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 2: Stars (Sterne) */}
         <button
           onClick={onShowStars}
-          className={`group relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2.5xl border-3 border-transparent bg-transparent hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -120,10 +120,10 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             src="/assets/stuff/sterne_rufen.png"
             alt="Sterne rufen"
             referrerPolicy="no-referrer"
-            className={`size-12  object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-spin"}`}
+            className={`size-9 game:size-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-spin"}`}
             style={disableAnimations ? {} : { animationDuration: "3s" }}
           />
-          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-amber-200">
+          <span className="text-[9px] game:text-[11px] uppercase tracking-wider text-center leading-normal text-amber-200">
             Sterne rufen
           </span>
 
@@ -135,7 +135,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 3: Upgrades & Research (Forschung) */}
         <button
           onClick={onShowUpgrades}
-          className={`group relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2.5xl border-3 border-transparent bg-transparent hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -143,9 +143,9 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             src="/assets/stuff/forschung.png"
             alt="Forschung"
             referrerPolicy="no-referrer"
-            className={`size-12  object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-pulse"}`}
+            className={`size-9 game:size-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-pulse"}`}
           />
-          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-cosmic-accent">
+          <span className="text-[9px] game:text-[11px] uppercase tracking-wider text-center leading-normal text-cosmic-accent">
             Forschung
           </span>
 
@@ -157,7 +157,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 4: Achievements (Erfolge) */}
         <button
           onClick={onShowAchievements}
-          className={`group relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2.5xl border-3 border-transparent bg-transparent hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -165,9 +165,9 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             src="/assets/stuff/erfolge.png"
             alt="Erfolge"
             referrerPolicy="no-referrer"
-            className={`size-12  object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
+            className={`size-9 game:size-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
           />
-          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-amber-250">
+          <span className="text-[9px] game:text-[11px] uppercase tracking-wider text-center leading-normal text-amber-250">
             Erfolge
           </span>
 
@@ -179,7 +179,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 5: Stats/Diary (Daten) */}
         <button
           onClick={onShowStats}
-          className={`group relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2.5xl border-3 border-transparent bg-transparent hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -187,9 +187,9 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             src="/assets/stuff/tagebuch.png"
             alt="Tagebuch"
             referrerPolicy="no-referrer"
-            className={`size-12  object-contain mb-1 ${disableAnimations ? "" : "group-hover:rotate-12 transition-transform"}`}
+            className={`size-9 game:size-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:rotate-12 transition-transform"}`}
           />
-          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-teal-200">
+          <span className="text-[9px] game:text-[11px] uppercase tracking-wider text-center leading-normal text-teal-200">
             Tagebuch
           </span>
 
@@ -201,7 +201,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 6: Missions (Missionen) */}
         <button
           onClick={onShowMissions}
-          className={`group relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2.5xl border-3 border-transparent bg-transparent hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -209,9 +209,9 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             src="/assets/stuff/missionen.png"
             alt="Missionen"
             referrerPolicy="no-referrer"
-            className={`size-12  object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
+            className={`size-9 game:size-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
           />
-          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-fuchsia-200">
+          <span className="text-[9px] game:text-[11px] uppercase tracking-wider text-center leading-normal text-fuchsia-200">
             Missionen
           </span>
 
@@ -227,7 +227,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 7: Inventory (Inventar) */}
         <button
           onClick={onShowInventory}
-          className={`group relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2.5xl border-3 border-transparent bg-transparent hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -235,9 +235,9 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             src="/assets/stuff/inventar.png"
             alt="Inventar"
             referrerPolicy="no-referrer"
-            className={`size-12  object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
+            className={`size-9 game:size-12 object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
           />
-          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-amber-200">
+          <span className="text-[9px] game:text-[11px] uppercase tracking-wider text-center leading-normal text-amber-200">
             Inventar
           </span>
 

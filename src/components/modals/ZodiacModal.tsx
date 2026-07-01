@@ -35,6 +35,7 @@ export const ZodiacModal: React.FC<ZodiacModalProps> = React.memo(
 
     return (
       <Modal
+        presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
         panelClassName={`relative w-full max-w-md overflow-hidden rounded-3.5xl border-3 shadow-2xl p-6 ${
