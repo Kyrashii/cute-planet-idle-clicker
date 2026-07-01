@@ -1,60 +1,64 @@
 import React from "react";
+import { MODAL_IMPORTS } from "./modalPreload";
+import { useModalPresence, useLatchedValue } from "../hooks/useModalPresence";
+import { useModalSettings } from "./ui/Modal";
+
 const ResetDialog = React.lazy(() =>
-  import("./modals/ResetDialog").then((m) => ({ default: m.ResetDialog })),
+  MODAL_IMPORTS.ResetDialog().then((m) => ({ default: m.ResetDialog })),
 );
 const CheatEventModal = React.lazy(() =>
-  import("./modals/CheatEventModal").then((m) => ({ default: m.CheatEventModal })),
+  MODAL_IMPORTS.CheatEventModal().then((m) => ({ default: m.CheatEventModal })),
 );
 const UpgradesModal = React.lazy(() =>
-  import("./modals/UpgradesModal").then((m) => ({ default: m.UpgradesModal })),
+  MODAL_IMPORTS.UpgradesModal().then((m) => ({ default: m.UpgradesModal })),
 );
 const AnimalsModal = React.lazy(() =>
-  import("./modals/AnimalsModal").then((m) => ({ default: m.AnimalsModal })),
+  MODAL_IMPORTS.AnimalsModal().then((m) => ({ default: m.AnimalsModal })),
 );
 const StarsModal = React.lazy(() =>
-  import("./modals/StarsModal").then((m) => ({ default: m.StarsModal })),
+  MODAL_IMPORTS.StarsModal().then((m) => ({ default: m.StarsModal })),
 );
 const CraftingModal = React.lazy(() =>
-  import("./modals/CraftingModal").then((m) => ({ default: m.CraftingModal })),
+  MODAL_IMPORTS.CraftingModal().then((m) => ({ default: m.CraftingModal })),
 );
 const StatsModal = React.lazy(() =>
-  import("./modals/StatsModal").then((m) => ({ default: m.StatsModal })),
+  MODAL_IMPORTS.StatsModal().then((m) => ({ default: m.StatsModal })),
 );
 const OfflineEarningsModal = React.lazy(() =>
-  import("./modals/OfflineEarningsModal").then((m) => ({ default: m.OfflineEarningsModal })),
+  MODAL_IMPORTS.OfflineEarningsModal().then((m) => ({ default: m.OfflineEarningsModal })),
 );
 const AchievementsModal = React.lazy(() =>
-  import("./modals/AchievementsModal").then((m) => ({ default: m.AchievementsModal })),
+  MODAL_IMPORTS.AchievementsModal().then((m) => ({ default: m.AchievementsModal })),
 );
 const MusicSettingsModal = React.lazy(() =>
-  import("./modals/MusicSettingsModal").then((m) => ({ default: m.MusicSettingsModal })),
+  MODAL_IMPORTS.MusicSettingsModal().then((m) => ({ default: m.MusicSettingsModal })),
 );
 const CloudSyncModal = React.lazy(() =>
-  import("./modals/CloudSyncModal").then((m) => ({ default: m.CloudSyncModal })),
+  MODAL_IMPORTS.CloudSyncModal().then((m) => ({ default: m.CloudSyncModal })),
 );
 const SyncConflictDialog = React.lazy(() =>
-  import("./modals/SyncConflictDialog").then((m) => ({ default: m.SyncConflictDialog })),
+  MODAL_IMPORTS.SyncConflictDialog().then((m) => ({ default: m.SyncConflictDialog })),
 );
 const MissionsModal = React.lazy(() =>
-  import("./modals/MissionsModal").then((m) => ({ default: m.MissionsModal })),
+  MODAL_IMPORTS.MissionsModal().then((m) => ({ default: m.MissionsModal })),
 );
 const OpeningResultModal = React.lazy(() =>
-  import("./modals/OpeningResultModal").then((m) => ({ default: m.OpeningResultModal })),
+  MODAL_IMPORTS.OpeningResultModal().then((m) => ({ default: m.OpeningResultModal })),
 );
 const InventoryModal = React.lazy(() =>
-  import("./modals/InventoryModal").then((m) => ({ default: m.InventoryModal })),
+  MODAL_IMPORTS.InventoryModal().then((m) => ({ default: m.InventoryModal })),
 );
 const ZodiacModal = React.lazy(() =>
-  import("./modals/ZodiacModal").then((m) => ({ default: m.ZodiacModal })),
+  MODAL_IMPORTS.ZodiacModal().then((m) => ({ default: m.ZodiacModal })),
 );
 const LeaderboardModal = React.lazy(() =>
-  import("./modals/LeaderboardModal").then((m) => ({ default: m.LeaderboardModal })),
+  MODAL_IMPORTS.LeaderboardModal().then((m) => ({ default: m.LeaderboardModal })),
 );
 const ProfileModal = React.lazy(() =>
-  import("./modals/ProfileModal").then((m) => ({ default: m.ProfileModal })),
+  MODAL_IMPORTS.ProfileModal().then((m) => ({ default: m.ProfileModal })),
 );
 const PrestigeModal = React.lazy(() =>
-  import("./modals/PrestigeModal").then((m) => ({ default: m.PrestigeModal })),
+  MODAL_IMPORTS.PrestigeModal().then((m) => ({ default: m.PrestigeModal })),
 );
 import type { User } from "firebase/auth";
 import type { FontScaleOption } from "../hooks/useDisplayPreferences";
@@ -300,9 +304,37 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
     // here rather than in the shared modal state.
     const [profileUserId, setProfileUserId] = React.useState<string | null>(null);
 
+    // Mount gates: each modal stays mounted through its exit animation
+    // instead of being ripped out the moment its show-flag flips false.
+    const { disableAnimations } = useModalSettings();
+    const mountResetDialog = useModalPresence(showResetDialog, disableAnimations);
+    const mountCheatEvent = useModalPresence(showCheatEventModal, disableAnimations);
+    const mountUpgrades = useModalPresence(showUpgradesModal, disableAnimations);
+    const mountAnimals = useModalPresence(showAnimalsModal, disableAnimations);
+    const mountStars = useModalPresence(showStarsModal, disableAnimations);
+    const mountCrafting = useModalPresence(showCraftingModal, disableAnimations);
+    const mountStats = useModalPresence(showStatsModal, disableAnimations);
+    const mountOffline = useModalPresence(showOfflineModal, disableAnimations);
+    const mountAchievements = useModalPresence(showAchievementsModal, disableAnimations);
+    const mountMusicSettings = useModalPresence(showMusicSettingsModal, disableAnimations);
+    const mountCloudSync = useModalPresence(showCloudSyncModal, disableAnimations);
+    const mountSyncConflict = useModalPresence(accountSwitchPrompt !== null, disableAnimations);
+    const mountMissions = useModalPresence(showMissionsModal, disableAnimations);
+    const mountOpeningResult = useModalPresence(openingResult !== null, disableAnimations);
+    const mountInventory = useModalPresence(showInventoryModal, disableAnimations);
+    const mountZodiac = useModalPresence(showZodiacModal, disableAnimations);
+    const mountLeaderboard = useModalPresence(showLeaderboardModal, disableAnimations);
+    const mountProfile = useModalPresence(profileUserId !== null, disableAnimations);
+    const mountPrestige = useModalPresence(showPrestigeModal, disableAnimations);
+
+    // Data-carrying modals keep their last payload alive while exiting.
+    const latchedAccountSwitchPrompt = useLatchedValue(accountSwitchPrompt);
+    const latchedOpeningResult = useLatchedValue(openingResult);
+    const latchedProfileUserId = useLatchedValue(profileUserId);
+
     return (
       <React.Suspense fallback={null}>
-        {showResetDialog && (
+        {mountResetDialog && (
           <ResetDialog
             isOpen={showResetDialog}
             onConfirm={handleGameReset}
@@ -310,7 +342,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {showCheatEventModal && (
+        {mountCheatEvent && (
           <CheatEventModal
             isOpen={showCheatEventModal}
             currentPlanetLevel={planetLevel}
@@ -330,7 +362,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {showUpgradesModal && (
+        {mountUpgrades && (
           <UpgradesModal
             isOpen={showUpgradesModal}
             onClose={() => setShowUpgradesModal(false)}
@@ -342,7 +374,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {showAnimalsModal && (
+        {mountAnimals && (
           <AnimalsModal
             isOpen={showAnimalsModal}
             onClose={() => setShowAnimalsModal(false)}
@@ -355,7 +387,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {showStarsModal && (
+        {mountStars && (
           <StarsModal
             isOpen={showStarsModal}
             onClose={() => setShowStarsModal(false)}
@@ -367,7 +399,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {showCraftingModal && (
+        {mountCrafting && (
           <CraftingModal
             isOpen={showCraftingModal}
             onClose={() => setShowCraftingModal(false)}
@@ -377,7 +409,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {showStatsModal && (
+        {mountStats && (
           <StatsModal
             isOpen={showStatsModal}
             onClose={() => setShowStatsModal(false)}
@@ -387,7 +419,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {showOfflineModal && (
+        {mountOffline && (
           <OfflineEarningsModal
             isOpen={showOfflineModal}
             onClose={() => setShowOfflineModal(false)}
@@ -400,7 +432,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {showAchievementsModal && (
+        {mountAchievements && (
           <AchievementsModal
             isOpen={showAchievementsModal}
             onClose={() => setShowAchievementsModal(false)}
@@ -415,7 +447,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {showMusicSettingsModal && (
+        {mountMusicSettings && (
           <MusicSettingsModal
             isOpen={showMusicSettingsModal}
             onClose={() => setShowMusicSettingsModal(false)}
@@ -429,7 +461,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {showCloudSyncModal && (
+        {mountCloudSync && (
           <CloudSyncModal
             isOpen={showCloudSyncModal}
             onClose={() => setShowCloudSyncModal(false)}
@@ -450,11 +482,11 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {accountSwitchPrompt && (
+        {mountSyncConflict && latchedAccountSwitchPrompt && (
           <SyncConflictDialog
-            isOpen={Boolean(accountSwitchPrompt)}
+            isOpen={accountSwitchPrompt !== null}
             mode="account-switch"
-            previousLocalSave={accountSwitchPrompt.previousLocalSave}
+            previousLocalSave={latchedAccountSwitchPrompt.previousLocalSave}
             purchasedUpgrades={purchasedUpgrades}
             onKeepCurrentAccount={() => {
               continueWithCurrentAccount();
@@ -465,7 +497,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {showMissionsModal && (
+        {mountMissions && (
           <MissionsModal
             isOpen={showMissionsModal}
             onClose={() => setShowMissionsModal(false)}
@@ -480,16 +512,16 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {openingResult !== null && (
+        {mountOpeningResult && latchedOpeningResult !== null && (
           <OpeningResultModal
             isOpen={openingResult !== null}
             onClose={() => setOpeningResult(null)}
             isNight={isNightStyle}
-            result={openingResult}
+            result={latchedOpeningResult}
           />
         )}
 
-        {showInventoryModal && (
+        {mountInventory && (
           <InventoryModal
             isOpen={showInventoryModal}
             onClose={() => setShowInventoryModal(false)}
@@ -515,7 +547,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {showZodiacModal && (
+        {mountZodiac && (
           <ZodiacModal
             isOpen={showZodiacModal}
             onClose={() => setShowZodiacModal(false)}
@@ -524,7 +556,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {showLeaderboardModal && (
+        {mountLeaderboard && (
           <LeaderboardModal
             isOpen={showLeaderboardModal}
             onClose={() => setShowLeaderboardModal(false)}
@@ -534,18 +566,18 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           />
         )}
 
-        {profileUserId && (
+        {mountProfile && latchedProfileUserId !== null && (
           <ProfileModal
             isOpen={profileUserId !== null}
             onClose={() => setProfileUserId(null)}
-            userId={profileUserId}
+            userId={latchedProfileUserId}
             currentUserId={user?.uid}
             formatCompactNumber={formatCompactNumber}
             animalDefs={INITIAL_ANIMALS}
           />
         )}
 
-        {showPrestigeModal && (
+        {mountPrestige && (
           <PrestigeModal
             isOpen={showPrestigeModal}
             onClose={() => setShowPrestigeModal(false)}

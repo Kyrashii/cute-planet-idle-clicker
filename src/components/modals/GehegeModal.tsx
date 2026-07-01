@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { useModalSettings } from "../ui/Modal";
+import { DeferredModalContent } from "../ui/DeferredModalContent";
 import { Animal, PlacedAnimal } from "../../types";
 import { playPop } from "../../utils/audio";
 import {
@@ -1083,404 +1085,426 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
   }, []);
 
   const isGehegeFull = placedAnimals.length >= 20;
-
-  if (!isOpen) return null;
+  const { disableAnimations } = useModalSettings();
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950 flex flex-col font-sans">
-      {/* Top Header Bar */}
-      <header className="relative z-10 w-full bg-slate-900/90 border-b border-slate-800/80 px-4 py-3 md:px-6 flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-3">
-          <span className="text-2xl select-none" id="gehege-title-emoji">
-            🏡
-          </span>
-          <div>
-            <h1 className="text-base md:text-lg font-black text-indigo-100 tracking-wide uppercase">
-              Tier-Gehege
-            </h1>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-              {isNight
-                ? "🌙 Nacht-Phase active // Stars +50%"
-                : "☀️ Tag-Phase active // Klicks +50%"}
-            </p>
-          </div>
-        </div>
-
-        {/* Current Placing Banner Indicator */}
-        {placingAnimalId && placingAnimalDef && (
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-indigo-500/20 border border-indigo-400/30 rounded-xl text-xs text-indigo-200 font-bold animate-pulse">
-            <span className="text-sm select-none">{placingAnimalDef.emoji}</span>
-            <span>Klicke auf die Landschaft zum Platzieren...</span>
-            <button
-              onClick={() => setPlacingAnimalId(null)}
-              className="ml-1 px-2 py-0.5 rounded bg-indigo-600/50 hover:bg-red-500/50 hover:text-white transition-colors cursor-pointer text-[10px]"
-            >
-              Abbrechen
-            </button>
-          </div>
-        )}
-
-        <button
-          onClick={onClose}
-          id="btn-close-gehege"
-          className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-black uppercase tracking-wider border border-slate-700 shadow transition-all duration-150 cursor-pointer"
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-50 overflow-hidden bg-slate-950 flex flex-col font-sans"
+          initial={disableAnimations ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={disableAnimations ? undefined : { opacity: 0 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
         >
-          Zurueck 🌌
-        </button>
-      </header>
+          {/* Top Header Bar */}
+          <header className="relative z-10 w-full bg-slate-900/90 border-b border-slate-800/80 px-4 py-3 md:px-6 flex items-center justify-between shadow-md">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl select-none" id="gehege-title-emoji">
+                🏡
+              </span>
+              <div>
+                <h1 className="text-base md:text-lg font-black text-indigo-100 tracking-wide uppercase">
+                  Tier-Gehege
+                </h1>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                  {isNight
+                    ? "🌙 Nacht-Phase active // Stars +50%"
+                    : "☀️ Tag-Phase active // Klicks +50%"}
+                </p>
+              </div>
+            </div>
 
-      {/* Main Enclosure Canvas Screen */}
-      <div className="grow relative overflow-hidden flex items-center justify-center bg-slate-950">
-        <div
-          ref={landscapeRef}
-          onClick={handleLandscapeClick}
-          className={`relative size-full  max-w-5xl md:max-h-[80vh] md:rounded-3xl overflow-hidden shadow-2xl transition-all duration-150 ${
-            placingAnimalId
-              ? "cursor-crosshair border-2 border-indigo-500"
-              : "border border-slate-800"
-          }`}
-          style={{ aspectRatio: "16/9" }}
-        >
-          {/* Error message banner */}
-          <AnimatePresence>
-            {errorMessage && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="absolute top-4 inset-x-4  z-40 mx-auto max-w-md bg-amber-500 border border-amber-400 text-slate-950 font-black px-4 py-2.5 rounded-2xl shadow-xl flex items-center justify-between text-xs cursor-default"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <span className="flex items-center gap-1.5">
-                  <span className="text-sm select-none">⚠️</span>
-                  {errorMessage}
-                </span>
+            {/* Current Placing Banner Indicator */}
+            {placingAnimalId && placingAnimalDef && (
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-indigo-500/20 border border-indigo-400/30 rounded-xl text-xs text-indigo-200 font-bold animate-pulse">
+                <span className="text-sm select-none">{placingAnimalDef.emoji}</span>
+                <span>Klicke auf die Landschaft zum Platzieren...</span>
                 <button
-                  onClick={() => setErrorMessage(null)}
-                  className="ml-2 hover:bg-black/10 px-1.5 py-0.5 rounded text-slate-950 font-extrabold cursor-pointer"
+                  onClick={() => setPlacingAnimalId(null)}
+                  className="ml-1 px-2 py-0.5 rounded bg-indigo-600/50 hover:bg-red-500/50 hover:text-white transition-colors cursor-pointer text-[10px]"
                 >
-                  ✕
+                  Abbrechen
                 </button>
+              </div>
+            )}
+
+            <button
+              onClick={onClose}
+              id="btn-close-gehege"
+              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-black uppercase tracking-wider border border-slate-700 shadow transition-all duration-150 cursor-pointer"
+            >
+              Zurueck 🌌
+            </button>
+          </header>
+
+          {/* Main Enclosure Canvas Screen — deferred so the shell fades in on a
+          light tree before the landscape + animals mount. */}
+          <div className="grow relative overflow-hidden flex items-center justify-center bg-slate-950">
+            <DeferredModalContent
+              placeholder={
+                <div
+                  className="relative size-full max-w-5xl md:max-h-[80vh] md:rounded-3xl animate-pulse border border-slate-800 bg-slate-900"
+                  style={{ aspectRatio: "16/9" }}
+                />
+              }
+            >
+              <div
+                ref={landscapeRef}
+                onClick={handleLandscapeClick}
+                className={`relative size-full  max-w-5xl md:max-h-[80vh] md:rounded-3xl overflow-hidden shadow-2xl transition-all duration-150 ${
+                  placingAnimalId
+                    ? "cursor-crosshair border-2 border-indigo-500"
+                    : "border border-slate-800"
+                }`}
+                style={{ aspectRatio: "16/9" }}
+              >
+                {/* Error message banner */}
+                <AnimatePresence>
+                  {errorMessage && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      className="absolute top-4 inset-x-4  z-40 mx-auto max-w-md bg-amber-500 border border-amber-400 text-slate-950 font-black px-4 py-2.5 rounded-2xl shadow-xl flex items-center justify-between text-xs cursor-default"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <span className="text-sm select-none">⚠️</span>
+                        {errorMessage}
+                      </span>
+                      <button
+                        onClick={() => setErrorMessage(null)}
+                        className="ml-2 hover:bg-black/10 px-1.5 py-0.5 rounded text-slate-950 font-extrabold cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Background Landscape Picture */}
+                <div className="absolute inset-0 select-none pointer-events-none">
+                  <img
+                    src={
+                      isNight
+                        ? "/assets/stuff/gehegelandschaft_nacht.webp"
+                        : "/assets/stuff/gehegelandschaft_tag.webp"
+                    }
+                    alt="Gehegelandschaft"
+                    className="size-full  object-cover transition-opacity duration-1000"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+
+                {/* Render Placed Animals */}
+                <AnimatePresence>
+                  {placedAnimals.map((pa) => {
+                    const def = animalMap[pa.animalId];
+                    const loveVal = animalLove[pa.animalId] || 0;
+
+                    return (
+                      <PlacedAnimalItem
+                        key={pa.id}
+                        pa={pa}
+                        def={def}
+                        loveVal={loveVal}
+                        lastPetTime={animalLastPet[pa.animalId] || 0}
+                        isNight={isNight}
+                        landscapeRef={landscapeRef}
+                        onPet={handlePetPlaced}
+                        onDragCommit={handleDragCommit}
+                        onRemove={handleRemovePlaced}
+                      />
+                    );
+                  })}
+                </AnimatePresence>
+
+                {/* Feed Bowl Exclusion Zone Indicator (only visible when placing) */}
+                {placingAnimalId && (
+                  <div
+                    className="absolute -translate-1/2  rounded-full border-2 border-dashed border-rose-500/80 bg-rose-500/10 flex flex-col items-center justify-center pointer-events-none select-none z-20 animate-pulse"
+                    style={{
+                      left: "50%",
+                      top: "78%",
+                      width: "16%",
+                      height: "20%",
+                      animationDuration: "2s",
+                    }}
+                  >
+                    <span className="text-[9px] text-rose-200 font-extrabold uppercase tracking-widest bg-slate-950/80 px-1.5 py-0.5 rounded-md border border-rose-500/20 shadow-sm">
+                      Sperre 🍲
+                    </span>
+                  </div>
+                )}
+
+                {/* Feed Bowl ("Futternapf") component (Autonomous Tick) */}
+                <FeedBowlComponent
+                  bowlLastFed={bowlLastFed}
+                  onUpdateBowlLastFed={onUpdateBowlLastFed}
+                  onUpdateBowlFedMinutesCredited={onUpdateBowlFedMinutesCredited}
+                  onTriggerError={triggerError}
+                  spawnLocalHeart={spawnLocalHeart}
+                />
+
+                {/* Render local floating hearts */}
+                <AnimatePresence>
+                  {modalHearts.map((h) => (
+                    <motion.div
+                      key={h.id}
+                      initial={{ opacity: 1, scale: 0.5, y: 0 }}
+                      animate={{ opacity: 0, scale: 1.5, y: -45, x: (Math.random() - 0.5) * 12 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 1.2, ease: "easeOut" }}
+                      className="absolute text-xl select-none pointer-events-none z-40 font-bold"
+                      style={{ left: `${h.x}%`, top: `${h.y}%` }}
+                    >
+                      ❤️
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+
+                {/* Floating Instructions Over Watermark if Enclosure is empty */}
+                {placedAnimals.length === 0 && (
+                  <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center pointer-events-none select-none text-white/50 bg-black/30 backdrop-blur-xs p-6 rounded-2xl max-w-sm mx-auto border border-white/5 shadow">
+                    <span className="text-4xl mb-2">🐾</span>
+                    <p className="text-sm font-black uppercase tracking-wide text-indigo-200">
+                      Dein Gehege ist leer
+                    </p>
+                    <p className="text-xs text-slate-300 mt-1">
+                      Klicke unten auf <b className="text-white">„Tiere platzieren“</b>, um deine
+                      suessen Weggefaehrten hier frei herumlaufen zu lassen!
+                    </p>
+                  </div>
+                )}
+              </div>
+            </DeferredModalContent>
+          </div>
+
+          {/* Placing Helper Banner on Small Mobile Screens */}
+          {placingAnimalId && placingAnimalDef && (
+            <div className="block sm:hidden flex items-center justify-between gap-2 px-4 py-3 bg-indigo-900/90 border-t border-indigo-700/50 text-xs text-indigo-100 font-bold animate-pulse z-10 w-full">
+              <div className="flex items-center gap-1.5">
+                <span className="text-lg select-none">{placingAnimalDef.emoji}</span>
+                <span>Tippe auf die Landschaft...</span>
+              </div>
+              <button
+                onClick={() => setPlacingAnimalId(null)}
+                className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 transition-colors uppercase font-black text-[10px]"
+              >
+                Abbrechen
+              </button>
+            </div>
+          )}
+
+          {/* Enclosure Lower Command Bar */}
+          <footer className="w-full bg-slate-900 border-t border-slate-800/85 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-inner z-10">
+            <div
+              id="gehege-stats"
+              className="flex items-center gap-4 text-xs font-mono text-slate-400"
+            >
+              <div>
+                Platziert:{" "}
+                <span
+                  className={`${placedAnimals.length >= 20 ? "text-amber-400 animate-pulse font-black" : "text-indigo-300 font-black"}`}
+                >
+                  {placedAnimals.length} / 20
+                </span>
+              </div>
+              <div>
+                Besessen:{" "}
+                <span className="text-indigo-300 font-black">
+                  {(Object.values(purchasedAnimals) as number[]).reduce((a, b) => a + b, 0)}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+              <button
+                onClick={() => setShowLoveGallery(true)}
+                id="btn-love-gallery"
+                className="px-4 py-2.5 rounded-2xl bg-pink-950/40 hover:bg-pink-900/60 text-pink-300 hover:text-white border border-pink-500/20 text-xs font-black uppercase tracking-wider transition-all duration-150 cursor-pointer flex items-center gap-1.5 shadow-md shadow-pink-500/5 active:scale-95"
+              >
+                <span>❤️</span>
+                <span>Liebesgalerie</span>
+              </button>
+
+              {placedAnimals.length > 0 && (
+                <button
+                  onClick={handleRecallAll}
+                  id="btn-recall-all"
+                  className="px-4 py-2.5 rounded-2xl bg-red-950/40 hover:bg-red-900/60 text-red-300 hover:text-white border border-red-500/20 text-xs font-black uppercase tracking-wider transition-all duration-150 cursor-pointer"
+                >
+                  Alle einsammeln 🧺
+                </button>
+              )}
+
+              <button
+                onClick={() => setShowDrawer(!showDrawer)}
+                id="btn-toggle-placing"
+                className={`px-6 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider border transition-all duration-150 cursor-pointer flex items-center gap-2 shadow ${
+                  showDrawer
+                    ? "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                    : "bg-indigo-600 hover:bg-indigo-500 border-indigo-400/30 text-white shadow-indigo-500/10"
+                }`}
+              >
+                <span>🌿 Tiere platzieren</span>
+                <span>{showDrawer ? "▼" : "▲"}</span>
+              </button>
+            </div>
+          </footer>
+
+          {/* Slide-Up Bottom Drawer for placing animals */}
+          <AnimatePresence>
+            {showDrawer && (
+              <motion.div
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 220 }}
+                id="animal-placer-drawer"
+                className="fixed inset-x-0 bottom-[72px] sm:bottom-[72px] bg-slate-900 border-t border-slate-800 shadow-2xl p-4 md:p-6 z-40 max-h-[50vh] overflow-y-auto"
+              >
+                <div className="w-full max-w-4xl mx-auto">
+                  <div className="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+                    <h3 className="text-sm font-black uppercase tracking-wider text-slate-300">
+                      Waehle ein Tier zum Platzieren
+                    </h3>
+                    <span className="text-[10px] text-slate-500 font-mono">
+                      (Nach Auswahl auf die Landschaft klicken)
+                    </span>
+                  </div>
+
+                  {placedAnimals.length >= 20 && (
+                    <div className="mb-4 p-3 bg-amber-500/10 border border-amber-300/20 rounded-xl text-xs text-amber-200 font-bold flex items-center justify-between gap-2">
+                      <span>⚠️ Maximale Anzahl von 20 platzierten Tieren im Gehege erreicht!</span>
+                      <span className="text-[10px] uppercase font-mono bg-amber-500/20 px-2 py-0.5 rounded-md text-amber-300 whitespace-nowrap">
+                        Gehege Voll
+                      </span>
+                    </div>
+                  )}
+
+                  {purchasedList.length === 0 ? (
+                    <div className="text-center py-8">
+                      <span className="text-3xl">🏜️</span>
+                      <p className="text-slate-400 font-black uppercase tracking-wider text-xs mt-2">
+                        Du hast noch keine Tiere gekauft!
+                      </p>
+                      <p className="text-slate-500 text-[11px] mt-1">
+                        Bruete zuerst Tiere im Menue „Tiere zuechten“ aus!
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                      {purchasedList.map((def) => {
+                        const owned = purchasedAnimals[def.id] || 0;
+                        const placed = placedCounts[def.id] || 0;
+
+                        return (
+                          <PurchasedAnimalCard
+                            key={def.id}
+                            def={def}
+                            owned={owned}
+                            placed={placed}
+                            isGehegeFull={isGehegeFull}
+                            isSelected={placingAnimalId === def.id}
+                            onSelect={handleSelectPlacing}
+                          />
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Background Landscape Picture */}
-          <div className="absolute inset-0 select-none pointer-events-none">
-            <img
-              src={
-                isNight
-                  ? "/assets/stuff/gehegelandschaft_nacht.webp"
-                  : "/assets/stuff/gehegelandschaft_tag.webp"
-              }
-              alt="Gehegelandschaft"
-              className="size-full  object-cover transition-opacity duration-1000"
-              referrerPolicy="no-referrer"
-            />
-          </div>
-
-          {/* Render Placed Animals */}
+          {/* Interactive 2x2 Grid Love Gallery Overlay */}
           <AnimatePresence>
-            {placedAnimals.map((pa) => {
-              const def = animalMap[pa.animalId];
-              const loveVal = animalLove[pa.animalId] || 0;
-
-              return (
-                <PlacedAnimalItem
-                  key={pa.id}
-                  pa={pa}
-                  def={def}
-                  loveVal={loveVal}
-                  lastPetTime={animalLastPet[pa.animalId] || 0}
-                  isNight={isNight}
-                  landscapeRef={landscapeRef}
-                  onPet={handlePetPlaced}
-                  onDragCommit={handleDragCommit}
-                  onRemove={handleRemovePlaced}
-                />
-              );
-            })}
-          </AnimatePresence>
-
-          {/* Feed Bowl Exclusion Zone Indicator (only visible when placing) */}
-          {placingAnimalId && (
-            <div
-              className="absolute -translate-1/2  rounded-full border-2 border-dashed border-rose-500/80 bg-rose-500/10 flex flex-col items-center justify-center pointer-events-none select-none z-20 animate-pulse"
-              style={{
-                left: "50%",
-                top: "78%",
-                width: "16%",
-                height: "20%",
-                animationDuration: "2s",
-              }}
-            >
-              <span className="text-[9px] text-rose-200 font-extrabold uppercase tracking-widest bg-slate-950/80 px-1.5 py-0.5 rounded-md border border-rose-500/20 shadow-sm">
-                Sperre 🍲
-              </span>
-            </div>
-          )}
-
-          {/* Feed Bowl ("Futternapf") component (Autonomous Tick) */}
-          <FeedBowlComponent
-            bowlLastFed={bowlLastFed}
-            onUpdateBowlLastFed={onUpdateBowlLastFed}
-            onUpdateBowlFedMinutesCredited={onUpdateBowlFedMinutesCredited}
-            onTriggerError={triggerError}
-            spawnLocalHeart={spawnLocalHeart}
-          />
-
-          {/* Render local floating hearts */}
-          <AnimatePresence>
-            {modalHearts.map((h) => (
+            {showLoveGallery && (
               <motion.div
-                key={h.id}
-                initial={{ opacity: 1, scale: 0.5, y: 0 }}
-                animate={{ opacity: 0, scale: 1.5, y: -45, x: (Math.random() - 0.5) * 12 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 1.2, ease: "easeOut" }}
-                className="absolute text-xl select-none pointer-events-none z-40 font-bold"
-                style={{ left: `${h.x}%`, top: `${h.y}%` }}
+                className="fixed inset-0 z-60 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 cursor-default"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
               >
-                ❤️
-              </motion.div>
-            ))}
-          </AnimatePresence>
-
-          {/* Floating Instructions Over Watermark if Enclosure is empty */}
-          {placedAnimals.length === 0 && (
-            <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center pointer-events-none select-none text-white/50 bg-black/30 backdrop-blur-xs p-6 rounded-2xl max-w-sm mx-auto border border-white/5 shadow">
-              <span className="text-4xl mb-2">🐾</span>
-              <p className="text-sm font-black uppercase tracking-wide text-indigo-200">
-                Dein Gehege ist leer
-              </p>
-              <p className="text-xs text-slate-300 mt-1">
-                Klicke unten auf <b className="text-white">„Tiere platzieren“</b>, um deine suessen
-                Weggefaehrten hier frei herumlaufen zu lassen!
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Placing Helper Banner on Small Mobile Screens */}
-      {placingAnimalId && placingAnimalDef && (
-        <div className="block sm:hidden flex items-center justify-between gap-2 px-4 py-3 bg-indigo-900/90 border-t border-indigo-700/50 text-xs text-indigo-100 font-bold animate-pulse z-10 w-full">
-          <div className="flex items-center gap-1.5">
-            <span className="text-lg select-none">{placingAnimalDef.emoji}</span>
-            <span>Tippe auf die Landschaft...</span>
-          </div>
-          <button
-            onClick={() => setPlacingAnimalId(null)}
-            className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 transition-colors uppercase font-black text-[10px]"
-          >
-            Abbrechen
-          </button>
-        </div>
-      )}
-
-      {/* Enclosure Lower Command Bar */}
-      <footer className="w-full bg-slate-900 border-t border-slate-800/85 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-inner z-10">
-        <div id="gehege-stats" className="flex items-center gap-4 text-xs font-mono text-slate-400">
-          <div>
-            Platziert:{" "}
-            <span
-              className={`${placedAnimals.length >= 20 ? "text-amber-400 animate-pulse font-black" : "text-indigo-300 font-black"}`}
-            >
-              {placedAnimals.length} / 20
-            </span>
-          </div>
-          <div>
-            Besessen:{" "}
-            <span className="text-indigo-300 font-black">
-              {(Object.values(purchasedAnimals) as number[]).reduce((a, b) => a + b, 0)}
-            </span>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-          <button
-            onClick={() => setShowLoveGallery(true)}
-            id="btn-love-gallery"
-            className="px-4 py-2.5 rounded-2xl bg-pink-950/40 hover:bg-pink-900/60 text-pink-300 hover:text-white border border-pink-500/20 text-xs font-black uppercase tracking-wider transition-all duration-150 cursor-pointer flex items-center gap-1.5 shadow-md shadow-pink-500/5 active:scale-95"
-          >
-            <span>❤️</span>
-            <span>Liebesgalerie</span>
-          </button>
-
-          {placedAnimals.length > 0 && (
-            <button
-              onClick={handleRecallAll}
-              id="btn-recall-all"
-              className="px-4 py-2.5 rounded-2xl bg-red-950/40 hover:bg-red-900/60 text-red-300 hover:text-white border border-red-500/20 text-xs font-black uppercase tracking-wider transition-all duration-150 cursor-pointer"
-            >
-              Alle einsammeln 🧺
-            </button>
-          )}
-
-          <button
-            onClick={() => setShowDrawer(!showDrawer)}
-            id="btn-toggle-placing"
-            className={`px-6 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider border transition-all duration-150 cursor-pointer flex items-center gap-2 shadow ${
-              showDrawer
-                ? "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
-                : "bg-indigo-600 hover:bg-indigo-500 border-indigo-400/30 text-white shadow-indigo-500/10"
-            }`}
-          >
-            <span>🌿 Tiere platzieren</span>
-            <span>{showDrawer ? "▼" : "▲"}</span>
-          </button>
-        </div>
-      </footer>
-
-      {/* Slide-Up Bottom Drawer for placing animals */}
-      <AnimatePresence>
-        {showDrawer && (
-          <motion.div
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 220 }}
-            id="animal-placer-drawer"
-            className="fixed inset-x-0 bottom-[72px] sm:bottom-[72px] bg-slate-900 border-t border-slate-800 shadow-2xl p-4 md:p-6 z-40 max-h-[50vh] overflow-y-auto"
-          >
-            <div className="w-full max-w-4xl mx-auto">
-              <div className="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
-                <h3 className="text-sm font-black uppercase tracking-wider text-slate-300">
-                  Waehle ein Tier zum Platzieren
-                </h3>
-                <span className="text-[10px] text-slate-500 font-mono">
-                  (Nach Auswahl auf die Landschaft klicken)
-                </span>
-              </div>
-
-              {placedAnimals.length >= 20 && (
-                <div className="mb-4 p-3 bg-amber-500/10 border border-amber-300/20 rounded-xl text-xs text-amber-200 font-bold flex items-center justify-between gap-2">
-                  <span>⚠️ Maximale Anzahl von 20 platzierten Tieren im Gehege erreicht!</span>
-                  <span className="text-[10px] uppercase font-mono bg-amber-500/20 px-2 py-0.5 rounded-md text-amber-300 whitespace-nowrap">
-                    Gehege Voll
-                  </span>
-                </div>
-              )}
-
-              {purchasedList.length === 0 ? (
-                <div className="text-center py-8">
-                  <span className="text-3xl">🏜️</span>
-                  <p className="text-slate-400 font-black uppercase tracking-wider text-xs mt-2">
-                    Du hast noch keine Tiere gekauft!
-                  </p>
-                  <p className="text-slate-500 text-[11px] mt-1">
-                    Bruete zuerst Tiere im Menue „Tiere zuechten“ aus!
-                  </p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                  {purchasedList.map((def) => {
-                    const owned = purchasedAnimals[def.id] || 0;
-                    const placed = placedCounts[def.id] || 0;
-
-                    return (
-                      <PurchasedAnimalCard
-                        key={def.id}
-                        def={def}
-                        owned={owned}
-                        placed={placed}
-                        isGehegeFull={isGehegeFull}
-                        isSelected={placingAnimalId === def.id}
-                        onSelect={handleSelectPlacing}
-                      />
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Interactive 2x2 Grid Love Gallery Overlay */}
-      <AnimatePresence>
-        {showLoveGallery && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-60 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 cursor-default"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <motion.div
-              initial={{ scale: 0.95, y: 15 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 15 }}
-              transition={{ type: "spring", damping: 25, stiffness: 220 }}
-              className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Header */}
-              <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/20">
-                <div className="flex items-center gap-2.5">
-                  <span className="text-2xl animate-pulse">❤️</span>
-                  <div>
-                    <h2 className="text-sm font-black uppercase tracking-wider text-pink-300">
-                      Tierliebe & Auren
-                    </h2>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                      Streichle deine Tiere im Gehege, um magische Auren freizuschalten
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowLoveGallery(false)}
-                  className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-black uppercase tracking-wider border border-slate-700/80 shadow-md transition-all cursor-pointer"
+                <motion.div
+                  initial={{ scale: 0.95, y: 15 }}
+                  animate={{ scale: 1, y: 0 }}
+                  exit={{ scale: 0.95, y: 15 }}
+                  transition={{ type: "spring", damping: 25, stiffness: 220 }}
+                  className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  Schliessen ✕
-                </button>
-              </div>
+                  {/* Header */}
+                  <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/20">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-2xl animate-pulse">❤️</span>
+                      <div>
+                        <h2 className="text-sm font-black uppercase tracking-wider text-pink-300">
+                          Tierliebe & Auren
+                        </h2>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                          Streichle deine Tiere im Gehege, um magische Auren freizuschalten
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setShowLoveGallery(false)}
+                      className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-black uppercase tracking-wider border border-slate-700/80 shadow-md transition-all cursor-pointer"
+                    >
+                      Schliessen ✕
+                    </button>
+                  </div>
 
-              {/* Contents scroll area */}
-              <div className="p-6 overflow-y-auto grow bg-slate-900/40">
-                {purchasedList.length === 0 ? (
-                  <div className="text-center py-12">
-                    <span className="text-4xl">🌵</span>
-                    <p className="text-slate-400 font-extrabold uppercase text-xs mt-3">
-                      Keine Tiere besessen
-                    </p>
-                    <p className="text-slate-500 text-[11px] mt-1 max-w-xs mx-auto">
-                      Adoptiere zuerst liebevolle Begleiter ueber das „Tiere zuechten“ Menue, um sie
-                      zu liebkosen!
+                  {/* Contents scroll area */}
+                  <div className="p-6 overflow-y-auto grow bg-slate-900/40">
+                    {purchasedList.length === 0 ? (
+                      <div className="text-center py-12">
+                        <span className="text-4xl">🌵</span>
+                        <p className="text-slate-400 font-extrabold uppercase text-xs mt-3">
+                          Keine Tiere besessen
+                        </p>
+                        <p className="text-slate-500 text-[11px] mt-1 max-w-xs mx-auto">
+                          Adoptiere zuerst liebevolle Begleiter ueber das „Tiere zuechten“ Menue, um
+                          sie zu liebkosen!
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-4">
+                        {purchasedList.map((def) => {
+                          const loveVal = animalLove[def.id] || 0;
+                          const lastPetTime = animalLastPet[def.id] || 0;
+
+                          return (
+                            <LoveGalleryCard
+                              key={def.id}
+                              def={def}
+                              loveVal={loveVal}
+                              lastPetTime={lastPetTime}
+                            />
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Tips footer */}
+                  <div className="p-4 bg-slate-950/40 border-t border-slate-800/80 text-center">
+                    <p className="text-[9px] text-slate-400 font-semibold max-w-md mx-auto leading-normal">
+                      💡 <b>Tipp:</b> Um ein Tier zu streicheln, platziere es zuerst im Gehege und
+                      klicke es direkt mit der Maus/dem Finger an! Alle 30 Min steigt die Zuneigung.
                     </p>
                   </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-4">
-                    {purchasedList.map((def) => {
-                      const loveVal = animalLove[def.id] || 0;
-                      const lastPetTime = animalLastPet[def.id] || 0;
-
-                      return (
-                        <LoveGalleryCard
-                          key={def.id}
-                          def={def}
-                          loveVal={loveVal}
-                          lastPetTime={lastPetTime}
-                        />
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* Tips footer */}
-              <div className="p-4 bg-slate-950/40 border-t border-slate-800/80 text-center">
-                <p className="text-[9px] text-slate-400 font-semibold max-w-md mx-auto leading-normal">
-                  💡 <b>Tipp:</b> Um ein Tier zu streicheln, platziere es zuerst im Gehege und
-                  klicke es direkt mit der Maus/dem Finger an! Alle 30 Min steigt die Zuneigung.
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

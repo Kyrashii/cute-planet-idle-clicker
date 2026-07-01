@@ -18,7 +18,15 @@
  *   </Modal>
  */
 
-import React, { useEffect, useRef, useCallback, useContext, createContext, ReactNode } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useContext,
+  useState,
+  createContext,
+  ReactNode,
+} from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useDragControls } from "motion/react";
 import { useIsMobile } from "../../hooks/useMediaQuery";
@@ -41,6 +49,10 @@ export const ModalSettingsProvider: React.FC<{
     {children}
   </ModalSettingsContext.Provider>
 );
+
+export function useModalSettings(): ModalSettings {
+  return useContext(ModalSettingsContext);
+}
 
 // ---------------------------------------------------------------------------
 // Scroll-lock ref counter so stacked modals don't fight over body overflow.
@@ -131,6 +143,9 @@ interface ModalProps {
    */
   presentation?: "dialog" | "sheet" | "auto";
 
+  /** Fires once the exit animation has fully finished. */
+  onExitComplete?: () => void;
+
   children: ReactNode;
 }
 
@@ -147,6 +162,7 @@ export const Modal: React.FC<ModalProps> = ({
   backdropClassName,
   panelStyle,
   presentation = "dialog",
+  onExitComplete,
   children,
 }) => {
   const { disableAnimations: disableAnimationsCtx } = useContext(ModalSettingsContext);
@@ -156,6 +172,14 @@ export const Modal: React.FC<ModalProps> = ({
   const isMobile = useIsMobile();
   const isSheet = presentation === "sheet" || (presentation === "auto" && isMobile);
   const dragControls = useDragControls();
+
+  // The backdrop blur mounts only after the panel has finished animating in,
+  // and drops the moment closing starts — so neither open nor close ever
+  // animates on top of an active backdrop-filter repaint.
+  const [settled, setSettled] = useState(false);
+  useEffect(() => {
+    if (!isOpen) setSettled(false);
+  }, [isOpen]);
 
   // --- Scroll lock ---
   useEffect(() => {
@@ -245,18 +269,40 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return createPortal(
-    <AnimatePresence>
+    <AnimatePresence onExitComplete={onExitComplete}>
       {isOpen && (
-        // Overlay — single backdrop-blur-sm; NO panel-level blur
+        // Overlay — layout only; tint and blur live on separate layers so the
+        // open/close transitions never repaint a backdrop-filter per frame.
         <div
           className={
             backdropClassName ??
-            `fixed inset-0 z-50 flex ${isSheet ? "items-end justify-center p-0" : "items-center justify-center p-4"} bg-gray-950/65 ${disableAnimations ? "" : "backdrop-blur-sm"}`
+            `fixed inset-0 z-50 flex ${isSheet ? "items-end justify-center p-0" : "items-center justify-center p-4"}`
           }
           onClick={handleBackdropClick}
           aria-modal="true"
           role="dialog"
         >
+          {backdropClassName === undefined && (
+            <>
+              <motion.div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 bg-gray-950/65"
+                initial={disableAnimations ? false : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={disableAnimations ? undefined : { opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              />
+              {settled && !disableAnimations && (
+                <motion.div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 backdrop-blur-sm"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                />
+              )}
+            </>
+          )}
           <motion.div
             ref={panelRef}
             initial={
@@ -294,6 +340,9 @@ export const Modal: React.FC<ModalProps> = ({
             }`}
             style={isSheet ? { ...panelStyle, ...sheetStyle } : panelStyle}
             onKeyDown={handleKeyDown}
+            onAnimationComplete={() => {
+              if (isOpen) setSettled(true);
+            }}
           >
             {isSheet && (
               <div

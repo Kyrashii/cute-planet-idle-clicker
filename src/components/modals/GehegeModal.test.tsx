@@ -2,6 +2,7 @@ import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import type { ComponentProps } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { GehegeModal } from "./GehegeModal";
+import { ModalSettingsProvider } from "../ui/Modal";
 import type { Animal, PlacedAnimal } from "../../types";
 
 vi.mock("../../utils/audio", () => ({
@@ -56,25 +57,28 @@ function renderModal(overrides?: Partial<ComponentProps<typeof GehegeModal>>) {
   const onUpdateAnimalLove = vi.fn();
   const onUpdateAnimalLastPet = vi.fn();
 
+  // disableAnimations makes DeferredModalContent render synchronously.
   const view = render(
-    <GehegeModal
-      isOpen
-      onClose={vi.fn()}
-      isNight={false}
-      purchasedAnimals={{ bunny: 1 }}
-      animalDefs={[baseAnimal]}
-      placedAnimals={[placedAnimal]}
-      onUpdatePlacedAnimals={onUpdatePlacedAnimals}
-      animalLove={{}}
-      onUpdateAnimalLove={onUpdateAnimalLove}
-      animalLastPet={{}}
-      onUpdateAnimalLastPet={onUpdateAnimalLastPet}
-      bowlLastFed={0}
-      onUpdateBowlLastFed={vi.fn()}
-      bowlFedMinutesCredited={0}
-      onUpdateBowlFedMinutesCredited={vi.fn()}
-      {...overrides}
-    />,
+    <ModalSettingsProvider disableAnimations>
+      <GehegeModal
+        isOpen
+        onClose={vi.fn()}
+        isNight={false}
+        purchasedAnimals={{ bunny: 1 }}
+        animalDefs={[baseAnimal]}
+        placedAnimals={[placedAnimal]}
+        onUpdatePlacedAnimals={onUpdatePlacedAnimals}
+        animalLove={{}}
+        onUpdateAnimalLove={onUpdateAnimalLove}
+        animalLastPet={{}}
+        onUpdateAnimalLastPet={onUpdateAnimalLastPet}
+        bowlLastFed={0}
+        onUpdateBowlLastFed={vi.fn()}
+        bowlFedMinutesCredited={0}
+        onUpdateBowlFedMinutesCredited={vi.fn()}
+        {...overrides}
+      />
+    </ModalSettingsProvider>,
   );
 
   const landscape = view.container.querySelector(
