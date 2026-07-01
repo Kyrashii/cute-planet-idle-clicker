@@ -62,6 +62,8 @@ import { useOfflineEarnings } from "./hooks/useOfflineEarnings";
 import { applyWorkerEvent, type WorkerEventHandlers } from "./game/applyWorkerEvent";
 import type { WorkerEvent } from "./game/protocol";
 import { hotStore } from "./game/hotStore";
+import { effectsBus } from "./effects/effectsBus";
+import { EffectsLayer, setFxOverlayActive } from "./effects/EffectsProvider";
 import { CosmicOverlays } from "./components/CosmicOverlays";
 import { InteractiveCosmos } from "./components/InteractiveCosmos";
 import { UpdateToast } from "./components/UpdateToast";
@@ -163,7 +165,12 @@ export default function App() {
     openStatsModal,
     openMissionsModal,
     openInventoryModal,
+    modalStack,
   } = useModalState();
+
+  useEffect(() => {
+    setFxOverlayActive(modalStack.length > 0);
+  }, [modalStack]);
 
   // Display / performance preferences (low-memory toggle, font scale + reduced motion)
   const { isLowMemory, setIsLowMemory, fontScale, setFontScale, disableAnimations } =
@@ -806,6 +813,7 @@ export default function App() {
     };
     worker.onmessage = (e) => {
       const data = e.data as WorkerEvent;
+      effectsBus.publish(data);
       if (data?.type === "STATE_UPDATE") {
         const ws = data.state;
         hotStore.set({
@@ -1810,6 +1818,8 @@ export default function App() {
             : ""
         } ${inGlitchGalaxy ? "glitch-bg shadow-[inset_0_0_80px_rgba(244,63,94,0.3)]" : ""}`}
       >
+        <EffectsLayer disabled={disableAnimations} />
+
         {/* Scattered Ambient Background Animals (floating freely over the entire cosmos background) */}
         <BackgroundCompanions companions={backgroundCompanions} />
 
