@@ -25,6 +25,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
 
     return (
       <Modal
+        presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
         panelClassName={`flex flex-col max-w-md w-full shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${

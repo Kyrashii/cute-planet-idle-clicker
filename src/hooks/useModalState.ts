@@ -1,104 +1,83 @@
-import { useCallback, useState } from "react";
+import { useMemo } from "react";
+import { useModalStack, type ModalId } from "./useModalStack";
 
 /**
  * Centralizes the visibility flags for every modal / dialog / overlay.
  *
- * Flags are intentionally independent booleans (several overlays can be open at
- * once — e.g. a sync-conflict dialog over another modal), so this hook is a
- * pure container: it owns the `useState`s and the simple `open*` callbacks and
- * returns them under their original names. `showTutorial` defaults to `true`
- * (first-run tutorial); every other flag defaults to `false`.
+ * Internally a single ordered modal stack (browser-back closes the top modal);
+ * the returned API keeps the original independent flag/setter names so call
+ * sites don't churn. `showTutorial` defaults to `true` (first-run tutorial).
  */
 export function useModalState() {
-  const [showAnimalsModal, setShowAnimalsModal] = useState(false);
-  const [showStarsModal, setShowStarsModal] = useState(false);
-  const [showStatsModal, setShowStatsModal] = useState(false);
-  const [showMusicSettingsModal, setShowMusicSettingsModal] = useState(false);
-  const [showCloudSyncModal, setShowCloudSyncModal] = useState(false);
-  const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
-  const [showCraftingModal, setShowCraftingModal] = useState(false);
-  const [showGalaxyShardsShop, setShowGalaxyShardsShop] = useState(false);
-  const [showMissionsModal, setShowMissionsModal] = useState(false);
-  const [showInventoryModal, setShowInventoryModal] = useState(false);
-  const [showPrestigeModal, setShowPrestigeModal] = useState(false);
-  const [showVoyageModal, setShowVoyageModal] = useState(false);
-  const [showZodiacModal, setShowZodiacModal] = useState(false);
-  const [showOfflineModal, setShowOfflineModal] = useState(false);
-  const [showResetDialog, setShowResetDialog] = useState(false);
-  const [showRepairDialog, setShowRepairDialog] = useState(false);
-  const [showCheatEventModal, setShowCheatEventModal] = useState(false);
-  const [showTutorial, setShowTutorial] = useState(true);
-  const [showUpgradesModal, setShowUpgradesModal] = useState(false);
-  const [showAchievementsModal, setShowAchievementsModal] = useState(false);
-  const [showGehegeModal, setShowGehegeModal] = useState(false);
+  const { stack, openModal, closeModal, closeTop, isOpen } = useModalStack(["tutorial"]);
 
-  const openPrestigeModal = useCallback(() => setShowPrestigeModal(true), []);
-  const openOfflineModal = useCallback(() => setShowOfflineModal(true), []);
-  const openZodiacModal = useCallback(() => setShowZodiacModal(true), []);
-  const openAnimalsModal = useCallback(() => setShowAnimalsModal(true), []);
-  const openCraftingModal = useCallback(() => setShowCraftingModal(true), []);
-  const openStarsModal = useCallback(() => setShowStarsModal(true), []);
-  const openUpgradesModal = useCallback(() => setShowUpgradesModal(true), []);
-  const openAchievementsModal = useCallback(() => setShowAchievementsModal(true), []);
-  const openStatsModal = useCallback(() => setShowStatsModal(true), []);
-  const openMissionsModal = useCallback(() => setShowMissionsModal(true), []);
-  const openInventoryModal = useCallback(() => setShowInventoryModal(true), []);
-  const openGehegeModal = useCallback(() => setShowGehegeModal(true), []);
+  const setters = useMemo(() => {
+    const set = (id: ModalId) => (value: boolean) => (value ? openModal(id) : closeModal(id));
+    const open = (id: ModalId) => () => openModal(id);
+    return {
+      setShowAnimalsModal: set("animals"),
+      setShowStarsModal: set("stars"),
+      setShowStatsModal: set("stats"),
+      setShowMusicSettingsModal: set("musicSettings"),
+      setShowCloudSyncModal: set("cloudSync"),
+      setShowLeaderboardModal: set("leaderboard"),
+      setShowCraftingModal: set("crafting"),
+      setShowGalaxyShardsShop: set("galaxyShardsShop"),
+      setShowMissionsModal: set("missions"),
+      setShowInventoryModal: set("inventory"),
+      setShowPrestigeModal: set("prestige"),
+      setShowVoyageModal: set("voyage"),
+      setShowZodiacModal: set("zodiac"),
+      setShowOfflineModal: set("offline"),
+      setShowResetDialog: set("reset"),
+      setShowRepairDialog: set("repair"),
+      setShowCheatEventModal: set("cheatEvent"),
+      setShowTutorial: set("tutorial"),
+      setShowUpgradesModal: set("upgrades"),
+      setShowAchievementsModal: set("achievements"),
+      setShowGehegeModal: set("gehege"),
+      openPrestigeModal: open("prestige"),
+      openOfflineModal: open("offline"),
+      openZodiacModal: open("zodiac"),
+      openAnimalsModal: open("animals"),
+      openCraftingModal: open("crafting"),
+      openStarsModal: open("stars"),
+      openUpgradesModal: open("upgrades"),
+      openAchievementsModal: open("achievements"),
+      openStatsModal: open("stats"),
+      openMissionsModal: open("missions"),
+      openInventoryModal: open("inventory"),
+      openGehegeModal: open("gehege"),
+    };
+  }, [openModal, closeModal]);
 
   return {
-    showGehegeModal,
-    setShowGehegeModal,
-    openGehegeModal,
-    showAnimalsModal,
-    setShowAnimalsModal,
-    showStarsModal,
-    setShowStarsModal,
-    showStatsModal,
-    setShowStatsModal,
-    showMusicSettingsModal,
-    setShowMusicSettingsModal,
-    showCloudSyncModal,
-    setShowCloudSyncModal,
-    showLeaderboardModal,
-    setShowLeaderboardModal,
-    showCraftingModal,
-    setShowCraftingModal,
-    showGalaxyShardsShop,
-    setShowGalaxyShardsShop,
-    showMissionsModal,
-    setShowMissionsModal,
-    showInventoryModal,
-    setShowInventoryModal,
-    showPrestigeModal,
-    setShowPrestigeModal,
-    showVoyageModal,
-    setShowVoyageModal,
-    showZodiacModal,
-    setShowZodiacModal,
-    showOfflineModal,
-    setShowOfflineModal,
-    showResetDialog,
-    setShowResetDialog,
-    showRepairDialog,
-    setShowRepairDialog,
-    showCheatEventModal,
-    setShowCheatEventModal,
-    showTutorial,
-    setShowTutorial,
-    showUpgradesModal,
-    setShowUpgradesModal,
-    showAchievementsModal,
-    setShowAchievementsModal,
-    openPrestigeModal,
-    openOfflineModal,
-    openZodiacModal,
-    openAnimalsModal,
-    openCraftingModal,
-    openStarsModal,
-    openUpgradesModal,
-    openAchievementsModal,
-    openStatsModal,
-    openMissionsModal,
-    openInventoryModal,
+    ...setters,
+    showAnimalsModal: isOpen("animals"),
+    showStarsModal: isOpen("stars"),
+    showStatsModal: isOpen("stats"),
+    showMusicSettingsModal: isOpen("musicSettings"),
+    showCloudSyncModal: isOpen("cloudSync"),
+    showLeaderboardModal: isOpen("leaderboard"),
+    showCraftingModal: isOpen("crafting"),
+    showGalaxyShardsShop: isOpen("galaxyShardsShop"),
+    showMissionsModal: isOpen("missions"),
+    showInventoryModal: isOpen("inventory"),
+    showPrestigeModal: isOpen("prestige"),
+    showVoyageModal: isOpen("voyage"),
+    showZodiacModal: isOpen("zodiac"),
+    showOfflineModal: isOpen("offline"),
+    showResetDialog: isOpen("reset"),
+    showRepairDialog: isOpen("repair"),
+    showCheatEventModal: isOpen("cheatEvent"),
+    showTutorial: isOpen("tutorial"),
+    showUpgradesModal: isOpen("upgrades"),
+    showAchievementsModal: isOpen("achievements"),
+    showGehegeModal: isOpen("gehege"),
+    modalStack: stack,
+    openModal,
+    closeModal,
+    closeTop,
+    isModalOpen: isOpen,
   };
 }

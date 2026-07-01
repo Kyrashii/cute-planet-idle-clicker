@@ -130,6 +130,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
 
     return (
       <Modal
+        presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
         panelClassName="bg-cosmic-bg-mid/95 rounded-3.5xl border-3 border-amber-300 flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"

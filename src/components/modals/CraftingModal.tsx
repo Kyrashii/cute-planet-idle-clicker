@@ -715,6 +715,7 @@ export const CraftingModal: React.FC<CraftingModalProps> = React.memo(
 
     return (
       <Modal
+        presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
         panelClassName="pk-craft-panel flex flex-col"

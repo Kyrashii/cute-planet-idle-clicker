@@ -125,7 +125,7 @@ export const InteractiveCosmos: React.FC<InteractiveCosmosProps> = ({
 }) => {
   return (
     <main
-      className={`grow w-full max-w-4xl mx-auto px-4 py-6 flex flex-col items-center justify-center gap-5 relative z-10 transition-all duration-500 ${
+      className={`grow w-full max-w-4xl mx-auto px-4 pt-6 pb-32 game:pb-6 flex flex-col items-center justify-center gap-5 relative z-10 transition-all duration-500 ${
         showTutorial ? "blur-md pointer-events-none select-none" : ""
       }`}
     >

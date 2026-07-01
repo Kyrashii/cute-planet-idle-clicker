@@ -133,6 +133,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
 
     return (
       <Modal
+        presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
         panelClassName="bg-cosmic-bg-mid/95 rounded-3.5xl border-3 border-cosmic-accent flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
