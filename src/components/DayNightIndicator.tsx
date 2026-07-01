@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { formatCompactNumber } from "../data";
+import { useHotStat } from "../game/hotStore";
 
 interface DayNightIndicatorProps {
   isNight: boolean;
@@ -11,7 +12,14 @@ interface DayNightIndicatorProps {
 }
 
 export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(
-  ({ isNight, cycleProgress, offlineEarnedLife, offlineSeconds, onOpenOfflineModal }) => {
+  ({
+    isNight,
+    cycleProgress: cycleProgressProp,
+    offlineEarnedLife,
+    offlineSeconds,
+    onOpenOfflineModal,
+  }) => {
+    const cycleProgress = useHotStat((s) => s.cycleProgress) || cycleProgressProp;
     return (
       <div className="w-full max-w-2xl p-3.5 rounded-2.5xl flex flex-col md:flex-row items-center justify-between gap-3 border-2 shadow-md transition-all duration-500 bg-cosmic-bg/90 border-cosmic-accent/60 text-cosmic-text">
         <div className="flex items-center gap-3">

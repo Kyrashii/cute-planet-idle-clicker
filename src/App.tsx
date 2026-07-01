@@ -60,8 +60,11 @@ import { useModalState } from "./hooks/useModalState";
 import { useWorkerVisibility } from "./hooks/useWorkerVisibility";
 import { useOfflineEarnings } from "./hooks/useOfflineEarnings";
 import { applyWorkerEvent, type WorkerEventHandlers } from "./game/applyWorkerEvent";
+import type { WorkerEvent } from "./game/protocol";
+import { hotStore } from "./game/hotStore";
 import { CosmicOverlays } from "./components/CosmicOverlays";
 import { InteractiveCosmos } from "./components/InteractiveCosmos";
+import { UpdateToast } from "./components/UpdateToast";
 const RogueliteScreen = React.lazy(() =>
   import("./components/roguelite/RogueliteScreen").then((m) => ({ default: m.RogueliteScreen })),
 );
@@ -741,23 +744,33 @@ export default function App() {
     workerRef.current = worker;
 
     // Fan worker events out into React state (logic lives in applyWorkerEvent).
+    // The six hot per-tick scalars always land in hotStore (leaves subscribe
+    // for the full tick rate); their React setters are gated to ~1 Hz so the
+    // App tree doesn't reconcile 4x per second.
+    let lastHotPropagation = 0;
+    const gatedHot = <T,>(setter: React.Dispatch<React.SetStateAction<T>>) => {
+      return ((value: React.SetStateAction<T>) => {
+        if (propagateHotNow) setter(value);
+      }) as React.Dispatch<React.SetStateAction<T>>;
+    };
+    let propagateHotNow = true;
     const workerEventHandlers: WorkerEventHandlers = {
-      setLife,
-      setTotalLifeEarned,
+      setLife: gatedHot(setLife),
+      setTotalLifeEarned: gatedHot(setTotalLifeEarned),
       setStarsCount,
       setMoonsCount,
       setPurchasedAnimals,
       setPurchasedUpgrades,
       setPlanetLevel,
-      setPlanetExp,
+      setPlanetExp: gatedHot(setPlanetExp),
       setPlanetTask,
       setClicksCount,
       setStarClicksTriggered,
-      setSecondsPlayed,
+      setSecondsPlayed: gatedHot(setSecondsPlayed),
       setIsNight,
-      setCycleProgress,
+      setCycleProgress: gatedHot(setCycleProgress),
       setActiveEvent,
-      setEventTimeRemaining,
+      setEventTimeRemaining: gatedHot(setEventTimeRemaining),
       setPrestigeCount,
       setGalaxyShards,
       setZodiacLevels,
@@ -791,7 +804,26 @@ export default function App() {
       setFloatingTexts,
       nextParticleId,
     };
-    worker.onmessage = (e) => applyWorkerEvent(e.data, workerEventHandlers);
+    worker.onmessage = (e) => {
+      const data = e.data as WorkerEvent;
+      if (data?.type === "STATE_UPDATE") {
+        const ws = data.state;
+        hotStore.set({
+          life: ws.life,
+          totalLifeEarned: ws.totalLifeEarned,
+          secondsPlayed: ws.secondsPlayed,
+          planetExp: ws.planetExp,
+          cycleProgress: ws.cycleProgress,
+          eventTimeRemaining: ws.eventTimeRemaining,
+        });
+        const now = Date.now();
+        propagateHotNow = now - lastHotPropagation >= 800;
+        if (propagateHotNow) lastHotPropagation = now;
+      } else {
+        propagateHotNow = true;
+      }
+      applyWorkerEvent(data, workerEventHandlers);
+    };
 
     // Clean up worker
     return () => {
@@ -1146,18 +1178,19 @@ export default function App() {
       const s = autoSaveStateRef.current;
       if (!s || !s.isLoaded) return;
       try {
+        const hot = hotStore.get();
         const stateToSave = {
-          life: s.life,
-          totalLifeEarned: s.totalLifeEarned,
+          life: hot.life,
+          totalLifeEarned: hot.totalLifeEarned,
           starsCount: s.starsCount,
           moonsCount: s.moonsCount,
           purchasedAnimals: s.purchasedAnimals,
           purchasedUpgrades: s.purchasedUpgrades,
           planetLevel: s.planetLevel,
-          planetExp: s.planetExp,
+          planetExp: hot.planetExp,
           clicksCount: s.clicksCount,
           starClicksTriggered: s.starClicksTriggered,
-          secondsPlayed: s.secondsPlayed,
+          secondsPlayed: hot.secondsPlayed,
           unlockedCosmetics: s.unlockedCosmetics,
           activeStarColor: s.activeStarColor,
           activeAccessory: s.activeAccessory,
@@ -1878,6 +1911,8 @@ export default function App() {
 
         {/* 4. Footer credits with minimalist elements */}
         <CosmicFooter />
+
+        <UpdateToast />
 
         {showRogueliteScreen && (
           <React.Suspense fallback={null}>

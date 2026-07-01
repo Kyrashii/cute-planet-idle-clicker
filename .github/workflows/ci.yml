@@ -36,6 +36,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Bundle budget
+        run: node scripts/check-bundle-size.mjs
+
   e2e:
     name: e2e smoke (playwright)
     runs-on: ubuntu-latest
