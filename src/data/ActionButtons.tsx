@@ -48,7 +48,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
   }) => {
     return (
       <section
-        className={`fixed inset-x-0 bottom-0 z-40 flex gap-1 overflow-x-auto border-t border-white/10 bg-cosmic-bg/90 px-2 pt-1 pb-safe backdrop-blur-md game:static game:z-auto game:mt-2 game:grid game:w-full game:max-w-4xl game:grid-cols-9 game:gap-2.5 game:overflow-visible game:border-t-0 game:bg-transparent game:p-0 game:backdrop-blur-none ${dimmed ? "blur-md pointer-events-none select-none" : ""}`}
+        className={`fixed inset-x-0 bottom-0 z-40 flex gap-1 overflow-x-auto border-t border-white/10 bg-cosmic-bg/90 px-2 pt-1 pb-safe backdrop-blur-md game:static game:z-auto game:mx-auto game:mt-2 game:grid game:w-full game:max-w-4xl game:grid-cols-9 game:gap-2.5 game:overflow-visible game:border-t-0 game:bg-transparent game:p-0 game:backdrop-blur-none ${dimmed ? "blur-md pointer-events-none select-none" : ""}`}
       >
         {/* Button 0: Tier Gehege (Enclosure) */}
         <button
