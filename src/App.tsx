@@ -48,6 +48,8 @@ import { GalaxyShardsShopModal } from "./components/modals/GalaxyShardsShopModal
 import { CosmicHeader } from "./components/CosmicHeader";
 import { GameModalsContainer } from "./components/GameModalsContainer";
 import { ModalSettingsProvider } from "./components/ui/Modal";
+import { schedulePreloadModals } from "./components/modalPreload";
+import { useModalPresence } from "./hooks/useModalPresence";
 import { GameStateProvider, GameStateValue } from "./contexts/GameStateContext";
 import { BackgroundCompanions } from "./components/BackgroundCompanions";
 import { EventBackgrounds } from "./components/EventBackgrounds";
@@ -1792,6 +1794,13 @@ export default function App() {
     workerRef.current.postMessage({ type: showRogueliteScreen ? "PAUSE_TIMERS" : "RESUME_TIMERS" });
   }, [showRogueliteScreen]);
 
+  // Warm the lazy modal chunks during idle time so first opens don't stall.
+  useEffect(() => schedulePreloadModals(), []);
+
+  // Modals rendered directly in App keep mounting through their exit animation.
+  const mountTutorial = useModalPresence(showTutorial, disableAnimations);
+  const mountVoyage = useModalPresence(showVoyageModal, disableAnimations);
+
   // Helper to view time played beautifully
   const formatTimePlayed = useCallback((totalSeconds: number) => {
     const hrs = Math.floor(totalSeconds / 3600);
@@ -1912,7 +1921,7 @@ export default function App() {
             activeConstellationsCount={activeConstellationsCount}
           />
 
-          {showTutorial && (
+          {mountTutorial && (
             <TutorialModal
               isOpen={showTutorial}
               onClose={() => setShowTutorial(false)}
@@ -2199,7 +2208,7 @@ export default function App() {
           handleRepairGlitchGalaxy={handleRepairGlitchGalaxy}
         />
 
-        {showVoyageModal && (
+        {mountVoyage && (
           <React.Suspense fallback={null}>
             <GalaxyVoyageModal
               isOpen={showVoyageModal}
