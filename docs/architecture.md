@@ -54,5 +54,14 @@ directly.
 - For broader React/Next.js performance guidance, consult the bundled skill at
   `.agents/skills/vercel-react-best-practices/`.
 
+## Deployment
+
+The app deploys to **Vercel** as a fully static site: `npm run build` produces the Vite
+client bundle in `dist/`, and `vercel.json` pins the build command, output directory,
+SPA fallback rewrite, and caching headers. There is no server-side runtime in
+production — the Express server (`server.ts`) is a dev convenience (`npm run dev`) and a
+local prod-smoke tool (`npm run build && npm run build:server && npm start`). Firestore
+security rules deploy separately via `.github/workflows/deploy-rules.yml`.
+
 See `docs/adding-features.md` for the step-by-step recipe to add a mechanic across this
 seam.
