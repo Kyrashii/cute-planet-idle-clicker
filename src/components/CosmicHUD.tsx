@@ -1,6 +1,7 @@
 import React from "react";
 import { Heart, TrendingUp, Star as StarIcon, Award } from "lucide-react";
 import { formatCompactNumber as defaultFormatCompactNumber, getPrestigeRequirement } from "../data";
+import { useHotStat } from "../game/hotStore";
 
 interface CosmicHUDProps {
   isNightStyle: boolean;
@@ -21,6 +22,7 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(
     formatCompactNumber = defaultFormatCompactNumber,
   }) => {
     const PRESTIGE_REQUIREMENT = getPrestigeRequirement(prestigeCount);
+    const liveLife = useHotStat((s) => s.life) || life;
 
     return (
       <section
@@ -31,7 +33,7 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(
         {/* Total Life HUD panel */}
         <div
           className="flex items-center gap-1.5 text-xs font-semibold py-0.5 min-w-0"
-          title={Math.floor(life).toLocaleString("de-DE")}
+          title={Math.floor(liveLife).toLocaleString("de-DE")}
         >
           <Heart className="size-3.5  text-cosmic-pink fill-cosmic-pink/60 shrink-0 animate-pulse" />
           <span
@@ -40,7 +42,7 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(
             Leben:
           </span>
           <span className="font-mono text-[11px] sm:text-xs font-black truncate">
-            {formatCompactNumber(life)}
+            {formatCompactNumber(liveLife)}
           </span>
         </div>
 

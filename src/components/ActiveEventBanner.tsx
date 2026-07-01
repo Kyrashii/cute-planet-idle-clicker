@@ -1,5 +1,6 @@
 import React from "react";
 import { ActiveCosmicEvent } from "../types";
+import { useHotStat } from "../game/hotStore";
 
 interface ActiveEventBannerProps {
   activeEvent: string | null;
@@ -19,7 +20,7 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
     activeEvent,
     activeEventDecision,
     activeEventDetails,
-    eventTimeRemaining,
+    eventTimeRemaining: eventTimeRemainingProp,
     onSelectDecision,
     life = 0,
     starsCount = 0,
@@ -27,6 +28,7 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
     blackHoleSize = 1,
     onGamble,
   }) => {
+    const eventTimeRemaining = useHotStat((st) => st.eventTimeRemaining) || eventTimeRemainingProp;
     const getEventStyle = () => {
       if (!activeEvent)
         return "bg-cosmic-bg/85 border-cosmic-accent/45 text-cosmic-accent-muted shadow-inner";

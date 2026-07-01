@@ -1,6 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { User } from "firebase/auth";
+import { useHotStat } from "../game/hotStore";
 import {
   Volume2,
   VolumeX,
@@ -57,6 +58,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
     rogueliteRunStatus,
     inGlitchGalaxy = false,
   }) => {
+    const liveLife = useHotStat((s) => s.life) || life;
     const [secretInput, setSecretInput] = React.useState("");
     const [showVideo, setShowVideo] = React.useState(false);
     const [videoVolume, setVideoVolume] = React.useState(0.8);
@@ -186,9 +188,9 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                 </span>
                 <span
                   className="font-mono text-xs sm:text-sm font-black mt-0.5"
-                  title={Math.floor(life).toLocaleString("de-DE")}
+                  title={Math.floor(liveLife).toLocaleString("de-DE")}
                 >
-                  {formatCompactNumber(life)} 💖
+                  {formatCompactNumber(liveLife)} 💖
                 </span>
               </div>
 
