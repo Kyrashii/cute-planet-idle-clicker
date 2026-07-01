@@ -25,162 +25,31 @@ import type {
   RogueliteNodeType,
   RogueliteRarity,
 } from "../../roguelite/types";
+import { cx } from "../../lib/cx";
+import { Button, IconButton as UiIconButton } from "../ui";
 
 /* ------------------------------------------------------------------ *
- * Small helpers
+ * Shared primitives now live in src/components/ui and src/hooks; this
+ * file re-exports them (plus roguelite-flavoured button aliases) so the
+ * roguelite surfaces keep their existing imports.
  * ------------------------------------------------------------------ */
 
-export function cx(...parts: Array<string | false | null | undefined>): string {
-  return parts.filter(Boolean).join(" ");
-}
-
-export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = React.useState(() =>
-    typeof window !== "undefined" ? window.matchMedia(query).matches : false,
-  );
-
-  React.useEffect(() => {
-    if (typeof window === "undefined") return;
-    const mq = window.matchMedia(query);
-    setMatches(mq.matches);
-    const onChange = (event: MediaQueryListEvent) => setMatches(event.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, [query]);
-
-  return matches;
-}
-
-export function usePrefersReducedMotion(): boolean {
-  return useMediaQuery("(prefers-reduced-motion: reduce)");
-}
-
-/* ------------------------------------------------------------------ *
- * Primitives — every roguelite surface is built from these so the mode
- * reads as one coherent thing instead of a pile of ad-hoc panels.
- * ------------------------------------------------------------------ */
-
-export function Panel({ className, children, ...rest }: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cx(
-        "rounded-3xl border border-white/10 bg-cosmic-surface/80 shadow-[0_24px_70px_rgba(8,6,22,0.5)] backdrop-blur-xl",
-        className,
-      )}
-      {...rest}
-    >
-      {children}
-    </div>
-  );
-}
-
-/** The tiny mono caption used to label a section. */
-export function Eyebrow({
-  className,
-  children,
-}: {
-  className?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      className={cx(
-        "font-mono text-[10px] font-black uppercase tracking-[0.24em] text-cosmic-accent-muted",
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
-}
+export { cx };
+export { useMediaQuery, usePrefersReducedMotion } from "../../hooks/useMediaQuery";
+export { Panel, Eyebrow, Meter } from "../ui";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-export function PrimaryButton({ className, children, ...rest }: ButtonProps) {
-  return (
-    <button
-      type="button"
-      className={cx(
-        "inline-flex items-center justify-center gap-2 rounded-2xl border border-cosmic-accent/60",
-        "bg-[linear-gradient(135deg,#ffc8e6,#caa5fe_52%,#9db8ff)] px-5 py-3 text-sm font-black uppercase tracking-[0.16em] text-[#241038]",
-        "shadow-[0_16px_40px_rgba(202,165,254,0.32)] transition",
-        "hover:-translate-y-0.5 hover:shadow-[0_22px_52px_rgba(202,165,254,0.4)]",
-        "active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0 disabled:hover:shadow-none",
-        className,
-      )}
-      {...rest}
-    >
-      {children}
-    </button>
-  );
+export function PrimaryButton(props: ButtonProps) {
+  return <Button variant="primary" size="lg" {...props} />;
 }
 
-export function GhostButton({ className, children, ...rest }: ButtonProps) {
-  return (
-    <button
-      type="button"
-      className={cx(
-        "inline-flex items-center justify-center gap-2 rounded-xl border border-white/12 bg-white/4 px-4 py-2.5",
-        "text-xs font-black uppercase tracking-[0.14em] text-cosmic-text-muted transition",
-        "hover:border-cosmic-accent/40 hover:bg-white/8 hover:text-cosmic-text",
-        "disabled:cursor-not-allowed disabled:opacity-45",
-        className,
-      )}
-      {...rest}
-    >
-      {children}
-    </button>
-  );
+export function GhostButton(props: ButtonProps) {
+  return <Button variant="ghost" size="md" {...props} />;
 }
 
-export function IconButton({ className, children, ...rest }: ButtonProps) {
-  return (
-    <button
-      type="button"
-      className={cx(
-        "flex size-10  items-center justify-center rounded-2xl border border-white/12 bg-white/4 text-cosmic-text-muted transition",
-        "hover:border-cosmic-accent/40 hover:bg-white/8 hover:text-cosmic-text",
-        className,
-      )}
-      {...rest}
-    >
-      {children}
-    </button>
-  );
-}
-
-/** A labelled horizontal bar — life, shield, pressure. */
-export function Meter({
-  value,
-  max,
-  fillClass,
-  trackClass,
-  className,
-  rounded = "rounded-full",
-}: {
-  value: number;
-  max: number;
-  fillClass: string;
-  trackClass?: string;
-  className?: string;
-  rounded?: string;
-}) {
-  const pct = max <= 0 ? 0 : Math.max(0, Math.min(1, value / max));
-  return (
-    <div
-      className={cx(
-        "h-2.5 w-full overflow-hidden",
-        rounded,
-        trackClass ?? "bg-black/35",
-        className,
-      )}
-    >
-      <div
-        className={cx("h-full transition-[width] duration-500 ease-out", rounded, fillClass)}
-        style={{ width: `${pct * 100}%` }}
-      />
-    </div>
-  );
+export function IconButton(props: ButtonProps) {
+  return <UiIconButton {...props} />;
 }
 
 /* ------------------------------------------------------------------ *

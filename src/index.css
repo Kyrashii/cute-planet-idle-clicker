@@ -19,10 +19,55 @@
   --color-cosmic-text-muted: #b2b1da; /* muted / caption text */
   --color-cosmic-pink: #ff9db8; /* pink highlight / numbers */
   --color-cosmic-yellow: #fef08a; /* warm yellow / star accents */
+  --color-cosmic-bg-mid: #1b1535; /* app shell gradient mid stop */
+  --color-cosmic-bg-deep: #0b0818; /* app shell gradient deep stop */
+  --color-cosmic-glow-pink: #ffc8e6; /* primary-button gradient start */
+  --color-cosmic-glow-blue: #9db8ff; /* primary-button gradient end */
+  --color-cosmic-ink: #241038; /* dark text on accent surfaces */
+
+  /* Semantic status colours (match the emerald/rose/amber/sky shades in use) */
+  --color-success: #34d399;
+  --color-danger: #fb7185;
+  --color-warning: #fbbf24;
+  --color-info: #38bdf8;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-snappy: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* The single game breakpoint: `game:` = desktop, below = mobile layout.
+     Keep in sync with MOBILE_MEDIA_QUERY in src/hooks/useMediaQuery.ts. */
+  --breakpoint-game: 900px;
+}
+
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility px-safe {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Skip offscreen rendering work for long card grids. */
+@utility cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 240px;
 }
 
 :root {
   --game-font-scale: 1;
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 400ms;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-cosmic-accent);
+  outline-offset: 2px;
 }
 
 body {
@@ -42,6 +87,16 @@ body {
 
 html {
   font-size: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+[role="button"],
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
 }
 
 :is(#root, #modal-root)
