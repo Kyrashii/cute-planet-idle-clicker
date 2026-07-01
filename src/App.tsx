@@ -150,6 +150,8 @@ export default function App() {
     setShowCheatEventModal,
     showTutorial,
     setShowTutorial,
+    showMenuDrawer,
+    setShowMenuDrawer,
     showUpgradesModal,
     setShowUpgradesModal,
     showAchievementsModal,
@@ -1857,6 +1859,8 @@ export default function App() {
               setShowGalaxyShardsShop(true);
             }}
             onOpenRoguelite={handleOpenRogueliteScreen}
+            showMenuDrawer={showMenuDrawer}
+            setShowMenuDrawer={setShowMenuDrawer}
             hasActiveRogueliteRun={Boolean(activeRogueliteRun)}
             rogueliteRunStatus={activeRogueliteRun?.phase}
             inGlitchGalaxy={inGlitchGalaxy}

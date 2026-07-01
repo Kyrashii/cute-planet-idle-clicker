@@ -2,17 +2,8 @@ import React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { User } from "firebase/auth";
 import { useHotStat } from "../game/hotStore";
-import {
-  Volume2,
-  VolumeX,
-  Settings,
-  Cloud,
-  Trophy,
-  Info,
-  RotateCcw,
-  X,
-  Swords,
-} from "lucide-react";
+import { Volume2, VolumeX, X, Swords, Menu } from "lucide-react";
+import { HeaderMenuDrawer } from "./HeaderMenuDrawer";
 
 interface CosmicHeaderProps {
   isNightStyle: boolean;
@@ -34,7 +25,71 @@ interface CosmicHeaderProps {
   hasActiveRogueliteRun: boolean;
   rogueliteRunStatus?: string;
   inGlitchGalaxy?: boolean;
+  showMenuDrawer: boolean;
+  setShowMenuDrawer: (show: boolean) => void;
 }
+
+/**
+ * Compact stat pill: emoji + value always visible, tiny uppercase label only
+ * from md up (the label lives in `title` for smaller screens).
+ */
+const StatChip: React.FC<{
+  emoji: string;
+  value: string;
+  label: string;
+  htmlTitle: string;
+  isNight: boolean;
+  accentClassName: string;
+  valueClassName?: string;
+  labelClassName?: string;
+  onClick?: () => void;
+  testId?: string;
+}> = ({
+  emoji,
+  value,
+  label,
+  htmlTitle,
+  isNight,
+  accentClassName,
+  valueClassName = "",
+  labelClassName = "",
+  onClick,
+  testId,
+}) => {
+  const shared = `inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1.5 shadow-sm transition-colors duration-500 ${
+    isNight ? "bg-cosmic-bg-mid text-cosmic-text" : ""
+  } ${accentClassName}`;
+  const inner = (
+    <>
+      <span className="text-sm leading-none select-none">{emoji}</span>
+      <span className={`font-mono text-xs leading-none font-black sm:text-sm ${valueClassName}`}>
+        {value}
+      </span>
+      <span
+        className={`hidden font-mono text-[9px] leading-none font-black tracking-wider uppercase md:inline ${labelClassName}`}
+      >
+        {label}
+      </span>
+    </>
+  );
+  if (onClick) {
+    return (
+      <button
+        onClick={onClick}
+        title={htmlTitle}
+        data-testid={testId}
+        className={`${shared} cursor-pointer transition-all hover:scale-105 active:scale-95`}
+      >
+        {inner}
+      </button>
+    );
+  }
+  return (
+    <div title={htmlTitle} data-testid={testId} className={shared}>
+      {inner}
+    </div>
+  );
+};
 
 export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
   ({
@@ -57,9 +112,10 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
     hasActiveRogueliteRun,
     rogueliteRunStatus,
     inGlitchGalaxy = false,
+    showMenuDrawer,
+    setShowMenuDrawer,
   }) => {
     const liveLife = useHotStat((s) => s.life) || life;
-    const [secretInput, setSecretInput] = React.useState("");
     const [showVideo, setShowVideo] = React.useState(false);
     const [videoVolume, setVideoVolume] = React.useState(0.8);
     const [videoMuted, setVideoMuted] = React.useState(false);
@@ -86,45 +142,33 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
       }
     }, [videoVolume, videoMuted, showVideo]);
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-        if (secretInput.trim() === "hallodugeilesau") {
-          setShowVideo(true);
-        }
-        setSecretInput("");
-      }
-    };
-
     return (
       <>
         <header
-          className={`sticky top-0 z-20 backdrop-blur-md px-4 pb-3 pt-[calc(0.75rem+env(safe-area-inset-top))] game:p-4 sm:px-6 shadow-md transition-all duration-500 border-b-4 ${
+          className={`sticky top-0 z-20 border-b-4 px-3 pb-3 pt-[calc(0.75rem+env(safe-area-inset-top))] shadow-md backdrop-blur-md transition-all duration-500 game:p-4 sm:px-6 ${
             isNightStyle ? "bg-cosmic-bg/85 border-cosmic-accent/50 text-cosmic-text" : ""
           } ${showTutorial ? "blur-md pointer-events-none select-none" : ""}`}
         >
-          <div className="max-w-6xl mx-auto flex items-center justify-between relative z-10">
+          <div className="relative z-10 mx-auto flex max-w-6xl items-center justify-between gap-2">
             {/* Logo Title area */}
-            <div className="flex items-center gap-2">
+            <div className="flex min-w-0 items-center gap-2">
               <motion.span
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                className="text-2xl sm:text-3xl select-none"
+                className="text-2xl select-none sm:text-3xl"
               >
                 🪐
               </motion.span>
-              <div>
+              <div className="min-w-0">
                 <h1
-                  className={`font-sans font-black uppercase tracking-[0.12em] text-sm sm:text-base flex items-center gap-2 ${
+                  className={`truncate font-sans text-sm font-black tracking-[0.12em] uppercase sm:text-base ${
                     isNightStyle ? "text-cosmic-text" : ""
                   }`}
                 >
-                  Pastell-Kosmos{" "}
-                  <span className="text-cosmic-bg text-[10px] font-black px-2.5 py-0.5 rounded-full bg-cosmic-accent border-2 border-cosmic-bg hidden sm:inline-block leading-none uppercase shadow-[2px_2px_0px_var(--color-cosmic-bg)]">
-                    Idle Game
-                  </span>
+                  Pastell-Kosmos
                 </h1>
                 <p
-                  className={`hidden sm:block text-[10px] sm:text-xs font-bold mt-0.5 ${
+                  className={`mt-0.5 hidden text-[10px] font-bold sm:block sm:text-xs ${
                     isNightStyle ? "text-cosmic-accent-muted" : ""
                   }`}
                 >
@@ -133,12 +177,37 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
               </div>
             </div>
 
-            {/* Core Quick stats & Utility buttons */}
-            <div className="flex items-center gap-2 sm:gap-4">
+            {/* Stats, roguelite entry & menu */}
+            <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
+              <StatChip
+                emoji="💖"
+                value={formatCompactNumber(liveLife)}
+                label="Leben"
+                htmlTitle={`Erspieltes Leben: ${Math.floor(liveLife).toLocaleString("de-DE")}`}
+                isNight={isNightStyle}
+                accentClassName="border-cosmic-pink/60"
+                valueClassName={isNightStyle ? "text-cosmic-text" : ""}
+                labelClassName="text-cosmic-pink"
+              />
+
+              {(galaxyShards > 0 || prestigeCount > 0) && (
+                <StatChip
+                  emoji="🌌"
+                  value={galaxyShards.toLocaleString("de-DE")}
+                  label="Splitter"
+                  htmlTitle="Galaktischen Splitter-Shop oeffnen 🌌"
+                  isNight={isNightStyle}
+                  accentClassName="border-fuchsia-400"
+                  valueClassName="text-fuchsia-200"
+                  labelClassName="text-fuchsia-300"
+                  onClick={onOpenGalaxyShardsShop}
+                />
+              )}
+
               <button
                 onClick={onOpenRoguelite}
                 data-testid="open-roguelite-button"
-                className={`group relative flex items-center gap-2 rounded-xl border-2 px-3 py-2 transition-all shadow-sm cursor-pointer ${
+                className={`group relative flex cursor-pointer items-center gap-2 rounded-xl border-2 px-3 py-2 shadow-sm transition-all ${
                   hasActiveRogueliteRun
                     ? "border-fuchsia-300/70 bg-linear-to-r from-cosmic-ink via-cosmic-bg-mid to-sky-950 text-white shadow-[0_0_30px_rgba(202,165,254,0.22)]"
                     : "border-cosmic-accent/50 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text"
@@ -146,153 +215,48 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                 title="Galaxie-Roguelite oeffnen"
               >
                 <Swords
-                  className={`size-4  ${hasActiveRogueliteRun ? "text-fuchsia-200" : "text-cosmic-pink"} ${hasActiveRogueliteRun ? "animate-pulse" : ""}`}
+                  className={`size-4 ${hasActiveRogueliteRun ? "text-fuchsia-200" : "text-cosmic-pink"} ${hasActiveRogueliteRun ? "animate-pulse" : ""}`}
                 />
-                <div className="hidden text-left sm:block">
-                  <div className="text-[9px] font-mono font-black uppercase tracking-[0.18em] text-cosmic-accent-muted">
+                <div className="hidden text-left lg:block">
+                  <div className="font-mono text-[9px] font-black tracking-[0.18em] text-cosmic-accent-muted uppercase">
                     Rogue-Lite
                   </div>
-                  <div className="text-[10px] font-black uppercase tracking-[0.12em]">
+                  <div className="text-[10px] font-black tracking-[0.12em] uppercase">
                     {hasActiveRogueliteRun ? (rogueliteRunStatus ?? "Run aktiv") : "Start"}
                   </div>
                 </div>
                 {hasActiveRogueliteRun && (
-                  <span className="absolute -right-1.5 -top-1.5 size-3.5  rounded-full border border-white/30 bg-fuchsia-400 animate-pulse" />
+                  <span className="absolute -top-1.5 -right-1.5 size-3.5 animate-pulse rounded-full border border-white/30 bg-fuchsia-400" />
                 )}
               </button>
 
-              {/* Secret code input field */}
-              <input
-                type="text"
-                placeholder="UWU"
-                value={secretInput}
-                onChange={(e) => setSecretInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="hidden sm:block px-2.5 py-1.5 w-24 sm:w-32 text-xs font-mono font-black border-2 border-cosmic-pink/40 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text placeholder-cosmic-pink/30 rounded-xl focus:outline-none focus:border-cosmic-pink/90 transition-all duration-300 shadow-sm text-center"
-                title="Geheimer Text eingeben"
-                id="secret-code-input"
-              />
-
-              {/* Lifepoints summary */}
-              <div
-                className={`px-4 py-1.5 rounded-xl flex flex-col items-end shadow-sm border-2 transition-colors duration-500 ${
-                  isNightStyle ? "bg-cosmic-bg-mid border-cosmic-pink/60 text-cosmic-text" : ""
-                }`}
-              >
-                <span
-                  className={`text-[9px] uppercase font-mono font-black tracking-wider leading-none ${
-                    isNightStyle ? "text-cosmic-pink" : ""
-                  }`}
-                >
-                  Erspieltes Leben
-                </span>
-                <span
-                  className="font-mono text-xs sm:text-sm font-black mt-0.5"
-                  title={Math.floor(liveLife).toLocaleString("de-DE")}
-                >
-                  {formatCompactNumber(liveLife)} 💖
-                </span>
-              </div>
-
-              {/* Galaxy Shards (Galaxie-Splitter) summary */}
-              {(galaxyShards > 0 || prestigeCount > 0) && (
-                <button
-                  onClick={onOpenGalaxyShardsShop}
-                  className={`px-4 py-1.5 rounded-xl flex flex-col items-end shadow-md border-2 border-fuchsia-400 bg-cosmic-bg-mid text-fuchsia-250 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 group relative overflow-hidden`}
-                  title="Galaktischen Splitter-Shop oeffnen 🌌"
-                >
-                  <span className="text-[9px] uppercase font-mono font-black tracking-wider leading-none text-fuchsia-300 group-hover:text-fuchsia-200 transition-colors">
-                    Galaxie-Splitter
-                  </span>
-                  <span
-                    className="font-mono text-xs sm:text-sm font-black mt-0.5 text-fuchsia-200 flex items-center gap-1 group-hover:text-white transition-colors"
-                    title={galaxyShards.toLocaleString("de-DE")}
-                  >
-                    {galaxyShards} 🌌
-                  </span>
-                  <div className="absolute inset-x-0 bottom-0 h-[2px] bg-linear-to-r from-transparent via-fuchsia-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                </button>
-              )}
-
-              {/* Quiet Mute Switch */}
               <button
-                onClick={handleToggleMute}
-                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text"
-                title={isMutedState ? "Ton einschalten" : "Ton stummschalten"}
+                onClick={() => setShowMenuDrawer(true)}
+                aria-label="Menue oeffnen"
+                id="header_menu_btn"
+                className="cursor-pointer rounded-xl border-2 border-cosmic-accent/50 bg-cosmic-bg-mid p-2.5 text-cosmic-text shadow-sm transition-all hover:bg-cosmic-surface-mid active:translate-y-px active:scale-95"
+                title="Menue oeffnen"
               >
-                {isMutedState ? (
-                  <VolumeX className="size-4  text-rose-350" />
-                ) : (
-                  <Volume2 className="size-4  text-cosmic-pink animate-pulse" />
-                )}
+                <Menu className="size-4 text-cosmic-accent" />
               </button>
-
-              {/* Soundtrack Settings Window trigger */}
-              <button
-                onClick={() => setShowMusicSettingsModal(true)}
-                className="group p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text"
-                title="Sound & Einstellungen oeffnen"
-                id="header_lofi_music_btn"
-              >
-                <Settings className="size-4  text-cosmic-accent transition-transform duration-500 group-hover:rotate-90" />
-              </button>
-
-              {/* Cloud Sync/Storage toggle */}
-              <button
-                onClick={() => setShowCloudSyncModal(true)}
-                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer relative border-cosmic-accent/50 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text"
-                title="Cloud Backup & Synchronisation oeffnen"
-                id="header_cloud_sync_btn"
-              >
-                <Cloud className="size-4  text-sky-400" />
-                {user && (
-                  <span className="absolute -top-1 -right-1 size-2.5  bg-emerald-400 border border-black rounded-full animate-pulse" />
-                )}
-              </button>
-
-              {/* Global Leaderboard trigger */}
-              <button
-                onClick={() => setShowLeaderboardModal(true)}
-                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text"
-                title="Globale Bestenliste oeffnen"
-                id="header_leaderboard_btn"
-              >
-                <Trophy className="size-4  text-amber-400" />
-              </button>
-
-              {/* Quick Tutorial drawer toggle */}
-              <button
-                onClick={() => setShowTutorial((prev) => !prev)}
-                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text"
-                title="Anleitung"
-              >
-                <Info className="size-4  text-cosmic-accent" />
-              </button>
-
-              {/* Reset check trigger */}
-              {!inGlitchGalaxy ? (
-                <button
-                  onClick={() => setShowResetDialog(true)}
-                  className="p-2.5 rounded-xl border-2 active:scale-92 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-pink/50 bg-red-950/40 hover:bg-red-900/40 text-red-300"
-                  title="Spiel zuruecksetzen"
-                >
-                  <RotateCcw className="size-4  text-red-400" />
-                </button>
-              ) : (
-                <button
-                  disabled
-                  className="p-2.5 rounded-xl border-2 transition-all shadow-sm border-gray-700/60 bg-gray-950/60 text-gray-500 cursor-not-allowed opacity-50"
-                  title="Zuruecksetzen blockiert in instabiler Galaxie"
-                >
-                  <RotateCcw
-                    className="size-4  text-gray-550 animate-spin"
-                    style={{ animationDuration: "6s" }}
-                  />
-                </button>
-              )}
             </div>
           </div>
         </header>
+
+        <HeaderMenuDrawer
+          isOpen={showMenuDrawer}
+          onClose={() => setShowMenuDrawer(false)}
+          isMutedState={isMutedState}
+          user={user}
+          handleToggleMute={handleToggleMute}
+          setShowMusicSettingsModal={setShowMusicSettingsModal}
+          setShowCloudSyncModal={setShowCloudSyncModal}
+          setShowLeaderboardModal={setShowLeaderboardModal}
+          setShowTutorial={setShowTutorial}
+          setShowResetDialog={setShowResetDialog}
+          inGlitchGalaxy={inGlitchGalaxy}
+          onSecretCode={() => setShowVideo(true)}
+        />
 
         <AnimatePresence>
           {showVideo && (
@@ -314,12 +278,12 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                 style={{ animationDuration: "3s" }}
                 id="close-secret-video"
               >
-                <X className="size-6 " />
+                <X className="size-6" />
               </button>
 
               {/* Immersive Video frame container */}
               <div
-                className="relative size-full  max-w-full max-h-full flex items-center justify-center p-4 md:p-8 pointer-events-none"
+                className="relative size-full max-w-full max-h-full flex items-center justify-center p-4 md:p-8 pointer-events-none"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
@@ -349,9 +313,9 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                     title={videoMuted ? "Ton einschalten" : "Ton stummschalten"}
                   >
                     {videoMuted || videoVolume === 0 ? (
-                      <VolumeX className="size-5  text-rose-400" />
+                      <VolumeX className="size-5 text-rose-400" />
                     ) : (
-                      <Volume2 className="size-5  text-cosmic-pink animate-pulse" />
+                      <Volume2 className="size-5 text-cosmic-pink animate-pulse" />
                     )}
                   </button>
                   <input
