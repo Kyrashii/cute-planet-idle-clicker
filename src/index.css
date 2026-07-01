@@ -810,6 +810,18 @@ body.low-memory .animate-rainbow-star {
   animation: none !important;
 }
 
+/* OS-level reduced motion: honoured even before JS applies body.low-memory. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* ─── Crafting workbench (graph view) — Pastell-Kosmos ──────────────────── */
 /* All classes scoped under .pk-craft-* to avoid collisions.                  */
 /* Radii: md=8px lg=12px xl=16px 2xl=20px 3xl=24px 3.5xl=28px                */

@@ -1,5 +1,5 @@
 import React, { startTransition, useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, MotionConfig } from "motion/react";
 
 import {
   PlanetTask,
@@ -1810,402 +1810,406 @@ export default function App() {
   }
 
   return (
-    <ModalSettingsProvider disableAnimations={disableAnimations}>
-      <div
-        className={`min-h-screen relative overflow-hidden transition-all duration-1000 ease-in-out flex flex-col font-sans scroll-smooth ${
-          isNightStyle
-            ? "bg-linear-to-b from-cosmic-bg via-cosmic-bg-mid to-cosmic-bg-deep text-cosmic-text selection:bg-cosmic-pink selection:text-cosmic-bg"
-            : ""
-        } ${inGlitchGalaxy ? "glitch-bg shadow-[inset_0_0_80px_rgba(244,63,94,0.3)]" : ""}`}
-      >
-        <EffectsLayer disabled={disableAnimations} />
+    <MotionConfig reducedMotion="user">
+      <ModalSettingsProvider disableAnimations={disableAnimations}>
+        <div
+          className={`min-h-screen relative overflow-hidden transition-all duration-1000 ease-in-out flex flex-col font-sans scroll-smooth ${
+            isNightStyle
+              ? "bg-linear-to-b from-cosmic-bg via-cosmic-bg-mid to-cosmic-bg-deep text-cosmic-text selection:bg-cosmic-pink selection:text-cosmic-bg"
+              : ""
+          } ${inGlitchGalaxy ? "glitch-bg shadow-[inset_0_0_80px_rgba(244,63,94,0.3)]" : ""}`}
+        >
+          <EffectsLayer disabled={disableAnimations} />
 
-        {/* Scattered Ambient Background Animals (floating freely over the entire cosmos background) */}
-        <BackgroundCompanions companions={backgroundCompanions} />
+          {/* Scattered Ambient Background Animals (floating freely over the entire cosmos background) */}
+          <BackgroundCompanions companions={backgroundCompanions} />
 
-        {/* Dynamic Cosmic Event Background Overlays (visualized smoothly in background index) */}
-        <EventBackgrounds activeEvent={activeEvent} isLowMemory={isLowMemory} />
+          {/* Dynamic Cosmic Event Background Overlays (visualized smoothly in background index) */}
+          <EventBackgrounds activeEvent={activeEvent} isLowMemory={isLowMemory} />
 
-        {/* 1. Header Area with Soft Pastel Colors */}
-        <CosmicHeader
-          isNightStyle={isNightStyle}
-          showTutorial={showTutorial}
-          life={life}
-          galaxyShards={galaxyShards}
-          isMutedState={isMutedState}
-          user={user}
-          handleToggleMute={handleToggleMute}
-          setShowMusicSettingsModal={setShowMusicSettingsModal}
-          setShowCloudSyncModal={setShowCloudSyncModal}
-          setShowLeaderboardModal={setShowLeaderboardModal}
-          setShowTutorial={setShowTutorial}
-          setShowResetDialog={setShowResetDialog}
-          formatCompactNumber={glitchedFormatCompactNumber}
-          prestigeCount={prestigeCount}
-          onOpenGalaxyShardsShop={() => {
-            playUpgrade();
-            setShowGalaxyShardsShop(true);
-          }}
-          onOpenRoguelite={handleOpenRogueliteScreen}
-          hasActiveRogueliteRun={Boolean(activeRogueliteRun)}
-          rogueliteRunStatus={activeRogueliteRun?.phase}
-          inGlitchGalaxy={inGlitchGalaxy}
-        />
-
-        {/* 2. Immersive Centered Master View (Planet takes center stage with plenty of room around it) */}
-        <InteractiveCosmos
-          isNightStyle={isNightStyle}
-          showTutorial={showTutorial}
-          life={life}
-          totalLps={totalLps}
-          starsCount={starsCount}
-          prestigeCount={prestigeCount}
-          glitchedFormatCompactNumber={glitchedFormatCompactNumber}
-          activeEvent={activeEvent}
-          activeEventDecision={activeEventDecision}
-          activeEventDetails={activeEventDetails}
-          eventTimeRemaining={eventTimeRemaining}
-          handleSelectEventDecision={handleSelectEventDecision}
-          glitterDust={glitterDust}
-          blackHoleSize={blackHoleSize}
-          handleBlackHoleGamble={handleBlackHoleGamble}
-          inGlitchGalaxy={inGlitchGalaxy}
-          planetLevel={planetLevel}
-          setShowVoyageModal={setShowVoyageModal}
-          isNight={isNight}
-          cycleProgress={cycleProgress}
-          offlineEarnedLife={offlineEarnedLife}
-          offlineSeconds={offlineSeconds}
-          openOfflineModal={openOfflineModal}
-          planetExp={planetExp}
-          planetExpNeeded={planetExpNeeded}
-          planetTask={planetTask}
-          moonsCount={moonsCount || 0}
-          starPowerPerStar={starPowerPerStar}
-          handlePlanetClick={handlePlanetClick}
-          activeStarColor={activeStarColor}
-          activeAccessory={activeAccessory}
-          activeMoonSkin={activeMoonSkin}
-          activePlanetSkin={activePlanetSkin}
-          isLowMemory={isLowMemory}
-          activeZodiacId={activeZodiacId}
-          openZodiacModal={openZodiacModal}
-          floatingTexts={floatingTexts}
-          clickPower={clickPower}
-          openGehegeModal={openGehegeModal}
-          openAnimalsModal={openAnimalsModal}
-          openCraftingModal={openCraftingModal}
-          openStarsModal={openStarsModal}
-          openUpgradesModal={openUpgradesModal}
-          openAchievementsModal={openAchievementsModal}
-          openStatsModal={openStatsModal}
-          openMissionsModal={openMissionsModal}
-          openInventoryModal={openInventoryModal}
-          disableAnimations={disableAnimations}
-          totalAnimalsCount={totalAnimalsCount}
-          researchedUpgradesCount={researchedUpgradesCount}
-          unlockedAchievementsCount={unlockedAchievementsCount}
-          achievementsLength={achievements.length}
-          completedUnclaimedMissionsCount={completedUnclaimedMissionsCount}
-          shootingStarsCount={shootingStarsCount}
-          activeConstellationsCount={activeConstellationsCount}
-        />
-
-        {showTutorial && (
-          <TutorialModal
-            isOpen={showTutorial}
-            onClose={() => setShowTutorial(false)}
-            isNight={isNightStyle}
-          />
-        )}
-
-        {/* 4. Footer credits with minimalist elements */}
-        <CosmicFooter />
-
-        <UpdateToast />
-
-        {showRogueliteScreen && (
-          <React.Suspense fallback={null}>
-            <RogueliteScreen
-              isOpen={showRogueliteScreen}
-              viewState={rogueliteViewState}
-              meta={rogueliteMeta}
-              activeRun={activeRogueliteRun}
-              onClose={handleCloseRogueliteScreen}
-              onBeginRunSetup={handleBeginRogueliteSetup}
-              onBackToIntro={handleBackToRogueliteIntro}
-              onOpenArchive={handleOpenRogueliteArchive}
-              onCloseArchive={handleBackToRogueliteRelicSelect}
-              onStartRun={handleStartRogueliteRun}
-              onChooseEncounter={handleChooseRogueliteEncounter}
-              onChoosePath={handleChooseRoguelitePath}
-              onRerollEncounter={handleRerollRogueliteEncounter}
-              onClaimVictory={handleClaimRogueliteVictory}
-              onClaimDefeat={handleClaimRogueliteDefeat}
-            />
-          </React.Suspense>
-        )}
-
-        <GameStateProvider value={gameState}>
-          <GameModalsContainer
-            showResetDialog={showResetDialog}
-            setShowResetDialog={setShowResetDialog}
-            showCheatEventModal={showCheatEventModal}
-            setShowCheatEventModal={setShowCheatEventModal}
-            planetLevel={planetLevel}
-            showUpgradesModal={showUpgradesModal}
-            setShowUpgradesModal={setShowUpgradesModal}
-            showAnimalsModal={showAnimalsModal}
-            setShowAnimalsModal={setShowAnimalsModal}
-            showStarsModal={showStarsModal}
-            setShowStarsModal={setShowStarsModal}
-            showCraftingModal={showCraftingModal}
-            setShowCraftingModal={setShowCraftingModal}
-            showStatsModal={showStatsModal}
-            setShowStatsModal={setShowStatsModal}
-            showOfflineModal={showOfflineModal}
-            setShowOfflineModal={setShowOfflineModal}
-            showAchievementsModal={showAchievementsModal}
-            setShowAchievementsModal={setShowAchievementsModal}
-            showMusicSettingsModal={showMusicSettingsModal}
-            setShowMusicSettingsModal={setShowMusicSettingsModal}
-            showCloudSyncModal={showCloudSyncModal}
-            setShowCloudSyncModal={setShowCloudSyncModal}
-            accountSwitchPrompt={accountSwitchPrompt}
-            showMissionsModal={showMissionsModal}
-            setShowMissionsModal={setShowMissionsModal}
-            openingResult={openingResult}
-            setOpeningResult={setOpeningResult}
-            showInventoryModal={showInventoryModal}
-            setShowInventoryModal={setShowInventoryModal}
-            showZodiacModal={showZodiacModal}
-            setShowZodiacModal={setShowZodiacModal}
-            showLeaderboardModal={showLeaderboardModal}
-            setShowLeaderboardModal={setShowLeaderboardModal}
-            showPrestigeModal={showPrestigeModal}
-            setShowPrestigeModal={setShowPrestigeModal}
-            handleGameReset={handleGameReset}
-            workerRef={workerRef}
-            handleBuyUpgrade={handleBuyUpgrade}
-            handleBuyUpgradesBatch={handleBuyUpgradesBatch}
-            handleBuyAnimal={handleBuyAnimal}
-            handleBuyStar={handleBuyStar}
-            handleMergeMoons={handleMergeMoons}
-            handleInvestConstellation={handleInvestConstellation}
-            handleCraftItem={handleCraftItem}
-            handleCraftRecursive={handleCraftRecursive}
-            handleClaimOfflineEarnings={handleClaimOfflineEarnings}
-            handleClaimMissionReward={handleClaimMissionReward}
-            handleOpenShootingStar={handleOpenShootingStar}
-            handleApplyCosmetic={handleApplyCosmetic}
-            handleApplyPlanetSkin={setActivePlanetSkin}
-            handleUnlockCosmeticDirect={handleUnlockCosmeticDirect}
-            handleUpgradeCosmeticRarity={handleUpgradeCosmeticRarity}
-            handleUseCraftedItem={handleUseCraftedItem}
-            handleSelectZodiac={handleSelectZodiac}
-            handleConfirmPrestige={handleConfirmPrestige}
-            onForceSave={handleForceSaveToCloud}
-            purchasedUpgrades={purchasedUpgrades}
-            staticUpgrades={STATIC_UPGRADES}
-            purchasedAnimals={purchasedAnimals}
-            constellations={constellations}
+          {/* 1. Header Area with Soft Pastel Colors */}
+          <CosmicHeader
             isNightStyle={isNightStyle}
-            craftedItems={craftedItems}
-            formatCompactNumber={glitchedFormatCompactNumber}
-            formatTimePlayed={formatTimePlayed}
-            offlineSeconds={offlineSeconds}
-            offlineLpsRate={offlineLpsRate}
-            offlineEarnedLife={offlineEarnedLife}
-            achievements={achievements}
-            achievementCategoryFilter={achievementCategoryFilter}
-            setAchievementCategoryFilter={setAchievementCategoryFilter}
-            achievementSearch={achievementSearch}
-            setAchievementSearch={setAchievementSearch}
-            playUpgrade={playUpgrade}
-            musicStyleState={musicStyleState}
-            setMusicStyleState={setMusicStyleState}
-            isLowMemory={isLowMemory}
-            setIsLowMemory={setIsLowMemory}
-            fontScale={fontScale}
-            setFontScale={setFontScale}
+            showTutorial={showTutorial}
+            life={life}
+            galaxyShards={galaxyShards}
+            isMutedState={isMutedState}
             user={user}
-            authLoading={authLoading}
-            syncing={syncing}
-            lastSynced={lastSynced}
-            loginWithGoogle={loginWithGoogle}
-            logout={logout}
-            cloudSaveFound={cloudSaveFound}
-            triggerCloudStateLoad={triggerCloudStateLoad}
-            continueWithCurrentAccount={continueWithCurrentAccount}
-            adoptPreviousLocalSave={adoptPreviousLocalSave}
-            missionSetNumber={missionSetNumber}
-            claimedMissionIds={claimedMissionIds}
-            missionsCooldownEnd={missionsCooldownEnd}
-            activeFrame={activeFrame}
-            unlockedCosmetics={unlockedCosmetics}
+            handleToggleMute={handleToggleMute}
+            setShowMusicSettingsModal={setShowMusicSettingsModal}
+            setShowCloudSyncModal={setShowCloudSyncModal}
+            setShowLeaderboardModal={setShowLeaderboardModal}
+            setShowTutorial={setShowTutorial}
+            setShowResetDialog={setShowResetDialog}
+            formatCompactNumber={glitchedFormatCompactNumber}
+            prestigeCount={prestigeCount}
+            onOpenGalaxyShardsShop={() => {
+              playUpgrade();
+              setShowGalaxyShardsShop(true);
+            }}
+            onOpenRoguelite={handleOpenRogueliteScreen}
+            hasActiveRogueliteRun={Boolean(activeRogueliteRun)}
+            rogueliteRunStatus={activeRogueliteRun?.phase}
+            inGlitchGalaxy={inGlitchGalaxy}
+          />
+
+          {/* 2. Immersive Centered Master View (Planet takes center stage with plenty of room around it) */}
+          <InteractiveCosmos
+            isNightStyle={isNightStyle}
+            showTutorial={showTutorial}
+            life={life}
+            totalLps={totalLps}
+            starsCount={starsCount}
+            prestigeCount={prestigeCount}
+            glitchedFormatCompactNumber={glitchedFormatCompactNumber}
+            activeEvent={activeEvent}
+            activeEventDecision={activeEventDecision}
+            activeEventDetails={activeEventDetails}
+            eventTimeRemaining={eventTimeRemaining}
+            handleSelectEventDecision={handleSelectEventDecision}
+            glitterDust={glitterDust}
+            blackHoleSize={blackHoleSize}
+            handleBlackHoleGamble={handleBlackHoleGamble}
+            inGlitchGalaxy={inGlitchGalaxy}
+            planetLevel={planetLevel}
+            setShowVoyageModal={setShowVoyageModal}
+            isNight={isNight}
+            cycleProgress={cycleProgress}
+            offlineEarnedLife={offlineEarnedLife}
+            offlineSeconds={offlineSeconds}
+            openOfflineModal={openOfflineModal}
+            planetExp={planetExp}
+            planetExpNeeded={planetExpNeeded}
+            planetTask={planetTask}
+            moonsCount={moonsCount || 0}
+            starPowerPerStar={starPowerPerStar}
+            handlePlanetClick={handlePlanetClick}
             activeStarColor={activeStarColor}
             activeAccessory={activeAccessory}
             activeMoonSkin={activeMoonSkin}
             activePlanetSkin={activePlanetSkin}
-            unlockedPlanetSkins={rogueliteMeta.unlockedPlanetSkins}
+            isLowMemory={isLowMemory}
             activeZodiacId={activeZodiacId}
-            cosmeticRarityLevels={cosmeticRarityLevels}
-            upgradesSpecs={upgradesSpecs}
+            openZodiacModal={openZodiacModal}
+            floatingTexts={floatingTexts}
+            clickPower={clickPower}
+            openGehegeModal={openGehegeModal}
+            openAnimalsModal={openAnimalsModal}
+            openCraftingModal={openCraftingModal}
+            openStarsModal={openStarsModal}
+            openUpgradesModal={openUpgradesModal}
+            openAchievementsModal={openAchievementsModal}
+            openStatsModal={openStatsModal}
+            openMissionsModal={openMissionsModal}
+            openInventoryModal={openInventoryModal}
+            disableAnimations={disableAnimations}
+            totalAnimalsCount={totalAnimalsCount}
+            researchedUpgradesCount={researchedUpgradesCount}
+            unlockedAchievementsCount={unlockedAchievementsCount}
+            achievementsLength={achievements.length}
+            completedUnclaimedMissionsCount={completedUnclaimedMissionsCount}
+            shootingStarsCount={shootingStarsCount}
+            activeConstellationsCount={activeConstellationsCount}
           />
 
-          <GalaxyShardsShopModal
-            isOpen={showGalaxyShardsShop}
-            onClose={() => setShowGalaxyShardsShop(false)}
-            galaxyShards={galaxyShards}
-            zodiacLevels={zodiacLevels}
-            slummerGlassLevel={slummerGlassLevel}
-            catalystLevel={catalystLevel}
-            doubleStellarLevel={doubleStellarLevel}
-            onUpgradeZodiacLevel={handleUpgradeZodiacLevel}
-            onUpgradeSlummerGlass={handleUpgradeSlummerGlass}
-            onUpgradeCatalyst={handleUpgradeCatalyst}
-            onUpgradeDoubleStellar={handleUpgradeDoubleStellar}
-          />
-
-          <GehegeModal
-            isOpen={showGehegeModal}
-            onClose={() => setShowGehegeModal(false)}
-            isNight={isNight}
-            purchasedAnimals={purchasedAnimals}
-            animalDefs={INITIAL_ANIMALS}
-            placedAnimals={placedAnimals}
-            onUpdatePlacedAnimals={setPlacedAnimals}
-            animalLove={animalLove}
-            onUpdateAnimalLove={setAnimalLove}
-            animalLastPet={animalLastPet}
-            onUpdateAnimalLastPet={setAnimalLastPet}
-            bowlLastFed={bowlLastFed}
-            onUpdateBowlLastFed={setBowlLastFed}
-            bowlFedMinutesCredited={bowlFedMinutesCredited}
-            onUpdateBowlFedMinutesCredited={setBowlFedMinutesCredited}
-          />
-        </GameStateProvider>
-
-        {/* Dynamic Autosave Toast Indicator */}
-        <AnimatePresence>
-          {autosaveNotification && autosaveNotification.show && (
-            <motion.div
-              initial={{ opacity: 0, y: 50, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.85, y: 20 }}
-              className={`fixed bottom-6 right-6 z-60 flex items-center gap-3 px-4 py-3 rounded-2xl border-2 shadow-2xl backdrop-blur-md transition-colors ${
-                autosaveNotification.success
-                  ? // eslint-disable-next-line better-tailwindcss/no-restricted-classes
-                    "bg-[#163a24]/90 border-emerald-400 text-emerald-100"
-                  : // eslint-disable-next-line better-tailwindcss/no-restricted-classes
-                    "bg-[#2c1328]/90 border-cosmic-pink text-rose-100"
-              }`}
-            >
-              {autosaveNotification.success ? (
-                <div className="size-5  rounded-full bg-emerald-500/20 border border-emerald-400 flex items-center justify-center">
-                  <span className="text-xs text-emerald-400">✓</span>
-                </div>
-              ) : (
-                <div className="size-5  rounded-full bg-rose-500/20 border border-rose-400 flex items-center justify-center animate-spin">
-                  <span className="text-[10px] text-rose-350">⏳</span>
-                </div>
-              )}
-              <div>
-                <p className="font-sans font-black text-xs leading-none">
-                  {autosaveNotification.success ? "AUTOMATISCH GESPEICHERT" : "AUTO-SPEICHERUNG..."}
-                </p>
-                <p className="font-mono text-[9px] text-cosmic-accent-muted mt-0.5">
-                  {autosaveNotification.text}
-                </p>
-              </div>
-            </motion.div>
+          {showTutorial && (
+            <TutorialModal
+              isOpen={showTutorial}
+              onClose={() => setShowTutorial(false)}
+              isNight={isNightStyle}
+            />
           )}
-        </AnimatePresence>
 
-        {/* Black Hole Result Dialog */}
-        <AnimatePresence>
-          {blackHoleResult && blackHoleResult.show && (
-            <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          {/* 4. Footer credits with minimalist elements */}
+          <CosmicFooter />
+
+          <UpdateToast />
+
+          {showRogueliteScreen && (
+            <React.Suspense fallback={null}>
+              <RogueliteScreen
+                isOpen={showRogueliteScreen}
+                viewState={rogueliteViewState}
+                meta={rogueliteMeta}
+                activeRun={activeRogueliteRun}
+                onClose={handleCloseRogueliteScreen}
+                onBeginRunSetup={handleBeginRogueliteSetup}
+                onBackToIntro={handleBackToRogueliteIntro}
+                onOpenArchive={handleOpenRogueliteArchive}
+                onCloseArchive={handleBackToRogueliteRelicSelect}
+                onStartRun={handleStartRogueliteRun}
+                onChooseEncounter={handleChooseRogueliteEncounter}
+                onChoosePath={handleChooseRoguelitePath}
+                onRerollEncounter={handleRerollRogueliteEncounter}
+                onClaimVictory={handleClaimRogueliteVictory}
+                onClaimDefeat={handleClaimRogueliteDefeat}
+              />
+            </React.Suspense>
+          )}
+
+          <GameStateProvider value={gameState}>
+            <GameModalsContainer
+              showResetDialog={showResetDialog}
+              setShowResetDialog={setShowResetDialog}
+              showCheatEventModal={showCheatEventModal}
+              setShowCheatEventModal={setShowCheatEventModal}
+              planetLevel={planetLevel}
+              showUpgradesModal={showUpgradesModal}
+              setShowUpgradesModal={setShowUpgradesModal}
+              showAnimalsModal={showAnimalsModal}
+              setShowAnimalsModal={setShowAnimalsModal}
+              showStarsModal={showStarsModal}
+              setShowStarsModal={setShowStarsModal}
+              showCraftingModal={showCraftingModal}
+              setShowCraftingModal={setShowCraftingModal}
+              showStatsModal={showStatsModal}
+              setShowStatsModal={setShowStatsModal}
+              showOfflineModal={showOfflineModal}
+              setShowOfflineModal={setShowOfflineModal}
+              showAchievementsModal={showAchievementsModal}
+              setShowAchievementsModal={setShowAchievementsModal}
+              showMusicSettingsModal={showMusicSettingsModal}
+              setShowMusicSettingsModal={setShowMusicSettingsModal}
+              showCloudSyncModal={showCloudSyncModal}
+              setShowCloudSyncModal={setShowCloudSyncModal}
+              accountSwitchPrompt={accountSwitchPrompt}
+              showMissionsModal={showMissionsModal}
+              setShowMissionsModal={setShowMissionsModal}
+              openingResult={openingResult}
+              setOpeningResult={setOpeningResult}
+              showInventoryModal={showInventoryModal}
+              setShowInventoryModal={setShowInventoryModal}
+              showZodiacModal={showZodiacModal}
+              setShowZodiacModal={setShowZodiacModal}
+              showLeaderboardModal={showLeaderboardModal}
+              setShowLeaderboardModal={setShowLeaderboardModal}
+              showPrestigeModal={showPrestigeModal}
+              setShowPrestigeModal={setShowPrestigeModal}
+              handleGameReset={handleGameReset}
+              workerRef={workerRef}
+              handleBuyUpgrade={handleBuyUpgrade}
+              handleBuyUpgradesBatch={handleBuyUpgradesBatch}
+              handleBuyAnimal={handleBuyAnimal}
+              handleBuyStar={handleBuyStar}
+              handleMergeMoons={handleMergeMoons}
+              handleInvestConstellation={handleInvestConstellation}
+              handleCraftItem={handleCraftItem}
+              handleCraftRecursive={handleCraftRecursive}
+              handleClaimOfflineEarnings={handleClaimOfflineEarnings}
+              handleClaimMissionReward={handleClaimMissionReward}
+              handleOpenShootingStar={handleOpenShootingStar}
+              handleApplyCosmetic={handleApplyCosmetic}
+              handleApplyPlanetSkin={setActivePlanetSkin}
+              handleUnlockCosmeticDirect={handleUnlockCosmeticDirect}
+              handleUpgradeCosmeticRarity={handleUpgradeCosmeticRarity}
+              handleUseCraftedItem={handleUseCraftedItem}
+              handleSelectZodiac={handleSelectZodiac}
+              handleConfirmPrestige={handleConfirmPrestige}
+              onForceSave={handleForceSaveToCloud}
+              purchasedUpgrades={purchasedUpgrades}
+              staticUpgrades={STATIC_UPGRADES}
+              purchasedAnimals={purchasedAnimals}
+              constellations={constellations}
+              isNightStyle={isNightStyle}
+              craftedItems={craftedItems}
+              formatCompactNumber={glitchedFormatCompactNumber}
+              formatTimePlayed={formatTimePlayed}
+              offlineSeconds={offlineSeconds}
+              offlineLpsRate={offlineLpsRate}
+              offlineEarnedLife={offlineEarnedLife}
+              achievements={achievements}
+              achievementCategoryFilter={achievementCategoryFilter}
+              setAchievementCategoryFilter={setAchievementCategoryFilter}
+              achievementSearch={achievementSearch}
+              setAchievementSearch={setAchievementSearch}
+              playUpgrade={playUpgrade}
+              musicStyleState={musicStyleState}
+              setMusicStyleState={setMusicStyleState}
+              isLowMemory={isLowMemory}
+              setIsLowMemory={setIsLowMemory}
+              fontScale={fontScale}
+              setFontScale={setFontScale}
+              user={user}
+              authLoading={authLoading}
+              syncing={syncing}
+              lastSynced={lastSynced}
+              loginWithGoogle={loginWithGoogle}
+              logout={logout}
+              cloudSaveFound={cloudSaveFound}
+              triggerCloudStateLoad={triggerCloudStateLoad}
+              continueWithCurrentAccount={continueWithCurrentAccount}
+              adoptPreviousLocalSave={adoptPreviousLocalSave}
+              missionSetNumber={missionSetNumber}
+              claimedMissionIds={claimedMissionIds}
+              missionsCooldownEnd={missionsCooldownEnd}
+              activeFrame={activeFrame}
+              unlockedCosmetics={unlockedCosmetics}
+              activeStarColor={activeStarColor}
+              activeAccessory={activeAccessory}
+              activeMoonSkin={activeMoonSkin}
+              activePlanetSkin={activePlanetSkin}
+              unlockedPlanetSkins={rogueliteMeta.unlockedPlanetSkins}
+              activeZodiacId={activeZodiacId}
+              cosmeticRarityLevels={cosmeticRarityLevels}
+              upgradesSpecs={upgradesSpecs}
+            />
+
+            <GalaxyShardsShopModal
+              isOpen={showGalaxyShardsShop}
+              onClose={() => setShowGalaxyShardsShop(false)}
+              galaxyShards={galaxyShards}
+              zodiacLevels={zodiacLevels}
+              slummerGlassLevel={slummerGlassLevel}
+              catalystLevel={catalystLevel}
+              doubleStellarLevel={doubleStellarLevel}
+              onUpgradeZodiacLevel={handleUpgradeZodiacLevel}
+              onUpgradeSlummerGlass={handleUpgradeSlummerGlass}
+              onUpgradeCatalyst={handleUpgradeCatalyst}
+              onUpgradeDoubleStellar={handleUpgradeDoubleStellar}
+            />
+
+            <GehegeModal
+              isOpen={showGehegeModal}
+              onClose={() => setShowGehegeModal(false)}
+              isNight={isNight}
+              purchasedAnimals={purchasedAnimals}
+              animalDefs={INITIAL_ANIMALS}
+              placedAnimals={placedAnimals}
+              onUpdatePlacedAnimals={setPlacedAnimals}
+              animalLove={animalLove}
+              onUpdateAnimalLove={setAnimalLove}
+              animalLastPet={animalLastPet}
+              onUpdateAnimalLastPet={setAnimalLastPet}
+              bowlLastFed={bowlLastFed}
+              onUpdateBowlLastFed={setBowlLastFed}
+              bowlFedMinutesCredited={bowlFedMinutesCredited}
+              onUpdateBowlFedMinutesCredited={setBowlFedMinutesCredited}
+            />
+          </GameStateProvider>
+
+          {/* Dynamic Autosave Toast Indicator */}
+          <AnimatePresence>
+            {autosaveNotification && autosaveNotification.show && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 15 }}
-                id="blackhole-result-dialog"
-                className={`w-full max-w-md p-6 rounded-3xl border-3 shadow-[0_0_50px_rgba(147,51,234,0.4)] text-center relative overflow-hidden transition-all ${
-                  blackHoleResult.outcomeType === "good"
-                    ? "bg-linear-to-b from-cosmic-ink via-cosmic-bg to-black border-purple-500 text-purple-100"
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.85, y: 20 }}
+                className={`fixed bottom-6 right-6 z-60 flex items-center gap-3 px-4 py-3 rounded-2xl border-2 shadow-2xl backdrop-blur-md transition-colors ${
+                  autosaveNotification.success
+                    ? // eslint-disable-next-line better-tailwindcss/no-restricted-classes
+                      "bg-[#163a24]/90 border-emerald-400 text-emerald-100"
                     : // eslint-disable-next-line better-tailwindcss/no-restricted-classes
-                      "bg-linear-to-b from-[#1a070e] via-[#0c0307] to-black border-rose-800 text-rose-100"
+                      "bg-[#2c1328]/90 border-cosmic-pink text-rose-100"
                 }`}
               >
-                {/* Spinning/pulsing decorative backdrop glows */}
-                <div className="absolute -top-24 -left-24 size-48  rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-24 -right-24 size-48  rounded-full bg-rose-600/10 blur-3xl pointer-events-none" />
-
-                <div className="size-20  mx-auto rounded-full bg-black/60 border border-purple-500/50 flex items-center justify-center text-4xl mb-4 shadow-[0_0_20px_rgba(147,51,234,0.3)] animate-pulse relative">
-                  {blackHoleResult.outcomeType === "good" ? "✨" : "🕳️"}
-                  <span className="absolute inset-0 rounded-full border border-purple-400 animate-ping opacity-25"></span>
+                {autosaveNotification.success ? (
+                  <div className="size-5  rounded-full bg-emerald-500/20 border border-emerald-400 flex items-center justify-center">
+                    <span className="text-xs text-emerald-400">✓</span>
+                  </div>
+                ) : (
+                  <div className="size-5  rounded-full bg-rose-500/20 border border-rose-400 flex items-center justify-center animate-spin">
+                    <span className="text-[10px] text-rose-350">⏳</span>
+                  </div>
+                )}
+                <div>
+                  <p className="font-sans font-black text-xs leading-none">
+                    {autosaveNotification.success
+                      ? "AUTOMATISCH GESPEICHERT"
+                      : "AUTO-SPEICHERUNG..."}
+                  </p>
+                  <p className="font-mono text-[9px] text-cosmic-accent-muted mt-0.5">
+                    {autosaveNotification.text}
+                  </p>
                 </div>
-
-                <span
-                  className={`font-mono text-[9px] uppercase tracking-widest px-2.5 py-0.5 rounded-full border leading-none shadow-sm ${
-                    blackHoleResult.outcomeType === "good"
-                      ? "bg-cosmic-bg-mid/60 border-purple-500/30 text-purple-300"
-                      : // eslint-disable-next-line better-tailwindcss/no-restricted-classes
-                        "bg-[#1a070e]/60 border-rose-800/30 text-rose-300"
-                  }`}
-                >
-                  {blackHoleResult.outcomeType === "good"
-                    ? "🌌 Kosmischer Segen"
-                    : "🌀 Gravitativer Verlust"}
-                </span>
-
-                <h3 className="font-sans font-black text-lg uppercase mt-3 tracking-wide text-transparent bg-clip-text bg-linear-to-r from-purple-200 via-white to-rose-300">
-                  {blackHoleResult.title}
-                </h3>
-
-                <p className="text-xs/relaxed font-semibold  mt-3 px-2 text-slate-300">
-                  {blackHoleResult.text}
-                </p>
-
-                <button
-                  id="btn-close-blackhole-result"
-                  onClick={() => setBlackHoleResult(null)}
-                  className={`mt-6 w-full py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition cursor-pointer select-none border shadow-md active:scale-98 ${
-                    blackHoleResult.outcomeType === "good"
-                      ? "bg-purple-900/50 border-purple-400/50 hover:bg-purple-800 text-purple-100 shadow-purple-500/10"
-                      : "bg-rose-950/45 border-rose-700/50 hover:bg-rose-900 text-rose-100 shadow-rose-950/15"
-                  }`}
-                >
-                  Ereignishorizont verlassen
-                </button>
               </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
-      </div>
+            )}
+          </AnimatePresence>
 
-      <CosmicOverlays
-        planetLevel={planetLevel}
-        inGlitchGalaxy={inGlitchGalaxy}
-        glitchPending={glitchPending}
-        showRepairDialog={showRepairDialog}
-        setShowRepairDialog={setShowRepairDialog}
-        setShowVoyageModal={setShowVoyageModal}
-        handleEnterGlitchGalaxy={handleEnterGlitchGalaxy}
-        handleRepairGlitchGalaxy={handleRepairGlitchGalaxy}
-      />
+          {/* Black Hole Result Dialog */}
+          <AnimatePresence>
+            {blackHoleResult && blackHoleResult.show && (
+              <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: 15 }}
+                  id="blackhole-result-dialog"
+                  className={`w-full max-w-md p-6 rounded-3xl border-3 shadow-[0_0_50px_rgba(147,51,234,0.4)] text-center relative overflow-hidden transition-all ${
+                    blackHoleResult.outcomeType === "good"
+                      ? "bg-linear-to-b from-cosmic-ink via-cosmic-bg to-black border-purple-500 text-purple-100"
+                      : // eslint-disable-next-line better-tailwindcss/no-restricted-classes
+                        "bg-linear-to-b from-[#1a070e] via-[#0c0307] to-black border-rose-800 text-rose-100"
+                  }`}
+                >
+                  {/* Spinning/pulsing decorative backdrop glows */}
+                  <div className="absolute -top-24 -left-24 size-48  rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
+                  <div className="absolute -bottom-24 -right-24 size-48  rounded-full bg-rose-600/10 blur-3xl pointer-events-none" />
 
-      {showVoyageModal && (
-        <React.Suspense fallback={null}>
-          <GalaxyVoyageModal
-            isOpen={showVoyageModal}
-            prestigeCount={prestigeCount}
-            onConfirmVoyage={handleConfirmPrestige}
-            inGlitchGalaxy={inGlitchGalaxy}
-          />
-        </React.Suspense>
-      )}
-    </ModalSettingsProvider>
+                  <div className="size-20  mx-auto rounded-full bg-black/60 border border-purple-500/50 flex items-center justify-center text-4xl mb-4 shadow-[0_0_20px_rgba(147,51,234,0.3)] animate-pulse relative">
+                    {blackHoleResult.outcomeType === "good" ? "✨" : "🕳️"}
+                    <span className="absolute inset-0 rounded-full border border-purple-400 animate-ping opacity-25"></span>
+                  </div>
+
+                  <span
+                    className={`font-mono text-[9px] uppercase tracking-widest px-2.5 py-0.5 rounded-full border leading-none shadow-sm ${
+                      blackHoleResult.outcomeType === "good"
+                        ? "bg-cosmic-bg-mid/60 border-purple-500/30 text-purple-300"
+                        : // eslint-disable-next-line better-tailwindcss/no-restricted-classes
+                          "bg-[#1a070e]/60 border-rose-800/30 text-rose-300"
+                    }`}
+                  >
+                    {blackHoleResult.outcomeType === "good"
+                      ? "🌌 Kosmischer Segen"
+                      : "🌀 Gravitativer Verlust"}
+                  </span>
+
+                  <h3 className="font-sans font-black text-lg uppercase mt-3 tracking-wide text-transparent bg-clip-text bg-linear-to-r from-purple-200 via-white to-rose-300">
+                    {blackHoleResult.title}
+                  </h3>
+
+                  <p className="text-xs/relaxed font-semibold  mt-3 px-2 text-slate-300">
+                    {blackHoleResult.text}
+                  </p>
+
+                  <button
+                    id="btn-close-blackhole-result"
+                    onClick={() => setBlackHoleResult(null)}
+                    className={`mt-6 w-full py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition cursor-pointer select-none border shadow-md active:scale-98 ${
+                      blackHoleResult.outcomeType === "good"
+                        ? "bg-purple-900/50 border-purple-400/50 hover:bg-purple-800 text-purple-100 shadow-purple-500/10"
+                        : "bg-rose-950/45 border-rose-700/50 hover:bg-rose-900 text-rose-100 shadow-rose-950/15"
+                    }`}
+                  >
+                    Ereignishorizont verlassen
+                  </button>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <CosmicOverlays
+          planetLevel={planetLevel}
+          inGlitchGalaxy={inGlitchGalaxy}
+          glitchPending={glitchPending}
+          showRepairDialog={showRepairDialog}
+          setShowRepairDialog={setShowRepairDialog}
+          setShowVoyageModal={setShowVoyageModal}
+          handleEnterGlitchGalaxy={handleEnterGlitchGalaxy}
+          handleRepairGlitchGalaxy={handleRepairGlitchGalaxy}
+        />
+
+        {showVoyageModal && (
+          <React.Suspense fallback={null}>
+            <GalaxyVoyageModal
+              isOpen={showVoyageModal}
+              prestigeCount={prestigeCount}
+              onConfirmVoyage={handleConfirmPrestige}
+              inGlitchGalaxy={inGlitchGalaxy}
+            />
+          </React.Suspense>
+        )}
+      </ModalSettingsProvider>
+    </MotionConfig>
   );
 }
