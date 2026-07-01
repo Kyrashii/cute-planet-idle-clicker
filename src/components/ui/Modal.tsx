@@ -140,8 +140,9 @@ interface ModalProps {
    *  - "dialog": centred card everywhere (default)
    *  - "sheet":  bottom sheet with drag-to-dismiss handle
    *  - "auto":   sheet below the game breakpoint, dialog above it
+   *  - "drawer": right-side slide-in above the game breakpoint, sheet below
    */
-  presentation?: "dialog" | "sheet" | "auto";
+  presentation?: "dialog" | "sheet" | "auto" | "drawer";
 
   /** Fires once the exit animation has fully finished. */
   onExitComplete?: () => void;
@@ -170,7 +171,10 @@ export const Modal: React.FC<ModalProps> = ({
   const panelRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const isMobile = useIsMobile();
-  const isSheet = presentation === "sheet" || (presentation === "auto" && isMobile);
+  const isSheet =
+    presentation === "sheet" ||
+    ((presentation === "auto" || presentation === "drawer") && isMobile);
+  const isDrawer = presentation === "drawer" && !isMobile;
   const dragControls = useDragControls();
 
   // The backdrop blur mounts only after the panel has finished animating in,
@@ -268,6 +272,17 @@ export const Modal: React.FC<ModalProps> = ({
     paddingBottom: "calc(1rem + env(safe-area-inset-bottom))",
   };
 
+  // Drawer layout is forced the same way: full-height right-side panel.
+  const drawerStyle: React.CSSProperties = {
+    height: "100dvh",
+    maxHeight: "100dvh",
+    width: "min(24rem, 92vw)",
+    maxWidth: "min(24rem, 92vw)",
+    margin: 0,
+    borderRadius: "1.5rem 0 0 1.5rem",
+    borderRightWidth: 0,
+  };
+
   return createPortal(
     <AnimatePresence onExitComplete={onExitComplete}>
       {isOpen && (
@@ -276,7 +291,13 @@ export const Modal: React.FC<ModalProps> = ({
         <div
           className={
             backdropClassName ??
-            `fixed inset-0 z-50 flex ${isSheet ? "items-end justify-center p-0" : "items-center justify-center p-4"}`
+            `fixed inset-0 z-50 flex ${
+              isDrawer
+                ? "items-stretch justify-end p-0"
+                : isSheet
+                  ? "items-end justify-center p-0"
+                  : "items-center justify-center p-4"
+            }`
           }
           onClick={handleBackdropClick}
           aria-modal="true"
@@ -310,18 +331,30 @@ export const Modal: React.FC<ModalProps> = ({
                 ? false
                 : isSheet
                   ? { y: "100%" }
-                  : { scale: 0.95, opacity: 0, y: 15 }
+                  : isDrawer
+                    ? { x: "100%" }
+                    : { scale: 0.95, opacity: 0, y: 15 }
             }
-            animate={disableAnimations ? {} : isSheet ? { y: 0 } : { scale: 1, opacity: 1, y: 0 }}
+            animate={
+              disableAnimations
+                ? {}
+                : isSheet
+                  ? { y: 0 }
+                  : isDrawer
+                    ? { x: 0 }
+                    : { scale: 1, opacity: 1, y: 0 }
+            }
             exit={
               disableAnimations
                 ? {}
                 : isSheet
                   ? { y: "100%", transition: { duration: 0.22, ease: "easeIn" } }
-                  : { scale: 0.95, opacity: 0, y: 10 }
+                  : isDrawer
+                    ? { x: "100%", transition: { duration: 0.22, ease: "easeIn" } }
+                    : { scale: 0.95, opacity: 0, y: 10 }
             }
             transition={
-              isSheet
+              isSheet || isDrawer
                 ? { type: "spring", damping: 32, stiffness: 320 }
                 : { duration: 0.18, ease: "easeOut" }
             }
@@ -333,12 +366,18 @@ export const Modal: React.FC<ModalProps> = ({
             onDragEnd={(_, info) => {
               if (info.offset.y > 120 || info.velocity.y > 800) onClose();
             }}
-            className={`${skipFrameTarget ? "" : "modal-frame-target "}${isSheet ? "flex flex-col overflow-hidden " : ""}${panelClassName} ${
+            className={`${skipFrameTarget ? "" : "modal-frame-target "}${isSheet || isDrawer ? "flex flex-col overflow-hidden " : ""}${panelClassName} ${
               isGlitchedCtx
                 ? " bg-black! text-cyan-400! border-cyan-500! shadow-[0_0_35px_rgba(6,182,212,0.6)] border-4 select-none glitch-text-anim font-mono "
                 : ""
             }`}
-            style={isSheet ? { ...panelStyle, ...sheetStyle } : panelStyle}
+            style={
+              isSheet
+                ? { ...panelStyle, ...sheetStyle }
+                : isDrawer
+                  ? { ...panelStyle, ...drawerStyle }
+                  : panelStyle
+            }
             onKeyDown={handleKeyDown}
             onAnimationComplete={() => {
               if (isOpen) setSettled(true);

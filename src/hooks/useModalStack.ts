@@ -22,6 +22,7 @@ export const MODAL_IDS = [
   "upgrades",
   "achievements",
   "gehege",
+  "menu",
 ] as const;
 
 export type ModalId = (typeof MODAL_IDS)[number];
