@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { useModalStack, type ModalId } from "./useModalStack";
 
 /**
@@ -10,9 +10,18 @@ import { useModalStack, type ModalId } from "./useModalStack";
  */
 export function useModalState() {
   const { stack, openModal, closeModal, closeTop, isOpen } = useModalStack(["tutorial"]);
+  const stackRef = useRef(stack);
+  stackRef.current = stack;
 
   const setters = useMemo(() => {
-    const set = (id: ModalId) => (value: boolean) => (value ? openModal(id) : closeModal(id));
+    const set = (id: ModalId) => (value: boolean | ((prev: boolean) => boolean)) => {
+      const next = typeof value === "function" ? value(stackRef.current.includes(id)) : value;
+      if (next) {
+        openModal(id);
+      } else {
+        closeModal(id);
+      }
+    };
     const open = (id: ModalId) => () => openModal(id);
     return {
       setShowAnimalsModal: set("animals"),

@@ -30,6 +30,14 @@ hand-tune what the formatter owns.
 - In hot paths, prefer `Set`/`Map` lookups and hoisted constants over per-call work (see
   `statsCalculator`).
 
+## Colours
+
+Colours come from the `@theme` tokens in `src/index.css` (or named Tailwind
+hues for semantic variety like rarity tints). Arbitrary hex classes
+(`bg-[#…]`) are an ESLint **error** (`better-tailwindcss/no-restricted-classes`);
+genuinely one-off cosmetic shades opt out with an inline eslint-disable.
+`scripts/migrate-colors.mjs` documents the original migration mapping.
+
 ## Testing
 
 - Tests are **colocated** with the code they cover (`*.test.ts` next to the source).

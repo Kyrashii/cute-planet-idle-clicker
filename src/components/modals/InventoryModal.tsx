@@ -1168,7 +1168,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
 
                 // Overwrite rarity if upgraded
                 const currentRarity = cosmeticRarityLevels?.[cosmetic.id] || cosmetic.rarity;
-                const rarityStyle = RARITY_STYLES[currentRarity] || RARITY_STYLES[cosmetic.rarity];
+                const rarityStyle =
+                  RARITY_STYLES[currentRarity as keyof typeof RARITY_STYLES] ||
+                  RARITY_STYLES[cosmetic.rarity];
 
                 const upgradeDetails = getRarityUpgradeDetails(currentRarity);
 

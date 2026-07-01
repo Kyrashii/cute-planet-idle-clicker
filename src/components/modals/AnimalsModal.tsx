@@ -72,14 +72,14 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
       let cheapest: (typeof animalDefs)[0] | null = null;
       let cheapestCost = Infinity;
 
-      animalDefs.forEach((animal) => {
+      for (const animal of animalDefs) {
         const count = purchasedAnimals[animal.id] || 0;
         const cost = Math.floor(animal.baseCost * Math.pow(animal.costMultiplier, count));
         if (cost < cheapestCost) {
           cheapestCost = cost;
           cheapest = animal;
         }
-      });
+      }
 
       return cheapest ? { animal: cheapest, cost: cheapestCost } : null;
     };
@@ -89,7 +89,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
       let bestRatio = -1;
       let bestCost = 0;
 
-      animalDefs.forEach((animal) => {
+      for (const animal of animalDefs) {
         const count = purchasedAnimals[animal.id] || 0;
         const cost = Math.floor(animal.baseCost * Math.pow(animal.costMultiplier, count));
 
@@ -111,7 +111,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
           best = animal;
           bestCost = cost;
         }
-      });
+      }
 
       return best ? { animal: best, cost: bestCost } : null;
     };

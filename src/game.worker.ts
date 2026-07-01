@@ -307,8 +307,8 @@ function broadcastStateUpdate(
   emit(msg);
 }
 
-function setupActiveEvent(eventId: string) {
-  let finalEventId = eventId;
+function setupActiveEvent(eventId?: string | null) {
+  let finalEventId = eventId ?? null;
   if (eventId === "meteors") {
     finalEventId = "comet_tail";
   } else if (eventId === "aurora") {
