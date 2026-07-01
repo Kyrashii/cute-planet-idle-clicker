@@ -54,6 +54,37 @@ directly.
 - For broader React/Next.js performance guidance, consult the bundled skill at
   `.agents/skills/vercel-react-best-practices/`.
 
+## UI state seams
+
+- **Modal stack** — `src/hooks/useModalStack.ts` holds the ordered stack of open
+  modals; browser/Android back closes the top one via a single history sentinel.
+  `useModalState` adapts it to the legacy flag/setter names. The shared
+  `src/components/ui/Modal.tsx` presents as a centred dialog or (below the 900px
+  `game` breakpoint, with `presentation="auto"`) a drag-dismissable bottom sheet.
+- **Hot store** — the six per-tick scalars (`life`, `totalLifeEarned`,
+  `secondsPlayed`, `planetExp`, `cycleProgress`, `eventTimeRemaining`) land in
+  `src/game/hotStore.ts` on every worker tick; React propagation is gated to
+  ~1 Hz so the App tree doesn't reconcile 4x/s. Fast-visible leaves subscribe
+  via `useHotStat` for the full tick rate.
+- **Effects bus** — `src/effects/effectsBus.ts` re-publishes every WorkerEvent
+  before `applyWorkerEvent`; the GPU effects layer and the adaptive audio
+  engine subscribe imperatively, outside React.
+
+## Effects layer
+
+`src/effects/` renders a starfield/nebula sky canvas (z-0) and an instanced
+particle canvas (z-45) — WebGPU first, WebGL2 fallback, CSS-only when neither
+exists or animations are disabled. `?fx=off|webgl2|frozen&fxseed=N` control it
+for tests. Spawning pauses while modals are open; hidden tabs pause the loop.
+
+## Audio engine
+
+`src/utils/audio.ts` is a facade over `src/audio/`: a shared bus graph with
+compressor + generated-impulse reverb (`engine.ts`), a pure seeded step
+planner for generative chords/bells/melodies (`theory.ts`), a play-intensity
+model fed by the effects bus (`adaptive.ts`), and parameterized SFX
+(`sfx.ts`). Still zero audio assets.
+
 ## Deployment
 
 The app deploys to **Vercel** as a fully static site: `npm run build` produces the Vite

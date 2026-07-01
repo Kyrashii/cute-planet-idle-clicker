@@ -17,7 +17,25 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    {
+      name: "mobile-chrome",
+      use: { ...devices["Pixel 7"] },
+      testMatch: /(mobile|effects)\.spec\.ts/,
+    },
+    // WebKit runs in CI (and locally with E2E_WEBKIT=1 once `npx playwright
+    // install webkit` succeeds) — some dev machines can't install it.
+    ...(process.env.CI || process.env.E2E_WEBKIT
+      ? [
+          {
+            name: "mobile-safari",
+            use: { ...devices["iPhone 14"] },
+            testMatch: /mobile\.spec\.ts/,
+          },
+        ]
+      : []),
+  ],
   webServer: {
     command: "npm run dev",
     url: "http://localhost:3000",

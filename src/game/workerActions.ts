@@ -174,6 +174,7 @@ export function handleWorkerAction(
         if (reqLootboxes) state.shootingStarsCount -= reqLootboxes * count;
 
         if (reqItems) {
+          if (!state.craftedItems) state.craftedItems = {};
           for (const [itemId, qty] of Object.entries(reqItems)) {
             state.craftedItems[itemId] = (state.craftedItems[itemId] || 0) - qty * count;
           }
@@ -252,7 +253,8 @@ export function handleWorkerAction(
       break;
     }
     case "USE_CRAFTED_ITEM": {
-      const { itemId, count: requestedCount } = data;
+      const { itemId, count: requestedCountRaw } = data;
+      const requestedCount = requestedCountRaw ?? 1;
       const res = handleUseCraftedItem(
         state,
         itemId,

@@ -65,9 +65,9 @@ export interface AccountSwitchPrompt {
   previousLocalSave: RawSave;
 }
 
-const isMeaningfulSave = (save: RawSave | null) =>
-  Boolean(save) &&
-  ((Number(save?.totalLifeEarned) || 0) >= 100 || (Number(save?.secondsPlayed) || 0) >= 30);
+const isMeaningfulSave = (save: RawSave | null): save is RawSave =>
+  save !== null &&
+  ((Number(save.totalLifeEarned) || 0) >= 100 || (Number(save.secondsPlayed) || 0) >= 30);
 
 const buildCloudPayload = (
   source: Record<string, unknown>,

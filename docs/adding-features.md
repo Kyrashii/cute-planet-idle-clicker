@@ -36,6 +36,15 @@ through the protocol seam (see `docs/architecture.md`):
 
 Add a unit test for the new pure logic, then run `npm run check`.
 
+## Adding a modal
+
+1. Create the modal under `src/components/modals/` using the shared `Modal`
+   (`presentation="auto"` makes it a bottom sheet on mobile).
+2. Register its id in `MODAL_IDS` (`src/hooks/useModalStack.ts`) and expose the
+   flag/setter pair in `useModalState`.
+3. Add a `React.lazy` import + conditional render in `GameModalsContainer.tsx`
+   (modals are code-split; only mount when open).
+
 ## Where things live
 
 - Hooks: `src/hooks/` (e.g. `useModalState`, `useFloatingTexts`, `useFirebaseSync`).
