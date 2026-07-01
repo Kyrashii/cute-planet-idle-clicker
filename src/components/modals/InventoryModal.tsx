@@ -7,6 +7,9 @@ import { CRAFTING_RECIPES } from "../../data/recipes";
 import { useGameState } from "../../contexts/GameStateContext";
 import { ROGUELITE_PLANET_SKINS } from "../../roguelite/data";
 
+// Forest-green tint for the selected star-colour card (cosmetic, off-palette).
+const STAR_CARD_SELECTED = "bg-[#18392c]/50 border-green-400 shadow-md scale-102";
+
 interface InventoryModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -205,13 +208,13 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
         onClose={onClose}
         panelClassName={`flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
           isNight
-            ? "bg-[#161230]/95 border-cosmic-accent"
+            ? "bg-cosmic-bg-mid/95 border-cosmic-accent"
             : "bg-amber-50/95 border-amber-400 text-slate-800"
         }`}
       >
         {/* GACHA SHAKING STATE OVERLAY */}
         {openingState === "shaking" && (
-          <div className="absolute inset-0 bg-[#070514ec]/98 backdrop-blur-md flex flex-col items-center justify-center gap-4 z-50">
+          <div className="absolute inset-0 bg-cosmic-bg-deep/98 backdrop-blur-md flex flex-col items-center justify-center gap-4 z-50">
             <motion.div
               animate={{
                 rotate: [0, -15, 15, -15, 15, -10, 10, -5, 5, 0],
@@ -230,7 +233,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
 
         {/* GACHA REVEALED POPUP OVERLAY */}
         {openingState === "revealed" && revealedItem && (
-          <div className="absolute inset-0 bg-linear-to-b from-[#0a061d]/98 to-[#130d2f]/98 backdrop-blur-md flex flex-col items-center justify-center p-6 z-50">
+          <div className="absolute inset-0 bg-linear-to-b from-cosmic-bg-deep/98 to-cosmic-bg/98 backdrop-blur-md flex flex-col items-center justify-center p-6 z-50">
             <motion.div
               initial={{ scale: 0.85, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -254,7 +257,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                 <h4 className="font-sans font-black text-xl/tight text-amber-300 uppercase tracking-wide mt-3 ">
                   {revealedItem.germanName}
                 </h4>
-                <p className="text-[12px] font-semibold text-[#c5bfe2] max-w-xs leading-relaxed px-2 text-center">
+                <p className="text-[12px] font-semibold text-cosmic-text-muted max-w-xs leading-relaxed px-2 text-center">
                   {revealedItem.germanDescription}
                 </p>
               </div>
@@ -290,8 +293,8 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
         <div
           className={`p-4 sm:p-5 border-b-3 flex items-center justify-between shrink-0 transition-colors duration-500 ${
             isNight
-              ? "border-cosmic-accent/40 bg-[#0c091e]"
-              : "border-amber-300 bg-amber-100 text-[#2c1d0a]"
+              ? "border-cosmic-accent/40 bg-cosmic-bg-deep"
+              : "border-amber-300 bg-amber-100 text-cosmic-gold-ink"
           }`}
         >
           <div className="flex items-center gap-2.5">
@@ -311,7 +314,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
             onClick={onClose}
             className={`size-8  rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
               isNight
-                ? "bg-[#1a1738] border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover"
+                ? "bg-cosmic-bg-mid border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover"
                 : "bg-white border-2 border-amber-450 text-amber-900 hover:bg-amber-100"
             }`}
           >
@@ -325,7 +328,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
           <div
             className={`p-4 rounded-3xl border-2 flex flex-col md:flex-row items-center justify-between gap-5 relative overflow-hidden transition-all ${
               isNight
-                ? "bg-linear-to-br from-[#1c1642] to-[#26164d] border-cosmic-accent/30"
+                ? "bg-linear-to-br from-cosmic-surface-mid to-cosmic-surface-hover border-cosmic-accent/30"
                 : "bg-linear-to-br from-amber-100 to-orange-100/50 border-amber-300"
             }`}
           >
@@ -357,7 +360,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                 <div
                   className={`px-4 py-2.5 rounded-2xl border text-center font-sans font-black text-xs uppercase cursor-not-allowed select-none ${
                     isNight
-                      ? "bg-[#120e23]/55 border-cosmic-accent/10 text-purple-300/40"
+                      ? "bg-cosmic-bg/55 border-cosmic-accent/10 text-purple-300/40"
                       : "bg-gray-200/55 border-gray-400/20 text-gray-500"
                   }`}
                 >
@@ -381,7 +384,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
           <div
             className={`p-4 rounded-3xl border-2 grid grid-cols-1 sm:grid-cols-3 gap-3.5 ${
               isNight
-                ? "bg-[#110e2d]/60 border-purple-500/20 text-purple-200"
+                ? "bg-cosmic-bg/60 border-purple-500/20 text-purple-200"
                 : "bg-amber-50 border-amber-300 text-amber-900"
             }`}
           >
@@ -492,7 +495,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
             <div
               className={`p-4 rounded-3xl border-2 flex flex-col gap-3 ${
                 isNight
-                  ? "bg-[#141038]/70 border-purple-500/20 text-purple-200"
+                  ? "bg-cosmic-bg-mid/70 border-purple-500/20 text-purple-200"
                   : "bg-orange-50/70 border-amber-300 text-amber-950"
               }`}
             >
@@ -802,7 +805,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
           )}
 
           {/* TAB BAR SEGMENTED ROADPIN */}
-          <div className="flex rounded-2xl bg-[#0d0a22] p-1 border border-purple-500/10">
+          <div className="flex rounded-2xl bg-cosmic-bg p-1 border border-purple-500/10">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -810,10 +813,10 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                 className={`flex-1 py-2.5 rounded-xl font-sans font-extrabold text-xs tracking-wide transition-all cursor-pointer ${
                   activeTab === tab.id
                     ? isNight
-                      ? "bg-[#211a4e] text-cosmic-accent shadow-lg border border-purple-500/20"
+                      ? "bg-cosmic-surface-hover text-cosmic-accent shadow-lg border border-purple-500/20"
                       : "bg-amber-100 text-amber-900 border border-amber-300"
                     : isNight
-                      ? "text-[#978aac] hover:text-white"
+                      ? "text-cosmic-accent-muted hover:text-white"
                       : "text-slate-600 hover:bg-slate-200/40"
                 }`}
               >
@@ -832,10 +835,10 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                 return (
                   <div
                     key={item.id}
-                    className={`p-3.5 border-2 rounded-2.5xl flex flex-col justify-between text-center relative overflow-hidden min-h-[145px] transition-all bg-[#14122d]/45 ${
+                    className={`p-3.5 border-2 rounded-2.5xl flex flex-col justify-between text-center relative overflow-hidden min-h-[145px] transition-all bg-cosmic-bg-mid/45 ${
                       qty > 0
                         ? isNight
-                          ? "border-cosmic-accent/50 bg-[#1d194c]/50"
+                          ? "border-cosmic-accent/50 bg-cosmic-surface-mid/50"
                           : "border-amber-450 bg-amber-100/40 text-slate-800"
                         : "opacity-45 border-gray-650/10 cursor-not-allowed select-none"
                     }`}
@@ -850,7 +853,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                         {item.name}
                       </h6>
                       <p
-                        className={`text-[10px] sm:text-[10.5px] text-[#a599d1] mt-1 leading-normal max-w-xs ${!isNight && "text-slate-600"}`}
+                        className={`text-[10px] sm:text-[10.5px] text-cosmic-accent-muted mt-1 leading-normal max-w-xs ${!isNight && "text-slate-600"}`}
                       >
                         {item.description}
                       </p>
@@ -859,7 +862,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                     <div className="mt-3.5 space-y-2">
                       <div className="text-[10.5px] font-mono leading-none text-purple-300">
                         Besitz:{" "}
-                        <strong className="text-white font-extrabold bg-[#1d173c]/80 px-2 py-0.5 rounded-md border border-purple-400/20">
+                        <strong className="text-white font-extrabold bg-cosmic-bg-mid/80 px-2 py-0.5 rounded-md border border-purple-400/20">
                           {qty}x
                         </strong>
                       </div>
@@ -867,7 +870,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                       {!canActivate ? (
                         <button
                           disabled
-                          className="w-full py-2 rounded-xl text-[10px] font-black uppercase bg-slate-800/80 border border-[#b4a9cc]/10 text-slate-500 cursor-not-allowed select-none"
+                          className="w-full py-2 rounded-xl text-[10px] font-black uppercase bg-slate-800/80 border border-cosmic-accent-muted/10 text-slate-500 cursor-not-allowed select-none"
                         >
                           Keine Exemplare
                         </button>
@@ -908,9 +911,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   onClick={() => onApplyCosmetic("default", "star_color")}
                   className={`p-3.5 rounded-2.5xl border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
                     activeStarColor === "default"
-                      ? "bg-[#18392c]/50 border-green-400 shadow-md scale-102"
+                      ? STAR_CARD_SELECTED
                       : isNight
-                        ? "bg-[#181335]/45 border-cosmic-accent/20 hover:bg-[#1f1945]/60"
+                        ? "bg-cosmic-bg-mid/45 border-cosmic-accent/20 hover:bg-cosmic-surface-mid/60"
                         : "bg-white border-amber-200 hover:bg-amber-50"
                   }`}
                 >
@@ -948,9 +951,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   onClick={() => onApplyCosmetic("none", "planet_accessory")}
                   className={`p-3.5 rounded-2.5xl border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
                     activeAccessory === "none"
-                      ? "bg-[#18392c]/50 border-green-400 shadow-md scale-102"
+                      ? STAR_CARD_SELECTED
                       : isNight
-                        ? "bg-[#181335]/45 border-cosmic-accent/20 hover:bg-[#1f1945]/60"
+                        ? "bg-cosmic-bg-mid/45 border-cosmic-accent/20 hover:bg-cosmic-surface-mid/60"
                         : "bg-white border-amber-200 hover:bg-amber-50"
                   }`}
                 >
@@ -986,9 +989,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   onClick={() => onApplyCosmetic("default", "frame_style")}
                   className={`p-3.5 rounded-2.5xl border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
                     activeFrame === "default"
-                      ? "bg-[#18392c]/50 border-green-400 shadow-md scale-102"
+                      ? STAR_CARD_SELECTED
                       : isNight
-                        ? "bg-[#181335]/45 border-cosmic-accent/20 hover:bg-[#1f1945]/60"
+                        ? "bg-cosmic-bg-mid/45 border-cosmic-accent/20 hover:bg-cosmic-surface-mid/60"
                         : "bg-white border-amber-200 hover:bg-amber-50"
                   }`}
                 >
@@ -1024,9 +1027,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   onClick={() => onApplyCosmetic("default", "moon_skin")}
                   className={`p-3.5 rounded-2.5xl border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
                     activeMoonSkin === "default"
-                      ? "bg-[#18392c]/50 border-green-400 shadow-md scale-102"
+                      ? STAR_CARD_SELECTED
                       : isNight
-                        ? "bg-[#181335]/45 border-cosmic-accent/20 hover:bg-[#1f1945]/60"
+                        ? "bg-cosmic-bg-mid/45 border-cosmic-accent/20 hover:bg-cosmic-surface-mid/60"
                         : "bg-white border-amber-200 hover:bg-amber-50"
                   }`}
                 >
@@ -1062,9 +1065,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   onClick={() => onApplyPlanetSkin("default")}
                   className={`p-3.5 rounded-2.5xl border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
                     activePlanetSkin === "default"
-                      ? "bg-[#18392c]/50 border-green-400 shadow-md scale-102"
+                      ? STAR_CARD_SELECTED
                       : isNight
-                        ? "bg-[#181335]/45 border-cosmic-accent/20 hover:bg-[#1f1945]/60"
+                        ? "bg-cosmic-bg-mid/45 border-cosmic-accent/20 hover:bg-cosmic-surface-mid/60"
                         : "bg-white border-amber-200 hover:bg-amber-50"
                   }`}
                 >
@@ -1105,12 +1108,12 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                       onClick={() => isUnlocked && onApplyPlanetSkin(skin.id)}
                       className={`p-2 border-2 rounded-2.5xl flex flex-col items-center justify-between text-center relative overflow-hidden min-h-[145px] transition-all ${
                         isActive
-                          ? "bg-[#18392c]/50 border-green-400 shadow-md scale-102"
+                          ? STAR_CARD_SELECTED
                           : isUnlocked
                             ? isNight
-                              ? "bg-[#211a4a]/40 border-purple-500/20 hover:bg-cosmic-surface-mid/80 cursor-pointer"
+                              ? "bg-cosmic-surface-mid/40 border-purple-500/20 hover:bg-cosmic-surface-mid/80 cursor-pointer"
                               : "bg-white border-amber-200 hover:bg-amber-50/50 cursor-pointer"
-                            : "bg-[#14122d]/40 border-gray-600/10 opacity-45 cursor-not-allowed select-none"
+                            : "bg-cosmic-bg-mid/40 border-gray-600/10 opacity-45 cursor-not-allowed select-none"
                       }`}
                     >
                       {!isUnlocked && (
@@ -1182,16 +1185,16 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                     onClick={() => isUnlocked && onApplyCosmetic(cosmetic.value, cosmetic.type)}
                     className={`p-3 border-2 rounded-2.5xl flex flex-col items-center justify-between text-center relative overflow-hidden min-h-[145px] transition-all ${
                       isActive
-                        ? "bg-[#18392c]/50 border-green-400 shadow-md scale-102"
+                        ? STAR_CARD_SELECTED
                         : isUnlocked
                           ? isNight
-                            ? "bg-[#211a4a]/40 border-purple-500/20 hover:bg-cosmic-surface-mid/80 cursor-pointer"
+                            ? "bg-cosmic-surface-mid/40 border-purple-500/20 hover:bg-cosmic-surface-mid/80 cursor-pointer"
                             : "bg-white border-amber-200 hover:bg-amber-50/50 cursor-pointer"
                           : hasWishUpgrade
                             ? isNight
-                              ? "bg-[#1c183a]/90 border-pink-500/40 opacity-95 cursor-default"
+                              ? "bg-cosmic-surface/90 border-pink-500/40 opacity-95 cursor-default"
                               : "bg-pink-50/90 hover:bg-pink-100 border-pink-300 opacity-95 cursor-default"
-                            : "bg-[#14122d]/40 border-gray-600/10 opacity-45 cursor-not-allowed select-none"
+                            : "bg-cosmic-bg-mid/40 border-gray-600/10 opacity-45 cursor-not-allowed select-none"
                     }`}
                   >
                     {/* Lock symbol if not unlocked */}
@@ -1275,7 +1278,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                           className={`w-full py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider text-white transition-all ${
                             glitterDust >= getDirectPurchaseCost(cosmetic.rarity)
                               ? "bg-linear-to-r from-pink-500 to-amber-500 hover:from-pink-600 hover:to-amber-600 shadow-md cursor-pointer active:scale-95"
-                              : "bg-slate-800/80 border border-[#b4a9cc]/10 text-slate-500 cursor-not-allowed"
+                              : "bg-slate-800/80 border border-cosmic-accent-muted/10 text-slate-500 cursor-not-allowed"
                           }`}
                         >
                           Kaufen: {getDirectPurchaseCost(cosmetic.rarity)} ✨

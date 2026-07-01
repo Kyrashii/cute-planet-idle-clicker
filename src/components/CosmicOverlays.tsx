@@ -48,11 +48,11 @@ export const CosmicOverlays: React.FC<CosmicOverlaysProps> = ({
                 ? "bg-black/95 border-rose-500/70 shadow-[0_0_25px_rgba(244,63,94,0.4)]"
                 : inGlitchGalaxy
                   ? "bg-black/95 border-cyan-500/70 shadow-[0_0_25px_rgba(6,182,212,0.4)]"
-                  : "bg-[#120f26]/95 border-[#ffcbdc]/45"
+                  : "bg-cosmic-bg/95 border-brand-pink/45"
             }`}
           >
             <span
-              className={`text-[10px] sm:text-xs font-mono font-black uppercase tracking-widest block mb-1 ${glitchStyle ? (glitchEntry ? "text-rose-400 glitch-chromatic-text" : "text-cyan-400 glitch-chromatic-text") : "text-[#ffcbdc]"}`}
+              className={`text-[10px] sm:text-xs font-mono font-black uppercase tracking-widest block mb-1 ${glitchStyle ? (glitchEntry ? "text-rose-400 glitch-chromatic-text" : "text-cyan-400 glitch-chromatic-text") : "text-brand-pink"}`}
             >
               {glitchEntry
                 ? "⚠️ INSTABILER SEKTOR ERKANNT ⚠️"
@@ -126,10 +126,10 @@ export const CosmicOverlays: React.FC<CosmicOverlaysProps> = ({
             }}
             className={`px-8 py-4 rounded-3xl font-sans font-black text-sm uppercase tracking-[0.2em] border-4 cursor-pointer select-none pointer-events-auto shadow-2xl ${
               glitchEntry
-                ? "bg-linear-to-r from-red-600 via-fuchsia-600 to-[#120f26] text-white"
+                ? "bg-linear-to-r from-red-600 via-fuchsia-600 to-cosmic-bg text-white"
                 : inGlitchGalaxy
-                  ? "bg-linear-to-r from-cyan-500 via-rose-500 to-[#120f26] text-white"
-                  : "bg-linear-to-r from-cosmic-pink via-cosmic-accent to-cosmic-pink text-[#0b0818]"
+                  ? "bg-linear-to-r from-cyan-500 via-rose-500 to-cosmic-bg text-white"
+                  : "bg-linear-to-r from-cosmic-pink via-cosmic-accent to-cosmic-pink text-cosmic-bg-deep"
             }`}
           >
             {glitchEntry
@@ -200,7 +200,7 @@ export const CosmicOverlays: React.FC<CosmicOverlaysProps> = ({
       {/* Repair Glitch Galaxy confirmation modal */}
       <AnimatePresence>
         {showRepairDialog && (
-          <div className="fixed inset-0 z-100 bg-[#070512]/95 backdrop-blur-md pointer-events-auto flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-100 bg-cosmic-bg-deep/95 backdrop-blur-md pointer-events-auto flex items-center justify-center p-4">
             <div
               className="relative max-w-md w-full rounded-[2.5rem] overflow-hidden border-4 select-none text-white p-6 sm:p-10 flex flex-col justify-end border-cyan-500 shadow-[0_0_55px_rgba(6,182,212,0.45)] min-h-[420px]"
               style={{
@@ -211,7 +211,7 @@ export const CosmicOverlays: React.FC<CosmicOverlaysProps> = ({
             >
               {/* Overlays and screen effect scanlines */}
               <div className="absolute inset-0 bg-black/65 pointer-events-none" />
-              <div className="absolute inset-0 bg-linear-to-t from-black via-black/45 to-[#09090b]/25 pointer-events-none" />
+              <div className="absolute inset-0 bg-linear-to-t from-black via-black/45 to-zinc-950/25 pointer-events-none" />
               <div className="absolute inset-0 bg-scanlines opacity-10 pointer-events-none" />
 
               {/* Content area */}

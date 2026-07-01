@@ -29,9 +29,9 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
   }) => {
     const getEventStyle = () => {
       if (!activeEvent)
-        return "bg-[#110e28]/85 border-cosmic-accent/45 text-cosmic-accent-muted shadow-inner";
+        return "bg-cosmic-bg/85 border-cosmic-accent/45 text-cosmic-accent-muted shadow-inner";
       if (activeEvent === "black_hole") {
-        return "bg-gradient-to-br from-[#0c051a]/95 via-[#180d38]/95 to-black border-purple-600/90 text-purple-100 shadow-[0_0_30px_rgba(147,51,234,0.3)]";
+        return "bg-gradient-to-br from-cosmic-bg-deep/95 via-cosmic-bg-mid/95 to-black border-purple-600/90 text-purple-100 shadow-[0_0_30px_rgba(147,51,234,0.3)]";
       }
 
       const id = activeEvent;

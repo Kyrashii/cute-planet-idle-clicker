@@ -213,7 +213,7 @@ export const PLANET_THEMES = [
     name: "Lollipop-Suesswald",
     subName: "Kandierte Ozeane und Waelder aus bunter Zuckerwatte.",
     image: "/assets/planets/05_lollipop_suesswald.png",
-    bgColor: "from-[#fef08a] via-[#fbcfe8] to-[#f472b6]",
+    bgColor: "from-cosmic-yellow via-pink-200 to-pink-400",
     continents: "rgba(253, 242, 248, 0.5)",
     cheekColor: "rgba(244, 114, 182, 0.5)",
     hasClouds: true,
@@ -227,7 +227,7 @@ export const PLANET_THEMES = [
     name: "Cyber-Neon-Oase",
     subName: "Ein digitaler Traum aus fluessigem Licht und gluehendem Neon-Raster.",
     image: "/assets/planets/06_cyber_neon_oase.png",
-    bgColor: "from-[#06b6d4] to-[#1e1b4b]",
+    bgColor: "from-cyan-500 to-cosmic-surface-mid",
     continents: "rgba(6, 182, 212, 0.25)",
     cheekColor: "rgba(6, 182, 212, 0.5)",
     hasClouds: false,
@@ -241,7 +241,7 @@ export const PLANET_THEMES = [
     name: "Amethyst-Zitadelle",
     subName: "Geheimnisvolle Kristalle pulsieren mit magischer Energie.",
     image: "/assets/planets/07_amethyst_zitadelle.png",
-    bgColor: "from-[#c084fc] via-[#5b21b6] to-[#2e1065]",
+    bgColor: "from-purple-400 via-violet-800 to-violet-950",
     continents: "rgba(196, 181, 253, 0.3)",
     cheekColor: "rgba(168, 85, 247, 0.5)",
     hasClouds: true,
@@ -255,7 +255,7 @@ export const PLANET_THEMES = [
     name: "Lava-Karit-Grotte",
     subName: "Feuriges fluessiges Gestein glimmt harmonisch in der Nacht.",
     image: "/assets/planets/08_lava_karit_grotte.png",
-    bgColor: "from-[#f97316] via-[#ef4444] to-[#451a03]",
+    bgColor: "from-orange-500 via-red-500 to-amber-950",
     continents: "rgba(254, 215, 170, 0.3)",
     cheekColor: "rgba(239, 68, 68, 0.6)",
     hasClouds: false,
@@ -269,7 +269,7 @@ export const PLANET_THEMES = [
     name: "Auroras Goldene Krone",
     subName: "Koenigliches Schimmern umgibt den von Sternenwind umwehten Goetterplaneten.",
     image: "/assets/planets/09_auroras_goldene_krone.png",
-    bgColor: "from-[#fef08a] via-[#fbbf24] to-[#78350f]",
+    bgColor: "from-cosmic-yellow via-warning to-amber-900",
     continents: "rgba(254, 243, 199, 0.5)",
     cheekColor: "rgba(245, 158, 11, 0.5)",
     hasClouds: true,
@@ -283,7 +283,7 @@ export const PLANET_THEMES = [
     name: "Kuschel-Utopia",
     subName: "Die ultimative Komfort-Zone voll Glueck, Sternenstaub und Harmonie.",
     image: "/assets/planets/10_kuschel_utopia.png",
-    bgColor: "from-[#fef3c7] via-[#fecdd3] to-[#ec4899] animate-pulse",
+    bgColor: "from-amber-100 via-rose-200 to-pink-500 animate-pulse",
     continents: "rgba(254, 243, 199, 0.5)",
     cheekColor: "rgba(244, 63, 94, 0.5)",
     hasClouds: true,
@@ -339,7 +339,7 @@ export const PLANET_THEMES = [
     name: "Traumblasen-Planet",
     subName: "Irisierende schillernde Blasen platzen friedlich und verstreuen suesse Traeume.",
     image: "/assets/planets/14_traumblasen_planet.png",
-    bgColor: "from-teal-100 via-[#e0f2fe] to-[#caa5fe]",
+    bgColor: "from-teal-100 via-sky-100 to-cosmic-accent",
     continents: "rgba(204, 251, 241, 0.4)",
     cheekColor: "rgba(20, 184, 166, 0.45)",
     hasClouds: true,
@@ -353,7 +353,7 @@ export const PLANET_THEMES = [
     name: "Honigstern-Planet",
     subName: "Klebrig-suesser goldener Nektar fliesst durch schillernde Honigwaben.",
     image: "/assets/planets/15_honigstern_planet.png",
-    bgColor: "from-[#fef3c7] via-[#fde68a] to-[#d97706]",
+    bgColor: "from-amber-100 via-amber-200 to-amber-600",
     continents: "rgba(254, 243, 199, 0.5)",
     cheekColor: "rgba(245, 158, 11, 0.6)",
     hasClouds: true,
@@ -367,7 +367,7 @@ export const PLANET_THEMES = [
     name: "Lavendellicht-Planet",
     subName: "Ein beruhigendes, weiches Feld voll duftender lila Sternen-Lavendel.",
     image: "/assets/planets/16_lavendellicht_planet.png",
-    bgColor: "from-[#faf5ff] via-[#caa5fe] to-[#4c1d95]",
+    bgColor: "from-purple-50 via-cosmic-accent to-violet-900",
     continents: "rgba(243, 232, 255, 0.35)",
     cheekColor: "rgba(168, 85, 247, 0.5)",
     hasClouds: true,
@@ -381,7 +381,7 @@ export const PLANET_THEMES = [
     name: "Kuschelkomet-Planet",
     subName: "Ein kometenhafter Schweif aus bunten Pluesch-Kristallen tanzt am Horizont.",
     image: "/assets/planets/17_kuschelkomet_planet.png",
-    bgColor: "from-[#fdf2f8] via-[#fbcfe8] to-[#9d174d]",
+    bgColor: "from-pink-50 via-pink-200 to-pink-800",
     continents: "rgba(253, 242, 248, 0.45)",
     cheekColor: "rgba(236, 72, 153, 0.5)",
     hasClouds: false,
@@ -395,7 +395,7 @@ export const PLANET_THEMES = [
     name: "Zuckerstern-Garten",
     subName: "Pastellene Pfade fuehren durch spielerisch gewachsene Zuckerbaum-Kapriolen.",
     image: "/assets/planets/18_zuckerstern_garten.png",
-    bgColor: "from-[#fff7ed] via-[#ffedd5] to-[#ea580c]",
+    bgColor: "from-orange-50 via-orange-100 to-orange-600",
     continents: "rgba(255, 247, 237, 0.5)",
     cheekColor: "rgba(249, 115, 22, 0.5)",
     hasClouds: true,
@@ -409,7 +409,7 @@ export const PLANET_THEMES = [
     name: "Aurora-Flausch-Planet",
     subName: "Die magischsten Polarfarben huellen diesen ultra-weichen Kuschelkern ein.",
     image: "/assets/planets/19_aurora_flausch_planet.png",
-    bgColor: "from-[#e0f7fa] via-[#e8eaf6] to-[#ab47bc]",
+    bgColor: "from-cyan-50 via-indigo-50 to-[#ab47bc]",
     continents: "rgba(224, 242, 241, 0.45)",
     cheekColor: "rgba(186, 104, 200, 0.5)",
     hasClouds: true,
@@ -423,7 +423,7 @@ export const PLANET_THEMES = [
     name: "Herzgalaxie-Planet",
     subName: "Das pulsierende Liebes-Zentrum der gesamten Galaxie – ewiges Glueck ist vollendet.",
     image: "/assets/planets/20_herzgalaxie_planet.png",
-    bgColor: "from-[#fff1f2] via-[#fecdd3] to-[#e11d48] animate-pulse",
+    bgColor: "from-rose-50 via-rose-200 to-rose-600 animate-pulse",
     continents: "rgba(255, 241, 242, 0.55)",
     cheekColor: "rgba(244, 63, 94, 0.65)",
     hasClouds: true,
@@ -778,8 +778,8 @@ export const Planet: React.FC<PlanetProps> = React.memo(
         <div
           className={`mt-6 flex flex-col items-center w-full max-w-md relative z-10 rounded-2.5xl p-6 border-3 transition-colors duration-500 shadow-md ${
             isNight
-              ? "bg-[#130f2c]/95 border-cosmic-accent/60 text-cosmic-text"
-              : "bg-[#fffdf2]/95 border-amber-300 text-slate-800"
+              ? "bg-cosmic-bg/95 border-cosmic-accent/60 text-cosmic-text"
+              : "bg-amber-50/95 border-amber-300 text-slate-800"
           }`}
         >
           <div className="flex items-center gap-2">
@@ -835,7 +835,9 @@ export const Planet: React.FC<PlanetProps> = React.memo(
 
             <div
               className={`w-full h-4 border-2 rounded-full overflow-hidden p-px transition-colors duration-500 ${
-                isNight ? "border-cosmic-accent/45 bg-[#090715]" : "border-amber-305 bg-amber-50"
+                isNight
+                  ? "border-cosmic-accent/45 bg-cosmic-bg-deep"
+                  : "border-amber-305 bg-amber-50"
               }`}
             >
               <motion.div
@@ -863,7 +865,8 @@ export const Planet: React.FC<PlanetProps> = React.memo(
                 title="Klicke fuer Details"
                 className={`mt-4 w-full flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-[11px] font-bold border shadow-sm transition-all hover:scale-[1.01] active:scale-95 cursor-pointer ${
                   isNight
-                    ? "bg-[#251f4d]/85 hover:bg-[#322769] text-purple-200 border-purple-500/30 hover:border-purple-400/50"
+                    ? // eslint-disable-next-line better-tailwindcss/no-restricted-classes
+                      "bg-cosmic-surface-hover/85 hover:bg-[#322769] text-purple-200 border-purple-500/30 hover:border-purple-400/50"
                     : "bg-amber-50/90 hover:bg-amber-100/90 text-amber-900 border-amber-200 hover:border-amber-300"
                 }`}
               >
@@ -882,7 +885,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(
                 </span>
                 <span
                   className={`text-[9px] uppercase font-black px-1.5 py-0.5 rounded ml-1 animate-pulse ${
-                    isNight ? "bg-purple-500/20 text-purple-300" : "bg-amber-100 text-[#7c2d12]"
+                    isNight ? "bg-purple-500/20 text-purple-300" : "bg-amber-100 text-orange-900"
                   }`}
                 >
                   ℹ️ Info

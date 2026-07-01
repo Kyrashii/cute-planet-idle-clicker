@@ -36,7 +36,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
         onClose={onClose}
         panelClassName={`relative w-full max-w-lg overflow-y-auto max-h-[90vh] rounded-3.5xl border-3 shadow-2xl p-6 md:p-8 ${
           isNight
-            ? "bg-[#16122f]/98 border-cosmic-accent/70 text-cosmic-text custom-scrollbar"
+            ? "bg-cosmic-bg-mid/98 border-cosmic-accent/70 text-cosmic-text custom-scrollbar"
             : "bg-amber-50/98 border-amber-300 text-slate-800 custom-scrollbar"
         }`}
       >
@@ -93,7 +93,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
             {count}x {itemName}
           </h3>
           <p
-            className={`text-xs mt-1.5 font-bold ${isNight ? "text-[#a2a0de]" : "text-slate-600"}`}
+            className={`text-xs mt-1.5 font-bold ${isNight ? "text-cosmic-text-muted" : "text-slate-600"}`}
           >
             Erfolgreich im kosmischen Core verarbeitet! Folgende Ressourcen wurden freigelassen:
           </p>
@@ -106,7 +106,9 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
             {hasLife && (
               <div
                 className={`p-3 rounded-2xl border flex flex-col justify-center items-center text-center shadow-sm ${
-                  isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
+                  isNight
+                    ? "bg-cosmic-surface-mid/55 border-purple-500/20"
+                    : "bg-white border-amber-100"
                 }`}
               >
                 <Heart className="size-5  text-rose-500 fill-rose-500/25 mb-1" />
@@ -124,7 +126,9 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
             {hasStars && (
               <div
                 className={`p-3 rounded-2xl border flex flex-col justify-center items-center text-center shadow-sm ${
-                  isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
+                  isNight
+                    ? "bg-cosmic-surface-mid/55 border-purple-500/20"
+                    : "bg-white border-amber-100"
                 }`}
               >
                 <span className="text-lg filter drop-shadow mb-1">⭐</span>
@@ -142,7 +146,9 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
             {hasGlitter && (
               <div
                 className={`p-3 rounded-2xl border flex flex-col justify-center items-center text-center shadow-sm ${
-                  isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
+                  isNight
+                    ? "bg-cosmic-surface-mid/55 border-purple-500/20"
+                    : "bg-white border-amber-100"
                 }`}
               >
                 <Sparkles
@@ -163,7 +169,9 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
             {hasLootboxes && (
               <div
                 className={`p-3 rounded-2xl border flex flex-col justify-center items-center text-center shadow-sm ${
-                  isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
+                  isNight
+                    ? "bg-cosmic-surface-mid/55 border-purple-500/20"
+                    : "bg-white border-amber-100"
                 }`}
               >
                 <Gift className="size-5  text-indigo-400 mb-1" />
@@ -181,7 +189,9 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
             {hasXp && (
               <div
                 className={`p-3 rounded-2xl border flex flex-col justify-center items-center text-center shadow-sm ${
-                  isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
+                  isNight
+                    ? "bg-cosmic-surface-mid/55 border-purple-500/20"
+                    : "bg-white border-amber-100"
                 }`}
               >
                 <span className="text-lg mb-1">💊</span>
@@ -199,7 +209,9 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
             {hasPrestige && (
               <div
                 className={`p-3 rounded-2xl border flex flex-col justify-center items-center text-center shadow-sm ${
-                  isNight ? "bg-[#1e173e]/55 border-purple-500/20" : "bg-white border-amber-100"
+                  isNight
+                    ? "bg-cosmic-surface-mid/55 border-purple-500/20"
+                    : "bg-white border-amber-100"
                 }`}
               >
                 <Trophy className="size-5  text-amber-500 mb-1" />
@@ -258,7 +270,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
                           ? "bg-slate-900/60 border-slate-800 text-slate-400"
                           : "bg-gray-100 border-gray-250 text-slate-500"
                         : isNight
-                          ? "bg-[#211b4a] border-purple-500/20 text-white"
+                          ? "bg-cosmic-surface-mid border-purple-500/20 text-white"
                           : "bg-white border-amber-100 text-amber-950"
                     }`}
                   >
@@ -302,7 +314,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
                       key={animalId}
                       className={`flex items-center gap-1.5 p-2 rounded-xl border ${
                         isNight
-                          ? "bg-[#18153c]/80 border-indigo-500/10"
+                          ? "bg-cosmic-bg-mid/80 border-indigo-500/10"
                           : "bg-white border-blue-50 text-blue-950"
                       }`}
                     >

@@ -15,7 +15,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = React.memo(
         onClose={onClose}
         panelClassName={`max-w-md w-full border-3 rounded-3.5xl p-6 sm:p-8 relative flex flex-col items-center text-center gap-5 shadow-2xl transition-all duration-500 selection:bg-transparent ${
           isNight
-            ? "bg-[#1b1738]/95 border-cosmic-accent text-cosmic-text shadow-[0_0_30px_rgba(202,165,254,0.15)]"
+            ? "bg-cosmic-bg-mid/95 border-cosmic-accent text-cosmic-text shadow-[0_0_30px_rgba(202,165,254,0.15)]"
             : "bg-amber-50/95 border-amber-300 text-slate-800 shadow-[0_0_30px_rgba(217,119,6,0.1)]"
         }`}
       >
@@ -23,7 +23,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = React.memo(
         <div
           className={`size-16  rounded-2.5xl flex items-center justify-center text-4xl shadow-inner select-none animate-bounce ${
             isNight
-              ? "bg-[#252048] border-2 border-cosmic-accent/50"
+              ? "bg-cosmic-surface-hover border-2 border-cosmic-accent/50"
               : "bg-amber-100 border-2 border-amber-300"
           }`}
         >
@@ -68,8 +68,9 @@ export const TutorialModal: React.FC<TutorialModalProps> = React.memo(
           onClick={onClose}
           className={`w-full sm:w-auto text-xs font-black px-8 py-3 border-3 rounded-2xl cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-md flex items-center justify-center gap-1.5 ${
             isNight
-              ? "border-amber-300 bg-amber-400 text-[#251910] hover:bg-amber-305 shadow-[4px_4px_0px_#f59e0b]"
-              : "border-amber-400 bg-amber-300 text-[#5c3a00] hover:bg-amber-200 shadow-[4px_4px_0px_#d97706]"
+              ? "border-amber-300 bg-amber-400 text-cosmic-gold-ink hover:bg-amber-305 shadow-[4px_4px_0px_#f59e0b]"
+              : // eslint-disable-next-line better-tailwindcss/no-restricted-classes
+                "border-amber-400 bg-amber-300 text-[#5c3a00] hover:bg-amber-200 shadow-[4px_4px_0px_#d97706]"
           }`}
         >
           🚀 Loslegen

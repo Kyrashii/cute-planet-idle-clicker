@@ -1756,7 +1756,7 @@ export default function App() {
       <div
         className={`min-h-screen relative overflow-hidden transition-all duration-1000 ease-in-out flex flex-col font-sans scroll-smooth ${
           isNightStyle
-            ? "bg-linear-to-b from-cosmic-bg via-[#1b1535] to-[#0b0818] text-cosmic-text selection:bg-cosmic-pink selection:text-cosmic-bg"
+            ? "bg-linear-to-b from-cosmic-bg via-cosmic-bg-mid to-cosmic-bg-deep text-cosmic-text selection:bg-cosmic-pink selection:text-cosmic-bg"
             : ""
         } ${inGlitchGalaxy ? "glitch-bg shadow-[inset_0_0_80px_rgba(244,63,94,0.3)]" : ""}`}
       >
@@ -2029,8 +2029,10 @@ export default function App() {
               exit={{ opacity: 0, scale: 0.85, y: 20 }}
               className={`fixed bottom-6 right-6 z-60 flex items-center gap-3 px-4 py-3 rounded-2xl border-2 shadow-2xl backdrop-blur-md transition-colors ${
                 autosaveNotification.success
-                  ? "bg-[#163a24]/90 border-emerald-400 text-emerald-100"
-                  : "bg-[#2c1328]/90 border-cosmic-pink text-rose-100"
+                  ? // eslint-disable-next-line better-tailwindcss/no-restricted-classes
+                    "bg-[#163a24]/90 border-emerald-400 text-emerald-100"
+                  : // eslint-disable-next-line better-tailwindcss/no-restricted-classes
+                    "bg-[#2c1328]/90 border-cosmic-pink text-rose-100"
               }`}
             >
               {autosaveNotification.success ? (
@@ -2065,8 +2067,9 @@ export default function App() {
                 id="blackhole-result-dialog"
                 className={`w-full max-w-md p-6 rounded-3xl border-3 shadow-[0_0_50px_rgba(147,51,234,0.4)] text-center relative overflow-hidden transition-all ${
                   blackHoleResult.outcomeType === "good"
-                    ? "bg-linear-to-b from-[#1c0d3a] via-[#0d0722] to-black border-purple-500 text-purple-100"
-                    : "bg-linear-to-b from-[#1a070e] via-[#0c0307] to-black border-rose-800 text-rose-100"
+                    ? "bg-linear-to-b from-cosmic-ink via-cosmic-bg to-black border-purple-500 text-purple-100"
+                    : // eslint-disable-next-line better-tailwindcss/no-restricted-classes
+                      "bg-linear-to-b from-[#1a070e] via-[#0c0307] to-black border-rose-800 text-rose-100"
                 }`}
               >
                 {/* Spinning/pulsing decorative backdrop glows */}
@@ -2081,8 +2084,9 @@ export default function App() {
                 <span
                   className={`font-mono text-[9px] uppercase tracking-widest px-2.5 py-0.5 rounded-full border leading-none shadow-sm ${
                     blackHoleResult.outcomeType === "good"
-                      ? "bg-[#180d38]/60 border-purple-500/30 text-purple-300"
-                      : "bg-[#1a070e]/60 border-rose-800/30 text-rose-300"
+                      ? "bg-cosmic-bg-mid/60 border-purple-500/30 text-purple-300"
+                      : // eslint-disable-next-line better-tailwindcss/no-restricted-classes
+                        "bg-[#1a070e]/60 border-rose-800/30 text-rose-300"
                   }`}
                 >
                   {blackHoleResult.outcomeType === "good"

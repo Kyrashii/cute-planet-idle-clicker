@@ -97,7 +97,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
       <>
         <header
           className={`sticky top-0 z-20 backdrop-blur-md p-4  sm:px-6 shadow-md transition-all duration-500 border-b-4 ${
-            isNightStyle ? "bg-[#110e26]/85 border-cosmic-accent/50 text-cosmic-text" : ""
+            isNightStyle ? "bg-cosmic-bg/85 border-cosmic-accent/50 text-cosmic-text" : ""
           } ${showTutorial ? "blur-md pointer-events-none select-none" : ""}`}
         >
           <div className="max-w-6xl mx-auto flex items-center justify-between relative z-10">
@@ -138,8 +138,8 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                 data-testid="open-roguelite-button"
                 className={`group relative flex items-center gap-2 rounded-xl border-2 px-3 py-2 transition-all shadow-sm cursor-pointer ${
                   hasActiveRogueliteRun
-                    ? "border-fuchsia-300/70 bg-linear-to-r from-[#261343] via-[#1b1539] to-[#152a44] text-white shadow-[0_0_30px_rgba(202,165,254,0.22)]"
-                    : "border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
+                    ? "border-fuchsia-300/70 bg-linear-to-r from-cosmic-ink via-cosmic-bg-mid to-sky-950 text-white shadow-[0_0_30px_rgba(202,165,254,0.22)]"
+                    : "border-cosmic-accent/50 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text"
                 }`}
                 title="Galaxie-Roguelite oeffnen"
               >
@@ -166,7 +166,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                 value={secretInput}
                 onChange={(e) => setSecretInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="px-2.5 py-1.5 w-24 sm:w-32 text-xs font-mono font-black border-2 border-cosmic-pink/40 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text placeholder-cosmic-pink/30 rounded-xl focus:outline-none focus:border-cosmic-pink/90 transition-all duration-300 shadow-sm text-center"
+                className="px-2.5 py-1.5 w-24 sm:w-32 text-xs font-mono font-black border-2 border-cosmic-pink/40 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text placeholder-cosmic-pink/30 rounded-xl focus:outline-none focus:border-cosmic-pink/90 transition-all duration-300 shadow-sm text-center"
                 title="Geheimer Text eingeben"
                 id="secret-code-input"
               />
@@ -174,7 +174,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
               {/* Lifepoints summary */}
               <div
                 className={`px-4 py-1.5 rounded-xl flex flex-col items-end shadow-sm border-2 transition-colors duration-500 ${
-                  isNightStyle ? "bg-[#191533] border-cosmic-pink/60 text-cosmic-text" : ""
+                  isNightStyle ? "bg-cosmic-bg-mid border-cosmic-pink/60 text-cosmic-text" : ""
                 }`}
               >
                 <span
@@ -196,14 +196,14 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
               {(galaxyShards > 0 || prestigeCount > 0) && (
                 <button
                   onClick={onOpenGalaxyShardsShop}
-                  className={`px-4 py-1.5 rounded-xl flex flex-col items-end shadow-md border-2 border-fuchsia-400 bg-[#1e1438] text-fuchsia-250 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 group relative overflow-hidden`}
+                  className={`px-4 py-1.5 rounded-xl flex flex-col items-end shadow-md border-2 border-fuchsia-400 bg-cosmic-bg-mid text-fuchsia-250 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 group relative overflow-hidden`}
                   title="Galaktischen Splitter-Shop oeffnen 🌌"
                 >
                   <span className="text-[9px] uppercase font-mono font-black tracking-wider leading-none text-fuchsia-300 group-hover:text-fuchsia-200 transition-colors">
                     Galaxie-Splitter
                   </span>
                   <span
-                    className="font-mono text-xs sm:text-sm font-black mt-0.5 text-[#f5d0fe] flex items-center gap-1 group-hover:text-white transition-colors"
+                    className="font-mono text-xs sm:text-sm font-black mt-0.5 text-fuchsia-200 flex items-center gap-1 group-hover:text-white transition-colors"
                     title={galaxyShards.toLocaleString("de-DE")}
                   >
                     {galaxyShards} 🌌
@@ -215,7 +215,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
               {/* Quiet Mute Switch */}
               <button
                 onClick={handleToggleMute}
-                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
+                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text"
                 title={isMutedState ? "Ton einschalten" : "Ton stummschalten"}
               >
                 {isMutedState ? (
@@ -228,7 +228,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
               {/* Soundtrack Settings Window trigger */}
               <button
                 onClick={() => setShowMusicSettingsModal(true)}
-                className="group p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
+                className="group p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text"
                 title="Sound & Einstellungen oeffnen"
                 id="header_lofi_music_btn"
               >
@@ -238,7 +238,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
               {/* Cloud Sync/Storage toggle */}
               <button
                 onClick={() => setShowCloudSyncModal(true)}
-                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer relative border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
+                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer relative border-cosmic-accent/50 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text"
                 title="Cloud Backup & Synchronisation oeffnen"
                 id="header_cloud_sync_btn"
               >
@@ -251,7 +251,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
               {/* Global Leaderboard trigger */}
               <button
                 onClick={() => setShowLeaderboardModal(true)}
-                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
+                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text"
                 title="Globale Bestenliste oeffnen"
                 id="header_leaderboard_btn"
               >
@@ -261,7 +261,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
               {/* Quick Tutorial drawer toggle */}
               <button
                 onClick={() => setShowTutorial((prev) => !prev)}
-                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-[#16132f] hover:bg-[#201b44] text-cosmic-text"
+                className="p-2.5 rounded-xl border-2 active:scale-95 active:translate-y-px transition-all shadow-sm cursor-pointer border-cosmic-accent/50 bg-cosmic-bg-mid hover:bg-cosmic-surface-mid text-cosmic-text"
                 title="Anleitung"
               >
                 <Info className="size-4  text-cosmic-accent" />
@@ -343,7 +343,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
                 >
                   <button
                     onClick={() => setVideoMuted((prev) => !prev)}
-                    className="p-1.5 rounded-lg hover:bg-white/15 active:scale-95 text-white transition-all cursor-pointer"
+                    className="flex min-h-11 min-w-11 items-center justify-center rounded-lg hover:bg-white/15 active:scale-95 text-white transition-all cursor-pointer"
                     title={videoMuted ? "Ton einschalten" : "Ton stummschalten"}
                   >
                     {videoMuted || videoVolume === 0 ? (

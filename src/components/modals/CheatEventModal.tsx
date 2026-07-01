@@ -79,7 +79,7 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-[#140f30]/95 border-3 border-cosmic-accent rounded-3.5xl p-6 max-w-md w-full shadow-[0_0_40px_rgba(171,159,210,0.25)] text-[#e2dafb] relative overflow-hidden"
+        panelClassName="bg-cosmic-bg-mid/95 border-3 border-cosmic-accent rounded-3.5xl p-6 max-w-md w-full shadow-[0_0_40px_rgba(171,159,210,0.25)] text-cosmic-accent relative overflow-hidden"
       >
         {/* Background glow effects */}
         <div className="absolute -top-24 -left-24 size-48  rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
@@ -90,7 +90,7 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
             <span className="text-[9px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-purple-600 text-white border border-black/30 font-mono leading-none animate-pulse">
               UGUU EDIT-MODUS 🧙‍♀️
             </span>
-            <h5 className="font-sans font-black text-[#ffcbdc] text-base uppercase tracking-wider mt-1">
+            <h5 className="font-sans font-black text-brand-pink text-base uppercase tracking-wider mt-1">
               Kosmisches Ereignis ausloesen
             </h5>
           </div>
@@ -126,7 +126,7 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
               step={1}
               value={planetLevelInput}
               onChange={(event) => setPlanetLevelInput(event.target.value)}
-              className="min-w-0 flex-1 rounded-xl border-2 border-cosmic-accent/50 bg-[#0d0920] px-3 py-2 font-mono text-sm font-black text-white outline-none transition focus:border-purple-300 focus:ring-2 focus:ring-purple-400/30"
+              className="min-w-0 flex-1 rounded-xl border-2 border-cosmic-accent/50 bg-cosmic-bg px-3 py-2 font-mono text-sm font-black text-white outline-none transition focus:border-purple-300 focus:ring-2 focus:ring-purple-400/30"
               aria-describedby="cheat-planet-level-hint"
             />
             <button
@@ -170,7 +170,7 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
         <div className="mt-5 text-right">
           <button
             onClick={onClose}
-            className="py-2 px-5 bg-cosmic-surface-mid hover:bg-[#2d225c] text-[11px] border-2 border-cosmic-accent/60 rounded-xl font-black transition-all active:scale-95 cursor-pointer shadow-md text-white"
+            className="py-2 px-5 bg-cosmic-surface-mid hover:bg-cosmic-surface-hover text-[11px] border-2 border-cosmic-accent/60 rounded-xl font-black transition-all active:scale-95 cursor-pointer shadow-md text-white"
           >
             Schliessen
           </button>

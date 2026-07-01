@@ -84,11 +84,11 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text bg-[#181435]/95 border-cosmic-accent"
+        panelClassName="flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text bg-cosmic-bg-mid/95 border-cosmic-accent"
       >
         {/* Header */}
         <div
-          className={`p-4 sm:p-5 border-b-3 flex items-center justify-between shrink-0 transition-colors duration-500 border-cosmic-accent/40 bg-[#0e0b23]`}
+          className={`p-4 sm:p-5 border-b-3 flex items-center justify-between shrink-0 transition-colors duration-500 border-cosmic-accent/40 bg-cosmic-bg`}
         >
           <div className="flex items-center gap-2.5">
             <span className="text-3xl select-none animate-pulse">🌌</span>
@@ -107,7 +107,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
           </div>
           <button
             onClick={onClose}
-            className={`size-8  rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer bg-[#1a1738] border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover`}
+            className={`size-8  rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer bg-cosmic-bg-mid border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover`}
           >
             ✕
           </button>
@@ -127,13 +127,13 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
               <h4 className="font-sans font-black text-md text-cosmic-text uppercase tracking-wide mt-3.5">
                 Naechste Aufgaben laden...
               </h4>
-              <p className="text-[11px] font-bold text-[#b4addd] max-w-sm mx-auto leading-relaxed">
+              <p className="text-[11px] font-bold text-cosmic-accent-muted max-w-sm mx-auto leading-relaxed">
                 Der Himmel kalibriert sich neu. In Kuerze erwarten dich 3 neue Abenteuer!
               </p>
             </div>
 
             {/* Live Countdown Display */}
-            <div className="bg-linear-to-r from-[#14102c] to-cosmic-surface-mid border-2 border-cosmic-accent/40 rounded-3xl px-12 py-5 shadow-lg text-center flex flex-col items-center justify-center">
+            <div className="bg-linear-to-r from-cosmic-bg to-cosmic-surface-mid border-2 border-cosmic-accent/40 rounded-3xl px-12 py-5 shadow-lg text-center flex flex-col items-center justify-center">
               <span className="text-[9.5px] font-mono font-black uppercase text-cosmic-accent-muted tracking-wider block">
                 Umlaufzeit verbleibend:
               </span>
@@ -144,7 +144,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
 
             {/* Progress Visualizer bar */}
             <div className="w-full max-w-xs space-y-1.5 flex flex-col items-center">
-              <div className="w-full h-3 rounded-full overflow-hidden p-0.5 border bg-[#090715] border-cosmic-accent-muted/25">
+              <div className="w-full h-3 rounded-full overflow-hidden p-0.5 border bg-cosmic-bg-deep border-cosmic-accent-muted/25">
                 <div
                   className="h-full rounded-full bg-linear-to-r from-cosmic-accent to-cosmic-pink h-3"
                   style={{ width: `${progressPercent}%` }}
@@ -158,7 +158,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
         ) : (
           /* Normal Missions List UI */
           <div className="p-4 sm:p-6 overflow-y-auto grow space-y-4">
-            <p className="text-[11px] sm:text-xs leading-relaxed text-center font-bold px-3 py-2.5 rounded-2xl text-cosmic-accent bg-[#221c48]/55 border border-cosmic-accent/20">
+            <p className="text-[11px] sm:text-xs leading-relaxed text-center font-bold px-3 py-2.5 rounded-2xl text-cosmic-accent bg-cosmic-surface-mid/55 border border-cosmic-accent/20">
               Loese diese schnuckeligen Aufgaben, um wertvolle{" "}
               <strong className="text-cosmic-accent font-black underline decoration-pink-300">
                 Sternschnuppen (Lootboxen)
@@ -193,9 +193,9 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
                     key={mission.id}
                     className={`p-3.5 sm:p-4 rounded-2.5xl border-2 transition-all flex flex-col gap-3 relative overflow-hidden ${
                       isClaimed
-                        ? "bg-[#14122d]/40 border-green-500/20 opacity-50"
+                        ? "bg-cosmic-bg-mid/40 border-green-500/20 opacity-50"
                         : isDone
-                          ? "bg-linear-to-r from-[#201d4a] to-[#271d49] border-green-400/80 shadow-[0_4px_12px_rgba(74,222,128,0.15)]"
+                          ? "bg-linear-to-r from-cosmic-surface-hover to-cosmic-surface-hover border-green-400/80 shadow-[0_4px_12px_rgba(74,222,128,0.15)]"
                           : "bg-cosmic-surface-mid/50 border-cosmic-accent/20 hover:bg-cosmic-surface-mid/70"
                     }`}
                   >
@@ -269,7 +269,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
                             {percent}%
                           </span>
                         </div>
-                        <div className="w-full h-2.5 rounded-full overflow-hidden p-0.5 border bg-[#13112b] border-cosmic-accent/20">
+                        <div className="w-full h-2.5 rounded-full overflow-hidden p-0.5 border bg-cosmic-bg border-cosmic-accent/20">
                           <div
                             className={`h-full rounded-full transition-all duration-300 ${
                               isDone

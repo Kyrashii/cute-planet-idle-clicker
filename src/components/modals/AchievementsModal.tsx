@@ -46,7 +46,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
         onClose={onClose}
         panelClassName={`flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl rounded-3xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text ${
           isNight
-            ? "bg-[#181435]/95 border-amber-300"
+            ? "bg-cosmic-bg-mid/95 border-amber-300"
             : "bg-amber-50/95 border-amber-400 text-slate-800"
         }`}
       >
@@ -54,8 +54,8 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
         <div
           className={`p-4 sm:p-5 border-b-3 flex items-center justify-between shrink-0 transition-colors duration-500 ${
             isNight
-              ? "border-amber-300/40 bg-[#0e0b23]"
-              : "border-amber-300 bg-amber-100 text-[#2c1d0a]"
+              ? "border-amber-300/40 bg-cosmic-bg"
+              : "border-amber-300 bg-amber-100 text-cosmic-gold-ink"
           }`}
         >
           <div className="flex items-center gap-2.5">
@@ -75,7 +75,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
             onClick={onClose}
             className={`size-8  rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
               isNight
-                ? "bg-[#1a1738] border-2 border-amber-300 text-amber-200 hover:bg-cosmic-surface-hover"
+                ? "bg-cosmic-bg-mid border-2 border-amber-300 text-amber-200 hover:bg-cosmic-surface-hover"
                 : "bg-white border-2 border-amber-450 text-amber-900 hover:bg-amber-100"
             }`}
           >
@@ -86,7 +86,9 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
         {/* Modal Sub-Header: Progress Dashboard Card */}
         <div
           className={`p-4 border-b shrink-0 flex flex-col sm:flex-row items-center justify-between gap-4 ${
-            isNight ? "bg-[#1c173c]/60 border-cosmic-accent/10" : "bg-amber-100/30 border-amber-200"
+            isNight
+              ? "bg-cosmic-bg-mid/60 border-cosmic-accent/10"
+              : "bg-amber-100/30 border-amber-200"
           }`}
         >
           <div className="w-full sm:w-auto flex items-center gap-3">
@@ -130,7 +132,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
         {/* Filters and Search Bar Container */}
         <div
           className={`p-3 shrink-0 flex flex-col gap-2.5 border-b ${
-            isNight ? "bg-[#13102a]/70 border-cosmic-accent/15" : "bg-amber-50 border-amber-200"
+            isNight ? "bg-cosmic-bg/70 border-cosmic-accent/15" : "bg-amber-50 border-amber-200"
           }`}
         >
           {/* Category tabs */}
@@ -156,7 +158,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
                   achievementCategoryFilter === tab.id
                     ? "bg-amber-500 text-white border-amber-402 shadow-md scale-102"
                     : isNight
-                      ? "bg-[#1f1a44] border-cosmic-accent/20 text-cosmic-accent-muted hover:bg-[#282159]"
+                      ? "bg-cosmic-surface-mid border-cosmic-accent/20 text-cosmic-accent-muted hover:bg-cosmic-surface-hover"
                       : "bg-white border-amber-300 text-amber-950 hover:bg-amber-100"
                 }`}
               >
@@ -175,7 +177,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
               onChange={(e) => setAchievementSearch(e.target.value)}
               className={`w-full px-4 py-2 pl-9 rounded-full text-xs font-semibold focus:outline-none border transition-all ${
                 isNight
-                  ? "bg-[#1a1738] border-cosmic-accent/25 text-cosmic-text focus:border-amber-300"
+                  ? "bg-cosmic-bg-mid border-cosmic-accent/25 text-cosmic-text focus:border-amber-300"
                   : "bg-white border-amber-300 text-slate-800 focus:border-amber-450"
               }`}
             />
@@ -209,10 +211,10 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
                   className={`relative overflow-hidden p-3 rounded-2.5xl border-2 flex gap-3 transition-all ${
                     ach.isUnlocked
                       ? isNight
-                        ? "bg-linear-to-br from-[#271f49] to-[#120e2a] border-yellow-401/70 shadow-[3px_3px_0px_rgba(234,179,8,0.7)]"
+                        ? "bg-linear-to-br from-cosmic-surface-hover to-cosmic-bg border-yellow-401/70 shadow-[3px_3px_0px_rgba(234,179,8,0.7)]"
                         : "bg-linear-to-br from-amber-50 to-yellow-50/70 border-amber-400 text-amber-950 shadow-[3px_3px_0px_rgba(217,119,6,0.6)]"
                       : isNight
-                        ? "bg-[#1a1738]/40 border-cosmic-accent/10 text-slate-500 opacity-60"
+                        ? "bg-cosmic-bg-mid/40 border-cosmic-accent/10 text-slate-500 opacity-60"
                         : "bg-slate-100 border-slate-200 text-slate-400 opacity-70"
                   }`}
                 >
@@ -238,7 +240,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
                         {ach.title}
                       </h5>
                       {ach.isUnlocked && (
-                        <span className="text-[8px] font-mono font-black uppercase text-[#22c55e] select-none shrink-0">
+                        <span className="text-[8px] font-mono font-black uppercase text-green-500 select-none shrink-0">
                           解锁 ✓
                         </span>
                       )}
@@ -291,7 +293,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
         <div
           className={`p-3 border-t flex justify-between items-center text-[10px] text-cosmic-accent-muted font-semibold px-5 ${
             isNight
-              ? "border-amber-300/40 bg-[#0c0a21]"
+              ? "border-amber-300/40 bg-cosmic-bg"
               : "border-amber-250 bg-amber-100 text-amber-950"
           }`}
         >

@@ -29,7 +29,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
         onClose={onClose}
         panelClassName={`flex flex-col max-w-md w-full shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
           isNight
-            ? "bg-[#181333]/95 border-cosmic-accent"
+            ? "bg-cosmic-bg-mid/95 border-cosmic-accent"
             : "bg-amber-50 border-amber-400 text-slate-800"
         }`}
       >
@@ -37,8 +37,8 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
         <div
           className={`p-4 sm:p-5 border-b-3 flex items-center justify-between shrink-0 transition-colors duration-500 ${
             isNight
-              ? "border-cosmic-accent/40 bg-[#0d0a20]"
-              : "border-amber-300 bg-amber-100 text-[#2c1d0a]"
+              ? "border-cosmic-accent/40 bg-cosmic-bg"
+              : "border-amber-300 bg-amber-100 text-cosmic-gold-ink"
           }`}
         >
           <div className="flex items-center gap-2.5">
@@ -63,7 +63,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
             onClick={onClose}
             className={`size-8  rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
               isNight
-                ? "bg-[#1b1937] border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover"
+                ? "bg-cosmic-surface border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover"
                 : "bg-white border-2 border-amber-450 text-amber-900 hover:bg-amber-100"
             }`}
           >
@@ -77,7 +77,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
           <div
             className={`p-4 rounded-3xl border-2 text-center relative overflow-hidden transition-all ${
               isNight
-                ? "bg-[#120f26]/80 border-cosmic-accent/20"
+                ? "bg-cosmic-bg/80 border-cosmic-accent/20"
                 : "bg-amber-100/40 border-amber-200"
             }`}
           >
@@ -104,7 +104,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
             <div
               className={`p-3.5 rounded-2xl border text-xs/relaxed  space-y-2 font-semibold ${
                 isNight
-                  ? "bg-[#201c40]/30 border-cosmic-accent/15 text-purple-100"
+                  ? "bg-cosmic-surface-mid/30 border-cosmic-accent/15 text-purple-100"
                   : "bg-white border-amber-100 text-slate-700"
               }`}
             >
@@ -164,7 +164,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
                 transition={{ duration: 1 }}
                 className="h-full bg-linear-to-r from-cosmic-accent-muted via-cosmic-accent to-amber-300 rounded-full"
               />
-              {canPrestige && <div className="absolute inset-0 bg-[#ffffff1c] animate-pulse" />}
+              {canPrestige && <div className="absolute inset-0 bg-white/11 animate-pulse" />}
             </div>
             <p className="text-[9px] text-cosmic-accent-muted font-semibold text-center italic">
               {canPrestige
@@ -177,7 +177,7 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
         {/* Actions Footer */}
         <div
           className={`p-4 border-t-2 flex flex-col gap-2 transition-colors duration-500 shrink-0 ${
-            isNight ? "border-cosmic-accent/20 bg-[#0d0a20]" : "border-amber-200 bg-amber-50"
+            isNight ? "border-cosmic-accent/20 bg-cosmic-bg" : "border-amber-200 bg-amber-50"
           }`}
         >
           {canPrestige ? (

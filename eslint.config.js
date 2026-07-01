@@ -87,6 +87,22 @@ export default tseslint.config(
       // a large class-reordering diff.
       "better-tailwindcss/enforce-canonical-classes": "warn",
 
+      // Regression fence for the token migration: colours come from the @theme tokens
+      // in src/index.css (or named Tailwind hues), never from arbitrary hex classes.
+      // One-off cosmetic theme shades may opt out with an eslint-disable comment.
+      "better-tailwindcss/no-restricted-classes": [
+        "error",
+        {
+          restrict: [
+            {
+              pattern:
+                "(bg|text|border|from|via|to|ring|shadow|fill|stroke|outline|decoration|divide|accent|caret|placeholder)-\\[#",
+              message: "Use the @theme tokens from src/index.css instead of arbitrary hex colors.",
+            },
+          ],
+        },
+      ],
+
       "@typescript-eslint/no-empty-object-type": "warn",
       "no-empty": ["warn", { allowEmptyCatch: true }],
 
@@ -99,7 +115,7 @@ export default tseslint.config(
 
   // Node-side files (Express dev/prod server, build scripts).
   {
-    files: ["server.ts", "*.ts"],
+    files: ["server.ts", "*.ts", "scripts/**/*.mjs"],
     ignores: ["src/**"],
     languageOptions: {
       globals: { ...globals.node },

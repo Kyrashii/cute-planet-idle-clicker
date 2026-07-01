@@ -132,10 +132,10 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-[#141235]/95 rounded-3.5xl border-3 border-amber-300 flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
+        panelClassName="bg-cosmic-bg-mid/95 rounded-3.5xl border-3 border-amber-300 flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b-3 border-amber-300/60 bg-linear-to-r from-[#110e2f] via-[#1b1747] to-[#110e2f] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b-3 border-amber-300/60 bg-linear-to-r from-cosmic-bg via-cosmic-surface-mid to-cosmic-bg flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
             <span className="text-2xl select-none animate-pulse">🌌</span>
             <div>
@@ -149,21 +149,21 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
           </div>
           <button
             onClick={onClose}
-            className="size-8  rounded-full bg-[#1b1836] border-2 border-amber-300 flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
+            className="size-8  rounded-full bg-cosmic-surface border-2 border-amber-300 flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
           >
             ✕
           </button>
         </div>
 
         {/* Currency Display Bar (HUD) */}
-        <div className="px-5 py-3 bg-[#0d0a22] border-b border-cosmic-accent/10 flex gap-4 items-center justify-around shrink-0 text-xs">
-          <div className="flex items-center gap-1 bg-[#1b1743] px-3 py-1 rounded-xl border border-amber-300/40 font-mono">
+        <div className="px-5 py-3 bg-cosmic-bg border-b border-cosmic-accent/10 flex gap-4 items-center justify-around shrink-0 text-xs">
+          <div className="flex items-center gap-1 bg-cosmic-surface-mid px-3 py-1 rounded-xl border border-amber-300/40 font-mono">
             <span>Sterne:</span>
             <strong className="text-amber-200 font-extrabold text-sm ml-1 flex items-center gap-0.5">
               ⭐ {starsCount}
             </strong>
           </div>
-          <div className="flex items-center gap-1 bg-[#1b1743] px-3 py-1 rounded-xl border border-purple-400/40 font-mono">
+          <div className="flex items-center gap-1 bg-cosmic-surface-mid px-3 py-1 rounded-xl border border-purple-400/40 font-mono">
             <span>Monde:</span>
             <strong className="text-purple-300 font-extrabold text-sm ml-1 flex items-center gap-0.5">
               🌙 {moonsCount}
@@ -173,13 +173,13 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
 
         {/* Segmented Tab Controls */}
         <div className="px-4 pt-4 shrink-0">
-          <div className="flex rounded-2xl bg-[#0a081d] p-1 border border-cosmic-accent/10">
+          <div className="flex rounded-2xl bg-cosmic-bg-deep p-1 border border-cosmic-accent/10">
             <button
               onClick={() => setActiveTab("stars_call")}
               className={`flex-1 py-2 rounded-xl font-sans font-black text-xs tracking-wide transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 activeTab === "stars_call"
-                  ? "bg-[#211a4e] text-amber-300 shadow-lg border border-cosmic-accent/20"
-                  : "text-[#978aac] hover:text-white"
+                  ? "bg-cosmic-surface-hover text-amber-300 shadow-lg border border-cosmic-accent/20"
+                  : "text-cosmic-accent-muted hover:text-white"
               }`}
             >
               ⭐ Autoclicker (Sterne)
@@ -188,8 +188,8 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
               onClick={() => setActiveTab("constellations")}
               className={`flex-1 py-2 rounded-xl font-sans font-black text-xs tracking-wide transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 activeTab === "constellations"
-                  ? "bg-[#211a4e] text-cyan-300 shadow-lg border border-cosmic-accent/20"
-                  : "text-[#978aac] hover:text-white"
+                  ? "bg-cosmic-surface-hover text-cyan-300 shadow-lg border border-cosmic-accent/20"
+                  : "text-cosmic-accent-muted hover:text-white"
               }`}
             >
               🌌 Sternbilder fuellen
@@ -239,7 +239,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                       </p>
                       <div className="mt-1 flex items-center gap-1.5 text-xs text-amber-300 font-mono font-black">
                         <span>Aktive Stars:</span>
-                        <span className="px-2.5 py-0.5 border-2 border-amber-300 rounded-md bg-[#1d173c] text-amber-200">
+                        <span className="px-2.5 py-0.5 border-2 border-amber-300 rounded-md bg-cosmic-bg-mid text-amber-200">
                           {starsCount}
                         </span>
                       </div>
@@ -251,8 +251,8 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                     disabled={life < starCost}
                     className={`w-full px-4 py-3 rounded-xl font-black flex flex-col items-center justify-center transition-all select-none border-2 cursor-pointer ${
                       life >= starCost
-                        ? "bg-linear-to-b from-[#24214e] to-[#12112b] text-cosmic-text border-cosmic-accent hover:from-[#353174] hover:to-[#171638] hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-px  active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
-                        : "bg-[#18162f]/80 text-cosmic-accent-muted/40 border-cosmic-accent/20 shadow-none cursor-not-allowed opacity-40"
+                        ? "bg-linear-to-b from-cosmic-surface-hover to-cosmic-bg text-cosmic-text border-cosmic-accent hover:from-indigo-900 hover:to-cosmic-bg-mid hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-px  active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
+                        : "bg-cosmic-bg-mid/80 text-cosmic-accent-muted/40 border-cosmic-accent/20 shadow-none cursor-not-allowed opacity-40"
                     }`}
                   >
                     <span className="text-[9px] uppercase font-mono tracking-wider font-extrabold text-cosmic-accent-muted">
@@ -265,7 +265,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                 </div>
 
                 {/* Mond-Verschmelzung / Moon Merger Row */}
-                <div className="bg-linear-to-b from-[#2a174d] to-[#171131] p-4 rounded-2.5xl border-2 border-fuchsia-400/50 flex flex-col items-center justify-between gap-4 shadow-lg relative overflow-hidden">
+                <div className="bg-linear-to-b from-cosmic-surface-hover to-cosmic-bg-mid p-4 rounded-2.5xl border-2 border-fuchsia-400/50 flex flex-col items-center justify-between gap-4 shadow-lg relative overflow-hidden">
                   <div className="absolute -right-6 -bottom-6 size-20  rounded-full bg-purple-500/10 blur-xl pointer-events-none" />
 
                   <div className="flex items-center gap-3 w-full relative z-10">
@@ -281,7 +281,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                           Massiv!
                         </span>
                       </div>
-                      <p className="font-sans text-[11.5px] font-semibold text-[#c8bdf4] mt-0.5 leading-tight">
+                      <p className="font-sans text-[11.5px] font-semibold text-cosmic-accent mt-0.5 leading-tight">
                         Verschmelze <b className="text-white">50 Sterne</b> zu einem maechtigen
                         umkreisenden Mond (Trabant).
                       </p>
@@ -318,11 +318,11 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                     disabled={!canMerge}
                     className={`w-full px-4 py-3 rounded-xl font-black flex flex-col items-center justify-center transition-all select-none border-2 cursor-pointer z-10 ${
                       canMerge
-                        ? "bg-linear-to-b from-[#6b21a8] to-[#3b0764] text-white border-purple-400 hover:from-[#7e22ce] hover:to-[#581c87] hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-px  active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
-                        : "bg-[#18162f]/80 text-cosmic-accent-muted/40 border-purple-400/20 shadow-none cursor-not-allowed opacity-45"
+                        ? "bg-linear-to-b from-purple-800 to-purple-950 text-white border-purple-400 hover:from-purple-700 hover:to-purple-900 hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-px  active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
+                        : "bg-cosmic-bg-mid/80 text-cosmic-accent-muted/40 border-purple-400/20 shadow-none cursor-not-allowed opacity-45"
                     }`}
                   >
-                    <span className="text-[9px] uppercase font-mono tracking-wider font-extrabold text-[#c8bdf4]">
+                    <span className="text-[9px] uppercase font-mono tracking-wider font-extrabold text-cosmic-accent">
                       {moonsCount >= maxMoons ? "Maximum erreicht" : "Qualitativ verschmelzen"}
                     </span>
                     <span className="font-mono text-xs font-black mt-0.5 text-white">
@@ -375,10 +375,11 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                         key={constell.id}
                         className={`flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-2xl border-2 transition-all gap-3.5 group relative overflow-hidden ${
                           isMaxed
-                            ? "border-emerald-500/50 bg-[#16272b]/50"
+                            ? // eslint-disable-next-line better-tailwindcss/no-restricted-classes
+                              "border-emerald-500/50 bg-[#16272b]/50"
                             : currentLevel > 0
-                              ? "border-cyan-400/50 bg-[#192248]/55"
-                              : "border-cosmic-accent/25 bg-[#1b193f]/40 hover:bg-[#1b193f]/70"
+                              ? "border-cyan-400/50 bg-indigo-950/55"
+                              : "border-cosmic-accent/25 bg-cosmic-surface-mid/40 hover:bg-cosmic-surface-mid/70"
                         }`}
                       >
                         {isMaxed && (
@@ -393,7 +394,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                             className={`size-11  rounded-xl border-2 flex items-center justify-center text-2xl shadow-lg shrink-0 select-none ${
                               isMaxed
                                 ? "bg-slate-900 border-emerald-400"
-                                : "bg-[#18153d] border-cyan-400/60"
+                                : "bg-cosmic-bg-mid border-cyan-400/60"
                             }`}
                           >
                             {constell.emoji}
@@ -415,7 +416,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                                 {currentLevel}/{constell.maxLevel}
                               </span>
                             </div>
-                            <p className="font-sans text-[10px] text-[#a599d1] mt-1 leading-normal">
+                            <p className="font-sans text-[10px] text-cosmic-accent-muted mt-1 leading-normal">
                               {constell.germanDescription}
                             </p>
 
@@ -462,8 +463,9 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                               }
                               className={`w-full sm:w-auto px-3 py-2 rounded-xl font-black flex flex-col items-center justify-center transition-all select-none border-2 cursor-pointer ${
                                 canAfford
-                                  ? "bg-linear-to-b from-[#213f56] to-[#0f1d2a] text-cosmic-text border-cyan-400 hover:from-[#2e5a7b] hover:to-[#172d3e] hover:scale-103 shadow-[2px_2px_0px_#22d3ee] active:translate-px  active:shadow-[1px_1px_0px_#22d3ee]"
-                                  : "bg-[#18162f]/80 text-cosmic-accent-muted/40 border-cyan-400/20 shadow-none cursor-not-allowed opacity-40"
+                                  ? // eslint-disable-next-line better-tailwindcss/no-restricted-classes
+                                    "bg-linear-to-b from-[#213f56] to-slate-900 text-cosmic-text border-cyan-400 hover:from-[#2e5a7b] hover:to-[#172d3e] hover:scale-103 shadow-[2px_2px_0px_#22d3ee] active:translate-px  active:shadow-[1px_1px_0px_#22d3ee]"
+                                  : "bg-cosmic-bg-mid/80 text-cosmic-accent-muted/40 border-cyan-400/20 shadow-none cursor-not-allowed opacity-40"
                               }`}
                             >
                               <span className="text-[8px] uppercase font-mono tracking-wider font-semibold text-cyan-300">
@@ -496,7 +498,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
         </div>
 
         {/* Modal Footer */}
-        <div className="p-3 bg-[#13112a] border-t border-amber-300/40 flex flex-col sm:flex-row justify-between items-center text-[10px] text-cosmic-accent-muted font-semibold px-5 gap-1.5 shrink-0">
+        <div className="p-3 bg-cosmic-bg border-t border-amber-300/40 flex flex-col sm:flex-row justify-between items-center text-[10px] text-cosmic-accent-muted font-semibold px-5 gap-1.5 shrink-0">
           <div className="flex flex-col sm:flex-row gap-1 sm:gap-3">
             <span>
               Sterne:{" "}

@@ -90,8 +90,8 @@ export const FloatingTexts: React.FC<FloatingTextsProps> = React.memo(
               className="absolute pointer-events-none whitespace-nowrap"
             >
               {item.type === "click" && (
-                <div className="font-sans font-black text-2.5xl text-[#f15e75] flex items-center gap-1 filter drop-shadow-[0_2px_4px_rgba(241,94,117,0.3)]">
-                  <Heart className="size-5  fill-[#FFD1DC] stroke-[#f15e75] stroke-[2.5] inline animate-bounce" />{" "}
+                <div className="font-sans font-black text-2.5xl text-danger flex items-center gap-1 filter drop-shadow-[0_2px_4px_rgba(241,94,117,0.3)]">
+                  <Heart className="size-5  fill-brand-pink stroke-danger stroke-[2.5] inline animate-bounce" />{" "}
                   {item.text}
                 </div>
               )}
@@ -141,11 +141,13 @@ export const FloatingTexts: React.FC<FloatingTextsProps> = React.memo(
                 <div
                   className={`font-sans font-black text-base rounded-full px-4 py-1.5 flex items-center gap-1.5 border-3 ${
                     isNight
-                      ? "text-teal-300 bg-[#14122d]/95 border-teal-300 shadow-[4px_4px_0px_rgba(20,184,166,0.6)]"
-                      : "text-[#6D4C41] bg-[#FFF9C4] border-[#6D4C41] shadow-[4px_4px_0px_#6D4C41]"
+                      ? "text-teal-300 bg-cosmic-bg-mid/95 border-teal-300 shadow-[4px_4px_0px_rgba(20,184,166,0.6)]"
+                      : "text-brand-brown bg-brand-yellow border-brand-brown shadow-[4px_4px_0px_#6D4C41]"
                   }`}
                 >
-                  <Sparkles className={`size-4  ${isNight ? "text-teal-300" : "text-[#6D4C41]"}`} />{" "}
+                  <Sparkles
+                    className={`size-4  ${isNight ? "text-teal-300" : "text-brand-brown"}`}
+                  />{" "}
                   {item.text}
                 </div>
               )}

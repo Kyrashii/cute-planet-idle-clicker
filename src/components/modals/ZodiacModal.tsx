@@ -39,7 +39,7 @@ export const ZodiacModal: React.FC<ZodiacModalProps> = React.memo(
         onClose={onClose}
         panelClassName={`relative w-full max-w-md overflow-hidden rounded-3.5xl border-3 shadow-2xl p-6 ${
           isNight
-            ? "bg-[#181333]/95 border-cosmic-accent/70 text-cosmic-text"
+            ? "bg-cosmic-bg-mid/95 border-cosmic-accent/70 text-cosmic-text"
             : "bg-amber-50/98 border-amber-300 text-slate-800"
         }`}
       >
@@ -80,7 +80,7 @@ export const ZodiacModal: React.FC<ZodiacModalProps> = React.memo(
             ></div>
             <div
               className={`relative p-3.5 rounded-3.5xl border-2 overflow-hidden flex items-center justify-center ${
-                isNight ? "bg-[#0b081a]/90 border-purple-500/20" : "bg-white border-amber-200"
+                isNight ? "bg-cosmic-bg-deep/90 border-purple-500/20" : "bg-white border-amber-200"
               }`}
             >
               <img
@@ -99,7 +99,7 @@ export const ZodiacModal: React.FC<ZodiacModalProps> = React.memo(
           <div
             className={`w-full p-4 rounded-2.5xl border-2 text-left mb-6 relative overflow-hidden ${
               isNight
-                ? "bg-[#1f1a3f]/75 border-purple-500/30 text-purple-100"
+                ? "bg-cosmic-surface-mid/75 border-purple-500/30 text-purple-100"
                 : "bg-white border-amber-100 text-amber-950"
             }`}
           >

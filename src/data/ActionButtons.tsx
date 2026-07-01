@@ -77,12 +77,12 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             referrerPolicy="no-referrer"
             className={`size-12  object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-bounce"}`}
           />
-          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-[#ffcbdc]">
+          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-brand-pink">
             Tiere zuechten
           </span>
 
           {/* Dynamic badge indicator count */}
-          <span className="absolute -top-1.5 -right-1.5 bg-[#f15e75] text-white font-mono font-black text-[9px] h-5 px-1.5 rounded-full flex items-center justify-center border-2 border-cosmic-pink shadow-sm">
+          <span className="absolute -top-1.5 -right-1.5 bg-danger text-white font-mono font-black text-[9px] h-5 px-1.5 rounded-full flex items-center justify-center border-2 border-cosmic-pink shadow-sm">
             {totalAnimalsCount}
           </span>
         </button>
@@ -145,7 +145,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             referrerPolicy="no-referrer"
             className={`size-12  object-contain mb-1 ${disableAnimations ? "" : "group-hover:animate-pulse"}`}
           />
-          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-[#d4c3ff]">
+          <span className="text-[11px] uppercase tracking-wider text-center leading-normal text-cosmic-accent">
             Forschung
           </span>
 
@@ -193,7 +193,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
             Tagebuch
           </span>
 
-          <span className="absolute -top-1.5 -right-1.5 bg-[#14b8a6] text-white font-mono font-black text-[9px] h-5 px-1.5 rounded-full flex items-center justify-center border-2 border-teal-300 shadow-sm">
+          <span className="absolute -top-1.5 -right-1.5 bg-teal-500 text-white font-mono font-black text-[9px] h-5 px-1.5 rounded-full flex items-center justify-center border-2 border-teal-300 shadow-sm">
             Statistik
           </span>
         </button>

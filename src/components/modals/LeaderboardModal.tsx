@@ -81,10 +81,10 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-[#1a163a]/95 border-3 border-amber-400 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-3.5xl"
+        panelClassName="bg-cosmic-bg-mid/95 border-3 border-amber-400 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-3.5xl"
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b-3 border-amber-400/60 bg-linear-to-r from-[#1b1c3c] via-[#212450] to-[#1b1c3c] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b-3 border-amber-400/60 bg-linear-to-r from-cosmic-surface via-cosmic-surface-hover to-cosmic-surface flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <Trophy className="size-6  text-amber-400 select-none animate-bounce" />
             <div>
@@ -100,14 +100,14 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
             <button
               onClick={fetchLeaderboard}
               disabled={loading}
-              className="p-1.5 rounded-full bg-[#1b1836] border border-amber-400/50 flex items-center justify-center text-white hover:bg-cosmic-surface-hover disabled:opacity-40 active:scale-95 transition-all shadow-md cursor-pointer"
+              className="p-1.5 rounded-full bg-cosmic-surface border border-amber-400/50 flex items-center justify-center text-white hover:bg-cosmic-surface-hover disabled:opacity-40 active:scale-95 transition-all shadow-md cursor-pointer"
               title="Aktualisieren"
             >
               <RefreshCw className={`size-4  text-amber-400 ${loading ? "animate-spin" : ""}`} />
             </button>
             <button
               onClick={onClose}
-              className="size-8  rounded-full bg-[#1b1836] border-2 border-amber-400 flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
+              className="size-8  rounded-full bg-cosmic-surface border-2 border-amber-400 flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer"
             >
               ✕
             </button>
@@ -149,21 +149,23 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
                     #{rank}
                   </span>
                 );
-                let rankBg = "bg-[#1f1a4e]/50 border-transparent";
+                let rankBg = "bg-cosmic-surface-hover/50 border-transparent";
 
                 if (rank === 1) {
                   rankVisual = <span className="text-lg">🥇</span>;
-                  rankBg = "bg-gradient-to-r from-[#3e2c13] to-[#251e3a] border-amber-400/80";
+                  rankBg = "bg-gradient-to-r from-[#3e2c13] to-cosmic-border border-amber-400/80";
                 } else if (rank === 2) {
                   rankVisual = <span className="text-lg">🥈</span>;
-                  rankBg = "bg-gradient-to-r from-[#292c43] to-[#1f1a4e] border-gray-300/40";
+                  rankBg =
+                    "bg-gradient-to-r from-cosmic-surface-hover to-cosmic-surface-hover border-gray-300/40";
                 } else if (rank === 3) {
                   rankVisual = <span className="text-lg">🥉</span>;
-                  rankBg = "bg-gradient-to-r from-[#2b203c] to-[#1f1a4e] border-amber-700/40";
+                  rankBg =
+                    "bg-gradient-to-r from-cosmic-border to-cosmic-surface-hover border-amber-700/40";
                 }
 
                 if (isMe) {
-                  rankBg = `${rankBg} ring-2 ring-inset ring-pink-400/80 bg-[#2a1c4b] border-pink-400`;
+                  rankBg = `${rankBg} ring-2 ring-inset ring-pink-400/80 bg-cosmic-surface-hover border-pink-400`;
                 }
 
                 return (
@@ -174,7 +176,7 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
                     className={`w-full text-left flex items-center justify-between p-2.5 rounded-2xl border-2 ${rankBg} transition-all hover:brightness-110 active:scale-[0.99] cursor-pointer`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="size-8  rounded-full bg-[#1b153b] border border-gray-700/30 flex items-center justify-center font-bold">
+                      <div className="size-8  rounded-full bg-cosmic-bg-mid border border-gray-700/30 flex items-center justify-center font-bold">
                         {rankVisual}
                       </div>
                       <div>
@@ -218,7 +220,7 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
               <button
                 type="button"
                 onClick={() => onOpenProfile?.(currentUserEntry.userId)}
-                className="w-full text-left flex items-center justify-between p-2.5 rounded-2xl border-2 border-pink-400 bg-linear-to-r from-[#2a1c4b] to-[#1a163a] hover:brightness-110 active:scale-[0.99] cursor-pointer"
+                className="w-full text-left flex items-center justify-between p-2.5 rounded-2xl border-2 border-pink-400 bg-linear-to-r from-cosmic-surface-hover to-cosmic-bg-mid hover:brightness-110 active:scale-[0.99] cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="size-8  rounded-full bg-pink-500/20 border border-pink-400 flex items-center justify-center font-black text-xs text-pink-300">
@@ -252,7 +254,7 @@ export const LeaderboardModal: React.FC<LeaderboardModalProps> = React.memo(
         </div>
 
         {/* Modal Footer / Hint */}
-        <div className="p-4 bg-linear-to-r from-[#101026] to-[#161334] border-t-2 border-cosmic-accent/10 flex items-center justify-center text-center shrink-0">
+        <div className="p-4 bg-linear-to-r from-cosmic-bg to-cosmic-bg-mid border-t-2 border-cosmic-accent/10 flex items-center justify-center text-center shrink-0">
           <p className="text-[10px] text-cosmic-accent-muted/90 max-w-sm leading-relaxed">
             Deine Position wird automatisch aktualisiert, wenn deine Spieldaten in die Cloud
             synchronisiert werden.

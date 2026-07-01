@@ -22,7 +22,7 @@ const StatTile: React.FC<{ icon: string; label: string; value: string }> = ({
   label,
   value,
 }) => (
-  <div className="flex flex-col gap-0.5 rounded-2xl border-2 border-cosmic-accent/10 bg-[#1f1a4e]/40 p-2.5">
+  <div className="flex flex-col gap-0.5 rounded-2xl border-2 border-cosmic-accent/10 bg-cosmic-surface-hover/40 p-2.5">
     <span className="text-base leading-none select-none">{icon}</span>
     <span className="text-xs font-mono font-black text-amber-300 truncate">{value}</span>
     <span className="text-[8px] uppercase font-mono tracking-wider text-cosmic-accent-muted/80">
@@ -80,10 +80,10 @@ export const ProfileModal: React.FC<ProfileModalProps> = React.memo(
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-[#1a163a]/95 border-3 border-amber-400 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-3.5xl"
+        panelClassName="bg-cosmic-bg-mid/95 border-3 border-amber-400 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-3.5xl"
       >
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b-3 border-amber-400/60 bg-linear-to-r from-[#1b1c3c] via-[#212450] to-[#1b1c3c] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b-3 border-amber-400/60 bg-linear-to-r from-cosmic-surface via-cosmic-surface-hover to-cosmic-surface flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2 min-w-0">
             <span className="text-2xl select-none">🪐</span>
             <div className="min-w-0">
@@ -104,7 +104,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = React.memo(
           </div>
           <button
             onClick={onClose}
-            className="size-8  rounded-full bg-[#1b1836] border-2 border-amber-400 flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer shrink-0"
+            className="size-8  rounded-full bg-cosmic-surface border-2 border-amber-400 flex items-center justify-center font-bold text-lg text-white hover:bg-cosmic-surface-hover active:scale-95 transition-all shadow-md cursor-pointer shrink-0"
           >
             ✕
           </button>
@@ -137,7 +137,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = React.memo(
                 <span className="text-[10px] uppercase font-mono tracking-wider text-cosmic-accent-muted block mb-2">
                   🐾 Sammlung
                 </span>
-                <div className="flex items-center gap-3 rounded-2xl border-2 border-cosmic-accent/10 bg-[#1f1a4e]/40 p-3 mb-2">
+                <div className="flex items-center gap-3 rounded-2xl border-2 border-cosmic-accent/10 bg-cosmic-surface-hover/40 p-3 mb-2">
                   <span className="text-3xl select-none">
                     {facts.favoriteAnimal?.animal.emoji || "❔"}
                   </span>
