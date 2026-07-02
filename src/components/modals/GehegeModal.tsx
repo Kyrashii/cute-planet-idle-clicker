@@ -1183,16 +1183,16 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
                   )}
                 </AnimatePresence>
 
-                {/* Background Landscape Picture */}
+                {/* Background Landscape Picture — 512w for phones, 1536w for
+                    the up-to-1024px desktop canvas (regen-gehege-backgrounds.mjs) */}
                 <div className="absolute inset-0 select-none pointer-events-none">
                   <img
-                    src={
-                      isNight
-                        ? "/assets/stuff/gehegelandschaft_nacht.webp"
-                        : "/assets/stuff/gehegelandschaft_tag.webp"
-                    }
+                    src={`/assets/stuff/gehegelandschaft_${isNight ? "nacht" : "tag"}.webp`}
+                    srcSet={`/assets/stuff/gehegelandschaft_${isNight ? "nacht" : "tag"}_512.webp 512w, /assets/stuff/gehegelandschaft_${isNight ? "nacht" : "tag"}.webp 1536w`}
+                    sizes="(min-width: 900px) 1024px, 100vw"
                     alt="Gehegelandschaft"
-                    className="size-full  object-cover transition-opacity duration-1000"
+                    decoding="async"
+                    className="size-full object-cover transition-opacity duration-1000"
                     referrerPolicy="no-referrer"
                   />
                 </div>
