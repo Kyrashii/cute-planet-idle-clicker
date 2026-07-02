@@ -139,11 +139,21 @@ export const RogueliteScreen: React.FC<RogueliteScreenProps> = React.memo(
           <div className="flex min-h-dvh flex-col gap-2.5 p-2.5  md:h-dvh md:min-h-0 md:p-3.5 ">
             {/* Shell header */}
             <Panel className="flex shrink-0 items-center justify-between gap-3 px-4 py-3">
-              <div className="min-w-0">
-                <Eyebrow>Galaxie-Roguelite</Eyebrow>
-                <h2 className="mt-0.5 text-lg font-black tracking-[0.01em] text-cosmic-text sm:text-xl">
-                  Reise durch den Kosmos
-                </h2>
+              <div className="flex min-w-0 items-center gap-3">
+                <img
+                  src="/assets/roguelite/roguelite_header_badge.webp"
+                  alt=""
+                  aria-hidden="true"
+                  draggable={false}
+                  className="hidden size-11 shrink-0 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.4)] sm:block"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="min-w-0">
+                  <Eyebrow>Galaxie-Roguelite</Eyebrow>
+                  <h2 className="mt-0.5 text-lg font-black tracking-[0.01em] text-cosmic-text sm:text-xl">
+                    Reise durch den Kosmos
+                  </h2>
+                </div>
               </div>
               <div className="flex items-center gap-3">
                 <div className="hidden items-center gap-1.5 sm:flex">

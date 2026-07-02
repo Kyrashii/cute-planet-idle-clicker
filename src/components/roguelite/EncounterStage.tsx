@@ -9,6 +9,7 @@ import {
   BOSS_VISUAL,
   DangerBadge,
   GhostButton,
+  MascotBadge,
   type NodeVisual,
   cx,
   nodeVisual,
@@ -17,6 +18,7 @@ import {
 
 const EVENT_VISUAL: NodeVisual = {
   icon: Sparkles,
+  mascot: "/assets/animals/butterfly.webp",
   short: "Kosmischer Moment",
   text: "text-cosmic-accent",
   soft: "border-cosmic-accent/30 bg-cosmic-accent/12",
@@ -26,6 +28,7 @@ const EVENT_VISUAL: NodeVisual = {
 
 const REWARD_VISUAL: NodeVisual = {
   icon: Gift,
+  mascot: "/assets/animals/unicorn.webp",
   short: "Belohnung",
   text: "text-pink-200",
   soft: "border-pink-300/30 bg-pink-400/12",
@@ -84,37 +87,43 @@ function EncounterHero({
   const visual = encounterVisual(encounter.nodeType);
   const kicker = isBoss ? bossStageLabel : visual.short;
   return (
-    <div className="shrink-0">
-      {/* Kicker: node identity + danger (context, small) */}
-      <div className="flex flex-wrap items-center gap-2">
-        <span
-          className={cx(
-            "inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em]",
-            visual.soft,
-            visual.text,
-          )}
-        >
-          <visual.icon className="size-3.5 " />
-          {kicker}
-        </span>
-        <DangerBadge danger={encounter.danger} />
-      </div>
+    <div className="flex shrink-0 items-start gap-4">
+      {/* The station's cute companion */}
+      <MascotBadge visual={visual} size="lg" className="mt-1 hidden sm:flex" />
 
-      {/* The dominant ask */}
-      <h3 className="mt-2 text-2xl/tight font-black  tracking-[0.01em] text-cosmic-text sm:text-[2rem]">
-        {promptHeadline(encounter, isBoss)}
-      </h3>
-
-      {/* One supporting line + optional reward hint */}
-      <p className="mt-1 line-clamp-2 max-w-2xl text-[13px] leading-snug text-cosmic-text-muted">
-        {encounter.description}
-      </p>
-      {encounter.rewardHint && (
-        <div className="mt-1.5 flex items-center gap-1.5 text-[12px] text-pink-200">
-          <Gift className="size-3.5  shrink-0" />
-          <span className="leading-snug">{encounter.rewardHint}</span>
+      <div className="min-w-0">
+        {/* Kicker: node identity + danger (context, small) */}
+        <div className="flex flex-wrap items-center gap-2">
+          <MascotBadge visual={visual} size="sm" className="sm:hidden" />
+          <span
+            className={cx(
+              "inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em]",
+              visual.soft,
+              visual.text,
+            )}
+          >
+            <visual.icon className="size-3.5 " />
+            {kicker}
+          </span>
+          <DangerBadge danger={encounter.danger} />
         </div>
-      )}
+
+        {/* The dominant ask */}
+        <h3 className="mt-2 text-2xl/tight font-black  tracking-[0.01em] text-cosmic-text sm:text-[2rem]">
+          {promptHeadline(encounter, isBoss)}
+        </h3>
+
+        {/* One supporting line + optional reward hint */}
+        <p className="mt-1 line-clamp-2 max-w-2xl text-[13px] leading-snug text-cosmic-text-muted">
+          {encounter.description}
+        </p>
+        {encounter.rewardHint && (
+          <div className="mt-1.5 flex items-center gap-1.5 text-[12px] text-pink-200">
+            <Gift className="size-3.5  shrink-0" />
+            <span className="leading-snug">{encounter.rewardHint}</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -195,9 +204,14 @@ export const EncounterStage: React.FC<{
           </>
         ) : (
           <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-white/10 bg-black/15 px-6 py-10 text-center">
-            <div className="flex size-14  items-center justify-center rounded-2xl border border-cosmic-accent/30 bg-cosmic-accent/10">
-              <Sparkles className="size-6  text-cosmic-accent" />
-            </div>
+            <img
+              src="/assets/animals/sheep.webp"
+              alt=""
+              aria-hidden="true"
+              draggable={false}
+              className="size-16 object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.4)]"
+              referrerPolicy="no-referrer"
+            />
             <h4 className="mt-4 text-xl font-black tracking-[0.01em] text-cosmic-text">
               Run wird vorbereitet
             </h4>

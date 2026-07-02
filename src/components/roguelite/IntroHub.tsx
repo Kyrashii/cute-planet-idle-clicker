@@ -1,35 +1,52 @@
 import React from "react";
-import { Crown, Map, Rocket, Sparkles, Swords, Target } from "lucide-react";
+import { Rocket, Sparkles, Target } from "lucide-react";
 
 import { ROGUELITE_TOTAL_STATIONS } from "../../roguelite/engine";
 import type { RogueliteMetaState } from "../../roguelite/types";
-import { Eyebrow, Panel, PrimaryButton, cx } from "./theme";
+import { CUTE_CARD, Eyebrow, Panel, PrimaryButton, cx } from "./theme";
+
+/** The cute crew that appears across the run — a small welcome parade. */
+const PARADE = [
+  "/assets/animals/chick.webp",
+  "/assets/animals/fox.webp",
+  "/assets/animals/octopus.webp",
+  "/assets/animals/sloth.webp",
+  "/assets/animals/whale.webp",
+  "/assets/animals/dragon.webp",
+];
 
 function Step({
   index,
-  icon: Icon,
+  mascot,
   title,
   body,
   tint,
 }: {
   index: number;
-  icon: typeof Swords;
+  mascot: string;
   title: string;
   body: string;
   tint: string;
 }) {
   return (
-    <div className="relative flex flex-col rounded-2xl border border-white/10 bg-cosmic-surface-mid/60 p-4">
+    <div className={cx("relative flex flex-col p-4", CUTE_CARD)}>
       <span className="absolute right-3 top-3 font-mono text-[11px] font-black text-white/15">
         0{index}
       </span>
       <div
         className={cx(
-          "flex size-11  items-center justify-center rounded-2xl border bg-black/25",
+          "flex size-14  items-center justify-center rounded-2xl border-2 bg-black/25",
           tint,
         )}
       >
-        <Icon className="size-5 " />
+        <img
+          src={mascot}
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+          className="size-11 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]"
+          referrerPolicy="no-referrer"
+        />
       </div>
       <h4 className="mt-3 text-[15px] font-black tracking-[0.01em] text-cosmic-text">{title}</h4>
       <p className="mt-1 text-[12.5px] leading-snug text-cosmic-text-muted">{body}</p>
@@ -82,21 +99,21 @@ export const IntroHub: React.FC<{
       <div className="mx-auto mt-7 grid w-full max-w-4xl gap-3 sm:grid-cols-3">
         <Step
           index={1}
-          icon={Swords}
+          mascot="/assets/animals/raccoon.webp"
           title="Relikte draften"
           body="Wähle bis zu drei Start-Relikte. Sie prägen deinen Lauf von der ersten Station an."
           tint="border-pink-300/30 text-pink-200"
         />
         <Step
           index={2}
-          icon={Map}
+          mascot="/assets/animals/fox.webp"
           title="Stationen bereisen"
           body="Jede Station ist eine Wahl: Boni, Kämpfe, Händler, Rast. Lies Gefahr und Belohnung."
           tint="border-cosmic-accent/30 text-cosmic-accent"
         />
         <Step
           index={3}
-          icon={Crown}
+          mascot="/assets/animals/dragon.webp"
           title="Drei Bosse stürzen"
           body="Akt-Bosse warten bei Station 10 und 20, das große Finale bei Station 30."
           tint="border-cosmic-yellow/30 text-cosmic-yellow"
@@ -117,7 +134,24 @@ export const IntroHub: React.FC<{
         />
       </div>
 
-      <div className="mx-auto mt-7 w-full max-w-md">
+      <div className="mx-auto mt-6 flex items-end justify-center gap-1.5">
+        {PARADE.map((mascot, i) => (
+          <img
+            key={mascot}
+            src={mascot}
+            alt=""
+            aria-hidden="true"
+            draggable={false}
+            className={cx(
+              "object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.4)]",
+              i % 2 === 0 ? "size-9" : "size-11",
+            )}
+            referrerPolicy="no-referrer"
+          />
+        ))}
+      </div>
+
+      <div className="mx-auto mt-4 w-full max-w-md">
         <PrimaryButton onClick={onBeginRunSetup} className="w-full py-4">
           <Rocket className="size-4 " />
           Start
