@@ -212,7 +212,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
           >
             {/* LOOTBOX OPENER CARD */}
             <div
-              className={`p-4 rounded-3xl border-2 flex flex-col md:flex-row items-center justify-between gap-5 relative overflow-hidden transition-all ${
+              className={`p-4 rounded-3xl border-2 flex flex-col md:flex-row items-center justify-between gap-5 transition-all ${
                 isNight
                   ? "bg-linear-to-br from-cosmic-surface-mid to-cosmic-surface-hover border-cosmic-accent/30"
                   : "bg-linear-to-br from-amber-100 to-orange-100/50 border-amber-300"
@@ -282,7 +282,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
 
             {/* GLITTER DUST DASHBOARD & SPECIAL SYSTEMS */}
             <div
-              className={`p-4 rounded-3xl border-2 grid grid-cols-1 sm:grid-cols-3 gap-3.5 ${
+              className={`p-4 rounded-3xl border-2 grid grid-cols-3 gap-2.5 sm:gap-3.5 ${
                 isNight
                   ? "bg-cosmic-bg/60 border-purple-500/20 text-purple-200"
                   : "bg-amber-50 border-amber-300 text-amber-900"
