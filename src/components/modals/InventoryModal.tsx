@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "motion/react";
 import { Modal } from "../ui/Modal";
 import { DeferredModalContent } from "../ui/DeferredModalContent";
+import { Tabs } from "../ui/Tabs";
 import { Sparkles, Check, Lock } from "lucide-react";
 import { COSMETIC_ITEMS, CosmeticItem, RARITY_STYLES } from "../../data/cosmetics";
 import { CRAFTING_RECIPES } from "../../data/recipes";
@@ -182,14 +183,14 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
     };
 
     // Tabs translation helpers
-    const tabs = [
+    const tabs: { id: string; label: string }[] = [
       { id: "star_color", label: "🪄 Click-Sterne" },
       { id: "planet_accessory", label: "👒 Planet-Huete" },
       { id: "frame_style", label: "🖼️ Fensterrahmen" },
       { id: "moon_skin", label: "🌙 Mond-Skins" },
       { id: "planet_skin", label: "🪐 Planeten-Skins" },
       { id: "crafted", label: "🔮 Kreationen" },
-    ] as const;
+    ];
 
     const currentItems =
       activeTab === "crafted" || activeTab === "planet_skin"
@@ -299,22 +300,22 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
               : "border-amber-300 bg-amber-100 text-cosmic-gold-ink"
           }`}
         >
-          <div className="flex items-center gap-2.5">
-            <span className="text-3xl select-none animate-pulse">🎒</span>
-            <div>
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className="shrink-0 text-2xl sm:text-3xl select-none animate-pulse">🎒</span>
+            <div className="min-w-0">
               <span
-                className={`text-[9px] uppercase font-black tracking-wider block ${isNight ? "text-purple-300" : "text-amber-700"}`}
+                className={`text-[9px] uppercase font-black tracking-wider block truncate ${isNight ? "text-purple-300" : "text-amber-700"}`}
               >
                 Kosmetikkammer & Lootboxen
               </span>
-              <h4 className="font-sans font-black text-sm uppercase tracking-wide">
+              <h4 className="font-sans font-black text-sm uppercase tracking-wide truncate">
                 Sterneninventar
               </h4>
             </div>
           </div>
           <button
             onClick={onClose}
-            className={`size-8  rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
+            className={`size-8 shrink-0 rounded-full flex items-center justify-center font-bold text-lg hover:scale-110 active:scale-95 transition-all shadow-md cursor-pointer ${
               isNight
                 ? "bg-cosmic-bg-mid border-2 border-cosmic-accent text-purple-200 hover:bg-cosmic-surface-hover"
                 : "bg-white border-2 border-amber-450 text-amber-900 hover:bg-amber-100"
@@ -361,7 +362,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                 </p>
               </div>
 
-              <div className="shrink-0">
+              <div className="w-full shrink-0 md:w-auto">
                 {shootingStarsCount <= 0 ? (
                   <div
                     className={`px-4 py-2.5 rounded-2xl border text-center font-sans font-black text-xs uppercase cursor-not-allowed select-none ${
@@ -377,7 +378,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleOpenBox}
-                    className="px-6 py-3.5 rounded-2xl bg-linear-to-r from-amber-450 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-sans font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2 border-2 border-yellow-300"
+                    className="w-full md:w-auto justify-center px-6 py-3.5 rounded-2xl bg-linear-to-r from-amber-450 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-sans font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2 border-2 border-yellow-300"
                   >
                     <Sparkles className="size-4  text-yellow-105 animate-spin" />
                     Oeffnen!
@@ -812,26 +813,15 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
               </div>
             )}
 
-            {/* TAB BAR SEGMENTED ROADPIN */}
-            <div className="flex rounded-2xl bg-cosmic-bg p-1 border border-purple-500/10">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 py-2.5 rounded-xl font-sans font-extrabold text-xs tracking-wide transition-all cursor-pointer ${
-                    activeTab === tab.id
-                      ? isNight
-                        ? "bg-cosmic-surface-hover text-cosmic-accent shadow-lg border border-purple-500/20"
-                        : "bg-amber-100 text-amber-900 border border-amber-300"
-                      : isNight
-                        ? "text-cosmic-accent-muted hover:text-white"
-                        : "text-slate-600 hover:bg-slate-200/40"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+            {/* TAB BAR — scrollable chips (no cramming on narrow screens) */}
+            <Tabs
+              items={tabs}
+              value={activeTab}
+              onChange={setActiveTab}
+              variant={isNight ? "dark" : "warm"}
+              className="no-scrollbar shrink-0"
+              aria-label="Inventar-Kategorien"
+            />
 
             {/* GRID OF COSMETICS OR CRAFTED ITEMS */}
             {activeTab === "crafted" ? (
