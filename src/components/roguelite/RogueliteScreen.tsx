@@ -131,12 +131,32 @@ export const RogueliteScreen: React.FC<RogueliteScreenProps> = React.memo(
           className="fixed inset-0 z-120 min-h-dvh overflow-y-auto text-cosmic-text md:overflow-hidden"
           style={{
             backgroundColor: "#0c0a1c",
-            backgroundImage: `radial-gradient(circle at 50% -8%, rgba(202,165,254,0.14), transparent 58%), linear-gradient(180deg, rgba(16,13,35,0.92), rgba(12,10,28,0.97)), url(${ART.particles}), url(${ART.backdrop})`,
-            backgroundSize: "cover, cover, cover, cover",
+            backgroundImage: `radial-gradient(circle at 50% -8%, rgba(202,165,254,0.14), transparent 58%), linear-gradient(180deg, rgba(16,13,35,0.92), rgba(12,10,28,0.97)), url(${ART.backdrop})`,
+            backgroundSize: "cover, cover, cover",
             backgroundPosition: "center",
           }}
         >
-          <div className="flex min-h-dvh flex-col gap-2.5 p-2.5  md:h-dvh md:min-h-0 md:p-3.5 ">
+          {/* Ambient star-dust: two slowly drifting particle layers */}
+          <div
+            aria-hidden="true"
+            className="roguelite-drift pointer-events-none fixed inset-0 opacity-45"
+            style={{
+              backgroundImage: `url(${ART.particles})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+          <div
+            aria-hidden="true"
+            className="roguelite-drift-slow pointer-events-none fixed inset-0 opacity-25"
+            style={{
+              backgroundImage: `url(${ART.particles})`,
+              backgroundSize: "140%",
+              backgroundPosition: "center",
+            }}
+          />
+
+          <div className="relative flex min-h-dvh flex-col gap-2.5 p-2.5  md:h-dvh md:min-h-0 md:p-3.5 ">
             {/* Shell header */}
             <Panel className="flex shrink-0 items-center justify-between gap-3 px-4 py-3">
               <div className="flex min-w-0 items-center gap-3">

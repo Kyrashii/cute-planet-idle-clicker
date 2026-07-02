@@ -2,8 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { createRenderer, parseFxParams } from "./detect";
 import type { EffectsRenderer } from "./renderer";
 import { BURST_COLORS, ParticleSystem, mulberry32 } from "./particles";
-import { effectsBus } from "./effectsBus";
-import type { WorkerEvent } from "../game/protocol";
+import { effectsBus, type FxEvent } from "./effectsBus";
 
 interface EffectsProviderProps {
   /** Low-memory / reduced-motion: don't mount canvases at all. */
@@ -66,7 +65,7 @@ export const EffectsLayer: React.FC<EffectsProviderProps> = ({ disabled }) => {
       particles.spawnBurst({ x, y, count, speed: 140, shape, color, size: 9, life: 1.1 });
     };
 
-    const unsubscribe = effectsBus.subscribe((event: WorkerEvent) => {
+    const unsubscribe = effectsBus.subscribe((event: FxEvent) => {
       switch (event.type) {
         case "STATE_UPDATE": {
           targetNight = event.state.isNight ? 1 : 0;

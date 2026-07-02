@@ -1,8 +1,18 @@
 import React from "react";
+import { motion } from "motion/react";
 import { GitFork, Gift, Route, TriangleAlert } from "lucide-react";
 
 import type { RoguelitePathChoice } from "../../roguelite/types";
-import { CUTE_CARD, DangerBadge, Eyebrow, MascotBadge, cx, nodeVisual } from "./theme";
+import { popIn, staggerChildren } from "../ui/motion";
+import {
+  CUTE_CARD,
+  DangerBadge,
+  Eyebrow,
+  MascotBadge,
+  cx,
+  nodeVisual,
+  usePrefersReducedMotion,
+} from "./theme";
 
 const PathCard: React.FC<{ pathChoice: RoguelitePathChoice; onClick: () => void }> = ({
   pathChoice,
@@ -66,6 +76,7 @@ export const PathFork: React.FC<{
   pathChoices: RoguelitePathChoice[];
   onChoosePath: (pathId: string) => void;
 }> = ({ pathChoices, onChoosePath }) => {
+  const reducedMotion = usePrefersReducedMotion();
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="inline-flex w-fit items-center gap-2 rounded-full border border-cosmic-accent/30 bg-cosmic-accent/10 px-3 py-1">
@@ -80,15 +91,24 @@ export const PathFork: React.FC<{
       </p>
 
       <div className="mt-4 min-h-0 flex-1 overflow-y-auto -mx-1 px-1 pt-1 pb-3">
-        <div data-testid="roguelite-path-grid" className="grid gap-3 sm:grid-cols-2">
+        <motion.div
+          data-testid="roguelite-path-grid"
+          className="grid gap-3 sm:grid-cols-2"
+          variants={staggerChildren(0.08)}
+          initial={reducedMotion ? false : "hidden"}
+          animate="visible"
+        >
           {pathChoices.map((pathChoice) => (
-            <PathCard
+            <motion.div
               key={pathChoice.id}
-              pathChoice={pathChoice}
-              onClick={() => onChoosePath(pathChoice.id)}
-            />
+              variants={popIn}
+              whileHover={reducedMotion ? undefined : { rotate: [0, -0.8, 1, 0] }}
+              className="h-full"
+            >
+              <PathCard pathChoice={pathChoice} onClick={() => onChoosePath(pathChoice.id)} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

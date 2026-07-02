@@ -36,6 +36,18 @@ export function ensureAdaptiveTap(): void {
       case "LEVEL_UP":
         levelSpike = 1;
         break;
+      case "ROGUELITE_JUICE": {
+        if (event.kind === "victory" || event.kind === "boss") {
+          levelSpike = 1;
+        } else if (event.kind === "defeat") {
+          levelSpike = Math.max(levelSpike, 0.6);
+        } else {
+          const dt = (now - lastClickTime) / 1000;
+          clickHeat = clickHeat * Math.exp(-dt / 1.5) + 2;
+          lastClickTime = now;
+        }
+        break;
+      }
       default:
         break;
     }
