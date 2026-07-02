@@ -52,7 +52,18 @@ function Bead({
             visual?.glow,
           )}
         >
-          <Icon className={cx("size-4 ", isBoss ? "text-cosmic-yellow" : "text-cosmic-text")} />
+          {visual?.mascot ? (
+            <img
+              src={visual.mascot}
+              alt=""
+              aria-hidden="true"
+              draggable={false}
+              className="size-5.5 object-contain"
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <Icon className={cx("size-4 ", isBoss ? "text-cosmic-yellow" : "text-cosmic-text")} />
+          )}
         </span>
       </div>
     );

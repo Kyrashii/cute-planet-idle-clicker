@@ -2,7 +2,7 @@ import React from "react";
 import { AlertTriangle, ArrowUpRight, Coins, Gift, Sparkles, type LucideIcon } from "lucide-react";
 
 import type { RogueliteChoice } from "../../roguelite/types";
-import { cx } from "./theme";
+import { CUTE_CARD, cx } from "./theme";
 
 const PreviewRow: React.FC<{ icon: LucideIcon; text: string; tone: string }> = ({
   icon: Icon,
@@ -28,7 +28,8 @@ export const ChoiceCard: React.FC<{
       onClick={onClick}
       data-testid="roguelite-choice-card"
       className={cx(
-        "group flex h-full flex-col rounded-2xl border border-white/12 bg-cosmic-surface-mid/75 p-4 text-left transition sm:p-5",
+        "group flex h-full flex-col p-4 text-left transition sm:p-5",
+        CUTE_CARD,
         "hover:-translate-y-1 hover:border-cosmic-accent/60 hover:bg-cosmic-surface-hover/85 hover:shadow-[0_14px_30px_rgba(8,6,22,0.55)]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cosmic-accent/70",
       )}

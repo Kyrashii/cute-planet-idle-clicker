@@ -48,13 +48,13 @@ export const RelicCard: React.FC<{
       onClick={onClick}
       aria-pressed={selected}
       className={cx(
-        "relative flex size-full  flex-col rounded-2xl border p-4 text-left transition",
+        "relative flex size-full  flex-col rounded-3xl border-2 p-4 text-left transition",
         locked
           ? "cursor-default border-white/8 bg-black/25 opacity-55"
           : selected
             ? "border-cosmic-accent/70 bg-cosmic-accent/10 shadow-[0_0_30px_rgba(202,165,254,0.25)]"
             : cx(
-                "border-white/10 bg-cosmic-surface-mid/70",
+                "border-white/12 bg-cosmic-surface-mid/80 shadow-[0_6px_18px_rgba(8,6,22,0.35)]",
                 interactive &&
                   "hover:-translate-y-0.5 hover:border-cosmic-accent/40 hover:bg-cosmic-surface-hover/80",
               ),

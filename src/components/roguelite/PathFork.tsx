@@ -2,7 +2,7 @@ import React from "react";
 import { GitFork, Gift, Route, TriangleAlert } from "lucide-react";
 
 import type { RoguelitePathChoice } from "../../roguelite/types";
-import { DangerBadge, Eyebrow, IconBadge, cx, nodeVisual } from "./theme";
+import { CUTE_CARD, DangerBadge, Eyebrow, MascotBadge, cx, nodeVisual } from "./theme";
 
 const PathCard: React.FC<{ pathChoice: RoguelitePathChoice; onClick: () => void }> = ({
   pathChoice,
@@ -15,13 +15,14 @@ const PathCard: React.FC<{ pathChoice: RoguelitePathChoice; onClick: () => void 
       onClick={onClick}
       data-testid="roguelite-path-card"
       className={cx(
-        "group flex h-full flex-col rounded-2xl border border-white/10 bg-cosmic-surface-mid/70 p-4 text-left transition",
+        "group flex h-full flex-col p-4 text-left transition",
+        CUTE_CARD,
         "hover:-translate-y-0.5 hover:border-cosmic-accent/45 hover:bg-cosmic-surface-hover/80 hover:shadow-[0_18px_38px_rgba(8,6,22,0.45)]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cosmic-accent/60",
       )}
     >
       <div className="flex items-start gap-3">
-        <IconBadge visual={visual} />
+        <MascotBadge visual={visual} />
         <div className="min-w-0 flex-1">
           <div className={cx("text-[9px] font-black uppercase tracking-[0.16em]", visual.text)}>
             {visual.short}

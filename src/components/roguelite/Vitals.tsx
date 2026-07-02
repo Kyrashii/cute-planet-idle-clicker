@@ -79,14 +79,14 @@ export const SurvivalStrip: React.FC<{ stats: RogueliteRunStats }> = ({ stats })
   return (
     <div className="flex items-center gap-2">
       <div className="flex min-w-0 flex-2 items-center gap-2.5 rounded-xl border border-white/10 bg-black/20 px-3 py-1.5">
-        <Heart className="size-4  shrink-0 text-rose-300" />
+        <Heart className="size-4  shrink-0 fill-current text-cosmic-pink" />
         <span className="font-mono text-[9px] font-black uppercase tracking-[0.12em] text-cosmic-accent-muted">
           Leben
         </span>
         <Meter
           value={life}
           max={maxLife}
-          fillClass="bg-gradient-to-r from-rose-500 to-rose-300"
+          fillClass="bg-gradient-to-r from-cosmic-pink to-cosmic-glow-pink"
           className="h-2 flex-1"
         />
         <span className="shrink-0 text-[12px] font-black text-cosmic-text">

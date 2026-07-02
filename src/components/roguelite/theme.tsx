@@ -53,13 +53,16 @@ export function IconButton(props: ButtonProps) {
 }
 
 /* ------------------------------------------------------------------ *
- * Node identity system — one icon + tint + short German label per node
- * type, reused on the voyage map, the encounter header, path cards and
- * the history list so the icon becomes the player's shorthand.
+ * Node identity system — one mascot + icon + tint + short German label
+ * per node type, reused on the voyage map, the encounter header, path
+ * cards and the history list. Mascots (the game's own animal art) carry
+ * the identity on big surfaces; Lucide icons stay for tiny chips.
  * ------------------------------------------------------------------ */
 
 export interface NodeVisual {
   icon: LucideIcon;
+  /** Cute companion image shown on hero surfaces (encounter, path cards). */
+  mascot: string;
   /** Short German label for compact chips. */
   short: string;
   /** Icon / accent text colour. */
@@ -75,6 +78,7 @@ export interface NodeVisual {
 export const NODE_VISUALS: Record<RogueliteNodeType, NodeVisual> = {
   boon: {
     icon: Gift,
+    mascot: "/assets/animals/chick.webp",
     short: "Bonus",
     text: "text-pink-200",
     soft: "border-pink-300/30 bg-pink-400/12",
@@ -83,6 +87,7 @@ export const NODE_VISUALS: Record<RogueliteNodeType, NodeVisual> = {
   },
   combat: {
     icon: Swords,
+    mascot: "/assets/animals/lion.webp",
     short: "Kampf",
     text: "text-rose-200",
     soft: "border-rose-300/30 bg-rose-400/12",
@@ -91,6 +96,7 @@ export const NODE_VISUALS: Record<RogueliteNodeType, NodeVisual> = {
   },
   elite: {
     icon: Crown,
+    mascot: "/assets/animals/dragon.webp",
     short: "Elite",
     text: "text-fuchsia-200",
     soft: "border-fuchsia-300/30 bg-fuchsia-400/12",
@@ -99,6 +105,7 @@ export const NODE_VISUALS: Record<RogueliteNodeType, NodeVisual> = {
   },
   anomaly: {
     icon: Orbit,
+    mascot: "/assets/animals/octopus.webp",
     short: "Anomalie",
     text: "text-violet-200",
     soft: "border-violet-300/30 bg-violet-400/12",
@@ -107,6 +114,7 @@ export const NODE_VISUALS: Record<RogueliteNodeType, NodeVisual> = {
   },
   rest: {
     icon: Heart,
+    mascot: "/assets/animals/sloth.webp",
     short: "Rast",
     text: "text-emerald-200",
     soft: "border-emerald-300/30 bg-emerald-400/12",
@@ -115,6 +123,7 @@ export const NODE_VISUALS: Record<RogueliteNodeType, NodeVisual> = {
   },
   merchant: {
     icon: Coins,
+    mascot: "/assets/animals/fox.webp",
     short: "Händler",
     text: "text-amber-200",
     soft: "border-amber-300/30 bg-amber-400/12",
@@ -123,6 +132,7 @@ export const NODE_VISUALS: Record<RogueliteNodeType, NodeVisual> = {
   },
   relic_vault: {
     icon: Gem,
+    mascot: "/assets/animals/raccoon.webp",
     short: "Kammer",
     text: "text-indigo-200",
     soft: "border-indigo-300/30 bg-indigo-400/12",
@@ -131,6 +141,7 @@ export const NODE_VISUALS: Record<RogueliteNodeType, NodeVisual> = {
   },
   sacrifice: {
     icon: Flame,
+    mascot: "/assets/animals/phoenix.webp",
     short: "Opfer",
     text: "text-red-200",
     soft: "border-red-300/30 bg-red-400/12",
@@ -139,6 +150,7 @@ export const NODE_VISUALS: Record<RogueliteNodeType, NodeVisual> = {
   },
   echo: {
     icon: Repeat,
+    mascot: "/assets/animals/whale.webp",
     short: "Echo",
     text: "text-cyan-200",
     soft: "border-cyan-300/30 bg-cyan-400/12",
@@ -147,6 +159,7 @@ export const NODE_VISUALS: Record<RogueliteNodeType, NodeVisual> = {
   },
   meteor: {
     icon: Sparkles,
+    mascot: "/assets/animals/dino.webp",
     short: "Meteor",
     text: "text-orange-200",
     soft: "border-orange-300/30 bg-orange-400/12",
@@ -155,6 +168,7 @@ export const NODE_VISUALS: Record<RogueliteNodeType, NodeVisual> = {
   },
   boss_omen: {
     icon: Telescope,
+    mascot: "/assets/animals/owl.webp",
     short: "Vorzeichen",
     text: "text-purple-200",
     soft: "border-purple-300/30 bg-purple-400/12",
@@ -166,12 +180,17 @@ export const NODE_VISUALS: Record<RogueliteNodeType, NodeVisual> = {
 /** Boss is not a node type but shares the visual language for the map / hero. */
 export const BOSS_VISUAL: NodeVisual = {
   icon: Skull,
+  mascot: "/assets/roguelite/roguelite_boss_comet.webp",
   short: "Boss",
   text: "text-cosmic-yellow",
   soft: "border-cosmic-yellow/40 bg-cosmic-yellow/12",
   bead: "bg-cosmic-yellow",
   glow: "shadow-[0_0_24px_rgba(254,240,138,0.7)]",
 };
+
+/** Shared cute-card base — chunky corners, soft depth — for choice-like cards. */
+export const CUTE_CARD =
+  "rounded-3xl border-2 border-white/12 bg-cosmic-surface-mid/80 shadow-[0_6px_18px_rgba(8,6,22,0.35)]";
 
 export function nodeVisual(type: RogueliteNodeType): NodeVisual {
   return NODE_VISUALS[type] ?? NODE_VISUALS.combat;
@@ -206,6 +225,48 @@ export function IconBadge({
       )}
     >
       <Icon className={cx(glyph, visual.text)} />
+    </div>
+  );
+}
+
+/** Pastel mascot tile — the cute face of a node type on hero surfaces. */
+export function MascotBadge({
+  visual,
+  size = "md",
+  className,
+}: {
+  visual: NodeVisual;
+  size?: "sm" | "md" | "lg";
+  className?: string;
+}) {
+  const box =
+    size === "lg"
+      ? "size-20 rounded-3xl"
+      : size === "sm"
+        ? "size-10 rounded-xl"
+        : "size-14 rounded-2xl";
+  const img = size === "lg" ? "size-16" : size === "sm" ? "size-8" : "size-11";
+  return (
+    <div
+      className={cx(
+        "flex shrink-0 items-center justify-center border-2",
+        box,
+        visual.soft,
+        visual.glow,
+        className,
+      )}
+    >
+      <img
+        src={visual.mascot}
+        alt=""
+        aria-hidden="true"
+        draggable={false}
+        className={cx(
+          img,
+          "object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)] transition-transform group-hover:-rotate-3 group-hover:scale-110",
+        )}
+        referrerPolicy="no-referrer"
+      />
     </div>
   );
 }
