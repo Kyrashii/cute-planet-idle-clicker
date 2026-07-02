@@ -6,6 +6,7 @@ import type {
   CalculationsSnapshot,
   OpeningResult,
   BlackHoleResultState,
+  LootboxesOpenedEvent,
 } from "./protocol";
 import { formatCompactNumber } from "../utils/format";
 import { isObjEqual, isArrEqual } from "../utils/equality";
@@ -58,6 +59,7 @@ export interface WorkerEventHandlers {
   setAchievements: Dispatch<SetStateAction<Achievement[]>>;
   setIsLoaded: Dispatch<SetStateAction<boolean>>;
   setOpeningResult: Dispatch<SetStateAction<OpeningResult | null>>;
+  setLootboxResult: Dispatch<SetStateAction<LootboxesOpenedEvent | null>>;
   setBlackHoleResult: Dispatch<SetStateAction<BlackHoleResultState | null>>;
   playTick: () => void;
   playPop: () => void;
@@ -110,6 +112,7 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
     setAchievements,
     setIsLoaded,
     setOpeningResult,
+    setLootboxResult,
     setBlackHoleResult,
     playTick,
     playPop,
@@ -325,6 +328,11 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
         }
         return next;
       });
+      break;
+    }
+    case "LOOTBOXES_OPENED": {
+      playLevelUp();
+      setLootboxResult(data);
       break;
     }
     case "CRAFTED_ITEMS_OPENED": {

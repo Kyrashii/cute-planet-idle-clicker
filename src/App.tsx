@@ -13,9 +13,9 @@ import type {
   CalculationsSnapshot,
   GlitchBenchmarks,
   OpeningResult,
+  LootboxesOpenedEvent,
   BlackHoleResultState,
 } from "./game/protocol";
-import type { CosmeticItem } from "./data/cosmetics";
 import {
   INITIAL_ANIMALS,
   calculateCost,
@@ -279,6 +279,7 @@ export default function App() {
   const [rogueliteViewState, setRogueliteViewState] = useState<RogueliteViewState>("intro");
 
   const [openingResult, setOpeningResult] = useState<OpeningResult | null>(null);
+  const [lootboxResult, setLootboxResult] = useState<LootboxesOpenedEvent | null>(null);
 
   const glitchedFormatCompactNumber = useCallback(
     (num: number): string => {
@@ -392,39 +393,12 @@ export default function App() {
     return () => clearInterval(interval);
   }, [missionsCooldownEnd]);
 
-  const handleOpenShootingStar = useCallback(
-    (cosmetic: CosmeticItem, alreadyUnlocked: boolean, refundAmt: number) => {
-      playTick();
-      setShootingStarsCount((prev) => {
-        const nextCount = Math.max(0, prev - 1);
-        workerRef.current?.postMessage({ type: "UPDATE_SHOOTING_STARS", count: nextCount });
-        return nextCount;
-      });
-
-      if (alreadyUnlocked) {
-        workerRef.current?.postMessage({ type: "ADD_GLITTER_DUST", amount: refundAmt });
-        const pId = nextParticleId.current++;
-        setFloatingTexts((prev) => [
-          ...prev,
-          {
-            id: pId,
-            x: 110,
-            y: 110,
-            text: `+${refundAmt} Glitzerstaub! ✨`,
-            type: "star-click",
-            createdAt: Date.now(),
-          },
-        ]);
-      } else {
-        workerRef.current?.postMessage({
-          type: "UNLOCK_COSMETIC_LOOTBOX",
-          cosmeticId: cosmetic.id,
-        });
-        setUnlockedCosmetics((prev) => [...prev, cosmetic.id]);
-      }
-    },
-    [nextParticleId, setFloatingTexts],
-  );
+  // Rolls happen worker-side (OPEN_LOOTBOXES); the LOOTBOXES_OPENED event
+  // routes the results into `lootboxResult` for the gacha wave reveal.
+  const handleOpenLootboxes = useCallback((count: number) => {
+    playTick();
+    workerRef.current?.postMessage({ type: "OPEN_LOOTBOXES", count });
+  }, []);
 
   const handleApplyCosmetic = useCallback(
     (id: string, type: "star_color" | "planet_accessory" | "frame_style" | "moon_skin") => {
@@ -808,6 +782,7 @@ export default function App() {
       setAchievements,
       setIsLoaded,
       setOpeningResult,
+      setLootboxResult,
       setBlackHoleResult,
       playTick,
       playPop,
@@ -1990,6 +1965,8 @@ export default function App() {
               setShowMissionsModal={setShowMissionsModal}
               openingResult={openingResult}
               setOpeningResult={setOpeningResult}
+              lootboxResult={lootboxResult}
+              setLootboxResult={setLootboxResult}
               showInventoryModal={showInventoryModal}
               setShowInventoryModal={setShowInventoryModal}
               showZodiacModal={showZodiacModal}
@@ -2010,7 +1987,7 @@ export default function App() {
               handleCraftRecursive={handleCraftRecursive}
               handleClaimOfflineEarnings={handleClaimOfflineEarnings}
               handleClaimMissionReward={handleClaimMissionReward}
-              handleOpenShootingStar={handleOpenShootingStar}
+              handleOpenLootboxes={handleOpenLootboxes}
               handleApplyCosmetic={handleApplyCosmetic}
               handleApplyPlanetSkin={setActivePlanetSkin}
               handleUnlockCosmeticDirect={handleUnlockCosmeticDirect}

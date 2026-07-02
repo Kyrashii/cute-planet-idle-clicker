@@ -183,7 +183,7 @@ export type WorkerCommand =
   | { type: "SPEND_GLITTER_DUST"; amount: number }
   // Cosmetics
   | { type: "UNLOCK_COSMETIC_DIRECT"; cosmeticId: string; cost: number }
-  | { type: "UNLOCK_COSMETIC_LOOTBOX"; cosmeticId: string }
+  | { type: "OPEN_LOOTBOXES"; count: number }
   | { type: "UPGRADE_COSMETIC_RARITY"; cosmeticId: string; targetRarity: string; cost: number }
   // Events
   | { type: "SET_EVENT_DECISION"; decision: string }
@@ -229,6 +229,25 @@ export interface BlackHoleResultState {
   outcomeType?: "good" | "bad";
 }
 
+export type LootboxRarity = "common" | "rare" | "epic" | "legendary";
+
+/** One Sternschnuppen-lootbox roll, in roll order. */
+export interface LootboxRoll {
+  cosmeticId: string;
+  rarity: LootboxRarity;
+  duplicate: boolean;
+  /** Glitter dust refunded for this roll (0 for fresh unlocks). */
+  refund: number;
+}
+
+/** Batch result the UI's gacha wave-reveal renders after OPEN_LOOTBOXES. */
+export interface LootboxesOpenedEvent {
+  type: "LOOTBOXES_OPENED";
+  results: LootboxRoll[];
+  totalRefund: number;
+  opened: number;
+}
+
 export type WorkerEvent =
   | StateUpdateEvent
   | { type: "STAR_TRIGGER"; reward: number; starsCount: number }
@@ -237,6 +256,7 @@ export type WorkerEvent =
   | { type: "LEVEL_UP"; level: number }
   | { type: "EVENT_TRIGGER"; event: string | null; active: boolean }
   | { type: "COSMETIC_FOUND"; text: string }
+  | LootboxesOpenedEvent
   | {
       type: "CRAFTED_ITEMS_OPENED";
       itemId: string;

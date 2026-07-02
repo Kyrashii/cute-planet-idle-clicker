@@ -173,6 +173,46 @@ describe("handleWorkerAction", () => {
     });
   });
 
+  describe("OPEN_LOOTBOXES", () => {
+    it("decrements boxes, unlocks fresh rolls once, and emits the batch result", () => {
+      const state = makeState({ shootingStarsCount: 5 });
+      const helpers = dispatch({ type: "OPEN_LOOTBOXES", count: 3 }, state);
+
+      expect(state.shootingStarsCount).toBe(2);
+      expect(helpers.broadcastStateUpdate).toHaveBeenCalledWith(true);
+      expect(helpers.emit).toHaveBeenCalledTimes(1);
+
+      const event = vi.mocked(helpers.emit).mock.calls[0][0];
+      if (event.type !== "LOOTBOXES_OPENED") throw new Error("wrong event type");
+      expect(event.opened).toBe(3);
+      expect(event.results).toHaveLength(3);
+      // Every non-duplicate roll landed in unlockedCosmetics exactly once.
+      const freshIds = event.results.filter((r) => !r.duplicate).map((r) => r.cosmeticId);
+      expect(new Set(state.unlockedCosmetics)).toEqual(new Set(freshIds));
+      expect(state.unlockedCosmetics.length).toBe(new Set(state.unlockedCosmetics).size);
+      // Refunds for duplicates are credited as glitter dust.
+      expect(state.glitterDust).toBe(event.totalRefund);
+    });
+
+    it("clamps the batch to the available shooting stars", () => {
+      const state = makeState({ shootingStarsCount: 2 });
+      const helpers = dispatch({ type: "OPEN_LOOTBOXES", count: 99 }, state);
+
+      expect(state.shootingStarsCount).toBe(0);
+      const event = vi.mocked(helpers.emit).mock.calls[0][0];
+      if (event.type !== "LOOTBOXES_OPENED") throw new Error("wrong event type");
+      expect(event.opened).toBe(2);
+    });
+
+    it("is a no-op with zero boxes", () => {
+      const state = makeState({ shootingStarsCount: 0 });
+      const helpers = dispatch({ type: "OPEN_LOOTBOXES", count: 1 }, state);
+
+      expect(helpers.emit).not.toHaveBeenCalled();
+      expect(helpers.broadcastStateUpdate).not.toHaveBeenCalled();
+    });
+  });
+
   describe("SET_PLANET_LEVEL", () => {
     it("sets the requested level and creates a fresh task", () => {
       const state = makeState({ planetLevel: 3, planetExp: 999 });
