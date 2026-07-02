@@ -366,7 +366,7 @@ export const Modal: React.FC<ModalProps> = ({
             onDragEnd={(_, info) => {
               if (info.offset.y > 120 || info.velocity.y > 800) onClose();
             }}
-            className={`${skipFrameTarget ? "" : "modal-frame-target "}${isSheet || isDrawer ? "flex flex-col overflow-hidden " : ""}${panelClassName} ${
+            className={`relative z-10 ${skipFrameTarget ? "" : "modal-frame-target "}${isSheet || isDrawer ? "flex flex-col overflow-hidden " : ""}${panelClassName} ${
               isGlitchedCtx
                 ? " bg-black! text-cyan-400! border-cyan-500! shadow-[0_0_35px_rgba(6,182,212,0.6)] border-4 select-none glitch-text-anim font-mono "
                 : ""
