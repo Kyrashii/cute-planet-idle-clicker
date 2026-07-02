@@ -3,10 +3,14 @@ import { CRAFTING_RECIPES } from "../data/recipes";
 import { resolve, RECIPE_BY_RESULT, getItem } from "../data/craftingGraph";
 import { rollTaskForLevel } from "./planetTasks";
 import { handleUseCraftedItem } from "./itemHandlers";
+import { rollLootboxes } from "./lootbox";
 import { executeBlackHoleGamble } from "./blackHoleGamble";
 import { formatCompactNumber } from "./achievements";
 import { getMaxMoons } from "./maxMoons";
 import type { WorkerCommand, WorkerEvent, WorkerGameState, StatsResult } from "./protocol";
+
+/** Hard safety cap per OPEN_LOOTBOXES command. */
+export const MAX_LOOTBOX_BATCH = 500;
 
 export interface WorkerActionHelpers {
   getLpsAndStats: () => StatsResult;
@@ -554,12 +558,21 @@ export function handleWorkerAction(
       }
       break;
     }
-    case "UNLOCK_COSMETIC_LOOTBOX": {
-      const { cosmeticId } = data;
-      if (!state.unlockedCosmetics.includes(cosmeticId)) {
-        state.unlockedCosmetics.push(cosmeticId);
-        broadcastStateUpdate(true);
-      }
+    case "OPEN_LOOTBOXES": {
+      const available = state.shootingStarsCount || 0;
+      const count = Math.min(Math.max(Math.floor(data.count), 0), available, MAX_LOOTBOX_BATCH);
+      if (count <= 0) break;
+
+      const { results, totalRefund, newlyUnlockedIds } = rollLootboxes(count, {
+        hasGachaMagnet: state.purchasedUpgrades.includes("upg-glitter-gacha"),
+        alreadyUnlocked: state.unlockedCosmetics,
+      });
+
+      state.shootingStarsCount = available - count;
+      state.unlockedCosmetics.push(...newlyUnlockedIds);
+      state.glitterDust = (state.glitterDust || 0) + totalRefund;
+      broadcastStateUpdate(true);
+      emit({ type: "LOOTBOXES_OPENED", results, totalRefund, opened: count });
       break;
     }
     case "UPGRADE_COSMETIC_RARITY": {

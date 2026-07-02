@@ -64,8 +64,7 @@ import type { User } from "firebase/auth";
 import type { FontScaleOption } from "../hooks/useDisplayPreferences";
 import type { AccountSwitchPrompt, CloudSaveData } from "../hooks/useFirebaseSync";
 import type { Achievement, Upgrade } from "../types";
-import type { OpeningResult, StatsResult } from "../game/protocol";
-import type { CosmeticItem } from "../data/cosmetics";
+import type { LootboxesOpenedEvent, OpeningResult, StatsResult } from "../game/protocol";
 import type { MusicStyleId } from "../utils/audio";
 
 import { INITIAL_ANIMALS, calculateCost } from "../data";
@@ -100,6 +99,8 @@ interface GameModalsContainerProps {
   setShowMissionsModal: (show: boolean) => void;
   openingResult: OpeningResult | null;
   setOpeningResult: (res: OpeningResult | null) => void;
+  lootboxResult: LootboxesOpenedEvent | null;
+  setLootboxResult: (res: LootboxesOpenedEvent | null) => void;
   showInventoryModal: boolean;
   setShowInventoryModal: (show: boolean) => void;
   showZodiacModal: boolean;
@@ -126,11 +127,7 @@ interface GameModalsContainerProps {
   handleCraftRecursive: (targetItemId: string, count?: number) => void;
   handleClaimOfflineEarnings: (earnedLife: number) => void;
   handleClaimMissionReward: (missionId: string, starsReward: number) => void;
-  handleOpenShootingStar: (
-    cosmetic: CosmeticItem,
-    alreadyUnlocked: boolean,
-    refundAmt: number,
-  ) => void;
+  handleOpenLootboxes: (count: number) => void;
   handleApplyCosmetic: (
     id: string,
     type: "star_color" | "planet_accessory" | "frame_style" | "moon_skin",
@@ -222,6 +219,8 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
     setShowMissionsModal,
     openingResult,
     setOpeningResult,
+    lootboxResult,
+    setLootboxResult,
     showInventoryModal,
     setShowInventoryModal,
     showZodiacModal,
@@ -243,7 +242,7 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
     handleCraftRecursive,
     handleClaimOfflineEarnings,
     handleClaimMissionReward,
-    handleOpenShootingStar,
+    handleOpenLootboxes,
     handleApplyCosmetic,
     handleApplyPlanetSkin,
     handleUnlockCosmeticDirect,
@@ -534,7 +533,9 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
             activeMoonSkin={activeMoonSkin}
             activePlanetSkin={activePlanetSkin}
             unlockedPlanetSkins={unlockedPlanetSkins}
-            onOpenShootingStar={handleOpenShootingStar}
+            onOpenLootboxes={handleOpenLootboxes}
+            lootboxResult={lootboxResult}
+            onClearLootboxResult={() => setLootboxResult(null)}
             onApplyCosmetic={handleApplyCosmetic}
             onApplyPlanetSkin={handleApplyPlanetSkin}
             purchasedUpgrades={purchasedUpgrades}

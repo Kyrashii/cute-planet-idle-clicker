@@ -3,8 +3,10 @@ import { motion } from "motion/react";
 import { Modal } from "../ui/Modal";
 import { DeferredModalContent } from "../ui/DeferredModalContent";
 import { Tabs } from "../ui/Tabs";
+import { LootboxWaveReveal } from "./LootboxWaveReveal";
+import type { LootboxesOpenedEvent } from "../../game/protocol";
 import { Sparkles, Check, Lock } from "lucide-react";
-import { COSMETIC_ITEMS, CosmeticItem, RARITY_STYLES } from "../../data/cosmetics";
+import { COSMETIC_ITEMS, RARITY_STYLES } from "../../data/cosmetics";
 import { CRAFTING_RECIPES } from "../../data/recipes";
 import { useGameState } from "../../contexts/GameStateContext";
 import { ROGUELITE_PLANET_SKINS } from "../../roguelite/data";
@@ -23,7 +25,9 @@ interface InventoryModalProps {
   activeMoonSkin: string;
   activePlanetSkin: string;
   unlockedPlanetSkins: string[];
-  onOpenShootingStar: (cosmetic: CosmeticItem, isDuplicate: boolean, glitterRefund: number) => void;
+  onOpenLootboxes: (count: number) => void;
+  lootboxResult: LootboxesOpenedEvent | null;
+  onClearLootboxResult: () => void;
   onApplyCosmetic: (
     id: string,
     type: "star_color" | "planet_accessory" | "frame_style" | "moon_skin",
@@ -55,7 +59,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
     activeMoonSkin,
     activePlanetSkin,
     unlockedPlanetSkins,
-    onOpenShootingStar,
+    onOpenLootboxes,
+    lootboxResult,
+    onClearLootboxResult,
     onApplyCosmetic,
     onApplyPlanetSkin,
     purchasedUpgrades,
@@ -69,16 +75,8 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
   }) => {
     const { glitterDust, shootingStarsCount } = useGameState();
     const [activeTab, setActiveTab] = useState<string>("star_color");
-    const [openingState, setOpeningState] = useState<"idle" | "shaking" | "revealed">("idle");
-    const [revealedItem, setRevealedItem] = useState<CosmeticItem | null>(null);
-    const [isRevealDuplicate, setIsRevealDuplicate] = useState(false);
-
-    const getGlitterRefund = (rarity: string): number => {
-      if (rarity === "legendary") return 100;
-      if (rarity === "epic") return 45;
-      if (rarity === "rare") return 15;
-      return 5;
-    };
+    // True from the OPEN_LOOTBOXES send until the reveal overlay is dismissed.
+    const [rolling, setRolling] = useState(false);
 
     const getDirectPurchaseCost = (rarity: string) => {
       let cost = 15;
@@ -122,64 +120,17 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
       return details;
     };
 
-    // Weighted roll for cosmetics
-    const handleOpenBox = () => {
-      if (shootingStarsCount <= 0 || openingState !== "idle") return;
-
-      setOpeningState("shaking");
-      setRevealedItem(null);
-
-      // Simulate epic starlight opening sequence
-      setTimeout(() => {
-        const hasGachaMagnet = purchasedUpgrades.includes("upg-glitter-gacha");
-        const rand = Math.random() * 100;
-        let selectedRarity: "common" | "rare" | "epic" | "legendary" = "common";
-
-        if (hasGachaMagnet) {
-          // Legendary: 6% * 1.5 = 9%
-          // Epic: 16% * 1.30 = 20.8%
-          // Rare: 33% (up to 62.8%)
-          if (rand < 9) {
-            selectedRarity = "legendary";
-          } else if (rand < 29.8) {
-            selectedRarity = "epic";
-          } else if (rand < 62.8) {
-            selectedRarity = "rare";
-          } else {
-            selectedRarity = "common";
-          }
-        } else {
-          if (rand < 6) {
-            selectedRarity = "legendary";
-          } else if (rand < 22) {
-            selectedRarity = "epic";
-          } else if (rand < 55) {
-            selectedRarity = "rare";
-          } else {
-            selectedRarity = "common";
-          }
-        }
-
-        // Filter templates matching this rarity
-        let pool = COSMETIC_ITEMS.filter((item) => item.rarity === selectedRarity);
-        if (pool.length === 0) pool = COSMETIC_ITEMS;
-
-        const rolled = pool[Math.floor(Math.random() * pool.length)];
-        const alreadyUnlocked = unlockedCosmetics.includes(rolled.id);
-        const refundAmt = getGlitterRefund(rolled.rarity);
-
-        setRevealedItem(rolled);
-        setIsRevealDuplicate(alreadyUnlocked);
-        setOpeningState("revealed");
-
-        // Dispatch state update to parent (refundAmt represents Glitter Dust!)
-        onOpenShootingStar(rolled, alreadyUnlocked, refundAmt);
-      }, 1500);
+    // Rolls are authoritative in the worker; this only kicks off the request
+    // and shows the gacha overlay until the LOOTBOXES_OPENED result is closed.
+    const handleOpenBoxes = (count: number) => {
+      if (shootingStarsCount <= 0 || rolling || lootboxResult) return;
+      setRolling(true);
+      onOpenLootboxes(count);
     };
 
     const handleCloseReveal = () => {
-      setOpeningState("idle");
-      setRevealedItem(null);
+      setRolling(false);
+      onClearLootboxResult();
     };
 
     // Tabs translation helpers
@@ -215,81 +166,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
             : "bg-amber-50/95 border-amber-400 text-slate-800"
         }`}
       >
-        {/* GACHA SHAKING STATE OVERLAY */}
-        {openingState === "shaking" && (
-          <div className="absolute inset-0 bg-cosmic-bg-deep/98 backdrop-blur-md flex flex-col items-center justify-center gap-4 z-50">
-            <motion.div
-              animate={{
-                rotate: [0, -15, 15, -15, 15, -10, 10, -5, 5, 0],
-                scale: [1, 1.1, 1.1, 1.1, 1.15, 1.15, 1.15, 1, 1],
-              }}
-              transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
-              className="text-7xl select-none filter drop-shadow-[0_0_20px_rgba(245,158,11,0.7)]"
-            >
-              ☄️
-            </motion.div>
-            <p className="font-mono text-center font-black text-sm text-yellow-300 uppercase tracking-widest animate-pulse">
-              Oeffne Sternenstaub... ✨
-            </p>
-          </div>
-        )}
-
-        {/* GACHA REVEALED POPUP OVERLAY */}
-        {openingState === "revealed" && revealedItem && (
-          <div className="absolute inset-0 bg-linear-to-b from-cosmic-bg-deep/98 to-cosmic-bg/98 backdrop-blur-md flex flex-col items-center justify-center p-6 z-50">
-            <motion.div
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="text-center space-y-5 max-w-md flex flex-col items-center"
-            >
-              <div className="relative inline-block mb-2">
-                <div className="absolute -inset-6 rounded-full bg-amber-400/25 blur-xl animate-ping" />
-                <span className="text-[100px] select-none filter drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] block leading-none">
-                  {revealedItem.emoji}
-                </span>
-              </div>
-
-              <div className="space-y-2">
-                <span
-                  className={`px-3.5 py-1 rounded-full text-xs font-mono font-black uppercase tracking-wider border ${
-                    RARITY_STYLES[revealedItem.rarity].bg
-                  } ${RARITY_STYLES[revealedItem.rarity].text} ${RARITY_STYLES[revealedItem.rarity].border}`}
-                >
-                  {RARITY_STYLES[revealedItem.rarity].name}
-                </span>
-                <h4 className="font-sans font-black text-xl/tight text-amber-300 uppercase tracking-wide mt-3 ">
-                  {revealedItem.germanName}
-                </h4>
-                <p className="text-[12px] font-semibold text-cosmic-text-muted max-w-xs leading-relaxed px-2 text-center">
-                  {revealedItem.germanDescription}
-                </p>
-              </div>
-
-              {isRevealDuplicate ? (
-                <div className="bg-pink-500/10 border border-pink-400/40 px-4 py-3 rounded-2xl flex items-center justify-center gap-2.5 max-w-xs">
-                  <span className="text-2xl">✨</span>
-                  <p className="text-[11px] font-black text-pink-300 uppercase tracking-wide leading-tight text-center">
-                    Bereits freigeschaltet!
-                    <br />
-                    <span className="text-xs text-pink-100 font-bold">
-                      +{getGlitterRefund(revealedItem.rarity)} Glitzerstaub erhalten!
-                    </span>
-                  </p>
-                </div>
-              ) : (
-                <p className="text-xs font-black text-green-400 uppercase tracking-wider animate-bounce my-2">
-                  ✨ GANZ NEU FREIGESCHALTET! ✨
-                </p>
-              )}
-
-              <button
-                onClick={handleCloseReveal}
-                className="px-8 py-3 rounded-2xl bg-linear-to-r from-amber-450 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-sans font-black text-sm uppercase tracking-wider cursor-pointer shadow-lg active:scale-95 transition-all mt-4"
-              >
-                Wie fabelhaft! ➔
-              </button>
-            </motion.div>
-          </div>
+        {/* GACHA WAVE-REVEAL OVERLAY */}
+        {(rolling || lootboxResult !== null) && (
+          <LootboxWaveReveal result={lootboxResult} onClose={handleCloseReveal} />
         )}
 
         {/* Header */}
@@ -362,7 +241,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                 </p>
               </div>
 
-              <div className="w-full shrink-0 md:w-auto">
+              <div className="flex w-full shrink-0 flex-col gap-2 md:w-auto">
                 {shootingStarsCount <= 0 ? (
                   <div
                     className={`px-4 py-2.5 rounded-2xl border text-center font-sans font-black text-xs uppercase cursor-not-allowed select-none ${
@@ -373,16 +252,30 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   >
                     Keine Sternschnuppen
                   </div>
-                ) : openingState === "idle" ? (
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleOpenBox}
-                    className="w-full md:w-auto justify-center px-6 py-3.5 rounded-2xl bg-linear-to-r from-amber-450 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-sans font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2 border-2 border-yellow-300"
-                  >
-                    <Sparkles className="size-4  text-yellow-105 animate-spin" />
-                    Oeffnen!
-                  </motion.button>
+                ) : !rolling && lootboxResult === null ? (
+                  <>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleOpenBoxes(1)}
+                      className="w-full md:w-auto justify-center px-6 py-3.5 rounded-2xl bg-linear-to-r from-amber-450 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-sans font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2 border-2 border-yellow-300"
+                    >
+                      <Sparkles className="size-4  text-yellow-105 animate-spin" />
+                      Oeffnen!
+                    </motion.button>
+                    {shootingStarsCount > 1 && (
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => handleOpenBoxes(shootingStarsCount)}
+                        title={`Oeffnet alle ${shootingStarsCount} Sternschnuppen auf einmal`}
+                        className="w-full md:w-auto justify-center px-6 py-2.5 rounded-2xl bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white font-sans font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all cursor-pointer flex items-center gap-2 border-2 border-fuchsia-300"
+                      >
+                        <span className="select-none">🌠</span>
+                        Alle oeffnen ({shootingStarsCount}x)
+                      </motion.button>
+                    )}
+                  </>
                 ) : null}
               </div>
             </div>
