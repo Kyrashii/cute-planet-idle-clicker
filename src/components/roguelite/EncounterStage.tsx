@@ -3,6 +3,8 @@ import { motion } from "motion/react";
 import { Gift, RotateCcw, Sparkles } from "lucide-react";
 
 import type { ActiveRogueliteRun, RogueliteEncounter } from "../../roguelite/types";
+import { effectsBus } from "../../effects/effectsBus";
+import { popIn, staggerChildren } from "../ui/motion";
 import { ChoiceCard } from "./ChoiceCard";
 import { PathFork } from "./PathFork";
 import {
@@ -145,6 +147,11 @@ export const EncounterStage: React.FC<{
 }) => {
   const reducedMotion = usePrefersReducedMotion();
   const isBoss = activeRun.phase === "boss";
+
+  // Boss arrival pushes the adaptive music intensity up.
+  React.useEffect(() => {
+    if (isBoss) effectsBus.publish({ type: "ROGUELITE_JUICE", kind: "boss" });
+  }, [isBoss]);
   const bossStageLabel =
     activeRun.boss.stage === "act_1"
       ? "Akt-1-Boss"
@@ -179,20 +186,26 @@ export const EncounterStage: React.FC<{
           <>
             <EncounterHero encounter={encounter} isBoss={isBoss} bossStageLabel={bossStageLabel} />
 
-            {/* Choices — the hero region */}
+            {/* Choices — the hero region; cards pop in as a soft wave */}
             <div className="mt-4 min-h-0 flex-1 overflow-y-auto -mx-1 px-1 pt-1 pb-3">
-              <div
+              <motion.div
                 data-testid="roguelite-choice-grid"
                 className={cx("grid content-start gap-3", choiceGridClass)}
+                variants={staggerChildren(0.06)}
+                initial={reducedMotion ? false : "hidden"}
+                animate="visible"
               >
                 {encounter.choices.map((choice) => (
-                  <ChoiceCard
+                  <motion.div
                     key={choice.id}
-                    choice={choice}
-                    onClick={() => onChooseEncounter(choice.id)}
-                  />
+                    variants={popIn}
+                    whileHover={reducedMotion ? undefined : { rotate: [0, -1, 1.2, 0] }}
+                    className="h-full"
+                  >
+                    <ChoiceCard choice={choice} onClick={() => onChooseEncounter(choice.id)} />
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </div>
 
             {canReroll && (

@@ -5,6 +5,8 @@ import { Coins, Gem, Crown, Frown, Sparkles } from "lucide-react";
 import { ROGUELITE_ACT_BOSS_STATIONS, ROGUELITE_TOTAL_STATIONS } from "../../roguelite/engine";
 import { ROGUELITE_BOSSES } from "../../roguelite/data";
 import type { ActiveRogueliteRun, RogueliteRewardPackage } from "../../roguelite/types";
+import { spring } from "../ui/motion";
+import { JuiceBurst } from "./JuiceBurst";
 import { RelicCard } from "./RelicCard";
 import {
   CATEGORY_VISUALS,
@@ -148,12 +150,13 @@ export const Results: React.FC<{
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
         className={cx(
-          "flex items-center gap-4 rounded-3xl border p-5",
+          "relative flex items-center gap-4 rounded-3xl border p-5",
           isVictory
             ? "border-cosmic-yellow/35 bg-[linear-gradient(120deg,rgba(254,240,138,0.12),rgba(202,165,254,0.1))]"
             : "border-rose-300/25 bg-[linear-gradient(120deg,rgba(244,114,182,0.08),rgba(27,25,53,0.4))]",
         )}
       >
+        {isVictory && <JuiceBurst />}
         <div
           className={cx(
             "flex size-16  shrink-0 items-center justify-center rounded-2xl border",
@@ -201,11 +204,19 @@ export const Results: React.FC<{
             />
           </div>
           {isVictory && (
-            <img
-              src={REWARD_CHEST}
-              alt="Roguelite Siegestruhe"
-              className="mx-auto hidden w-full max-w-48 object-contain drop-shadow-[0_16px_36px_rgba(0,0,0,0.45)] lg:block"
-            />
+            <motion.div
+              initial={reducedMotion ? false : { scale: 0.7, opacity: 0, rotate: -4 }}
+              animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              transition={{ ...spring.snappy, delay: 0.15 }}
+              className="relative mx-auto hidden w-full max-w-48 lg:block"
+            >
+              <JuiceBurst />
+              <img
+                src={REWARD_CHEST}
+                alt="Roguelite Siegestruhe"
+                className="w-full object-contain drop-shadow-[0_16px_36px_rgba(0,0,0,0.45)]"
+              />
+            </motion.div>
           )}
         </div>
 

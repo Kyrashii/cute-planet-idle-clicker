@@ -59,6 +59,37 @@
   contain-intrinsic-size: auto 240px;
 }
 
+/* Roguelite ambient star-dust drift — transform-only so it stays composited.
+   Stilled under reduced motion and the low-memory body class. */
+@keyframes roguelite-drift {
+  from {
+    transform: translate3d(-2%, -1%, 0) scale(1.06);
+  }
+  to {
+    transform: translate3d(2%, 1.5%, 0) scale(1.12);
+  }
+}
+
+.roguelite-drift {
+  animation: roguelite-drift 90s ease-in-out infinite alternate;
+}
+
+.roguelite-drift-slow {
+  animation: roguelite-drift 150s ease-in-out infinite alternate-reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roguelite-drift,
+  .roguelite-drift-slow {
+    animation: none;
+  }
+}
+
+.low-memory .roguelite-drift,
+.low-memory .roguelite-drift-slow {
+  animation: none;
+}
+
 :root {
   --game-font-scale: 1;
   --duration-fast: 150ms;

@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "motion/react";
 import { MapPin, Skull } from "lucide-react";
 
 import {
@@ -43,7 +44,9 @@ function Bead({
             )}
           />
         )}
-        <span
+        <motion.span
+          animate={reducedMotion ? undefined : { y: [0, -3, 0] }}
+          transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
           className={cx(
             "relative flex size-8  items-center justify-center rounded-full border-2",
             isBoss
@@ -64,7 +67,7 @@ function Bead({
           ) : (
             <Icon className={cx("size-4 ", isBoss ? "text-cosmic-yellow" : "text-cosmic-text")} />
           )}
-        </span>
+        </motion.span>
       </div>
     );
   }

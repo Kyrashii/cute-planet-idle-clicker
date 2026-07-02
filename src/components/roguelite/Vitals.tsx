@@ -13,8 +13,10 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { motion } from "motion/react";
+
 import type { RogueliteRunStats } from "../../roguelite/types";
-import { Meter, cx } from "./theme";
+import { Meter, cx, usePrefersReducedMotion } from "./theme";
 
 function StatChip({
   icon: Icon,
@@ -69,17 +71,27 @@ function MiniMetric({
  * in the Details rail/sheet via {@link StatGrid}.
  */
 export const SurvivalStrip: React.FC<{ stats: RogueliteRunStats }> = ({ stats }) => {
+  const reducedMotion = usePrefersReducedMotion();
   const life = Math.round(stats.runLife);
   const maxLife = Math.round(stats.maxLife);
   const shield = Math.round(stats.runShield);
   const pressure = Math.round(stats.cometPressure);
   const pressureFill =
     pressure >= 70 ? "text-rose-300" : pressure >= 40 ? "text-amber-300" : "text-emerald-300";
+  const lifeRatio = maxLife > 0 ? life / maxLife : 1;
+  // The heart beats faster the lower the hull gets.
+  const beatDuration = lifeRatio < 0.3 ? 0.7 : lifeRatio < 0.6 ? 1.1 : 1.6;
 
   return (
     <div className="flex items-center gap-2">
       <div className="flex min-w-0 flex-2 items-center gap-2.5 rounded-xl border border-white/10 bg-black/20 px-3 py-1.5">
-        <Heart className="size-4  shrink-0 fill-current text-cosmic-pink" />
+        <motion.span
+          animate={reducedMotion ? undefined : { scale: [1, 1.15, 1] }}
+          transition={{ repeat: Infinity, duration: beatDuration, ease: "easeInOut" }}
+          className="flex shrink-0"
+        >
+          <Heart className="size-4  shrink-0 fill-current text-cosmic-pink" />
+        </motion.span>
         <span className="font-mono text-[9px] font-black uppercase tracking-[0.12em] text-cosmic-accent-muted">
           Leben
         </span>

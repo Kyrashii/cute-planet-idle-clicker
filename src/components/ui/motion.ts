@@ -32,6 +32,11 @@ export const scaleIn: Variants = {
   exit: { opacity: 0, scale: 0.97, transition: { duration: DURATION.fast, ease: "easeIn" } },
 };
 
+export const popIn: Variants = {
+  hidden: { opacity: 0, scale: 0.9, y: 10 },
+  visible: { opacity: 1, scale: 1, y: 0, transition: spring.soft },
+};
+
 export const staggerChildren = (delay = 0.05): Variants => ({
   hidden: {},
   visible: { transition: { staggerChildren: delay } },

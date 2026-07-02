@@ -1731,6 +1731,7 @@ export default function App() {
 
   const handleChooseRogueliteEncounter = useCallback((choiceId: string) => {
     playPop();
+    effectsBus.publish({ type: "ROGUELITE_JUICE", kind: "choice" });
     startTransition(() => {
       setActiveRogueliteRun((prev) => (prev ? chooseEncounterOption(prev, choiceId) : prev));
     });
@@ -1738,6 +1739,7 @@ export default function App() {
 
   const handleChooseRoguelitePath = useCallback((pathId: string) => {
     playPop();
+    effectsBus.publish({ type: "ROGUELITE_JUICE", kind: "choice" });
     startTransition(() => {
       setActiveRogueliteRun((prev) => (prev ? pickPath(prev, pathId) : prev));
     });
@@ -1754,6 +1756,7 @@ export default function App() {
     (selectedRelicId: string) => {
       if (!activeRogueliteRun) return;
       playLevelUp();
+      effectsBus.publish({ type: "ROGUELITE_JUICE", kind: "victory" });
       const claimedRun = selectVictoryRewards(activeRogueliteRun, selectedRelicId);
       applyRogueliteFinalize(finalizeRun(rogueliteMeta, claimedRun));
     },
@@ -1763,6 +1766,7 @@ export default function App() {
   const handleClaimRogueliteDefeat = useCallback(() => {
     if (!activeRogueliteRun) return;
     playTick();
+    effectsBus.publish({ type: "ROGUELITE_JUICE", kind: "defeat" });
     applyRogueliteFinalize(finalizeRun(rogueliteMeta, activeRogueliteRun));
   }, [activeRogueliteRun, applyRogueliteFinalize, rogueliteMeta]);
 
