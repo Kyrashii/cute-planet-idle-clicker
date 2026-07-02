@@ -49,4 +49,10 @@ describe("Tabs", () => {
     expect(screen.getByRole("tab", { name: "Besitz" })).toHaveAttribute("tabindex", "0");
     expect(screen.getByRole("tab", { name: "Alle" })).toHaveAttribute("tabindex", "-1");
   });
+
+  it("applies the warm variant styling", () => {
+    render(<Tabs items={items} value="all" onChange={() => {}} variant="warm" />);
+    expect(screen.getByRole("tablist")).toHaveClass("bg-amber-100/70");
+    expect(screen.getByRole("tab", { name: "Alle" })).toHaveClass("bg-amber-200");
+  });
 });
