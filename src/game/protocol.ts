@@ -59,6 +59,8 @@ export interface WorkerGameState {
   spentGalaxyShards?: number;
   glitchBenchmarks?: GlitchBenchmarks;
   glitchCooldown?: boolean;
+  superClickCharge: number;
+  superClickArmed: boolean;
   /**
    * Per-species "love" levels. Not managed by the worker loop, but merged in via `INIT.savedState`
    * and read by `getLpsAndStats` (max-love yield bonus), so it belongs on the state contract.
@@ -115,6 +117,8 @@ export interface WorkerStatePayload {
   spentGalaxyShards: number;
   glitchBenchmarks?: GlitchBenchmarks;
   glitchCooldown: boolean;
+  superClickCharge: number;
+  superClickArmed: boolean;
 }
 
 /** Raw LPS/stats result from `getLpsAndStats` (without the achievements count). */
@@ -157,6 +161,7 @@ export type WorkerCommand =
   | { type: "RESUME_TIMERS" }
   // Interaction
   | { type: "CLICK"; x: number; y: number }
+  | { type: "ACTIVATE_SUPER_CLICK" }
   // Purchases
   | { type: "BUY_ANIMAL"; animalId: string; cost: number; countToBuy?: number }
   | { type: "BUY_STAR"; cost: number }
@@ -253,6 +258,15 @@ export type WorkerEvent =
   | { type: "STAR_TRIGGER"; reward: number; starsCount: number }
   | { type: "MOON_TRIGGER"; reward: number; moonsCount: number }
   | { type: "CLICK_EFFECT"; actualClickLife: number; x: number; y: number }
+  | {
+      type: "SUPER_CLICK_TRIGGERED";
+      reward: number;
+      hits: number;
+      productionSeconds: number;
+      stardust: number;
+      stars: number;
+      glitterDust: number;
+    }
   | { type: "LEVEL_UP"; level: number }
   | { type: "EVENT_TRIGGER"; event: string | null; active: boolean }
   | { type: "COSMETIC_FOUND"; text: string }

@@ -6,6 +6,11 @@ import { getLpsAndStats as calcLpsAndStats } from "./game/statsCalculator";
 import { generateAchievements as calcAchievements } from "./game/achievements";
 import { handleWorkerAction } from "./game/workerActions";
 import { DEFAULT_GLITCH_BENCHMARKS, hasReachedGlitchMilestone } from "./game/glitchGalaxy";
+import {
+  calculateSuperClickReward,
+  chargeSuperClick,
+  getSuperClickConfig,
+} from "./game/superClick";
 import type {
   WorkerCommand,
   WorkerEvent,
@@ -67,6 +72,8 @@ let state: WorkerGameState = {
   unlockedGlitchGalaxy: false,
   spentGalaxyShards: 0,
   glitchCooldown: false,
+  superClickCharge: 0,
+  superClickArmed: false,
 };
 
 // Timers refs
@@ -295,6 +302,8 @@ function broadcastStateUpdate(
       spentGalaxyShards: state.spentGalaxyShards || 0,
       glitchBenchmarks: state.glitchBenchmarks,
       glitchCooldown: state.glitchCooldown || false,
+      superClickCharge: state.superClickCharge || 0,
+      superClickArmed: state.superClickArmed || false,
     },
     calculations: {
       ...calculations,
@@ -550,6 +559,40 @@ addEventListener("message", (e: MessageEvent<WorkerCommand>) => {
       state.life += actualClickLife;
       state.totalLifeEarned += actualClickLife;
 
+      const superClickConfig = getSuperClickConfig(state.purchasedUpgrades);
+      if (state.superClickArmed) {
+        const reward = calculateSuperClickReward(stats.totalLps, superClickConfig);
+        state.life += reward;
+        state.totalLifeEarned += reward;
+        state.starsCount += superClickConfig.stars;
+        state.glitterDust = (state.glitterDust || 0) + superClickConfig.glitterDust;
+        if (superClickConfig.stardust > 0) {
+          state.craftedItems = state.craftedItems || {};
+          state.craftedItems.mat_stardust =
+            (state.craftedItems.mat_stardust || 0) + superClickConfig.stardust;
+        }
+        if (superClickConfig.starRainDuration > 0) {
+          setupActiveEvent("shooting_stars");
+          state.eventTimeRemaining = superClickConfig.starRainDuration;
+        }
+        state.superClickCharge = superClickConfig.retainedCharge;
+        state.superClickArmed = false;
+        emit({
+          type: "SUPER_CLICK_TRIGGERED",
+          reward,
+          hits: superClickConfig.hits,
+          productionSeconds: superClickConfig.productionSeconds,
+          stardust: superClickConfig.stardust,
+          stars: superClickConfig.stars,
+          glitterDust: superClickConfig.glitterDust,
+        });
+      } else {
+        state.superClickCharge = chargeSuperClick(
+          state.superClickCharge,
+          superClickConfig.chargePerClick,
+        );
+      }
+
       // 🌌 EVENT DECISION: Dynamic or legacy Glitter Dust dropping
       let targetChance = 0;
       let targetAmount = 0;
@@ -598,6 +641,14 @@ addEventListener("message", (e: MessageEvent<WorkerCommand>) => {
 
       addPlanetExp(actualClickXP);
       broadcastStateUpdate();
+      break;
+    }
+    case "ACTIVATE_SUPER_CLICK": {
+      if (state.superClickCharge >= 100) {
+        state.superClickCharge = 100;
+        state.superClickArmed = true;
+        broadcastStateUpdate();
+      }
       break;
     }
     case "PAUSE_TIMERS": {

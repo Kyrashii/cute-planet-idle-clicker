@@ -66,6 +66,29 @@ async function expectCoachButtonsInsideViewport(page: Page) {
 }
 
 test.describe("cute planet smoke", () => {
+  test("charges, arms, and consumes the Super Click", async ({ page }) => {
+    await page.goto("/");
+    const planet = page.locator("#planet-container");
+    await expect(planet).toBeVisible({ timeout: 30_000 });
+    await dismissTutorial(page);
+
+    const meter = page.getByRole("progressbar", { name: "Super-Klick-Ladung" });
+    await expect(meter).toHaveAttribute("aria-valuenow", "0");
+
+    for (let i = 0; i < 50; i++) {
+      await planet.click({ position: { x: 100, y: 100 } });
+    }
+
+    const activate = page.getByRole("button", { name: "Super-Klick aktivieren" });
+    await expect(activate).toBeVisible();
+    await activate.click();
+    await expect(page.getByText("Super-Klick bereit zum Tippen")).toBeVisible();
+
+    await planet.click({ position: { x: 100, y: 100 } });
+    await expect(meter).toHaveAttribute("aria-valuenow", "0");
+    await expect(page.getByText(/SUPER-KLICK x1/)).toBeVisible();
+  });
+
   // Each test gets a fresh browser context, so localStorage already starts empty
   // and survives an in-test reload (which is exactly what we assert below).
   test("boots, round-trips clicks through the worker, and rehydrates on reload", async ({

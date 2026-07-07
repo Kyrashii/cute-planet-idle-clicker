@@ -105,6 +105,8 @@ export default function App() {
   const [planetTask, setPlanetTask] = useState<PlanetTask | undefined>(undefined);
   const [clicksCount, setClicksCount] = useState<number>(0);
   const [starClicksTriggered, setStarClicksTriggered] = useState<number>(0);
+  const [superClickCharge, setSuperClickCharge] = useState<number>(0);
+  const [superClickArmed, setSuperClickArmed] = useState<boolean>(false);
   const [secondsPlayed, setSecondsPlayed] = useState<number>(0);
 
   // Day/Night Cycle States (Default to relaxing dark-pastel Night)
@@ -751,6 +753,8 @@ export default function App() {
       setPlanetTask,
       setClicksCount,
       setStarClicksTriggered,
+      setSuperClickCharge,
+      setSuperClickArmed,
       setSecondsPlayed: gatedHot(setSecondsPlayed),
       setIsNight,
       setCycleProgress: gatedHot(setCycleProgress),
@@ -1056,6 +1060,8 @@ export default function App() {
       planetExp,
       clicksCount,
       starClicksTriggered,
+      superClickCharge,
+      superClickArmed,
       secondsPlayed,
       unlockedCosmetics,
       activeStarColor,
@@ -1108,6 +1114,8 @@ export default function App() {
     planetExp,
     clicksCount,
     starClicksTriggered,
+    superClickCharge,
+    superClickArmed,
     secondsPlayed,
     unlockedCosmetics,
     activeStarColor,
@@ -1876,6 +1884,11 @@ export default function App() {
             moonsCount={moonsCount || 0}
             starPowerPerStar={starPowerPerStar}
             handlePlanetClick={handlePlanetClick}
+            superClickCharge={superClickCharge}
+            superClickArmed={superClickArmed}
+            activateSuperClick={() =>
+              workerRef.current?.postMessage({ type: "ACTIVATE_SUPER_CLICK" })
+            }
             activeStarColor={activeStarColor}
             activeAccessory={activeAccessory}
             activeMoonSkin={activeMoonSkin}

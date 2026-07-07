@@ -55,7 +55,7 @@ export interface Upgrade {
   effect: (state: GameState) => GameState;
   effectDescription: string;
   germanEffectDescription: string;
-  category: "click" | "animals" | "stars" | "special";
+  category: "click" | "animals" | "stars" | "special" | "super-click";
   emoji: string;
   costResource?: "life" | "glitterDust";
 }
@@ -221,6 +221,8 @@ export type GameSaveSnapshot = {
   spentGalaxyShards?: number;
   glitchBenchmarks?: GlitchBenchmarks;
   glitchCooldown?: boolean;
+  superClickCharge?: number;
+  superClickArmed?: boolean;
   rogueliteMeta?: RogueliteMetaState;
   activeRogueliteRun?: ActiveRogueliteRun | null;
   lastSavedAt?: number;

@@ -16,6 +16,8 @@ function makeHandlers() {
     "setPlanetTask",
     "setClicksCount",
     "setStarClicksTriggered",
+    "setSuperClickCharge",
+    "setSuperClickArmed",
     "setSecondsPlayed",
     "setIsNight",
     "setCycleProgress",
@@ -33,6 +35,7 @@ function makeHandlers() {
     "setUnlockedGlitchGalaxy",
     "setSpentGalaxyShards",
     "setGlitchBenchmarks",
+    "setGlitchCooldown",
     "setConstellations",
     "setCraftedItems",
     "setGlitterDust",
@@ -67,6 +70,8 @@ const payload: WorkerStatePayload = {
   planetExp: 42,
   clicksCount: 11,
   starClicksTriggered: 2,
+  superClickCharge: 46,
+  superClickArmed: false,
   secondsPlayed: 100,
   isNight: true,
   cycleProgress: 50,
@@ -94,6 +99,7 @@ const payload: WorkerStatePayload = {
   glitchPending: false,
   unlockedGlitchGalaxy: false,
   spentGalaxyShards: 0,
+  glitchCooldown: false,
 };
 
 describe("applyWorkerEvent", () => {
@@ -111,6 +117,7 @@ describe("applyWorkerEvent", () => {
     expect(h.setLife).toHaveBeenCalledWith(1234);
     expect(h.setStarsCount).toHaveBeenCalledWith(7);
     expect(h.setPlanetLevel).toHaveBeenCalledWith(5);
+    expect(h.setSuperClickCharge).toHaveBeenCalledWith(46);
     expect(h.setPurchasedAnimals).toHaveBeenCalledTimes(1);
     expect(h.setCalculations).toHaveBeenCalledTimes(1);
     expect(h.setAchievements).toHaveBeenCalledTimes(1);

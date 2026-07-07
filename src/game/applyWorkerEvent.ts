@@ -28,6 +28,8 @@ export interface WorkerEventHandlers {
   setPlanetTask: Dispatch<SetStateAction<PlanetTask | undefined>>;
   setClicksCount: Dispatch<SetStateAction<number>>;
   setStarClicksTriggered: Dispatch<SetStateAction<number>>;
+  setSuperClickCharge: Dispatch<SetStateAction<number>>;
+  setSuperClickArmed: Dispatch<SetStateAction<boolean>>;
   setSecondsPlayed: Dispatch<SetStateAction<number>>;
   setIsNight: Dispatch<SetStateAction<boolean>>;
   setCycleProgress: Dispatch<SetStateAction<number>>;
@@ -81,6 +83,8 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
     setPlanetTask,
     setClicksCount,
     setStarClicksTriggered,
+    setSuperClickCharge,
+    setSuperClickArmed,
     setSecondsPlayed,
     setIsNight,
     setCycleProgress,
@@ -142,6 +146,8 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
       setPlanetTask(ws.planetTask);
       setClicksCount(ws.clicksCount);
       setStarClicksTriggered(ws.starClicksTriggered);
+      setSuperClickCharge(ws.superClickCharge);
+      setSuperClickArmed(ws.superClickArmed);
       setSecondsPlayed(ws.secondsPlayed);
       setIsNight(ws.isNight);
       setCycleProgress(ws.cycleProgress);
@@ -207,6 +213,24 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
       }
 
       setIsLoaded(true);
+      break;
+    }
+    case "SUPER_CLICK_TRIGGERED": {
+      playLevelUp();
+      const container = document.getElementById("planet-container");
+      const rect = container?.getBoundingClientRect();
+      const pId = nextParticleId.current++;
+      setFloatingTexts((prev) => [
+        ...prev.slice(-14),
+        {
+          id: pId,
+          x: rect ? rect.width / 2 : 100,
+          y: rect ? rect.height / 2 : 100,
+          text: `SUPER-KLICK x${data.hits}: +${formatCompactNumber(data.reward)}`,
+          type: "crit-click",
+          createdAt: Date.now(),
+        },
+      ]);
       break;
     }
     case "STAR_TRIGGER": {

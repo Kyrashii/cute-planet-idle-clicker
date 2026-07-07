@@ -38,6 +38,9 @@ interface InteractiveCosmosProps {
   moonsCount: number;
   starPowerPerStar: number;
   handlePlanetClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  superClickCharge: number;
+  superClickArmed: boolean;
+  activateSuperClick: () => void;
   activeStarColor: string;
   activeAccessory: string;
   activeMoonSkin: string;
@@ -96,6 +99,9 @@ export const InteractiveCosmos: React.FC<InteractiveCosmosProps> = ({
   moonsCount,
   starPowerPerStar,
   handlePlanetClick,
+  superClickCharge,
+  superClickArmed,
+  activateSuperClick,
   activeStarColor,
   activeAccessory,
   activeMoonSkin,
@@ -229,6 +235,47 @@ export const InteractiveCosmos: React.FC<InteractiveCosmosProps> = ({
               isNight={isNightStyle}
               activeStarColor={activeStarColor}
             />
+          </div>
+
+          <div className="mt-3 w-full max-w-sm rounded-2xl border-2 border-violet-300/40 bg-cosmic-bg/90 p-2.5 shadow-lg backdrop-blur-sm">
+            <div className="mb-1.5 flex items-center justify-between gap-3 font-mono text-[10px] font-black uppercase tracking-wider">
+              <span className={superClickArmed ? "text-pink-200" : "text-violet-200"}>
+                {superClickArmed ? "Super-Klick bereit zum Tippen" : "Super-Klick"}
+              </span>
+              <span className="text-cosmic-accent-muted">{Math.round(superClickCharge)}%</span>
+            </div>
+            <div
+              className="h-3 overflow-hidden rounded-full border border-violet-200/30 bg-cosmic-bg-mid"
+              role="progressbar"
+              aria-label="Super-Klick-Ladung"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(superClickCharge)}
+            >
+              <div
+                className={`h-full rounded-full transition-[width] duration-200 ${
+                  superClickArmed
+                    ? "animate-pulse bg-linear-to-r from-pink-300 via-fuchsia-300 to-amber-200"
+                    : "bg-linear-to-r from-violet-500 via-fuchsia-400 to-pink-300"
+                }`}
+                style={{ width: `${superClickCharge}%` }}
+              />
+            </div>
+            {superClickCharge >= 100 && !superClickArmed ? (
+              <button
+                type="button"
+                onClick={activateSuperClick}
+                className="mt-2 w-full cursor-pointer rounded-xl border-2 border-pink-200 bg-linear-to-r from-violet-500 to-pink-500 px-3 py-2 text-xs font-black uppercase tracking-wider text-white shadow-md transition-transform hover:scale-102 active:scale-98"
+              >
+                Super-Klick aktivieren
+              </button>
+            ) : (
+              <p className="mt-1.5 text-center text-[9px] font-bold text-cosmic-accent-muted">
+                {superClickArmed
+                  ? "Der naechste Planetenklick gibt geballte Produktion."
+                  : "Klicke den Planeten, um die Leiste zu fuellen."}
+              </p>
+            )}
           </div>
 
           {/* Subtitle technical decoration lines */}

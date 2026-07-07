@@ -126,6 +126,8 @@ export const UpgradesModal: React.FC<UpgradesModalProps> = React.memo(
                 badgeColors = "bg-sky-300/15 text-sky-200 border-sky-300/40";
               if (upg.category === "special")
                 badgeColors = "bg-purple-300/15 text-purple-200 border-purple-300/40";
+              if (upg.category === "super-click")
+                badgeColors = "bg-fuchsia-300/15 text-fuchsia-200 border-fuchsia-300/40";
               if (isGlitterCost) badgeColors = "bg-pink-300/15 text-pink-305 border-pink-300/40";
 
               return (
