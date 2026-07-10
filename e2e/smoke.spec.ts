@@ -144,6 +144,9 @@ test.describe("cute planet smoke", () => {
     await page.reload();
     await expect(planet).toBeVisible({ timeout: 30_000 });
 
+    // Regression: the dismissed tutorial must not reappear on reload.
+    await expect(page.getByRole("button", { name: /Loslegen/ })).toHaveCount(0);
+
     const clicksAfter = await page.evaluate((key) => {
       const raw = localStorage.getItem(key);
       return raw ? (JSON.parse(raw).clicksCount ?? 0) : 0;
