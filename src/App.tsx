@@ -364,19 +364,6 @@ export default function App() {
     ],
   );
 
-  // Warm the most-opened modal chunks once the browser is idle so the first
-  // tap doesn't pay the lazy-load latency.
-  useEffect(() => {
-    if (!isLoaded) return;
-    const warm = () => {
-      void import("./components/modals/AnimalsModal");
-      void import("./components/modals/UpgradesModal");
-      void import("./components/modals/StarsModal");
-    };
-    const id = window.requestIdleCallback(warm, { timeout: 5000 });
-    return () => window.cancelIdleCallback(id);
-  }, [isLoaded]);
-
   // Check and progress mission set on cooldown end
   useEffect(() => {
     if (missionsCooldownEnd === null) return;
