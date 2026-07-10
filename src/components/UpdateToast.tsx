@@ -1,5 +1,7 @@
 import { useRegisterSW } from "virtual:pwa-register/react";
 
+const UPDATE_CHECK_MS = 60 * 60 * 1000;
+
 /**
  * Non-blocking update prompt: a new service worker waits until the player
  * opts in, so a mid-session deploy never reloads the game under them.
@@ -8,7 +10,25 @@ export function UpdateToast() {
   const {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
-  } = useRegisterSW();
+  } = useRegisterSW({
+    onRegisteredSW(swUrl, registration) {
+      if (!registration) return;
+      // Installed PWAs can sit open for days without a navigation, which is
+      // the only time the browser checks for a new SW on its own — so poll.
+      setInterval(async () => {
+        if (registration.installing || !navigator.onLine) return;
+        try {
+          const resp = await fetch(swUrl, {
+            cache: "no-store",
+            headers: { "cache-control": "no-cache" },
+          });
+          if (resp.status === 200) await registration.update();
+        } catch {
+          // Offline or flaky network — try again next interval.
+        }
+      }, UPDATE_CHECK_MS);
+    },
+  });
 
   if (!needRefresh) return null;
 

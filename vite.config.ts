@@ -33,17 +33,16 @@ export default defineConfig(() => {
           ],
         },
         workbox: {
-          globPatterns: ["**/*.{js,css,html,svg,woff2}"],
+          // Art (png/webp/webm) is precached too: the whole game is playable offline,
+          // and no runtime route can cache a stale-hash HTML fallback under an asset URL.
+          globPatterns: ["**/*.{js,css,html,svg,png,webp,webm,woff2}"],
           navigateFallback: "/index.html",
+          navigateFallbackDenylist: [
+            /^\/assets\//,
+            /\.(?:js|css|map|json|png|webp|webm|svg|ico|woff2|webmanifest|txt)$/,
+          ],
+          maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
           runtimeCaching: [
-            {
-              urlPattern: ({ url }) => url.pathname.startsWith("/assets/"),
-              handler: "CacheFirst",
-              options: {
-                cacheName: "game-art",
-                expiration: { maxEntries: 220, maxAgeSeconds: 60 * 60 * 24 * 30 },
-              },
-            },
             {
               urlPattern: ({ url }) =>
                 url.hostname.includes("googleapis.com") ||
