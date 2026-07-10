@@ -46,6 +46,30 @@ export function getSaveKey(ownerId: SaveOwnerId): string {
   return ownerId ? `${SAVE_KEY_PREFIX}_user_${ownerId}` : `${SAVE_KEY_PREFIX}_guest`;
 }
 
+/**
+ * True when any save slot (guest, per-user, or legacy) exists — a returning
+ * player. Deliberately ignores `SAVE_META_KEY`: meta is written within the
+ * first moments of any boot, long before a player counts as "returning".
+ */
+export function hasAnySaveData(): boolean {
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key) continue;
+      if (
+        key === LEGACY_SAVE_KEY ||
+        key === getSaveKey(null) ||
+        key.startsWith(`${SAVE_KEY_PREFIX}_user_`)
+      ) {
+        return true;
+      }
+    }
+  } catch {
+    // storage unavailable
+  }
+  return false;
+}
+
 export function normalizeCloudTimestamp(value: unknown): number | null {
   if (typeof value === "number" && Number.isFinite(value)) {
     return value;

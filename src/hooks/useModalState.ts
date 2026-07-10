@@ -1,27 +1,54 @@
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
+import { hasAnySaveData } from "../utils/persistence";
 import { useModalStack, type ModalId } from "./useModalStack";
+
+export const TUTORIAL_SEEN_KEY = "cute_planet_tutorial_seen";
+
+function hasSeenTutorial(): boolean {
+  try {
+    return window.localStorage.getItem(TUTORIAL_SEEN_KEY) === "1";
+  } catch {
+    // Broken storage: never spam the tutorial.
+    return true;
+  }
+}
+
+function markTutorialSeen(): void {
+  try {
+    window.localStorage.setItem(TUTORIAL_SEEN_KEY, "1");
+  } catch {
+    // ignore
+  }
+}
 
 /**
  * Centralizes the visibility flags for every modal / dialog / overlay.
  *
  * Internally a single ordered modal stack (browser-back closes the top modal);
  * the returned API keeps the original independent flag/setter names so call
- * sites don't churn. `showTutorial` defaults to `true` (first-run tutorial).
+ * sites don't churn. `showTutorial` starts open only for genuinely new players
+ * (no seen flag, no save data); dismissing it persists a per-device seen flag.
+ * It stays re-openable on demand (menu drawer "Anleitung").
  */
 export function useModalState() {
-  const { stack, openModal, closeModal, closeTop, isOpen } = useModalStack(["tutorial"]);
+  const [initialStack] = useState<readonly ModalId[]>(() =>
+    hasSeenTutorial() || hasAnySaveData() ? [] : ["tutorial"],
+  );
+  const { stack, openModal, closeModal, closeTop, isOpen } = useModalStack(initialStack);
   const stackRef = useRef(stack);
   stackRef.current = stack;
 
   const setters = useMemo(() => {
-    const set = (id: ModalId) => (value: boolean | ((prev: boolean) => boolean)) => {
-      const next = typeof value === "function" ? value(stackRef.current.includes(id)) : value;
-      if (next) {
-        openModal(id);
-      } else {
-        closeModal(id);
-      }
-    };
+    const set =
+      (id: ModalId, onClose?: () => void) => (value: boolean | ((prev: boolean) => boolean)) => {
+        const next = typeof value === "function" ? value(stackRef.current.includes(id)) : value;
+        if (next) {
+          openModal(id);
+        } else {
+          onClose?.();
+          closeModal(id);
+        }
+      };
     const open = (id: ModalId) => () => openModal(id);
     return {
       setShowAnimalsModal: set("animals"),
@@ -41,7 +68,7 @@ export function useModalState() {
       setShowResetDialog: set("reset"),
       setShowRepairDialog: set("repair"),
       setShowCheatEventModal: set("cheatEvent"),
-      setShowTutorial: set("tutorial"),
+      setShowTutorial: set("tutorial", markTutorialSeen),
       setShowUpgradesModal: set("upgrades"),
       setShowAchievementsModal: set("achievements"),
       setShowGehegeModal: set("gehege"),

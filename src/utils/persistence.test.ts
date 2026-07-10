@@ -4,6 +4,7 @@ import {
   SAVE_META_KEY,
   SAVE_VERSION,
   getSaveKey,
+  hasAnySaveData,
   migrateLegacyGlobalSave,
   migrateSave,
   normalizeCloudTimestamp,
@@ -85,6 +86,26 @@ describe("save slots", () => {
   it("builds guest and per-user save keys", () => {
     expect(getSaveKey(null)).toBe("cute_planet_save_guest");
     expect(getSaveKey("abc")).toBe("cute_planet_save_user_abc");
+  });
+
+  it("detects guest, per-user, and legacy save slots as existing save data", () => {
+    expect(hasAnySaveData()).toBe(false);
+
+    localStorage.setItem(getSaveKey(null), "{}");
+    expect(hasAnySaveData()).toBe(true);
+
+    localStorage.clear();
+    localStorage.setItem(getSaveKey("user-123"), "{}");
+    expect(hasAnySaveData()).toBe(true);
+
+    localStorage.clear();
+    localStorage.setItem(LEGACY_SAVE_KEY, "{}");
+    expect(hasAnySaveData()).toBe(true);
+  });
+
+  it("does not count save meta alone as save data", () => {
+    localStorage.setItem(SAVE_META_KEY, JSON.stringify({ activeOwnerId: null }));
+    expect(hasAnySaveData()).toBe(false);
   });
 
   it("round-trips a slot through writeSave and readSave", () => {
