@@ -21,7 +21,10 @@ async function bootstrap() {
   } else {
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
-    app.get("*", (req, res) => {
+    app.get("*", (req, res, next) => {
+      // Missing assets must 404, not fall back to HTML — a stale hashed asset
+      // URL served as index.html poisons browser and service-worker caches.
+      if (req.path.startsWith("/assets/") || path.extname(req.path)) return next();
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
