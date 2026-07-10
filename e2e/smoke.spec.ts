@@ -75,8 +75,11 @@ test.describe("cute planet smoke", () => {
     const meter = page.getByRole("progressbar", { name: "Super-Klick-Ladung" });
     await expect(meter).toHaveAttribute("aria-valuenow", "0");
 
+    // Charge via dispatched clicks: real pointer clicks each wait for the
+    // planet's whileTap spring to settle, which starves slow CI runners.
+    // The pointer path itself is covered by the round-trip smoke test.
     for (let i = 0; i < 50; i++) {
-      await planet.click({ position: { x: 100, y: 100 } });
+      await planet.dispatchEvent("click");
     }
 
     const activate = page.getByRole("button", { name: "Super-Klick aktivieren" });

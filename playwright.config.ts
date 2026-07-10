@@ -10,9 +10,14 @@ export default defineConfig({
   testDir: "./e2e",
   fullyParallel: false,
   workers: 1,
+  // CI runners are slow (dev-server transforms + webkit + heavy animations):
+  // the specs' own boot waits go up to 30s, so the default 30s total budget
+  // leaves zero headroom and times out mid-test.
+  timeout: 90_000,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? "github" : "list",
+  // The html report is what the CI workflow uploads as the failure artifact.
+  reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : [["list"]],
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
