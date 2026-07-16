@@ -1,7 +1,6 @@
 import { INITIAL_ANIMALS } from "../data";
 import type { CosmicEventOption } from "../types";
 import type { WorkerGameState } from "./protocol";
-import { expForLevel } from "./engine";
 
 /**
  * Pure, side-effect-free helper to compute LPS, click power,
@@ -18,7 +17,6 @@ export function getLpsAndStats(state: WorkerGameState) {
 
   // 🧩 SETBONI CHECK (Kosmischer Set-Harmonisierer)
   const hasSetBonusSet = upgradeSet.has("upg-glitter-set");
-  let sakuraSetComplete = false;
   let cyberSetComplete = false;
   let goldSetComplete = false;
   let ghostSetComplete = false;
@@ -26,9 +24,6 @@ export function getLpsAndStats(state: WorkerGameState) {
 
   if (hasSetBonusSet && state.unlockedCosmetics) {
     const list = state.unlockedCosmetics || [];
-    sakuraSetComplete = ["star_pink", "acc_flower_crown", "moon_sakura"].every((id) =>
-      list.includes(id),
-    );
     cyberSetComplete = ["star_cyber", "acc_space_glasses", "moon_cyber"].every((id) =>
       list.includes(id),
     );
@@ -85,30 +80,15 @@ export function getLpsAndStats(state: WorkerGameState) {
     clickPower = Math.ceil(clickPower * fuchsMultiplier);
   }
 
-  // XP multiplier calculation based on Research upgrades
-  let xpMultiplier = 1.0;
-  if (upgradeSet.has("upg-xp-1")) xpMultiplier += 0.5;
-  if (upgradeSet.has("upg-xp-2")) xpMultiplier += 0.5;
-  if (upgradeSet.has("upg-xp-3")) xpMultiplier += 0.5;
-  if (upgradeSet.has("upg-xp-4")) xpMultiplier += 0.5;
-  if (upgradeSet.has("upg-xp-5")) xpMultiplier += 1.0;
-  if (upgradeSet.has("upg-star-magnetic")) xpMultiplier += 1.0;
-  if (upgradeSet.has("upg-cosmic-eternity")) xpMultiplier *= 3.0;
-
-  // Schmetterling Set complete (+25% XP-Multiplikator)
-  if (butterflySetComplete) {
-    xpMultiplier += 0.25;
+  if (upgradeSet.has("upg-cosmic-eternity")) {
+    clickPower *= 3;
   }
 
   // Constellation Level Helpers
   const constellKuschelLevel = state.constellations?.kuschel || 0;
-  const constellMondhasenLevel = state.constellations?.mondhasen || 0;
   const constellSupernovaLevel = state.constellations?.supernova || 0;
   const constellSternenstaubLevel = state.constellations?.stardust_rain || 0;
   const constellHarmonieLevel = state.constellations?.cosmic_harmony || 0;
-
-  // Sternenstaub bonus to XP (+15% more EXP earned per level)
-  xpMultiplier += constellSternenstaubLevel * 0.15;
 
   // 🌌 EVENT DECISIONS ADJUSTMENTS
   const decision = state.activeEventDecision;
@@ -118,7 +98,6 @@ export function getLpsAndStats(state: WorkerGameState) {
   let starMultiplierForEvents = 1.0;
   let animalMultiplierForEvents = 1.0;
   let lpsMultiplierForEvents = 1.0;
-  let xpEventMultiplier = 1.0;
 
   if (activeEvent && activeEvent !== "black_hole" && state.activeEventDetails && decision) {
     if (decision === "ignorieren") {
@@ -204,7 +183,6 @@ export function getLpsAndStats(state: WorkerGameState) {
     clickMultiplierForEvents *= supernovaBoost;
     starMultiplierForEvents *= supernovaBoost;
     animalMultiplierForEvents *= supernovaBoost;
-    xpEventMultiplier *= supernovaBoost;
   }
 
   // Drache zodiac event boost (+40% to event multipliers)
@@ -214,7 +192,6 @@ export function getLpsAndStats(state: WorkerGameState) {
     clickMultiplierForEvents = 1.0 + (clickMultiplierForEvents - 1.0) * multiplier;
     starMultiplierForEvents = 1.0 + (starMultiplierForEvents - 1.0) * multiplier;
     animalMultiplierForEvents = 1.0 + (animalMultiplierForEvents - 1.0) * multiplier;
-    xpEventMultiplier = 1.0 + (xpEventMultiplier - 1.0) * multiplier;
   }
 
   // Calculate Star Autoclick Power
@@ -224,6 +201,9 @@ export function getLpsAndStats(state: WorkerGameState) {
   const clickBonus = (rawClickPower - 1) * 0.2;
   starPowerPerStar += clickBonus;
   if (upgradesSpecs.starSupercharger) starPowerPerStar *= 2.0;
+  if (upgradeSet.has("upg-star-magnetic")) starPowerPerStar *= 2.0;
+  if (upgradeSet.has("upg-cosmic-eternity")) starPowerPerStar *= 3.0;
+  starPowerPerStar *= 1 + constellSternenstaubLevel * 0.15;
   if (isNight) {
     // Ghost Set boosts the night star reward from 1.5x to 4.0x
     starPowerPerStar = starPowerPerStar * (ghostSetComplete ? 4.0 : 1.5);
@@ -358,27 +338,20 @@ export function getLpsAndStats(state: WorkerGameState) {
   );
   const researchedUpgradesCount = purchasedUpgrades.length;
 
-  // EXP needed to level up the planet based on current level and prestigeCount
-  const nextIdx = state.planetLevel;
-  const planetExpNeeded = expForLevel(nextIdx, state.prestigeCount || 0);
-
   return {
     upgradesSpecs,
     clickPower,
     rawClickPower,
-    xpMultiplier,
     clickMultiplierForEvents,
     starMultiplierForEvents,
     animalMultiplierForEvents,
-    xpEventMultiplier,
-    starPowerPerStar,
+    starPowerPerStar: finalStarPowerPos,
     totalStarsLps,
     totalAnimalsLps,
     flatMoonLps,
     totalLps,
     totalAnimalsCount,
     researchedUpgradesCount,
-    planetExpNeeded,
     prestigeCount: state.prestigeCount || 0,
     prestigeMultiplier,
     moonsCount: state.moonsCount || 0,

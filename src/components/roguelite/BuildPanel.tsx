@@ -123,7 +123,7 @@ export const BuildPanel: React.FC<{
                     </div>
                     <div className="min-w-0">
                       <div className="truncate text-[12px] font-bold text-cosmic-text">
-                        {boon.title}
+                        {boon.germanTitle}
                       </div>
                       <div
                         className={cx(

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Modal } from "../ui/Modal";
@@ -60,9 +61,9 @@ export const CONSTELLATIONS_LIST: ConstellationDef[] = [
     baseStarsCost: 20,
     baseMoonsCost: 0,
     maxLevel: 5,
-    bonusText: "+15% mehr Planeten-EXP pro Stufe",
+    bonusText: "+15% mehr Sternen-Ertrag pro Stufe",
     germanDescription:
-      "Eine funkelnde Kaskade von Sternenlicht. Laesst deinen Planeten beim Klicken und automatischen Tappen deutlich schneller Erfahrung sammeln.",
+      "Eine funkelnde Kaskade von Sternenlicht. Erhoeht die Energieproduktion deiner Sterne pro Stufe um 15%.",
   },
   {
     id: "cosmic_harmony",
@@ -114,7 +115,6 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
       life,
       starsCount,
       starPowerPerStar,
-      starClicksTriggered,
       starCost,
       totalStarsLps,
       moonsCount,
@@ -133,7 +133,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
         presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-cosmic-bg-mid/95 rounded-3.5xl border-3 border-amber-300 flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
+        panelClassName="bg-cosmic-bg-mid/95 rounded-[1.75rem] border-3 border-amber-300 flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
       >
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b-3 border-amber-300/60 bg-linear-to-r from-cosmic-bg via-cosmic-surface-mid to-cosmic-bg flex items-center justify-between shrink-0">
@@ -226,7 +226,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                 </div>
 
                 {/* Interactive Purchase Row */}
-                <div className="bg-cosmic-surface-mid/50 p-4 rounded-2.5xl border-2 border-amber-350 flex flex-col items-center justify-between gap-4">
+                <div className="bg-cosmic-surface-mid/50 p-4 rounded-[1.25rem] border-2 border-amber-350 flex flex-col items-center justify-between gap-4">
                   <div className="flex items-center gap-3 w-full">
                     <div className="p-3 rounded-xl bg-cosmic-surface border-2 border-amber-300 flex items-center justify-center text-3xl shadow-md shrink-0 select-none">
                       ⭐
@@ -266,7 +266,7 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                 </div>
 
                 {/* Mond-Verschmelzung / Moon Merger Row */}
-                <div className="bg-linear-to-b from-cosmic-surface-hover to-cosmic-bg-mid p-4 rounded-2.5xl border-2 border-fuchsia-400/50 flex flex-col items-center justify-between gap-4 shadow-lg relative overflow-hidden">
+                <div className="bg-linear-to-b from-cosmic-surface-hover to-cosmic-bg-mid p-4 rounded-[1.25rem] border-2 border-fuchsia-400/50 flex flex-col items-center justify-between gap-4 shadow-lg relative overflow-hidden">
                   <div className="absolute -right-6 -bottom-6 size-20  rounded-full bg-purple-500/10 blur-xl pointer-events-none" />
 
                   <div className="flex items-center gap-3 w-full relative z-10">
@@ -299,10 +299,6 @@ export const StarsModal: React.FC<StarsModalProps> = React.memo(
                           <span className="font-black text-fuchsia-250 filter drop-shadow-[0_0_4px_rgba(217,70,239,0.5)]">
                             +{formatCompactNumber(singleMoonPower)} 💖/s
                           </span>
-                        </div>
-                        <div className="flex items-center justify-between text-[10px]">
-                          <span className="text-purple-400 font-semibold">• EP-Anteil:</span>
-                          <span className="text-fuchsia-300 font-bold">+15 EP/s</span>
                         </div>
                         <div className="flex items-center justify-between text-[10px]">
                           <span className="text-purple-450 font-bold">• Globaler Booster:</span>

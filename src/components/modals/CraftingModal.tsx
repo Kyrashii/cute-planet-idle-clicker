@@ -34,6 +34,13 @@ function nodeStatus(
   return r.ok ? "make" : "short";
 }
 
+function activateOnEnterOrSpace(event: React.KeyboardEvent<HTMLElement>, activate: () => void) {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    activate();
+  }
+}
+
 interface LeafChipProps {
   key?: React.Key | null;
   node: GraphNode;
@@ -67,6 +74,7 @@ interface NodeGroupProps {
 function NodeGroup({ node, have, isRoot, onDrill, formatNum }: NodeGroupProps) {
   const status = nodeStatus(node, have, isRoot);
   const owned = have[node.id] || 0;
+  const isDrillable = node.kind === "craft" && !isRoot;
 
   const rawKids = node.children.filter((c) => c.kind === "raw");
   const craftKids = node.children.filter((c) => c.kind === "craft");
@@ -110,13 +118,25 @@ function NodeGroup({ node, have, isRoot, onDrill, formatNum }: NodeGroupProps) {
         </div>
       )}
       <div className="pk-ng__box">
+        {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions -- Craft nodes are composite graph surfaces; native buttons cannot contain this layout. */}
         <div
           className={nodeCls}
           data-uid={node.uid}
-          onClick={node.kind === "craft" && !isRoot ? () => onDrill(node.id) : undefined}
-          title={
-            node.kind === "craft" && !isRoot ? "Als Ziel oeffnen — zur Quelle springen" : undefined
+          role={isDrillable ? "button" : undefined}
+          tabIndex={isDrillable ? 0 : undefined}
+          aria-label={isDrillable ? `${node.item.name} als Ziel oeffnen` : undefined}
+          onClick={isDrillable ? () => onDrill(node.id) : undefined}
+          onKeyDown={
+            isDrillable
+              ? (event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    onDrill(node.id);
+                  }
+                }
+              : undefined
           }
+          title={isDrillable ? "Als Ziel oeffnen — zur Quelle springen" : undefined}
         >
           <div className="pk-craft-node__top">
             <span className="pk-craft-node__em">{node.item.emoji}</span>
@@ -350,8 +370,8 @@ export const CraftingModal: React.FC<CraftingModalProps> = React.memo(
         uniqueRecipes.filter(
           (r) =>
             r.category === cat &&
-            (r.result.name.toLowerCase().includes(search.toLowerCase()) ||
-              r.description.toLowerCase().includes(search.toLowerCase())),
+            (r.result.germanName.toLowerCase().includes(search.toLowerCase()) ||
+              r.germanDescription.toLowerCase().includes(search.toLowerCase())),
         ),
       [cat, search, uniqueRecipes],
     );
@@ -820,13 +840,20 @@ export const CraftingModal: React.FC<CraftingModalProps> = React.memo(
                         return (
                           <div
                             key={r.result.id}
+                            role="button"
+                            tabIndex={0}
+                            aria-label={`${r.result.germanName} auswaehlen`}
+                            aria-pressed={isOn}
                             className={`pk-craft-rrow ${isOn ? "pk-craft-rrow--on" : ""}`}
                             onClick={() => pick(r.result.id)}
+                            onKeyDown={(event) =>
+                              activateOnEnterOrSpace(event, () => pick(r.result.id))
+                            }
                           >
                             <span className="pk-craft-rrow__em">{r.result.emoji}</span>
                             <div style={{ minWidth: 0, flex: 1 }}>
-                              <div className="pk-craft-rrow__nm">{r.result.name}</div>
-                              <div className="pk-craft-rrow__sub">{r.description}</div>
+                              <div className="pk-craft-rrow__nm">{r.result.germanName}</div>
+                              <div className="pk-craft-rrow__sub">{r.germanDescription}</div>
                             </div>
                             <span
                               className="pk-craft-dot"
@@ -893,13 +920,18 @@ export const CraftingModal: React.FC<CraftingModalProps> = React.memo(
                   return (
                     <div
                       key={r.result.id}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${r.result.germanName} auswaehlen`}
+                      aria-pressed={isOn}
                       className={`pk-craft-rrow ${isOn ? "pk-craft-rrow--on" : ""}`}
                       onClick={() => pick(r.result.id)}
+                      onKeyDown={(event) => activateOnEnterOrSpace(event, () => pick(r.result.id))}
                     >
                       <span className="pk-craft-rrow__em">{r.result.emoji}</span>
                       <div style={{ minWidth: 0, flex: 1 }}>
-                        <div className="pk-craft-rrow__nm">{r.result.name}</div>
-                        <div className="pk-craft-rrow__sub">{r.description}</div>
+                        <div className="pk-craft-rrow__nm">{r.result.germanName}</div>
+                        <div className="pk-craft-rrow__sub">{r.germanDescription}</div>
                       </div>
                       <span
                         className="pk-craft-dot"
@@ -931,7 +963,16 @@ export const CraftingModal: React.FC<CraftingModalProps> = React.memo(
                       {i > 0 && <span style={{ color: "#6f6a99" }}>▸</span>}
                       <span
                         className={`pk-craft-crumb__seg ${cur ? "pk-craft-crumb__seg--cur" : ""}`}
+                        role={cur ? undefined : "button"}
+                        tabIndex={cur ? undefined : 0}
+                        aria-label={cur ? undefined : `Zu ${it.name} zurueckkehren`}
+                        aria-current={cur ? "page" : undefined}
                         onClick={cur ? undefined : () => crumbTo(i)}
+                        onKeyDown={
+                          cur
+                            ? undefined
+                            : (event) => activateOnEnterOrSpace(event, () => crumbTo(i))
+                        }
                       >
                         {it.emoji} {it.name}
                       </span>

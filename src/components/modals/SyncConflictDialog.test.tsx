@@ -8,7 +8,6 @@ const gameState: GameStateValue = {
   life: 1000,
   totalLifeEarned: 5000,
   secondsPlayed: 240,
-  planetExp: 10,
   planetLevel: 8,
   prestigeCount: 2,
   glitterDust: 0,

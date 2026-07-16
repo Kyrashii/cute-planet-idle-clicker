@@ -7,12 +7,10 @@ import { useGameState } from "../../contexts/GameStateContext";
 interface MissionsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  isNight: boolean;
   missionSetNumber: number;
   claimedMissionIds: string[];
   missionsCooldownEnd?: number | null;
   onClaimReward: (missionId: string, shootingStars: number) => void;
-  activeFrame?: string;
   unlockedCosmetics?: string[];
   purchasedUpgrades?: string[];
 }
@@ -21,12 +19,10 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
   ({
     isOpen,
     onClose,
-    isNight,
     missionSetNumber,
     claimedMissionIds,
     missionsCooldownEnd = null,
     onClaimReward,
-    activeFrame = "default",
     unlockedCosmetics = [],
     purchasedUpgrades = [],
   }) => {
@@ -85,7 +81,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
         presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text bg-cosmic-bg-mid/95 border-cosmic-accent"
+        panelClassName="flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl rounded-[1.75rem] overflow-hidden border-3 transition-colors duration-500 text-cosmic-text bg-cosmic-bg-mid/95 border-cosmic-accent"
       >
         {/* Header */}
         <div
@@ -192,7 +188,7 @@ export const MissionsModal: React.FC<MissionsModalProps> = React.memo(
                 return (
                   <div
                     key={mission.id}
-                    className={`p-3.5 sm:p-4 rounded-2.5xl border-2 transition-all flex flex-col gap-3 relative overflow-hidden ${
+                    className={`p-3.5 sm:p-4 rounded-[1.25rem] border-2 transition-all flex flex-col gap-3 relative overflow-hidden ${
                       isClaimed
                         ? "bg-cosmic-bg-mid/40 border-green-500/20 opacity-50"
                         : isDone

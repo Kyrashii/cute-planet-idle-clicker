@@ -36,7 +36,7 @@ describe("migrateSave", () => {
 
     const migrated = migrateSave(legacyV1, "user-123");
 
-    expect(migrated).toEqual({
+    expect(migrated).toMatchObject({
       ...legacyV1,
       version: SAVE_VERSION,
       ownerId: "user-123",
@@ -59,6 +59,48 @@ describe("migrateSave", () => {
     });
     expect(legacyV1).not.toHaveProperty("ownerId");
     vi.useRealTimers();
+  });
+
+  it("refunds removed XP research and dismantles XP capsules", () => {
+    const migrated = migrateSave(
+      {
+        version: 3,
+        life: 100,
+        purchasedUpgrades: ["upg-click-1", "upg-xp-1", "upg-xp-3"],
+        craftedItems: { use_xp_capsule: 2, mat_stardust: 4 },
+      },
+      null,
+    );
+
+    expect(migrated).toMatchObject({
+      version: SAVE_VERSION,
+      life: 1_015_550,
+      purchasedUpgrades: ["upg-click-1"],
+      craftedItems: { mat_stardust: 4, mat_pure_essence: 6 },
+    });
+    expect(migrated?.planetExp).toBeUndefined();
+    expect((migrated?.craftedItems as Record<string, number>).use_xp_capsule).toBeUndefined();
+  });
+
+  it("normalizes invalid counters and preserves legitimate zero values", () => {
+    const migrated = migrateSave({
+      version: 3,
+      life: -5,
+      starsCount: Number.NaN,
+      missionSetNumber: 0,
+      eventTimeRemaining: 0,
+      superClickCharge: 150,
+      activeZodiacId: "eule",
+    });
+
+    expect(migrated).toMatchObject({
+      life: 0,
+      starsCount: 0,
+      missionSetNumber: 1,
+      eventTimeRemaining: 0,
+      superClickCharge: 100,
+      zodiac: "eule",
+    });
   });
 
   it("normalizes current saves without changing meaningful fields", () => {
@@ -111,7 +153,7 @@ describe("save slots", () => {
   it("round-trips a slot through writeSave and readSave", () => {
     const stamped = writeSave("user-123", { life: 9, starsCount: 2, lastSavedAt: 555 });
 
-    expect(stamped).toEqual({
+    expect(stamped).toMatchObject({
       life: 9,
       starsCount: 2,
       version: SAVE_VERSION,

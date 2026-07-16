@@ -6,6 +6,22 @@ const FONT_SCALE_KEY = "cute_planet_font_scale";
 export const FONT_SCALE_OPTIONS = [90, 95, 100, 110, 120] as const;
 export type FontScaleOption = (typeof FONT_SCALE_OPTIONS)[number];
 
+const readStorage = (key: string): string | null => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
+const writeStorage = (key: string, value: string): void => {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Preferences remain in memory when storage is unavailable.
+  }
+};
+
 function normalizeFontScale(value: number): FontScaleOption {
   return FONT_SCALE_OPTIONS.includes(value as FontScaleOption) ? (value as FontScaleOption) : 100;
 }
@@ -27,19 +43,19 @@ export interface DisplayPreferences {
  */
 export function useDisplayPreferences(): DisplayPreferences {
   const [isLowMemory, setIsLowMemory] = useState<boolean>(
-    () => localStorage.getItem(LOW_MEMORY_KEY) === "true",
+    () => readStorage(LOW_MEMORY_KEY) === "true",
   );
   const [fontScale, setFontScale] = useState<FontScaleOption>(() => {
-    const rawValue = Number(localStorage.getItem(FONT_SCALE_KEY) ?? "100");
+    const rawValue = Number(readStorage(FONT_SCALE_KEY) ?? "100");
     return normalizeFontScale(rawValue);
   });
 
   useEffect(() => {
-    localStorage.setItem(LOW_MEMORY_KEY, isLowMemory.toString());
+    writeStorage(LOW_MEMORY_KEY, isLowMemory.toString());
   }, [isLowMemory]);
 
   useEffect(() => {
-    localStorage.setItem(FONT_SCALE_KEY, fontScale.toString());
+    writeStorage(FONT_SCALE_KEY, fontScale.toString());
   }, [fontScale]);
 
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(false);

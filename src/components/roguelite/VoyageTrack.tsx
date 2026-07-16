@@ -15,14 +15,12 @@ const BOSS_STATIONS = new Set([10, 20, 30]);
 type BeadState = "done" | "current" | "upcoming";
 
 function Bead({
-  station,
   state,
   type,
   isBoss,
   reducedMotion,
   beadRef,
 }: {
-  station: number;
   state: BeadState;
   type: RogueliteNodeType | null;
   isBoss: boolean;
@@ -207,7 +205,6 @@ export const VoyageTrack: React.FC<{ activeRun: ActiveRogueliteRun }> = ({ activ
                             />
                           )}
                           <Bead
-                            station={station}
                             state={state}
                             type={typeFor(station)}
                             isBoss={BOSS_STATIONS.has(station)}

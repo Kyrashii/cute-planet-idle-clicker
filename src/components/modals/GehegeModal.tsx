@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { useState, useMemo, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useModalSettings } from "../ui/Modal";
@@ -139,13 +140,16 @@ const AnimalImageComponent: React.FC<{
   emojiSizeClassName = "text-4xl select-none pointer-events-none",
 }) => {
   const [error, setError] = useState(false);
+  const handleImageRef = useCallback((imageElement: HTMLImageElement | null) => {
+    if (imageElement) imageElement.onerror = () => setError(true);
+  }, []);
 
   if (image && !error) {
     return (
       <img
+        ref={handleImageRef}
         src={image}
         alt={emoji}
-        onError={() => setError(true)}
         className={sizeClassName}
         referrerPolicy="no-referrer"
       />
@@ -215,7 +219,6 @@ interface PlacedAnimalItemProps {
   def: Animal | undefined;
   loveVal: number;
   lastPetTime: number;
-  isNight: boolean;
   landscapeRef: React.RefObject<HTMLDivElement | null>;
   onPet: (animalId: string, x: number, y: number) => void;
   onDragCommit: (id: string, x: number, y: number) => GehegeDropResult;
@@ -223,7 +226,7 @@ interface PlacedAnimalItemProps {
 }
 
 const PlacedAnimalItem = React.memo<PlacedAnimalItemProps>(
-  ({ pa, def, loveVal, lastPetTime, isNight, landscapeRef, onPet, onDragCommit, onRemove }) => {
+  ({ pa, def, loveVal, lastPetTime, landscapeRef, onPet, onDragCommit, onRemove }) => {
     const [now, setNow] = useState(Date.now());
     const [animationPhase, setAnimationPhase] = useState<SpriteAnimationPhase>("walking");
     const [frameRow, setFrameRow] = useState(0);
@@ -479,6 +482,17 @@ const PlacedAnimalItem = React.memo<PlacedAnimalItemProps>(
       [onPet, pa.animalId, pa.x, pa.y],
     );
 
+    const handleKeyDown = useCallback(
+      (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+
+        e.preventDefault();
+        e.stopPropagation();
+        onPet(pa.animalId, pa.x, pa.y);
+      },
+      [onPet, pa.animalId, pa.x, pa.y],
+    );
+
     const canPet = now - lastPetTime >= 30 * 60 * 1000 && loveVal < 300;
     const aura = getAuraConfig(loveVal);
     const isLifted = animationPhase !== "walking";
@@ -513,7 +527,11 @@ const PlacedAnimalItem = React.memo<PlacedAnimalItemProps>(
           {/* Floating animation wrapper with petting interaction */}
           <div
             ref={dragHandleRef}
+            role="button"
+            tabIndex={0}
+            aria-label={`${def?.germanName || def?.name || "Tier"} streicheln`}
             onClick={handleClick}
+            onKeyDown={handleKeyDown}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -586,7 +604,7 @@ const FeedBowlComponent = React.memo<FeedBowlComponentProps>(
     onTriggerError,
     spawnLocalHeart,
   }) => {
-    const [localTick, setLocalTick] = useState(0);
+    const [, setLocalTick] = useState(0);
 
     React.useEffect(() => {
       const elapsedMsSinceFeed = Date.now() - bowlLastFed;
@@ -619,7 +637,7 @@ const FeedBowlComponent = React.memo<FeedBowlComponentProps>(
       bowlTooltip = "Klicke den Futternapf an, um die Tiere zu fuettern! 🍲 (+1 Liebe pro Minute)";
     }
 
-    const handleFeedBowlClick = (e: React.MouseEvent) => {
+    const handleFeedBowlClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       const currentNow = Date.now();
       const elapsed = currentNow - bowlLastFed;
@@ -655,9 +673,11 @@ const FeedBowlComponent = React.memo<FeedBowlComponentProps>(
     };
 
     return (
-      <div
+      <button
+        type="button"
+        aria-label={bowlTooltip}
         onClick={handleFeedBowlClick}
-        className="absolute group/bowl select-none z-30 cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95"
+        className="absolute group/bowl select-none z-30 cursor-pointer border-0 bg-transparent p-0 transition-all duration-200 hover:scale-110 active:scale-95"
         style={{ left: "50%", top: "78%", transform: "translate(-50%, -50%)" }}
       >
         <div className="relative">
@@ -707,7 +727,7 @@ const FeedBowlComponent = React.memo<FeedBowlComponentProps>(
             )}
           </div>
         </div>
-      </div>
+      </button>
     );
   },
 );
@@ -788,7 +808,7 @@ interface LoveGalleryCardProps {
 }
 
 const LoveGalleryCard = React.memo<LoveGalleryCardProps>(({ def, loveVal, lastPetTime }) => {
-  const [localTick, setLocalTick] = useState(0);
+  const [, setLocalTick] = useState(0);
 
   React.useEffect(() => {
     const cooldownMs = 30 * 60 * 1000;
@@ -887,7 +907,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
   onUpdateAnimalLastPet,
   bowlLastFed = 0,
   onUpdateBowlLastFed,
-  bowlFedMinutesCredited = 0,
+  bowlFedMinutesCredited: _bowlFedMinutesCredited = 0,
   onUpdateBowlFedMinutesCredited,
 }) => {
   const [showDrawer, setShowDrawer] = useState(false);
@@ -1008,7 +1028,7 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
     [onUpdateAnimalLove, onUpdateAnimalLastPet, spawnLocalHeart, triggerError],
   );
 
-  const handleLandscapeClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleLandscapeClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!placingAnimalId || !landscapeRef.current) return;
 
     if (placedAnimals.length >= 20) {
@@ -1018,8 +1038,8 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
     }
 
     const rect = landscapeRef.current.getBoundingClientRect();
-    const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
-    const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+    const xPercent = e.detail === 0 ? 50 : ((e.clientX - rect.left) / rect.width) * 100;
+    const yPercent = e.detail === 0 ? 50 : ((e.clientY - rect.top) / rect.height) * 100;
 
     if (xPercent < 0 || xPercent > 100 || yPercent < 0 || yPercent > 100) return;
 
@@ -1151,7 +1171,6 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
             >
               <div
                 ref={landscapeRef}
-                onClick={handleLandscapeClick}
                 className={`relative size-full  max-w-5xl md:max-h-[80vh] md:rounded-3xl overflow-hidden shadow-2xl transition-all duration-150 ${
                   placingAnimalId
                     ? "cursor-crosshair border-2 border-indigo-500"
@@ -1159,6 +1178,15 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
                 }`}
                 style={{ aspectRatio: "16/9" }}
               >
+                {placingAnimalId && (
+                  <button
+                    type="button"
+                    aria-label={`${placingAnimalDef?.germanName || placingAnimalDef?.name || "Tier"} in der Mitte des Geheges platzieren`}
+                    onClick={handleLandscapeClick}
+                    className="absolute inset-0 z-1 cursor-crosshair border-0 bg-transparent p-0"
+                  />
+                )}
+
                 {/* Error message banner */}
                 <AnimatePresence>
                   {errorMessage && (
@@ -1210,7 +1238,6 @@ export const GehegeModal: React.FC<GehegeModalProps> = ({
                         def={def}
                         loveVal={loveVal}
                         lastPetTime={animalLastPet[pa.animalId] || 0}
-                        isNight={isNight}
                         landscapeRef={landscapeRef}
                         onPet={handlePetPlaced}
                         onDragCommit={handleDragCommit}

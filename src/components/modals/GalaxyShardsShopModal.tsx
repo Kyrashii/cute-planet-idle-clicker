@@ -99,7 +99,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
         presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-cosmic-bg-mid/95 rounded-3.5xl border-3 border-fuchsia-400 flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
+        panelClassName="bg-cosmic-bg-mid/95 rounded-[1.75rem] border-3 border-fuchsia-400 flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
       >
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b-3 border-fuchsia-400/50 bg-linear-to-r from-cosmic-bg-mid via-cosmic-surface-mid to-cosmic-bg-mid flex items-center justify-between shrink-0">
@@ -208,7 +208,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                           <span className="text-2xl select-none">{zod.emoji}</span>
                           <div>
                             <h5 className="font-sans font-black text-xs/tight text-white ">
-                              {zod.name}
+                              {zod.germanName}
                             </h5>
                             <span className="text-[9px] font-mono px-2 py-0.25 bg-fuchsia-500/20 text-fuchsia-200 rounded-full border border-fuchsia-500/20 font-bold">
                               Stufe {lvl}
@@ -231,7 +231,7 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                       </div>
 
                       <p className="text-[10px] text-fuchsia-100/70 leading-snug font-medium mb-3">
-                        {zod.description}
+                        {zod.germanDescription}
                       </p>
 
                       <div className="p-2 rounded-xl bg-cosmic-bg-mid border border-white/5 flex flex-col gap-1 text-[9.5px]">
@@ -350,11 +350,9 @@ export const GalaxyShardsShopModal: React.FC<GalaxyShardsShopModalProps> = React
                       Hyper-Katalysator
                     </h5>
                     <p className="text-[10px] sm:text-xs text-fuchsia-100/75 mt-1 leading-relaxed max-w-sm">
-                      Infundiert ein hyperdynamisches Feld auf dem Planeten! Erhalte dauerhaft{" "}
-                      <span className="text-indigo-300 font-extrabold">+15% EP</span>{" "}
-                      (Planet-Erfahrung) und{" "}
-                      <span className="text-indigo-200 font-extrabold">+15% LPS</span> (passives
-                      Gesamteinkommen) pro Stufe.
+                      Infundiert ein hyperdynamisches Feld auf dem Planeten und erhoeht dein
+                      passives Gesamteinkommen dauerhaft um{" "}
+                      <span className="text-indigo-200 font-extrabold">+15% LPS</span> pro Stufe.
                     </p>
                     <div className="flex items-center gap-3 mt-2.5">
                       <span className="text-[10px] font-bold px-2.5 py-0.5 bg-indigo-400/15 text-indigo-300 rounded-full border border-indigo-400/20 font-mono">

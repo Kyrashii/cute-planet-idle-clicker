@@ -14,6 +14,15 @@ import { ROGUELITE_PLANET_SKINS } from "../../roguelite/data";
 // Forest-green tint for the selected star-colour card (cosmetic, off-palette).
 const STAR_CARD_SELECTED = "bg-[#18392c]/50 border-green-400 shadow-md scale-102";
 
+function handleCardKeyDown(event: React.KeyboardEvent<HTMLElement>, onActivate: () => void) {
+  if (event.target !== event.currentTarget || (event.key !== "Enter" && event.key !== " ")) {
+    return;
+  }
+
+  event.preventDefault();
+  onActivate();
+}
+
 interface InventoryModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -71,7 +80,6 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
     craftedItems = {},
     onUseCraftedItem,
     zodiac,
-    onSelectZodiac,
   }) => {
     const { glitterDust, shootingStarsCount } = useGameState();
     const [activeTab, setActiveTab] = useState<string>("star_color");
@@ -160,7 +168,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
         presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName={`flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
+        panelClassName={`flex flex-col max-w-2xl w-full max-h-[85vh] shadow-2xl rounded-[1.75rem] overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
           isNight
             ? "bg-cosmic-bg-mid/95 border-cosmic-accent"
             : "bg-amber-50/95 border-amber-400 text-slate-800"
@@ -696,7 +704,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                         <p className="text-[10px] text-pink-200/90 font-mono mt-1.5 bg-pink-950/25 p-1.5 rounded-lg border border-pink-500/10">
                           🎁 Vorteil:{" "}
                           <strong className="text-pink-300 font-extrabold">
-                            +15% Alles-Ertrag &amp; +25% Erfahrung
+                            +15% passives Gesamteinkommen
                           </strong>
                         </p>
                       </div>
@@ -726,7 +734,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   return (
                     <div
                       key={item.id}
-                      className={`p-3.5 border-2 rounded-2.5xl flex flex-col justify-between text-center relative overflow-hidden min-h-[145px] transition-all bg-cosmic-bg-mid/45 ${
+                      className={`p-3.5 border-2 rounded-[1.25rem] flex flex-col justify-between text-center relative overflow-hidden min-h-[145px] transition-all bg-cosmic-bg-mid/45 ${
                         qty > 0
                           ? isNight
                             ? "border-cosmic-accent/50 bg-cosmic-surface-mid/50"
@@ -741,12 +749,12 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                         <h6
                           className={`font-sans font-black text-[11px] leading-tight ${isNight ? "text-white" : "text-slate-800"}`}
                         >
-                          {item.name}
+                          {item.germanName}
                         </h6>
                         <p
                           className={`text-[10px] sm:text-[10.5px] text-cosmic-accent-muted mt-1 leading-normal max-w-xs ${!isNight && "text-slate-600"}`}
                         >
-                          {item.description}
+                          {item.germanDescription}
                         </p>
                       </div>
 
@@ -798,9 +806,11 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
               <div className="grid grid-cols-2 gap-3.5 mt-1 sm:grid-cols-2 md:grid-cols-3 *:cv-auto">
                 {/* Hardcoded Default items */}
                 {activeTab === "star_color" && (
-                  <div
+                  <button
+                    type="button"
+                    aria-pressed={activeStarColor === "default"}
                     onClick={() => onApplyCosmetic("default", "star_color")}
-                    className={`p-3.5 rounded-2.5xl border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
+                    className={`p-3.5 rounded-[1.25rem] border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
                       activeStarColor === "default"
                         ? STAR_CARD_SELECTED
                         : isNight
@@ -834,13 +844,15 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                         </span>
                       )}
                     </div>
-                  </div>
+                  </button>
                 )}
 
                 {activeTab === "planet_accessory" && (
-                  <div
+                  <button
+                    type="button"
+                    aria-pressed={activeAccessory === "none"}
                     onClick={() => onApplyCosmetic("none", "planet_accessory")}
-                    className={`p-3.5 rounded-2.5xl border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
+                    className={`p-3.5 rounded-[1.25rem] border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
                       activeAccessory === "none"
                         ? STAR_CARD_SELECTED
                         : isNight
@@ -872,13 +884,15 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                         </span>
                       )}
                     </div>
-                  </div>
+                  </button>
                 )}
 
                 {activeTab === "frame_style" && (
-                  <div
+                  <button
+                    type="button"
+                    aria-pressed={activeFrame === "default"}
                     onClick={() => onApplyCosmetic("default", "frame_style")}
-                    className={`p-3.5 rounded-2.5xl border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
+                    className={`p-3.5 rounded-[1.25rem] border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
                       activeFrame === "default"
                         ? STAR_CARD_SELECTED
                         : isNight
@@ -910,13 +924,15 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                         </span>
                       )}
                     </div>
-                  </div>
+                  </button>
                 )}
 
                 {activeTab === "moon_skin" && (
-                  <div
+                  <button
+                    type="button"
+                    aria-pressed={activeMoonSkin === "default"}
                     onClick={() => onApplyCosmetic("default", "moon_skin")}
-                    className={`p-3.5 rounded-2.5xl border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
+                    className={`p-3.5 rounded-[1.25rem] border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
                       activeMoonSkin === "default"
                         ? STAR_CARD_SELECTED
                         : isNight
@@ -948,13 +964,15 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                         </span>
                       )}
                     </div>
-                  </div>
+                  </button>
                 )}
 
                 {activeTab === "planet_skin" && (
-                  <div
+                  <button
+                    type="button"
+                    aria-pressed={activePlanetSkin === "default"}
                     onClick={() => onApplyPlanetSkin("default")}
-                    className={`p-3.5 rounded-2.5xl border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
+                    className={`p-3.5 rounded-[1.25rem] border-2 transition-all flex flex-col items-center text-center justify-between cursor-pointer ${
                       activePlanetSkin === "default"
                         ? STAR_CARD_SELECTED
                         : isNight
@@ -986,7 +1004,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                         </span>
                       )}
                     </div>
-                  </div>
+                  </button>
                 )}
 
                 {activeTab === "planet_skin" &&
@@ -994,10 +1012,13 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                     const isUnlocked = unlockedPlanetSkins.includes(skin.id);
                     const isActive = activePlanetSkin === skin.id;
                     return (
-                      <div
+                      <button
+                        type="button"
                         key={skin.id}
-                        onClick={() => isUnlocked && onApplyPlanetSkin(skin.id)}
-                        className={`p-2 border-2 rounded-2.5xl flex flex-col items-center justify-between text-center relative overflow-hidden min-h-[145px] transition-all ${
+                        disabled={!isUnlocked}
+                        aria-pressed={isActive}
+                        onClick={() => onApplyPlanetSkin(skin.id)}
+                        className={`p-2 border-2 rounded-[1.25rem] flex flex-col items-center justify-between text-center relative overflow-hidden min-h-[145px] transition-all ${
                           isActive
                             ? STAR_CARD_SELECTED
                             : isUnlocked
@@ -1047,7 +1068,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                             </span>
                           )}
                         </div>
-                      </div>
+                      </button>
                     );
                   })}
 
@@ -1075,8 +1096,20 @@ export const InventoryModal: React.FC<InventoryModalProps> = React.memo(
                   return (
                     <div
                       key={cosmetic.id}
+                      role="button"
+                      tabIndex={isUnlocked ? 0 : -1}
+                      aria-disabled={!isUnlocked}
+                      aria-pressed={isUnlocked ? isActive : undefined}
+                      aria-label={`${cosmetic.germanName}${isUnlocked ? " ausruesten" : " gesperrt"}`}
                       onClick={() => isUnlocked && onApplyCosmetic(cosmetic.value, cosmetic.type)}
-                      className={`p-3 border-2 rounded-2.5xl flex flex-col items-center justify-between text-center relative overflow-hidden min-h-[145px] transition-all ${
+                      onKeyDown={(event) => {
+                        if (isUnlocked) {
+                          handleCardKeyDown(event, () =>
+                            onApplyCosmetic(cosmetic.value, cosmetic.type),
+                          );
+                        }
+                      }}
+                      className={`p-3 border-2 rounded-[1.25rem] flex flex-col items-center justify-between text-center relative overflow-hidden min-h-[145px] transition-all ${
                         isActive
                           ? STAR_CARD_SELECTED
                           : isUnlocked

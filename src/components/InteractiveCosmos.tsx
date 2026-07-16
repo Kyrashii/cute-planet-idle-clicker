@@ -32,12 +32,9 @@ interface InteractiveCosmosProps {
   offlineEarnedLife: number;
   offlineSeconds: number;
   openOfflineModal: () => void;
-  planetExp: number;
-  planetExpNeeded: number;
   planetTask: PlanetTask | undefined;
   moonsCount: number;
-  starPowerPerStar: number;
-  handlePlanetClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  handlePlanetClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   superClickCharge: number;
   superClickArmed: boolean;
   activateSuperClick: () => void;
@@ -66,7 +63,6 @@ interface InteractiveCosmosProps {
   achievementsLength: number;
   completedUnclaimedMissionsCount: number;
   shootingStarsCount: number;
-  activeConstellationsCount: number;
 }
 
 export const InteractiveCosmos: React.FC<InteractiveCosmosProps> = ({
@@ -93,11 +89,8 @@ export const InteractiveCosmos: React.FC<InteractiveCosmosProps> = ({
   offlineEarnedLife,
   offlineSeconds,
   openOfflineModal,
-  planetExp,
-  planetExpNeeded,
   planetTask,
   moonsCount,
-  starPowerPerStar,
   handlePlanetClick,
   superClickCharge,
   superClickArmed,
@@ -127,7 +120,6 @@ export const InteractiveCosmos: React.FC<InteractiveCosmosProps> = ({
   achievementsLength,
   completedUnclaimedMissionsCount,
   shootingStarsCount,
-  activeConstellationsCount,
 }) => {
   return (
     <>
@@ -211,12 +203,9 @@ export const InteractiveCosmos: React.FC<InteractiveCosmosProps> = ({
           <div className="relative">
             <Planet
               level={planetLevel}
-              planetExp={planetExp}
-              planetExpNeeded={planetExpNeeded}
               planetTask={planetTask}
               starsCount={starsCount}
               moonsCount={moonsCount || 0}
-              starPowerMultiplier={starPowerPerStar}
               onPlanetClick={handlePlanetClick}
               isNight={isNightStyle}
               activeStarColor={activeStarColor}
@@ -301,7 +290,6 @@ export const InteractiveCosmos: React.FC<InteractiveCosmosProps> = ({
         onShowMissions={openMissionsModal}
         onShowInventory={openInventoryModal}
         disableAnimations={disableAnimations}
-        isNightStyle={isNightStyle}
         totalAnimalsCount={totalAnimalsCount}
         starsCount={starsCount}
         researchedUpgradesCount={researchedUpgradesCount}
@@ -309,7 +297,6 @@ export const InteractiveCosmos: React.FC<InteractiveCosmosProps> = ({
         achievementsLength={achievementsLength}
         completedUnclaimedMissionsCount={completedUnclaimedMissionsCount}
         shootingStarsCount={shootingStarsCount}
-        activeConstellationsCount={activeConstellationsCount}
       />
     </>
   );

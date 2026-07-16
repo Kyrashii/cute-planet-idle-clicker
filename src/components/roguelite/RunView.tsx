@@ -16,7 +16,7 @@ const INFO_PANEL_ID = "roguelite-run-info-panel";
 
 export type RunPrimaryContent = "victory" | "defeat" | "path" | "encounter" | "recovery";
 
-export function resolveRunPrimaryContent(run: ActiveRogueliteRun): RunPrimaryContent {
+function resolveRunPrimaryContent(run: ActiveRogueliteRun): RunPrimaryContent {
   if (run.phase === "victory_rewards" && run.rewardPackage) return "victory";
   if (run.phase === "defeat") return "defeat";
   if (run.phase === "path" && run.pathChoices.length > 0) return "path";

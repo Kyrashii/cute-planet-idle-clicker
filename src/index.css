@@ -32,6 +32,71 @@
   --color-warning: #fbbf24;
   --color-info: #38bdf8;
 
+  /* Legacy in-between shades mapped to the nearest generated Tailwind token. */
+  --color-amber-150: var(--color-amber-100);
+  --color-amber-205: var(--color-amber-200);
+  --color-amber-250: var(--color-amber-200);
+  --color-amber-303: var(--color-amber-300);
+  --color-amber-305: var(--color-amber-300);
+  --color-amber-350: var(--color-amber-300);
+  --color-amber-402: var(--color-amber-400);
+  --color-amber-405: var(--color-amber-400);
+  --color-amber-450: var(--color-amber-400);
+  --color-amber-802: var(--color-amber-800);
+  --color-amber-804: var(--color-amber-800);
+  --color-amber-805: var(--color-amber-800);
+  --color-amber-808: var(--color-amber-800);
+  --color-amber-850: var(--color-amber-800);
+  --color-amber-955: var(--color-amber-950);
+  --color-cyan-450: var(--color-cyan-400);
+  --color-cyan-550: var(--color-cyan-500);
+  --color-emerald-355: var(--color-emerald-400);
+  --color-emerald-550: var(--color-emerald-500);
+  --color-fuchsia-250: var(--color-fuchsia-200);
+  --color-fuchsia-350: var(--color-fuchsia-300);
+  --color-fuchsia-450: var(--color-fuchsia-400);
+  --color-fuchsia-850: var(--color-fuchsia-800);
+  --color-gray-250: var(--color-gray-200);
+  --color-gray-650: var(--color-gray-600);
+  --color-green-450: var(--color-green-400);
+  --color-green-550: var(--color-green-500);
+  --color-indigo-305: var(--color-indigo-300);
+  --color-indigo-650: var(--color-indigo-600);
+  --color-indigo-750: var(--color-indigo-700);
+  --color-indigo-850: var(--color-indigo-800);
+  --color-orange-150: var(--color-orange-100);
+  --color-orange-450: var(--color-orange-400);
+  --color-pink-305: var(--color-pink-300);
+  --color-pink-350: var(--color-pink-300);
+  --color-purple-150: var(--color-purple-100);
+  --color-purple-250: var(--color-purple-200);
+  --color-purple-305: var(--color-purple-300);
+  --color-purple-350: var(--color-purple-300);
+  --color-purple-450: var(--color-purple-400);
+  --color-purple-550: var(--color-purple-500);
+  --color-purple-650: var(--color-purple-600);
+  --color-purple-750: var(--color-purple-700);
+  --color-red-650: var(--color-red-600);
+  --color-rose-250: var(--color-rose-200);
+  --color-rose-350: var(--color-rose-300);
+  --color-sky-305: var(--color-sky-300);
+  --color-sky-405: var(--color-sky-400);
+  --color-sky-550: var(--color-sky-500);
+  --color-slate-55: var(--color-slate-50);
+  --color-slate-205: var(--color-slate-200);
+  --color-slate-250: var(--color-slate-200);
+  --color-slate-305: var(--color-slate-300);
+  --color-slate-350: var(--color-slate-300);
+  --color-slate-750: var(--color-slate-700);
+  --color-slate-850: var(--color-slate-800);
+  --color-stone-55: var(--color-stone-50);
+  --color-stone-250: var(--color-stone-200);
+  --color-yellow-105: var(--color-yellow-100);
+  --color-yellow-250: var(--color-yellow-200);
+  --color-yellow-401: var(--color-yellow-400);
+  --color-yellow-405: var(--color-yellow-400);
+  --color-yellow-750: var(--color-yellow-700);
+
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-snappy: cubic-bezier(0.32, 0.72, 0, 1);
 
@@ -138,7 +203,25 @@ textarea {
 }
 
 :is(#root, #modal-root)
-  :is(.text-\[7px\], .text-\[8px\], .text-\[9px\], .text-\[10px\], .text-\[11px\], .text-\[12px\]) {
+  :is(
+    .text-\[7px\],
+    .text-\[8px\],
+    .text-\[8\.5px\],
+    .text-\[9px\],
+    .text-\[9\.5px\],
+    .text-\[10px\],
+    .text-\[10\.5px\],
+    .text-\[11px\],
+    .text-\[11\.5px\],
+    .text-\[12px\],
+    .text-\[12\.5px\],
+    .text-\[13px\],
+    .text-\[13\.5px\],
+    .text-\[14px\],
+    .text-\[15px\],
+    .text-\[16px\],
+    .text-\[17px\]
+  ) {
   font-size: calc(var(--game-font-scale) * var(--tw-text-size, 1rem));
   line-height: calc(var(--game-font-scale) * var(--tw-leading, 1.25));
 }
@@ -150,27 +233,82 @@ textarea {
 
 :is(#root, #modal-root) .text-\[8px\] {
   --tw-text-size: 0.5rem;
-  --tw-leading: 0.75rem;
+  --tw-leading: 0.7rem;
+}
+
+:is(#root, #modal-root) .text-\[8\.5px\] {
+  --tw-text-size: 0.53125rem;
+  --tw-leading: 0.74375rem;
 }
 
 :is(#root, #modal-root) .text-\[9px\] {
   --tw-text-size: 0.5625rem;
-  --tw-leading: 0.8rem;
+  --tw-leading: 0.7875rem;
+}
+
+:is(#root, #modal-root) .text-\[9\.5px\] {
+  --tw-text-size: 0.59375rem;
+  --tw-leading: 0.83125rem;
 }
 
 :is(#root, #modal-root) .text-\[10px\] {
   --tw-text-size: 0.625rem;
-  --tw-leading: 0.9rem;
+  --tw-leading: 0.875rem;
+}
+
+:is(#root, #modal-root) .text-\[10\.5px\] {
+  --tw-text-size: 0.65625rem;
+  --tw-leading: 0.91875rem;
 }
 
 :is(#root, #modal-root) .text-\[11px\] {
   --tw-text-size: 0.6875rem;
-  --tw-leading: 1rem;
+  --tw-leading: 0.9625rem;
+}
+
+:is(#root, #modal-root) .text-\[11\.5px\] {
+  --tw-text-size: 0.71875rem;
+  --tw-leading: 1.00625rem;
 }
 
 :is(#root, #modal-root) .text-\[12px\] {
   --tw-text-size: 0.75rem;
   --tw-leading: 1.05rem;
+}
+
+:is(#root, #modal-root) .text-\[12\.5px\] {
+  --tw-text-size: 0.78125rem;
+  --tw-leading: 1.09375rem;
+}
+
+:is(#root, #modal-root) .text-\[13px\] {
+  --tw-text-size: 0.8125rem;
+  --tw-leading: 1.1375rem;
+}
+
+:is(#root, #modal-root) .text-\[13\.5px\] {
+  --tw-text-size: 0.84375rem;
+  --tw-leading: 1.18125rem;
+}
+
+:is(#root, #modal-root) .text-\[14px\] {
+  --tw-text-size: 0.875rem;
+  --tw-leading: 1.225rem;
+}
+
+:is(#root, #modal-root) .text-\[15px\] {
+  --tw-text-size: 0.9375rem;
+  --tw-leading: 1.3125rem;
+}
+
+:is(#root, #modal-root) .text-\[16px\] {
+  --tw-text-size: 1rem;
+  --tw-leading: 1.4rem;
+}
+
+:is(#root, #modal-root) .text-\[17px\] {
+  --tw-text-size: 1.0625rem;
+  --tw-leading: 1.4875rem;
 }
 
 :is(#root, #modal-root) button,

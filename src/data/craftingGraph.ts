@@ -36,8 +36,8 @@ export function getItem(id: string): CraftItem {
     return {
       id,
       emoji: r.result.emoji,
-      name: r.result.name,
-      desc: r.result.description,
+      name: r.result.germanName,
+      desc: r.result.germanDescription,
       cat: r.category,
       craftable: true,
       recipe: r,

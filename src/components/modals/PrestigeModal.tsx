@@ -20,15 +20,12 @@ export const PrestigeModal: React.FC<PrestigeModalProps> = React.memo(
     const canPrestige = life >= PRESTIGE_REQUIREMENT;
     const progressPercent = Math.min(100, (life / PRESTIGE_REQUIREMENT) * 100);
 
-    const currentMultiplier = 1 + prestigeCount * 0.1;
-    const nextMultiplier = 1 + (prestigeCount + 1) * 0.1;
-
     return (
       <Modal
         presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName={`flex flex-col max-w-md w-full shadow-2xl rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
+        panelClassName={`flex flex-col max-w-md w-full shadow-2xl rounded-[1.75rem] overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
           isNight
             ? "bg-cosmic-bg-mid/95 border-cosmic-accent"
             : "bg-amber-50 border-amber-400 text-slate-800"

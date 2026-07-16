@@ -7,6 +7,7 @@ import type { GameSaveSnapshot } from "../types";
 import {
   type RawSave,
   type SaveOwnerId,
+  migrateSave,
   normalizeCloudTimestamp,
   readMeta,
   readSave,
@@ -16,48 +17,11 @@ import {
 const resolveDisplayName = (user: User | null): string =>
   user?.displayName || (user?.email ? user.email.split("@")[0] : "Anonymes Wesen");
 
-export interface CloudSaveData {
+export type CloudSaveData = GameSaveSnapshot & {
   userId: string;
-  life: number;
-  totalLifeEarned: number;
-  starsCount: number;
-  purchasedAnimals: Record<string, number>;
-  purchasedUpgrades: string[];
-  planetLevel: number;
-  planetExp: number;
-  clicksCount: number;
-  starClicksTriggered: number;
-  secondsPlayed: number;
-  unlockedCosmetics?: string[];
-  activeStarColor?: string;
-  activeAccessory?: string;
-  activeFrame?: string;
-  activeMoonSkin?: string;
-  shootingStarsCount?: number;
-  missionSetNumber?: number;
-  claimedMissionIds?: string[];
-  missionsCooldownEnd?: number | null;
-  prestigeCount?: number;
-  moonsCount?: number;
-  constellations?: Record<string, number>;
-  glitterDust?: number;
-  cosmeticRarityLevels?: Record<string, string>;
-  blackHoleSize?: number;
-  zodiac?: string;
-  galaxyShards?: number;
-  zodiacLevels?: Record<string, number>;
-  slummerGlassLevel?: number;
-  catalystLevel?: number;
-  doubleStellarLevel?: number;
-  planetTask?: unknown;
-  placedAnimals?: unknown[];
-  animalLove?: Record<string, number>;
-  animalLastPet?: Record<string, number>;
-  bowlLastFed?: number;
-  bowlFedMinutesCredited?: number;
   createdAt?: unknown;
   updatedAt?: unknown;
-}
+};
 
 export interface AccountSwitchPrompt {
   nextUserId: string;
@@ -69,68 +33,48 @@ const isMeaningfulSave = (save: RawSave | null): save is RawSave =>
   save !== null &&
   ((Number(save.totalLifeEarned) || 0) >= 100 || (Number(save.secondsPlayed) || 0) >= 30);
 
-const buildCloudPayload = (
+const stripUndefined = (value: unknown): unknown => {
+  if (Array.isArray(value)) return value.map(stripUndefined);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(
+    Object.entries(value)
+      .filter(([, entry]) => entry !== undefined)
+      .map(([key, entry]) => [key, stripUndefined(entry)]),
+  );
+};
+
+export const buildCloudPayload = (
   source: Record<string, unknown>,
   uid: string,
   createdAt: unknown,
-): CloudSaveData => ({
-  userId: uid,
-  life: Number(source.life || 0),
-  totalLifeEarned: Number(source.totalLifeEarned || 0),
-  starsCount: Number(source.starsCount || 0),
-  purchasedAnimals: (source.purchasedAnimals as Record<string, number>) || {},
-  purchasedUpgrades: (source.purchasedUpgrades as string[]) || [],
-  planetLevel: Number(source.planetLevel || 1),
-  planetExp: Number(source.planetExp || 0),
-  clicksCount: Number(source.clicksCount || 0),
-  starClicksTriggered: Number(source.starClicksTriggered || 0),
-  secondsPlayed: Number(source.secondsPlayed || 0),
-  unlockedCosmetics: (source.unlockedCosmetics as string[]) || [],
-  activeStarColor: (source.activeStarColor as string) || "default",
-  activeAccessory: (source.activeAccessory as string) || "none",
-  activeFrame: (source.activeFrame as string) || "default",
-  activeMoonSkin: (source.activeMoonSkin as string) || "default",
-  shootingStarsCount: Number(source.shootingStarsCount || 0),
-  missionSetNumber: Number(source.missionSetNumber || 1),
-  claimedMissionIds: (source.claimedMissionIds as string[]) || [],
-  missionsCooldownEnd:
-    source.missionsCooldownEnd !== undefined
-      ? source.missionsCooldownEnd
-        ? Number(source.missionsCooldownEnd)
-        : null
-      : null,
-  prestigeCount: Number(source.prestigeCount || 0),
-  moonsCount: Number(source.moonsCount || 0),
-  constellations: (source.constellations as Record<string, number>) || {},
-  glitterDust: Number(source.glitterDust || 0),
-  cosmeticRarityLevels: (source.cosmeticRarityLevels as Record<string, string>) || {},
-  blackHoleSize: Number(source.blackHoleSize || 1),
-  galaxyShards: Number(source.galaxyShards || 0),
-  zodiacLevels: (source.zodiacLevels as Record<string, number>) || {},
-  slummerGlassLevel: Number(source.slummerGlassLevel || 1),
-  catalystLevel: Number(source.catalystLevel || 0),
-  doubleStellarLevel: Number(source.doubleStellarLevel || 0),
-  planetTask: source.planetTask || null,
-  placedAnimals: (source.placedAnimals as unknown[]) || [],
-  animalLove: (source.animalLove as Record<string, number>) || {},
-  animalLastPet: (source.animalLastPet as Record<string, number>) || {},
-  bowlLastFed: Number(source.bowlLastFed || 0),
-  bowlFedMinutesCredited: Number(source.bowlFedMinutesCredited || 0),
-  createdAt,
-  updatedAt: serverTimestamp(),
-});
+): CloudSaveData => {
+  const migrated = migrateSave(source, uid);
+  if (!migrated) throw new TypeError("Cannot upload an invalid save payload");
+  return {
+    ...(stripUndefined(migrated) as GameSaveSnapshot),
+    userId: uid,
+    createdAt,
+    updatedAt: serverTimestamp(),
+  };
+};
 
-const toLocalMirror = (
+export const toLocalMirror = (
   data: CloudSaveData,
   ownerId: SaveOwnerId,
   fallbackLastSavedAt?: number,
-): RawSave => ({
-  ...data,
-  version: 2,
-  ownerId,
-  lastSavedAt: fallbackLastSavedAt ?? normalizeCloudTimestamp(data.updatedAt) ?? Date.now(),
-  lastCloudUpdatedAt: normalizeCloudTimestamp(data.updatedAt),
-});
+): RawSave => {
+  const migrated = migrateSave(
+    {
+      ...data,
+      ownerId,
+      lastSavedAt: fallbackLastSavedAt ?? normalizeCloudTimestamp(data.updatedAt) ?? Date.now(),
+      lastCloudUpdatedAt: normalizeCloudTimestamp(data.updatedAt),
+    },
+    ownerId,
+  );
+  if (!migrated) throw new TypeError("Cannot mirror an invalid cloud save");
+  return migrated;
+};
 
 export function useFirebaseSync() {
   const [user, setUser] = useState<User | null>(null);
@@ -139,7 +83,6 @@ export function useFirebaseSync() {
   const [lastSynced, setLastSynced] = useState<Date | null>(null);
   const [cloudSaveFound, setCloudSaveFound] = useState<CloudSaveData | null>(null);
   const [accountSwitchPrompt, setAccountSwitchPrompt] = useState<AccountSwitchPrompt | null>(null);
-  const [saveCreatedAt, setSaveCreatedAt] = useState<unknown>(null);
 
   const userRef = useRef<User | null>(null);
   const isSavingRef = useRef(false);
@@ -147,13 +90,12 @@ export function useFirebaseSync() {
 
   const updateSaveCreatedAt = (value: unknown) => {
     saveCreatedAtRef.current = value;
-    setSaveCreatedAt(value);
   };
 
   const triggerCloudStateLoad = (data: CloudSaveData) => {
     window.dispatchEvent(
       new CustomEvent("firebase-load-state", {
-        detail: data,
+        detail: { data, ownerId: data.userId },
       }),
     );
 
@@ -210,19 +152,11 @@ export function useFirebaseSync() {
       setCloudSaveFound(payload);
       setLastSynced(new Date());
 
-      const freshSnap = await getDoc(docRef);
-      if (freshSnap.exists()) {
-        const freshData = freshSnap.data() as CloudSaveData;
-        updateSaveCreatedAt(freshData.createdAt || resolvedCreatedAt);
-        setCloudSaveFound(freshData);
-        writeSave(uid, toLocalMirror(freshData, uid, Number(localSave.lastSavedAt) || Date.now()));
-      } else {
-        updateSaveCreatedAt(resolvedCreatedAt);
-        writeSave(uid, {
-          ...localSave,
-          lastCloudUpdatedAt: Date.now(),
-        });
-      }
+      updateSaveCreatedAt(resolvedCreatedAt);
+      writeSave(uid, {
+        ...localSave,
+        lastCloudUpdatedAt: Date.now(),
+      });
     } catch (error) {
       console.error("Failed to upload local save:", error);
       try {
@@ -345,12 +279,13 @@ export function useFirebaseSync() {
     }
   };
 
-  const saveStateToCloud = async (state: GameSaveSnapshot) => {
+  const saveStateToCloud = async (state: GameSaveSnapshot): Promise<boolean> => {
     const activeUser = userRef.current;
-    if (!activeUser || isSavingRef.current) return;
+    if (!activeUser || isSavingRef.current) return false;
+    const uid = activeUser.uid;
     isSavingRef.current = true;
 
-    const docRef = doc(db, "saves", activeUser.uid);
+    const docRef = doc(db, "saves", uid);
     try {
       setSyncing(true);
 
@@ -367,29 +302,27 @@ export function useFirebaseSync() {
         }
       }
 
-      const payload = buildCloudPayload(state, activeUser.uid, resolvedCreatedAt);
+      const payload = buildCloudPayload(state, uid, resolvedCreatedAt);
       await setDoc(docRef, payload);
-      await syncLeaderboard(activeUser.uid, state);
-      await syncPublicProfile(activeUser.uid, state);
+      if (userRef.current?.uid !== uid) return false;
 
+      await syncLeaderboard(uid, state);
+      await syncPublicProfile(uid, state);
       setCloudSaveFound(payload);
       setLastSynced(new Date());
-
-      const freshSnap = await getDoc(docRef);
-      if (freshSnap.exists()) {
-        const freshData = freshSnap.data() as CloudSaveData;
-        updateSaveCreatedAt(freshData.createdAt || resolvedCreatedAt);
-        setCloudSaveFound(freshData);
-        writeSave(
-          activeUser.uid,
-          toLocalMirror(freshData, activeUser.uid, Number(state.lastSavedAt) || Date.now()),
-        );
-      }
+      updateSaveCreatedAt(resolvedCreatedAt);
+      writeSave(uid, {
+        ...state,
+        lastSavedAt: Number(state.lastSavedAt) || Date.now(),
+        lastCloudUpdatedAt: Date.now(),
+      });
+      return true;
     } catch (error) {
       console.error("Firestore periodic synchronization failed:", error);
       try {
-        handleFirestoreError(error, OperationType.UPDATE, `saves/${activeUser.uid}`);
+        handleFirestoreError(error, OperationType.UPDATE, `saves/${uid}`);
       } catch {}
+      throw error;
     } finally {
       isSavingRef.current = false;
       setSyncing(false);

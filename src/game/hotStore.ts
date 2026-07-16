@@ -11,7 +11,6 @@ export interface HotStats {
   life: number;
   totalLifeEarned: number;
   secondsPlayed: number;
-  planetExp: number;
   cycleProgress: number;
   eventTimeRemaining: number;
 }
@@ -20,7 +19,6 @@ const state: HotStats = {
   life: 0,
   totalLifeEarned: 0,
   secondsPlayed: 0,
-  planetExp: 0,
   cycleProgress: 0,
   eventTimeRemaining: 0,
 };

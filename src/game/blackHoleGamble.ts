@@ -280,12 +280,14 @@ export function executeBlackHoleGamble(
       break;
     }
     case 16: {
-      // NEW BAD 2: EXP FREEZE
       type = "bad";
       titleGerman = "Schwerkraft-Paralyse 🧊";
-      const expLoss = Math.floor(state.planetExp * 0.5);
-      state.planetExp -= expLoss;
-      textGerman = `Eine Gravitationsstarre friert die Entwicklung deines Planeten ein! Du verlierst ${expLoss.toLocaleString("de-DE")} Planeten-EXP (Halbierung des aktuellen Levels-Fortschritts).`;
+      const previousProgress = state.planetTask?.progress || 0;
+      const lostProgress = Math.floor(previousProgress * 0.5);
+      if (state.planetTask) {
+        state.planetTask.progress = Math.max(0, previousProgress - lostProgress);
+      }
+      textGerman = `Eine Gravitationsstarre friert die Entwicklung deines Planeten ein! Deine aktuelle Aufgabe verliert ${lostProgress.toLocaleString("de-DE")} Fortschrittspunkte.`;
       break;
     }
     case 17: {

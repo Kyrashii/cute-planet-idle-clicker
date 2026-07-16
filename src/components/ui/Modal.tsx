@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * Shared Modal base component.
  *
@@ -58,6 +59,9 @@ export function useModalSettings(): ModalSettings {
 // Scroll-lock ref counter so stacked modals don't fight over body overflow.
 // ---------------------------------------------------------------------------
 let scrollLockCount = 0;
+const openModalIds: symbol[] = [];
+
+const isTopModal = (id: symbol) => openModalIds[openModalIds.length - 1] === id;
 
 function lockScroll() {
   scrollLockCount++;
@@ -144,6 +148,9 @@ interface ModalProps {
    */
   presentation?: "dialog" | "sheet" | "auto" | "drawer";
 
+  /** Accessible name for the dialog when no visible heading is associated. */
+  ariaLabel?: string;
+
   /** Fires once the exit animation has fully finished. */
   onExitComplete?: () => void;
 
@@ -163,12 +170,14 @@ export const Modal: React.FC<ModalProps> = ({
   backdropClassName,
   panelStyle,
   presentation = "dialog",
+  ariaLabel,
   onExitComplete,
   children,
 }) => {
   const { disableAnimations: disableAnimationsCtx } = useContext(ModalSettingsContext);
   const disableAnimations = disableAnimationsProp ?? disableAnimationsCtx;
   const panelRef = useRef<HTMLDivElement>(null);
+  const modalIdRef = useRef(Symbol("modal"));
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const isMobile = useIsMobile();
   const isSheet =
@@ -185,6 +194,16 @@ export const Modal: React.FC<ModalProps> = ({
     if (!isOpen) setSettled(false);
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const id = modalIdRef.current;
+    openModalIds.push(id);
+    return () => {
+      const index = openModalIds.lastIndexOf(id);
+      if (index >= 0) openModalIds.splice(index, 1);
+    };
+  }, [isOpen]);
+
   // --- Scroll lock ---
   useEffect(() => {
     if (!isOpen) return;
@@ -198,8 +217,9 @@ export const Modal: React.FC<ModalProps> = ({
     previousFocusRef.current = document.activeElement as HTMLElement;
     // Move focus into the panel on open
     requestAnimationFrame(() => {
+      if (!isTopModal(modalIdRef.current)) return;
       const first = panelRef.current && getFocusable(panelRef.current)[0];
-      if (first) first.focus();
+      (first ?? panelRef.current)?.focus();
     });
     return () => {
       previousFocusRef.current?.focus();
@@ -210,8 +230,9 @@ export const Modal: React.FC<ModalProps> = ({
   useEffect(() => {
     if (!isOpen) return;
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && isTopModal(modalIdRef.current)) {
         e.preventDefault();
+        e.stopImmediatePropagation();
         onClose();
       }
     };
@@ -221,7 +242,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   // --- Focus trap ---
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key !== "Tab" || !panelRef.current) return;
+    if (e.key !== "Tab" || !panelRef.current || !isTopModal(modalIdRef.current)) return;
     const focusable = getFocusable(panelRef.current);
     if (focusable.length === 0) return;
     const first = focusable[0];
@@ -240,14 +261,11 @@ export const Modal: React.FC<ModalProps> = ({
   }, []);
 
   // --- Backdrop click ---
-  const handleBackdropClick = useCallback(
-    (e: React.MouseEvent) => {
-      if (closeOnBackdrop && e.target === e.currentTarget) {
-        onClose();
-      }
-    },
-    [closeOnBackdrop, onClose],
-  );
+  const handleBackdropClick = useCallback(() => {
+    if (closeOnBackdrop && isTopModal(modalIdRef.current)) {
+      onClose();
+    }
+  }, [closeOnBackdrop, onClose]);
 
   // Render into portal
   const portalTarget =
@@ -299,10 +317,19 @@ export const Modal: React.FC<ModalProps> = ({
                   : "items-center justify-center p-4"
             }`
           }
-          onClick={handleBackdropClick}
+          aria-label={ariaLabel ?? "Dialog"}
           aria-modal="true"
           role="dialog"
         >
+          {closeOnBackdrop && (
+            <button
+              type="button"
+              className="absolute inset-0 cursor-default border-0 bg-transparent p-0"
+              onClick={handleBackdropClick}
+              aria-label="Dialog schließen"
+              tabIndex={-1}
+            />
+          )}
           {backdropClassName === undefined && (
             <>
               <motion.div
@@ -326,6 +353,7 @@ export const Modal: React.FC<ModalProps> = ({
           )}
           <motion.div
             ref={panelRef}
+            tabIndex={-1}
             initial={
               disableAnimations
                 ? false

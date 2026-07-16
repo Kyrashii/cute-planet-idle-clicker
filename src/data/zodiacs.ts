@@ -1,9 +1,12 @@
 export interface ZodiacSpec {
   id: string;
-  name: string; // German name (e.g., "Katze")
-  emoji: string; // e.g., "🐱"
-  description: string; // German description
-  bonusDesc: string; // Short bonus description
+  name: string;
+  germanName: string;
+  emoji: string;
+  description: string;
+  germanDescription: string;
+  bonusDesc: string;
+  germanBonusDesc: string;
   bonusType:
     | "click_crit"
     | "animals_boost"
@@ -20,90 +23,123 @@ export interface ZodiacSpec {
 export const ZODIACS: ZodiacSpec[] = [
   {
     id: "katze",
-    name: "Katze",
+    name: "Cat",
+    germanName: "Katze",
     emoji: "🐱",
-    description: "Kritische Klicks besser: 20% Chance auf 7x Kraft (Standard: 5% Chance auf 3x).",
-    bonusDesc: "20% Crit-Chance & 7x Crit-Kraft",
+    description:
+      "Improves critical clicks to a 20% chance for 7x power (default: 5% chance for 3x).",
+    germanDescription:
+      "Verbessert kritische Klicks auf eine Chance von 20% fuer 7x Kraft (Standard: 5% Chance auf 3x).",
+    bonusDesc: "20% crit chance and 7x crit power",
+    germanBonusDesc: "20% Crit-Chance & 7x Crit-Kraft",
     bonusType: "click_crit",
   },
   {
     id: "biene",
-    name: "Biene",
+    name: "Bee",
+    germanName: "Biene",
     emoji: "🐝",
-    description: "Tiere produzieren mehr: Jedes Tier generiert passiv +35% mehr Energie.",
-    bonusDesc: "+35% Tier-Produktion",
+    description: "Every animal passively generates 35% more energy.",
+    germanDescription: "Jedes Tier generiert passiv 35% mehr Energie.",
+    bonusDesc: "+35% animal production",
+    germanBonusDesc: "+35% Tier-Produktion",
     bonusType: "animals_boost",
   },
   {
     id: "mond",
-    name: "Mond",
+    name: "Moon",
+    germanName: "Mond",
     emoji: "🌙",
     description:
-      "Mond-Sturm: Erhoeht deine maximale Anzahl an Monden um +1 und verstaerkt den Produktionsbonus um +50% absoluten Multiplikator pro Mond.",
-    bonusDesc: "+1 Mondlimit & +225% Mondmultiplikator",
+      "Moon Storm raises your maximum moon count by 1 and adds 50 percentage points to the production multiplier of every moon.",
+    germanDescription:
+      "Mond-Sturm erhoeht deine maximale Anzahl an Monden um 1 und verstaerkt den Produktionsbonus um 50 Prozentpunkte pro Mond.",
+    bonusDesc: "+1 moon limit and +225% moon multiplier",
+    germanBonusDesc: "+1 Mondlimit & +225% Mondmultiplikator",
     bonusType: "all_passive_boost",
   },
   {
     id: "drache",
-    name: "Drache",
+    name: "Dragon",
+    germanName: "Drache",
     emoji: "🐉",
     description:
-      "Events staerker: Alle kosmischen Event-Boni (Meteor, Aurora, Supernova) sind um +40% staerker.",
-    bonusDesc: "+40% staerkere Events",
+      "All cosmic event bonuses, including meteor, aurora, and supernova effects, are 40% stronger.",
+    germanDescription:
+      "Alle kosmischen Event-Boni, darunter Meteor-, Aurora- und Supernova-Effekte, sind 40% staerker.",
+    bonusDesc: "+40% stronger events",
+    germanBonusDesc: "+40% staerkere Events",
     bonusType: "events_boost",
   },
   {
     id: "frosch",
-    name: "Frosch",
+    name: "Frog",
+    germanName: "Frosch",
     emoji: "🐸",
-    description: "Missionen schneller: Verringert Mission-Cooldowns und Zeiten um 35%.",
-    bonusDesc: "-35% Missionstimer & Cooldowns",
+    description: "Reduces mission durations and cooldowns by 35%.",
+    germanDescription: "Verringert Missionszeiten und -Cooldowns um 35%.",
+    bonusDesc: "-35% mission timers and cooldowns",
+    germanBonusDesc: "-35% Missionstimer & Cooldowns",
     bonusType: "missions_boost",
   },
   {
     id: "fuchs",
-    name: "Fuchs",
+    name: "Fox",
+    germanName: "Fuchs",
     emoji: "🦊",
-    description: "Durchtriebener Clicker: Erhoeht deine manuelle Click-Kraft dauerhaft um +40%.",
-    bonusDesc: "+40% Klick-Kraft",
+    description: "Permanently increases your manual click power by 40%.",
+    germanDescription: "Erhoeht deine manuelle Klickkraft dauerhaft um 40%.",
+    bonusDesc: "+40% click power",
+    germanBonusDesc: "+40% Klickkraft",
     bonusType: "click_flat",
   },
   {
     id: "eule",
-    name: "Eule",
+    name: "Owl",
+    germanName: "Eule",
     emoji: "🦉",
-    description:
-      "Naechtliche Weisheit: Erhoeht die Energie-Produktion deiner Sterne um +30% mehr LPS.",
-    bonusDesc: "+30% Sternen-Produktion",
+    description: "Increases the energy production of your stars by 30%.",
+    germanDescription: "Erhoeht die Energieproduktion deiner Sterne um 30%.",
+    bonusDesc: "+30% star production",
+    germanBonusDesc: "+30% Sternen-Produktion",
     bonusType: "stars_boost",
   },
   {
     id: "schildkroete",
-    name: "Schildkroete",
+    name: "Turtle",
+    germanName: "Schildkroete",
     emoji: "🐢",
-    description: "Bedaechtiges Wachstum: Erhoeht dein passives Gesamteinkommen (LPS) um +20%.",
-    bonusDesc: "+20% Gesamt-LPS",
+    description: "Increases your total passive income by 20%.",
+    germanDescription: "Erhoeht dein gesamtes passives Einkommen (LPS) um 20%.",
+    bonusDesc: "+20% total LPS",
+    germanBonusDesc: "+20% Gesamt-LPS",
     bonusType: "all_passive_boost",
   },
   {
     id: "einhorn",
-    name: "Einhorn",
+    name: "Unicorn",
+    germanName: "Einhorn",
     emoji: "🦄",
-    description: "Kosmischer Glanz: Schaltet alle Kosmetik-Upgrades mit einem 20% Rabatt frei.",
-    bonusDesc: "-20% Kosmetik-Preise",
+    description: "Reduces the prices of all cosmetic upgrades by 20%.",
+    germanDescription: "Reduziert die Preise aller Kosmetik-Upgrades um 20%.",
+    bonusDesc: "-20% cosmetic prices",
+    germanBonusDesc: "-20% Kosmetik-Preise",
     bonusType: "cosmetic_discount",
   },
   {
     id: "phoenix",
     name: "Phoenix",
+    germanName: "Phoenix",
     emoji: "🐦‍🔥",
-    description: "Heilige Asche: Erhalte +35% mehr Glitzerstaub aus allen Quellen.",
-    bonusDesc: "+35% Glitzerstaub-Ausbeute",
+    description: "Gain 35% more glitter dust from every source.",
+    germanDescription: "Erhalte 35% mehr Glitzerstaub aus allen Quellen.",
+    bonusDesc: "+35% glitter dust yield",
+    germanBonusDesc: "+35% Glitzerstaub-Ausbeute",
     bonusType: "glitter_boost",
   },
 ];
 
 export function getZodiac(id?: string): ZodiacSpec {
   if (!id) return ZODIACS[0];
-  return ZODIACS.find((z) => z.id === id) || ZODIACS[0];
+  return ZODIACS.find((zodiac) => zodiac.id === id) || ZODIACS[0];
 }

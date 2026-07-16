@@ -9,6 +9,10 @@ afterEach(() => {
 
 // jsdom does not implement matchMedia; the app reads it for reduced-motion /
 // responsive hooks, so provide a stable no-op implementation.
+if (typeof window !== "undefined") {
+  window.scrollTo = vi.fn();
+}
+
 if (typeof window !== "undefined" && !window.matchMedia) {
   window.matchMedia = vi.fn().mockImplementation((query: string) => ({
     matches: false,

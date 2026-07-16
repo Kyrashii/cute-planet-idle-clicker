@@ -75,9 +75,28 @@ export interface RogueliteBoon {
   id: string;
   title: string;
   description: string;
+  germanTitle: string;
+  germanDescription: string;
   category: RogueliteBoonCategory;
   rarity: RogueliteRarity;
   tags?: string[];
+}
+
+export interface RogueliteEventChoiceDefinition {
+  id: string;
+  title: string;
+  description: string;
+  germanTitle: string;
+  germanDescription: string;
+}
+
+export interface RogueliteEventDefinition {
+  id: string;
+  title: string;
+  description: string;
+  germanTitle: string;
+  germanDescription: string;
+  choices: RogueliteEventChoiceDefinition[];
 }
 
 export interface RogueliteRelic {
@@ -204,6 +223,7 @@ export interface RogueliteRewardPackage {
   relicChoiceIds: string[];
   victoryType?: "normal" | "flawless" | "cursed" | "speed_clear";
   rewardLabel: string;
+  skinId?: string;
 }
 
 export interface ActiveRogueliteRun {
@@ -230,6 +250,8 @@ export interface ActiveRogueliteRun {
   rewardPackage: RogueliteRewardPackage | null;
   selectedRewardRelicId?: string;
   selectedRewardSkinId?: string;
+  metaWinsAtStart: number;
+  unlockedPlanetSkinIdsAtStart: string[];
   bonusRerollsConsumed: number;
   choiceCount: number;
   lastBoonId?: string;

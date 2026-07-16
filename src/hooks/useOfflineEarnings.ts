@@ -9,7 +9,7 @@ import { readSave, type SaveOwnerId } from "../utils/persistence";
  * feed the cycle-indicator "jar" the player taps to claim; the setters are
  * returned so the cheat path can top them up too.
  */
-export function useOfflineEarnings(isLoaded: boolean, ownerId: SaveOwnerId) {
+export function useOfflineEarnings(isLoaded: boolean, ownerId: SaveOwnerId, hydrationRevision = 0) {
   const [offlineSeconds, setOfflineSeconds] = useState<number>(0);
   const [offlineLpsRate, setOfflineLpsRate] = useState<number>(0);
   const [offlineEarnedLife, setOfflineEarnedLife] = useState<number>(0);
@@ -20,7 +20,7 @@ export function useOfflineEarnings(isLoaded: boolean, ownerId: SaveOwnerId) {
     setOfflineSeconds(0);
     setOfflineLpsRate(0);
     setOfflineEarnedLife(0);
-  }, [ownerId]);
+  }, [hydrationRevision, ownerId]);
 
   useEffect(() => {
     if (isLoaded && !offlineCheckedRef.current) {

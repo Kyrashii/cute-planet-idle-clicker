@@ -29,7 +29,7 @@ export const StatsModal: React.FC<StatsModalProps> = React.memo(
         presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-cosmic-bg-mid/95 border-3 border-teal-300 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-3.5xl"
+        panelClassName="bg-cosmic-bg-mid/95 border-3 border-teal-300 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-[1.75rem]"
       >
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b-3 border-teal-300/60 bg-linear-to-r from-slate-900 via-slate-800 to-slate-900 flex items-center justify-between shrink-0">
@@ -116,7 +116,7 @@ export const StatsModal: React.FC<StatsModalProps> = React.memo(
           </div>
 
           {/* Cutest Achievements Checkup */}
-          <div className="bg-cosmic-surface-mid/50 border-2 border-cosmic-accent/40 rounded-2.5xl p-4 space-y-3">
+          <div className="bg-cosmic-surface-mid/50 border-2 border-cosmic-accent/40 rounded-[1.25rem] p-4 space-y-3">
             <h6 className="font-sans font-black text-[10px] uppercase text-cosmic-pink tracking-wider font-mono">
               Suesse Meilensteine
             </h6>

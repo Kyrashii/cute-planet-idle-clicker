@@ -1,4 +1,5 @@
 import { useEffect, type RefObject } from "react";
+import { sendWorkerCommand } from "../game/workerClient";
 
 /**
  * Pauses the worker's timers while the tab is hidden and resumes them on return,
@@ -7,12 +8,13 @@ import { useEffect, type RefObject } from "react";
 export function useWorkerVisibility(workerRef: RefObject<Worker | null>) {
   useEffect(() => {
     const handleVisibility = () => {
-      if (document.hidden) {
-        workerRef.current?.postMessage({ type: "PAUSE_TIMERS" });
-      } else {
-        workerRef.current?.postMessage({ type: "RESUME_TIMERS" });
-      }
+      sendWorkerCommand(workerRef.current, {
+        type: "SET_PAUSED",
+        reason: "visibility",
+        paused: document.hidden,
+      });
     };
+    handleVisibility();
     document.addEventListener("visibilitychange", handleVisibility);
     return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, [workerRef]);

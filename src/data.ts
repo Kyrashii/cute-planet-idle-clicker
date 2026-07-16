@@ -169,7 +169,7 @@ const RAW_INITIAL_ANIMALS: Animal[] = [
     costMultiplier: 1.16,
     baseLps: 1400000.0,
     count: 0,
-    description: "Clowdy wool that absorbs comet whispers.",
+    description: "Cloudy wool that absorbs comet whispers.",
     germanDescription: "Besitzt wolkenaehnliche Wolle, die das Kometenfluestern speichert.",
     color: "bg-pink-50 text-pink-700 border-pink-200",
   },

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { useEffect, useRef } from "react";
 import { createRenderer, parseFxParams } from "./detect";
 import type { EffectsRenderer } from "./renderer";
