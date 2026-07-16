@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { getLpsAndStats } from "../game/statsCalculator";
+import { workerStateFromSave } from "../game/state";
 import { calculateOfflineLps } from "./offline";
 
 describe("calculateOfflineLps", () => {
@@ -150,6 +152,35 @@ describe("calculateOfflineLps", () => {
     });
     const flatMoon = 2 * 15000;
     expect(result).toBeCloseTo(flatMoon * (1 + 2 * 1.5));
+  });
+
+  it("matches the canonical worker calculation for persistent bonuses", () => {
+    const save = {
+      starsCount: 12,
+      moonsCount: 2,
+      purchasedAnimals: { bunny: 15, cat: 3 },
+      purchasedUpgrades: ["upg-bunny-1", "upg-star-glow", "upg-nexus-core"],
+      prestigeCount: 3,
+      isNight: true,
+      constellations: { kuschel: 2, stardust_rain: 3, cosmic_harmony: 1 },
+      animalLove: { bunny: 300 },
+      zodiac: "eule",
+      zodiacLevels: { eule: 2 },
+      catalystLevel: 2,
+      inGlitchGalaxy: true,
+      activeEvent: "aurora",
+      activeEventDecision: "boost",
+    };
+    const workerState = workerStateFromSave(save)!;
+    const expected = getLpsAndStats({
+      ...workerState,
+      activeEvent: null,
+      activeEventDecision: null,
+      activeEventDetails: null,
+      activeEventInstantClaimed: false,
+    }).totalLps;
+
+    expect(calculateOfflineLps(save)).toBeCloseTo(expected);
   });
 
   describe("Galaxy Shards Shop upgrades", () => {

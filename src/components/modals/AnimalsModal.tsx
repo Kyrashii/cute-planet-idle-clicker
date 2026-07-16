@@ -13,12 +13,14 @@ const AnimalImage: React.FC<{
   image,
   emoji,
   sizeClassName = "w-10 h-10 object-contain select-none",
-  emojiSizeClassName = "text-2.5xl select-none",
+  emojiSizeClassName = "text-[1.75rem] select-none",
 }) => {
   const [error, setError] = useState(false);
 
   if (image && !error) {
     return (
+      // Image fallback requires handling a non-interactive element's load failure.
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
       <img
         src={image}
         alt={emoji}
@@ -38,7 +40,6 @@ interface AnimalsModalProps {
   purchasedAnimals: Record<string, number>;
   animalDefs: Animal[];
   onBuyAnimal: (animalId: string, cost: number, countToBuy: number) => void;
-  calculateCost: (baseCost: number, count: number, multiplier: number) => number;
   formatCompactNumber: (num: number) => string;
   upgradesSpecs: {
     bunnyBoost: boolean;
@@ -59,7 +60,6 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
     purchasedAnimals,
     animalDefs,
     onBuyAnimal,
-    calculateCost,
     formatCompactNumber,
     upgradesSpecs,
   }) => {
@@ -136,7 +136,7 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
         presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-cosmic-bg-mid/95 rounded-3.5xl border-3 border-cosmic-accent flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
+        panelClassName="bg-cosmic-bg-mid/95 rounded-[1.75rem] border-3 border-cosmic-accent flex flex-col max-w-xl w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text"
       >
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b-3 border-cosmic-accent/60 bg-linear-to-r from-cosmic-bg-mid via-cosmic-surface-mid to-cosmic-bg-mid flex items-center justify-between shrink-0">
@@ -658,12 +658,18 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
                 return (
                   <div
                     key={animal.id}
-                    onClick={() => setSelectedAnimal(animal)}
                     style={{ contentVisibility: "auto" } as React.CSSProperties}
-                    className="flex items-center justify-between p-3.5 rounded-3xl border-2 border-cosmic-accent/35 bg-cosmic-surface-mid/55 hover:bg-cosmic-surface-mid/85 hover:border-cosmic-accent/80 transition-all gap-4 group cursor-pointer"
+                    className="relative flex items-center justify-between p-3.5 rounded-3xl border-2 border-cosmic-accent/35 bg-cosmic-surface-mid/55 hover:bg-cosmic-surface-mid/85 hover:border-cosmic-accent/80 transition-all gap-4 group"
                   >
+                    <button
+                      type="button"
+                      aria-label={`Details zu ${animal.germanName} oeffnen`}
+                      onClick={() => setSelectedAnimal(animal)}
+                      className="absolute inset-0 rounded-3xl cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cosmic-accent"
+                    />
+
                     {/* Animal visual thumbnail - SIZED UP */}
-                    <div className="flex items-center gap-4 min-w-0 grow">
+                    <div className="pointer-events-none relative z-1 flex items-center gap-4 min-w-0 grow">
                       <div className="size-18  rounded-2xl bg-cosmic-surface border-2 border-cosmic-accent flex items-center justify-center shadow-lg relative shrink-0">
                         <AnimalImage
                           image={animal.image}
@@ -708,12 +714,10 @@ export const AnimalsModal: React.FC<AnimalsModalProps> = React.memo(
 
                     {/* Kauf-Button */}
                     <button
+                      type="button"
                       disabled={!hasMoney}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onBuyAnimal(animal.id, totalCost, countToBuy);
-                      }}
-                      className={`px-3 py-2.5 sm:px-4 rounded-xl font-black flex flex-col items-center justify-center min-w-[98px] shrink-0 transition-all select-none border-2 cursor-pointer ${
+                      onClick={() => onBuyAnimal(animal.id, totalCost, countToBuy)}
+                      className={`relative z-10 px-3 py-2.5 sm:px-4 rounded-xl font-black flex flex-col items-center justify-center min-w-[98px] shrink-0 transition-all select-none border-2 cursor-pointer ${
                         hasMoney
                           ? "bg-linear-to-b from-cosmic-surface-hover to-cosmic-bg text-cosmic-text border-cosmic-accent hover:from-indigo-900 hover:to-cosmic-bg-mid hover:scale-103 shadow-[2.5px_2.5px_0px_var(--color-cosmic-accent)] active:translate-px  active:shadow-[1px_1px_0px_var(--color-cosmic-accent)]"
                           : "bg-cosmic-bg-mid/80 text-cosmic-accent-muted/40 border-cosmic-accent/20 shadow-none cursor-not-allowed opacity-40 opacity-50"

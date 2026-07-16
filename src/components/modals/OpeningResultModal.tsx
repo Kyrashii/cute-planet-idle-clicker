@@ -21,10 +21,8 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
     // Check which rewards are > 0 or have items to display
     const hasLife = rewards.lifeGained > 0;
     const hasStars = rewards.starsGained > 0;
-    const hasMoons = rewards.moonsGained > 0;
     const hasGlitter = rewards.glitterGained > 0;
     const hasLootboxes = rewards.lootboxesGained > 0;
-    const hasXp = rewards.xpGained > 0;
     const hasPrestige = rewards.prestigeGained > 0;
     const hasCosmetics = rewards.unlockedCosmeticsList && rewards.unlockedCosmeticsList.length > 0;
     const hasAnimals = rewards.animalsSpawned && Object.keys(rewards.animalsSpawned).length > 0;
@@ -34,7 +32,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName={`relative w-full max-w-lg overflow-y-auto max-h-[90vh] rounded-3.5xl border-3 shadow-2xl p-6 md:p-8 ${
+        panelClassName={`relative w-full max-w-lg overflow-y-auto max-h-[90vh] rounded-[1.75rem] border-3 shadow-2xl p-6 md:p-8 ${
           isNight
             ? "bg-cosmic-bg-mid/98 border-cosmic-accent/70 text-cosmic-text custom-scrollbar"
             : "bg-amber-50/98 border-amber-300 text-slate-800 custom-scrollbar"
@@ -186,26 +184,6 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
               </div>
             )}
 
-            {hasXp && (
-              <div
-                className={`p-3 rounded-2xl border flex flex-col justify-center items-center text-center shadow-sm ${
-                  isNight
-                    ? "bg-cosmic-surface-mid/55 border-purple-500/20"
-                    : "bg-white border-amber-100"
-                }`}
-              >
-                <span className="text-lg mb-1">💊</span>
-                <span
-                  className={`text-[9px] uppercase font-bold text-cosmic-text-muted ${!isNight && "text-slate-500"}`}
-                >
-                  Wachstums-EP
-                </span>
-                <span className="font-sans font-black text-sm text-teal-400">
-                  +{formatCompactNumber(rewards.xpGained)}
-                </span>
-              </div>
-            )}
-
             {hasPrestige && (
               <div
                 className={`p-3 rounded-2xl border flex flex-col justify-center items-center text-center shadow-sm ${
@@ -230,7 +208,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
           {/* Triggered Events Feedback */}
           {hasEvents && (
             <div
-              className={`p-4 rounded-2.5xl border flex flex-col gap-1.5 shadow-sm ${
+              className={`p-4 rounded-[1.25rem] border flex flex-col gap-1.5 shadow-sm ${
                 isNight
                   ? "bg-red-950/20 border-red-500/20 text-red-100"
                   : "bg-red-50 border-red-100 text-red-950"
@@ -251,7 +229,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
           {/* Unlocked Custom Cosmetics (e.g. from Lootbox or Luck Amulet) */}
           {hasCosmetics && (
             <div
-              className={`p-4 rounded-2.5xl border shadow-sm ${
+              className={`p-4 rounded-[1.25rem] border shadow-sm ${
                 isNight
                   ? "bg-purple-950/25 border-purple-500/30 text-purple-100"
                   : "bg-amber-100/30 border-amber-200 text-slate-800"
@@ -296,7 +274,7 @@ export const OpeningResultModal: React.FC<OpeningResultModalProps> = React.memo(
           {/* Unlocked Animals Feed (Premium animal cookies) */}
           {hasAnimals && (
             <div
-              className={`p-4 rounded-2.5xl border shadow-sm ${
+              className={`p-4 rounded-[1.25rem] border shadow-sm ${
                 isNight
                   ? "bg-indigo-950/25 border-indigo-500/25 text-indigo-100"
                   : "bg-blue-50/50 border-blue-100 text-slate-800"

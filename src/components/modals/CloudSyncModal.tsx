@@ -72,7 +72,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
           minute: "2-digit",
           second: "2-digit",
         });
-      } catch (e) {
+      } catch {
         return String(lastSynced);
       }
     };
@@ -82,7 +82,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
         presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-cosmic-bg-mid/95 border-3 border-cosmic-accent rounded-3.5xl p-6.5 max-w-lg w-full shadow-2xl text-cosmic-text relative"
+        panelClassName="bg-cosmic-bg-mid/95 border-3 border-cosmic-accent rounded-[1.75rem] p-6.5 max-w-lg w-full shadow-2xl text-cosmic-text relative"
       >
         {/* Close Button */}
         <button
@@ -117,7 +117,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
               exit={{ opacity: 0, y: -10 }}
               className="space-y-5"
             >
-              <div className="p-4.5 rounded-2.5xl bg-cosmic-bg/85 border-2 border-white/5 space-y-3">
+              <div className="p-4.5 rounded-[1.25rem] bg-cosmic-bg/85 border-2 border-white/5 space-y-3">
                 <div className="flex items-center gap-2 text-brand-pink">
                   <Sparkles className="size-4  shrink-0 text-amber-300" />
                   <h3 className="font-sans text-xs font-black uppercase tracking-wide">
@@ -179,7 +179,7 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
               className="space-y-4"
             >
               {/* User Profile Badge */}
-              <div className="p-4.5 rounded-2.5xl bg-cosmic-bg/85 border-2 border-cosmic-accent/25 flex items-center justify-between gap-3 text-left">
+              <div className="p-4.5 rounded-[1.25rem] bg-cosmic-bg/85 border-2 border-cosmic-accent/25 flex items-center justify-between gap-3 text-left">
                 <div className="flex items-center gap-3">
                   {user.photoURL ? (
                     <img
@@ -298,11 +298,15 @@ export const CloudSyncModal: React.FC<CloudSyncModalProps> = React.memo(
                       </div>
                       <div className="flex justify-between">
                         <span>Leben:</span>
-                        <span className="text-white">{formatCompactNumber(cloudStats.life)}</span>
+                        <span className="text-white">
+                          {formatCompactNumber(cloudStats.life || 0)}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Spielzeit:</span>
-                        <span className="text-white">{formatTime(cloudStats.secondsPlayed)}</span>
+                        <span className="text-white">
+                          {formatTime(cloudStats.secondsPlayed || 0)}
+                        </span>
                       </div>
                     </div>
                   ) : (

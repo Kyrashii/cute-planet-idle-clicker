@@ -12,7 +12,6 @@ interface ActionButtonsProps {
   onShowMissions: () => void;
   onShowInventory: () => void;
   disableAnimations: boolean;
-  isNightStyle: boolean;
   totalAnimalsCount: number;
   starsCount: number;
   researchedUpgradesCount: number;
@@ -20,7 +19,6 @@ interface ActionButtonsProps {
   achievementsLength: number;
   completedUnclaimedMissionsCount: number;
   shootingStarsCount: number;
-  activeConstellationsCount: number;
 }
 
 export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
@@ -36,7 +34,6 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
     onShowMissions,
     onShowInventory,
     disableAnimations,
-    isNightStyle,
     totalAnimalsCount,
     starsCount,
     researchedUpgradesCount,
@@ -44,7 +41,6 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
     achievementsLength,
     completedUnclaimedMissionsCount,
     shootingStarsCount,
-    activeConstellationsCount,
   }) => {
     return (
       <section
@@ -53,7 +49,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 0: Tier Gehege (Enclosure) */}
         <button
           onClick={onShowGehege}
-          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-[1.25rem] border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -71,7 +67,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 1: Animals (Tiere) */}
         <button
           onClick={onShowAnimals}
-          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-[1.25rem] border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -94,7 +90,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 1.5: Schmieden (Crafting) */}
         <button
           onClick={onShowCrafting}
-          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-[1.25rem] border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -116,7 +112,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 2: Stars (Sterne) */}
         <button
           onClick={onShowStars}
-          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-[1.25rem] border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -139,7 +135,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 3: Upgrades & Research (Forschung) */}
         <button
           onClick={onShowUpgrades}
-          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-[1.25rem] border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -161,7 +157,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 4: Achievements (Erfolge) */}
         <button
           onClick={onShowAchievements}
-          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-[1.25rem] border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -183,7 +179,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 5: Stats/Diary (Daten) */}
         <button
           onClick={onShowStats}
-          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-[1.25rem] border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -205,7 +201,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 6: Missions (Missionen) */}
         <button
           onClick={onShowMissions}
-          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-[1.25rem] border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >
@@ -231,7 +227,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         {/* Button 7: Inventory (Inventar) */}
         <button
           onClick={onShowInventory}
-          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-2.5xl border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
+          className={`group relative flex min-w-18 shrink-0 flex-col items-center justify-center rounded-[1.25rem] border-3 border-transparent bg-transparent p-1.5 game:min-w-0 game:p-4 hover:bg-white/5 shadow-none font-sans font-black cursor-pointer selection:bg-transparent modal-frame-target ${
             disableAnimations ? "" : "transition-all hover:scale-105 active:scale-95"
           }`}
         >

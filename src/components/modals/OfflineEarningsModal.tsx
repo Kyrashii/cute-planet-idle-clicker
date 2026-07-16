@@ -41,14 +41,12 @@ export const OfflineEarningsModal: React.FC<OfflineEarningsModalProps> = React.m
     };
 
     const prestigeBonusPercent = prestigeCount * 10;
-    const prestigeMultiplier = 1 + prestigeCount * 0.1;
-    const baseLps = offlineLps / prestigeMultiplier;
 
     return (
       <Modal
         isOpen={isOpen && earnedLife > 0}
         onClose={onClose}
-        panelClassName={`flex flex-col max-w-sm w-full shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] rounded-3.5xl overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
+        panelClassName={`flex flex-col max-w-sm w-full shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] rounded-[1.75rem] overflow-hidden border-3 transition-colors duration-500 text-cosmic-text relative ${
           isNight
             ? "bg-cosmic-bg-mid/95 border-cosmic-accent"
             : "bg-amber-50 border-amber-400 text-slate-800"

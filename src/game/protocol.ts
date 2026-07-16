@@ -11,7 +11,7 @@
  * compile error rather than a silent runtime break. Types are erased at build
  * time, so adopting this contract changes no runtime behaviour.
  */
-import type { PlanetTask, ActiveCosmicEvent, Achievement } from "../types";
+import type { PlanetTask, ActiveCosmicEvent, Achievement, PlacedAnimal } from "../types";
 import type { getLpsAndStats } from "./statsCalculator";
 
 // ---------------------------------------------------------------------------
@@ -26,7 +26,6 @@ export interface WorkerGameState {
   purchasedAnimals: Record<string, number>;
   purchasedUpgrades: string[];
   planetLevel: number;
-  planetExp: number;
   planetTask?: PlanetTask;
   clicksCount: number;
   starClicksTriggered: number;
@@ -61,11 +60,11 @@ export interface WorkerGameState {
   glitchCooldown?: boolean;
   superClickCharge: number;
   superClickArmed: boolean;
-  /**
-   * Per-species "love" levels. Not managed by the worker loop, but merged in via `INIT.savedState`
-   * and read by `getLpsAndStats` (max-love yield bonus), so it belongs on the state contract.
-   */
+  placedAnimals?: PlacedAnimal[];
   animalLove?: Record<string, number>;
+  animalLastPet?: Record<string, number>;
+  bowlLastFed?: number;
+  bowlFedMinutesCredited?: number;
 }
 
 export interface GlitchBenchmarks {
@@ -84,7 +83,6 @@ export interface WorkerStatePayload {
   purchasedAnimals: Record<string, number>;
   purchasedUpgrades: string[];
   planetLevel: number;
-  planetExp: number;
   planetTask?: PlanetTask;
   clicksCount: number;
   starClicksTriggered: number;
@@ -119,6 +117,11 @@ export interface WorkerStatePayload {
   glitchCooldown: boolean;
   superClickCharge: number;
   superClickArmed: boolean;
+  placedAnimals: PlacedAnimal[];
+  animalLove: Record<string, number>;
+  animalLastPet: Record<string, number>;
+  bowlLastFed: number;
+  bowlFedMinutesCredited: number;
 }
 
 /** Raw LPS/stats result from `getLpsAndStats` (without the achievements count). */
@@ -135,7 +138,6 @@ export interface CraftedItemRewards {
   moonsGained: number;
   glitterGained: number;
   lootboxesGained: number;
-  xpGained: number;
   prestigeGained: number;
   unlockedCosmeticsList: Array<{
     id: string;
@@ -151,22 +153,31 @@ export interface CraftedItemRewards {
 // UI -> worker commands
 // ---------------------------------------------------------------------------
 
-export type UpgradeBatchItem = { id: string; cost: number; isGlitter: boolean };
+export type UpgradeBatchItem = { id: string; isGlitter: boolean };
+export type PauseReason = "visibility" | "roguelite";
 
 export type WorkerCommand =
   // Lifecycle
   | { type: "INIT"; savedState?: Partial<WorkerGameState> | null }
   | { type: "CLEANUP" }
-  | { type: "PAUSE_TIMERS" }
-  | { type: "RESUME_TIMERS" }
+  | { type: "SET_PAUSED"; reason: PauseReason; paused: boolean }
   // Interaction
   | { type: "CLICK"; x: number; y: number }
   | { type: "ACTIVATE_SUPER_CLICK" }
+  | { type: "CLAIM_OFFLINE_EARNINGS"; seconds: number }
+  | {
+      type: "SYNC_ENCLOSURE";
+      placedAnimals: PlacedAnimal[];
+      animalLove: Record<string, number>;
+      animalLastPet: Record<string, number>;
+      bowlLastFed: number;
+      bowlFedMinutesCredited: number;
+    }
   // Purchases
-  | { type: "BUY_ANIMAL"; animalId: string; cost: number; countToBuy?: number }
-  | { type: "BUY_STAR"; cost: number }
-  | { type: "BUY_UPGRADE"; id: string; cost: number }
-  | { type: "BUY_UPGRADE_GLITTER"; id: string; cost: number }
+  | { type: "BUY_ANIMAL"; animalId: string; count: number }
+  | { type: "BUY_STAR" }
+  | { type: "BUY_UPGRADE"; id: string }
+  | { type: "BUY_UPGRADE_GLITTER"; id: string }
   | { type: "BUY_UPGRADES_BATCH"; upgradesList: UpgradeBatchItem[] }
   // Crafting / inventory
   | { type: "CRAFT_ITEM"; recipeId: string; count?: number }
@@ -175,7 +186,7 @@ export type WorkerCommand =
   // Progression / meta-currencies
   | { type: "PRESTIGE" }
   | { type: "MERGE_MOONS" }
-  | { type: "INVEST_CONSTELLATION"; constellationId: string; starsCost: number; moonsCost: number }
+  | { type: "INVEST_CONSTELLATION"; constellationId: string }
   | { type: "UPGRADE_ZODIAC_LEVEL"; id: string; cost: number }
   | { type: "UPGRADE_SLUMMER_GLASS"; cost: number }
   | { type: "UPGRADE_CATALYST"; cost: number }
@@ -219,8 +230,8 @@ export interface StateUpdateEvent {
 /** Result payload the UI's opening-result modal renders after a crafted item is opened. */
 export interface OpeningResult {
   itemId: string;
-  itemName?: string;
-  itemEmoji?: string;
+  itemName: string;
+  itemEmoji: string;
   count: number;
   rewards: CraftedItemRewards;
 }
@@ -257,7 +268,7 @@ export type WorkerEvent =
   | StateUpdateEvent
   | { type: "STAR_TRIGGER"; reward: number; starsCount: number }
   | { type: "MOON_TRIGGER"; reward: number; moonsCount: number }
-  | { type: "CLICK_EFFECT"; actualClickLife: number; x: number; y: number }
+  | { type: "CLICK_EFFECT"; actualClickLife: number; isCritical: boolean; x: number; y: number }
   | {
       type: "SUPER_CLICK_TRIGGERED";
       reward: number;
@@ -277,9 +288,8 @@ export type WorkerEvent =
       count: number;
       rewards: CraftedItemRewards;
       text: string;
-      // Read by the UI's opening-result modal but not currently sent by the worker.
-      itemName?: string;
-      itemEmoji?: string;
+      itemName: string;
+      itemEmoji: string;
     }
   | {
       type: "BLACK_HOLE_GAMBLE_RESULT";

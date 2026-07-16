@@ -115,7 +115,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
     showMenuDrawer,
     setShowMenuDrawer,
   }) => {
-    const liveLife = useHotStat((s) => s.life) || life;
+    const liveLife = useHotStat((s) => s.life) ?? life;
     const [showVideo, setShowVideo] = React.useState(false);
     const [videoVolume, setVideoVolume] = React.useState(0.8);
     const [videoMuted, setVideoMuted] = React.useState(false);
@@ -282,10 +282,7 @@ export const CosmicHeader: React.FC<CosmicHeaderProps> = React.memo(
               </button>
 
               {/* Immersive Video frame container */}
-              <div
-                className="relative size-full max-w-full max-h-full flex items-center justify-center p-4 md:p-8 pointer-events-none"
-                onClick={(e) => e.stopPropagation()}
-              >
+              <div className="relative size-full max-w-full max-h-full flex items-center justify-center p-4 md:p-8 pointer-events-none">
                 {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                 <video
                   ref={videoRef}

@@ -87,6 +87,58 @@ describe("roguelite engine", () => {
     expect(result.meta.unlockedPlanetSkins).toEqual([]);
   });
 
+  it("charges sacrifice costs exactly once", () => {
+    const meta = createRogueliteMetaState();
+    const base = createNewRun(meta, meta.unlockedRelics.slice(0, 2), 8080);
+    const sacrificeNode = {
+      id: "sacrifice-test",
+      station: 3,
+      act: 1 as const,
+      type: "sacrifice" as const,
+      danger: "low" as const,
+      label: "Sacrifice",
+      description: "Test sacrifice",
+    };
+
+    const lifeRun = chooseEncounterOption(
+      {
+        ...base,
+        currentNode: sacrificeNode,
+        stats: { ...base.stats, runLife: 100, maxLife: 100 },
+      },
+      "sacrifice_life",
+    );
+    expect(lifeRun.stats.runLife).toBe(80);
+
+    const shieldRun = chooseEncounterOption(
+      {
+        ...base,
+        currentNode: sacrificeNode,
+        stats: { ...base.stats, runShield: 50 },
+      },
+      "sacrifice_shield",
+    );
+    expect(shieldRun.stats.runShield).toBe(30);
+  });
+
+  it("unlocks a promised locked planet skin on victory", () => {
+    const meta = createRogueliteMetaState();
+    let run = createNewRun(meta, meta.unlockedRelics.slice(0, 2), 9090);
+    run = {
+      ...run,
+      status: "won",
+      phase: "victory_rewards",
+      completedStations: 30,
+      rewardState: { ...run.rewardState, bonusSkinRolls: 1 },
+      rewardPackage: null,
+    };
+
+    const result = finalizeRun(meta, run);
+    expect(result.unlockedSkinId).toBeTruthy();
+    expect(result.meta.unlockedPlanetSkins).toContain(result.unlockedSkinId);
+    expect(result.summary.selectedSkinId).toBe(result.unlockedSkinId);
+  });
+
   it("uses the same seed to create the same boss and run identity", () => {
     const meta = createRogueliteMetaState();
     const runA = createNewRun(meta, meta.unlockedRelics.slice(0, 2), 9001);

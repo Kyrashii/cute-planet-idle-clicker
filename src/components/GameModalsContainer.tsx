@@ -2,6 +2,7 @@ import React from "react";
 import { MODAL_IMPORTS } from "./modalPreload";
 import { useModalPresence, useLatchedValue } from "../hooks/useModalPresence";
 import { useModalSettings } from "./ui/Modal";
+import { sendWorkerCommand } from "../game/workerClient";
 
 const ResetDialog = React.lazy(() =>
   MODAL_IMPORTS.ResetDialog().then((m) => ({ default: m.ResetDialog })),
@@ -67,7 +68,7 @@ import type { Achievement, Upgrade } from "../types";
 import type { LootboxesOpenedEvent, OpeningResult, StatsResult } from "../game/protocol";
 import type { MusicStyleId } from "../utils/audio";
 
-import { INITIAL_ANIMALS, calculateCost } from "../data";
+import { INITIAL_ANIMALS } from "../data";
 
 interface GameModalsContainerProps {
   // Modal visibility flags
@@ -123,7 +124,6 @@ interface GameModalsContainerProps {
     starsCost: number,
     moonsCost: number,
   ) => void;
-  handleCraftItem: (recipeId: string, count?: number) => void;
   handleCraftRecursive: (targetItemId: string, count?: number) => void;
   handleClaimOfflineEarnings: (earnedLife: number) => void;
   handleClaimMissionReward: (missionId: string, starsReward: number) => void;
@@ -238,7 +238,6 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
     handleBuyStar,
     handleMergeMoons,
     handleInvestConstellation,
-    handleCraftItem,
     handleCraftRecursive,
     handleClaimOfflineEarnings,
     handleClaimMissionReward,
@@ -346,13 +345,13 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
             isOpen={showCheatEventModal}
             currentPlanetLevel={planetLevel}
             onSetPlanetLevel={(level) => {
-              workerRef.current?.postMessage({
+              sendWorkerCommand(workerRef.current, {
                 type: "SET_PLANET_LEVEL",
                 level,
               });
             }}
             onSelectEvent={(event) => {
-              workerRef.current?.postMessage({
+              sendWorkerCommand(workerRef.current, {
                 type: "FORCE_TRIGGER_EVENT",
                 event,
               });
@@ -380,7 +379,6 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
             purchasedAnimals={purchasedAnimals}
             animalDefs={INITIAL_ANIMALS}
             onBuyAnimal={handleBuyAnimal}
-            calculateCost={calculateCost}
             formatCompactNumber={formatCompactNumber}
             upgradesSpecs={upgradesSpecs}
           />
@@ -500,12 +498,10 @@ export const GameModalsContainer: React.FC<GameModalsContainerProps> = React.mem
           <MissionsModal
             isOpen={showMissionsModal}
             onClose={() => setShowMissionsModal(false)}
-            isNight={isNightStyle}
             missionSetNumber={missionSetNumber}
             claimedMissionIds={claimedMissionIds}
             missionsCooldownEnd={missionsCooldownEnd}
             onClaimReward={handleClaimMissionReward}
-            activeFrame={activeFrame}
             unlockedCosmetics={unlockedCosmetics}
             purchasedUpgrades={purchasedUpgrades}
           />

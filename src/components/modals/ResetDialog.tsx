@@ -13,7 +13,7 @@ export const ResetDialog: React.FC<ResetDialogProps> = React.memo(
       <Modal
         isOpen={isOpen}
         onClose={onCancel}
-        panelClassName="bg-cosmic-bg-mid/95 border-3 border-cosmic-pink rounded-3.5xl p-6 max-w-sm w-full shadow-2xl text-cosmic-text"
+        panelClassName="bg-cosmic-bg-mid/95 border-3 border-cosmic-pink rounded-[1.75rem] p-6 max-w-sm w-full shadow-2xl text-cosmic-text"
       >
         <h5 className="font-sans font-black text-brand-pink text-base uppercase tracking-wider">
           Spielstand zuruecksetzen?

@@ -19,9 +19,9 @@ export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(
     offlineSeconds,
     onOpenOfflineModal,
   }) => {
-    const cycleProgress = useHotStat((s) => s.cycleProgress) || cycleProgressProp;
+    const cycleProgress = useHotStat((s) => s.cycleProgress) ?? cycleProgressProp;
     return (
-      <div className="w-full max-w-2xl p-3.5 rounded-2.5xl flex flex-col md:flex-row items-center justify-between gap-3 border-2 shadow-md transition-all duration-500 bg-cosmic-bg/90 border-cosmic-accent/60 text-cosmic-text">
+      <div className="w-full max-w-2xl p-3.5 rounded-[1.25rem] flex flex-col md:flex-row items-center justify-between gap-3 border-2 shadow-md transition-all duration-500 bg-cosmic-bg/90 border-cosmic-accent/60 text-cosmic-text">
         <div className="flex items-center gap-3">
           <div className="text-3xl select-none animate-pulse">{isNight ? "🌙" : "☀️"}</div>
           <div>
@@ -42,12 +42,10 @@ export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(
         </div>
 
         {/* Interactive Schlummer-Glas Container */}
-        <div
-          onClick={() => {
-            if (offlineEarnedLife > 0) {
-              onOpenOfflineModal();
-            }
-          }}
+        <button
+          type="button"
+          disabled={offlineEarnedLife <= 0}
+          onClick={onOpenOfflineModal}
           className={`flex items-center gap-2.5 px-3 py-1.5 rounded-2xl border transition-all duration-300 select-none shrink-0 ${
             offlineEarnedLife > 0
               ? "bg-amber-303/10 border-amber-400/40 hover:border-amber-400 cursor-pointer hover:bg-amber-300/15"
@@ -57,6 +55,9 @@ export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(
             offlineEarnedLife > 0
               ? "Klicke zum Ernten deiner Schlummer-Energie! 🏺"
               : "Schlummer-Glas (aktuell leer)"
+          }
+          aria-label={
+            offlineEarnedLife > 0 ? "Schlummer-Energie ernten" : "Schlummer-Glas, aktuell leer"
           }
         >
           <div
@@ -114,7 +115,7 @@ export const DayNightIndicator: React.FC<DayNightIndicatorProps> = React.memo(
               {offlineEarnedLife > 0 ? `+${formatCompactNumber(offlineEarnedLife)}` : "Leer"}
             </span>
           </div>
-        </div>
+        </button>
 
         {/* Cycle Progress Bar */}
         <div className="w-full md:w-32 flex flex-col items-end gap-1.5 shrink-0">

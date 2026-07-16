@@ -1,5 +1,5 @@
 import React from "react";
-import { ActiveCosmicEvent } from "../types";
+import type { ActiveCosmicEvent } from "../types";
 import { useHotStat } from "../game/hotStore";
 
 interface ActiveEventBannerProps {
@@ -28,7 +28,7 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
     blackHoleSize = 1,
     onGamble,
   }) => {
-    const eventTimeRemaining = useHotStat((st) => st.eventTimeRemaining) || eventTimeRemainingProp;
+    const eventTimeRemaining = useHotStat((st) => st.eventTimeRemaining) ?? eventTimeRemainingProp;
     const getEventStyle = () => {
       if (!activeEvent)
         return "bg-cosmic-bg/85 border-cosmic-accent/45 text-cosmic-accent-muted shadow-inner";
@@ -273,10 +273,13 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
                     </span>
                   </div>
                   <h4 className="font-sans font-black text-sm uppercase mt-1 tracking-wide">
-                    {activeEventDetails?.name || "Unbekanntes kosmisches Signal"}
+                    {activeEventDetails?.germanName ||
+                      activeEventDetails?.name ||
+                      "Unbekanntes kosmisches Signal"}
                   </h4>
                   <p className="text-[10.5px] font-semibold opacity-90 leading-relaxed mt-1 max-w-xl text-slate-250">
-                    {activeEventDetails?.description ||
+                    {activeEventDetails?.germanDescription ||
+                      activeEventDetails?.description ||
                       "Ein geheimnisvolles Flackern zieht an deinem Planeten vorbei..."}
                   </p>
                 </div>
@@ -295,8 +298,12 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
                         <strong className="underline uppercase font-black tracking-wide">
                           {activeEventDecision === "ignorieren"
                             ? "🧘 Ignorieren"
-                            : activeEventDetails?.options.find((o) => o.id === activeEventDecision)
-                                ?.name || "Ausgewaehlt"}
+                            : (() => {
+                                const option = activeEventDetails?.options.find(
+                                  (candidate) => candidate.id === activeEventDecision,
+                                );
+                                return option?.germanName || option?.name || "Ausgewaehlt";
+                              })()}
                         </strong>
                       </span>
                     ) : (
@@ -311,50 +318,51 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
                   {/* Dynamic 3 Options */}
                   {activeEventDetails?.options.map((opt) => {
                     const isSelected = activeEventDecision === opt.id;
+                    const optionName = opt.germanName || opt.name;
 
                     // Adaptive option icons based on typical meanings
                     let optIcon = "✨";
                     if (
-                      opt.name.includes("Sammeln") ||
-                      opt.name.includes("Ernte") ||
-                      opt.name.includes("Kapsel") ||
-                      opt.name.includes("Energie")
+                      optionName.includes("Sammeln") ||
+                      optionName.includes("Ernte") ||
+                      optionName.includes("Kapsel") ||
+                      optionName.includes("Energie")
                     )
                       optIcon = "🌾";
                     else if (
-                      opt.name.includes("Forschung") ||
-                      opt.name.includes("Analys") ||
-                      opt.name.includes("Daten") ||
-                      opt.name.includes("Stud") ||
-                      opt.name.includes("Verlauf")
+                      optionName.includes("Forschung") ||
+                      optionName.includes("Analys") ||
+                      optionName.includes("Daten") ||
+                      optionName.includes("Stud") ||
+                      optionName.includes("Verlauf")
                     )
                       optIcon = "🔬";
                     else if (
-                      opt.name.includes("Zerleg") ||
-                      opt.name.includes("Kristall") ||
-                      opt.name.includes("Staub") ||
-                      opt.name.includes("Ader")
+                      optionName.includes("Zerleg") ||
+                      optionName.includes("Kristall") ||
+                      optionName.includes("Staub") ||
+                      optionName.includes("Ader")
                     )
                       optIcon = "💎";
                     else if (
-                      opt.name.includes("Sterne") ||
-                      opt.name.includes("Glan") ||
-                      opt.name.includes("Stellar") ||
-                      opt.name.includes("Konstell")
+                      optionName.includes("Sterne") ||
+                      optionName.includes("Glan") ||
+                      optionName.includes("Stellar") ||
+                      optionName.includes("Konstell")
                     )
                       optIcon = "⭐";
                     else if (
-                      opt.name.includes("Mond") ||
-                      opt.name.includes("Trabant") ||
-                      opt.name.includes("Kollaps") ||
-                      opt.name.includes("Gravit")
+                      optionName.includes("Mond") ||
+                      optionName.includes("Trabant") ||
+                      optionName.includes("Kollaps") ||
+                      optionName.includes("Gravit")
                     )
                       optIcon = "🌙";
                     else if (
-                      opt.name.includes("Opfer") ||
-                      opt.name.includes("Absorption") ||
-                      opt.name.includes("Kollision") ||
-                      opt.name.includes("Sturm")
+                      optionName.includes("Opfer") ||
+                      optionName.includes("Absorption") ||
+                      optionName.includes("Kollision") ||
+                      optionName.includes("Sturm")
                     )
                       optIcon = "💥";
 
@@ -370,10 +378,10 @@ export const ActiveEventBanner: React.FC<ActiveEventBannerProps> = React.memo(
                         }`}
                       >
                         <div className="flex items-center gap-1 text-[11px] font-black text-emerald-300">
-                          <span>{optIcon}</span> {opt.name}
+                          <span>{optIcon}</span> {optionName}
                         </div>
                         <p className="text-[9.5px] opacity-80 leading-tight text-slate-300">
-                          {opt.description}
+                          {opt.germanDescription || opt.description}
                         </p>
                       </button>
                     );

@@ -1,6 +1,6 @@
 import React from "react";
 import { Heart, TrendingUp, Star as StarIcon, Award } from "lucide-react";
-import { formatCompactNumber as defaultFormatCompactNumber, getPrestigeRequirement } from "../data";
+import { formatCompactNumber as defaultFormatCompactNumber } from "../data";
 import { useHotStat } from "../game/hotStore";
 
 interface CosmicHUDProps {
@@ -21,8 +21,7 @@ export const CosmicHUD: React.FC<CosmicHUDProps> = React.memo(
     prestigeCount,
     formatCompactNumber = defaultFormatCompactNumber,
   }) => {
-    const PRESTIGE_REQUIREMENT = getPrestigeRequirement(prestigeCount);
-    const liveLife = useHotStat((s) => s.life) || life;
+    const liveLife = useHotStat((s) => s.life) ?? life;
 
     return (
       <section

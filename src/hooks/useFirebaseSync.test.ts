@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { useFirebaseSync } from "./useFirebaseSync";
+import { buildCloudPayload, toLocalMirror, useFirebaseSync } from "./useFirebaseSync";
 import { getSaveKey, writeMeta, writeSave, readSave } from "../utils/persistence";
 
 const mockGetDoc = vi.fn();
@@ -50,11 +50,63 @@ const baseCloudSave = {
   purchasedAnimals: {},
   purchasedUpgrades: [],
   planetLevel: 7,
-  planetExp: 10,
   clicksCount: 12,
   starClicksTriggered: 2,
   secondsPlayed: 90,
 };
+
+describe("cloud save serialization", () => {
+  it("preserves all modern progression fields in a cloud round trip", () => {
+    const payload = buildCloudPayload(
+      {
+        ...baseCloudSave,
+        planetTask: {
+          id: "task-1",
+          title: "Task",
+          description: "Task",
+          type: "clicks",
+          progress: 4,
+          target: 10,
+        },
+        superClickCharge: 67,
+        superClickArmed: true,
+        craftedItems: { mat_stardust: 8 },
+        activePlanetSkin: "skin-nebula",
+        inGlitchGalaxy: true,
+        spentGalaxyShards: 9,
+        rogueliteMeta: { totalRuns: 3 },
+        activeRogueliteRun: { seed: 123 },
+      },
+      "user-1",
+      111,
+    );
+
+    expect(payload).toMatchObject({
+      userId: "user-1",
+      planetTask: { progress: 4 },
+      superClickCharge: 67,
+      superClickArmed: true,
+      craftedItems: { mat_stardust: 8 },
+      activePlanetSkin: "skin-nebula",
+      inGlitchGalaxy: true,
+      spentGalaxyShards: 9,
+      rogueliteMeta: { totalRuns: 3 },
+      activeRogueliteRun: { seed: 123 },
+    });
+
+    const mirror = toLocalMirror({ ...payload, updatedAt: 222 }, "user-1", 200);
+    expect(mirror).toMatchObject({
+      version: 4,
+      ownerId: "user-1",
+      lastSavedAt: 200,
+      lastCloudUpdatedAt: 222,
+      superClickCharge: 67,
+      craftedItems: { mat_stardust: 8 },
+      activePlanetSkin: "skin-nebula",
+      activeRogueliteRun: { seed: 123 },
+    });
+  });
+});
 
 describe("useFirebaseSync", () => {
   beforeEach(() => {
@@ -97,7 +149,10 @@ describe("useFirebaseSync", () => {
     });
 
     await waitFor(() => expect(loadSpy).toHaveBeenCalledTimes(1));
-    expect((loadSpy.mock.calls[0][0] as CustomEvent).detail.life).toBe(999);
+    expect((loadSpy.mock.calls[0][0] as CustomEvent).detail).toMatchObject({
+      ownerId: "user-1",
+      data: { life: 999 },
+    });
     window.removeEventListener("firebase-load-state", loadSpy as EventListener);
   });
 

@@ -93,7 +93,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
           }`}
         >
           <div className="w-full sm:w-auto flex items-center gap-3">
-            <div className="size-12  rounded-2xl bg-amber-500/10 border-2 border-amber-500 flex items-center justify-center text-2.5xl shadow-inner select-none shrink-0">
+            <div className="size-12  rounded-2xl bg-amber-500/10 border-2 border-amber-500 flex items-center justify-center text-[1.75rem] shadow-inner select-none shrink-0">
               👑
             </div>
             <div>
@@ -209,7 +209,7 @@ export const AchievementsModal: React.FC<AchievementsModalProps> = React.memo(
               .map((ach) => (
                 <div
                   key={ach.id}
-                  className={`relative overflow-hidden p-3 rounded-2.5xl border-2 flex gap-3 transition-all ${
+                  className={`relative overflow-hidden p-3 rounded-[1.25rem] border-2 flex gap-3 transition-all ${
                     ach.isUnlocked
                       ? isNight
                         ? "bg-linear-to-br from-cosmic-surface-hover to-cosmic-bg border-yellow-401/70 shadow-[3px_3px_0px_rgba(234,179,8,0.7)]"

@@ -8,8 +8,10 @@ export interface CraftedItemRewardResult {
   moonsGained: number;
   glitterGained: number;
   lootboxesGained: number;
-  xpGained: number;
   prestigeGained: number;
+  usedCount: number;
+  itemName: string;
+  itemEmoji: string;
   unlockedCosmeticsList: { id: string; name: string; emoji: string; duplicateRefund: boolean }[];
   animalsSpawned: Record<string, number>;
   eventsTriggered: string[];
@@ -25,13 +27,14 @@ export function handleUseCraftedItem(
   requestedCount: number,
   getLpsAndStats: (state: WorkerGameState) => StatsResult,
   setupActiveEvent: (eventId: string) => void,
-  addPlanetExp: (amount: number) => void,
 ): CraftedItemRewardResult {
   if (!state.craftedItems) state.craftedItems = {};
-  const qty = state.craftedItems[itemId] || 0;
-  const count = Math.min(requestedCount || 1, qty);
+  const qty = Math.max(0, Math.floor(state.craftedItems[itemId] || 0));
+  const normalizedRequestedCount = Number.isFinite(requestedCount)
+    ? Math.max(0, Math.floor(requestedCount))
+    : 0;
+  const count = Math.min(normalizedRequestedCount, qty);
 
-  // Deduct items
   state.craftedItems[itemId] = qty - count;
 
   let lifeGained = 0;
@@ -39,7 +42,6 @@ export function handleUseCraftedItem(
   const moonsGained = 0;
   let glitterGained = 0;
   let lootboxesGained = 0;
-  let xpGained = 0;
   let prestigeGained = 0;
   const unlockedCosmeticsList: {
     id: string;
@@ -51,7 +53,7 @@ export function handleUseCraftedItem(
   const eventsTriggered: string[] = [];
 
   const recipe = CRAFTING_RECIPES.find((r) => r.result.id === itemId);
-  const itemName = recipe?.result.name || "Kreations-Gegenstand";
+  const itemName = recipe?.result.germanName || "Kreations-Gegenstand";
   const itemEmoji = recipe?.result.emoji || "🔮";
 
   for (let step = 0; step < count; step++) {
@@ -162,9 +164,6 @@ export function handleUseCraftedItem(
     } else if (itemId === "use_glitter_fountain") {
       state.glitterDust = (state.glitterDust || 0) + 85;
       glitterGained += 85;
-    } else if (itemId === "use_xp_capsule") {
-      addPlanetExp(15000);
-      xpGained += 15000;
     } else if (itemId === "use_solar_flare_box") {
       state.life += 30000000;
       state.totalLifeEarned += 30000000;
@@ -271,8 +270,10 @@ export function handleUseCraftedItem(
     moonsGained,
     glitterGained,
     lootboxesGained,
-    xpGained,
     prestigeGained,
+    usedCount: count,
+    itemName,
+    itemEmoji,
     unlockedCosmeticsList,
     animalsSpawned,
     eventsTriggered,

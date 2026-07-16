@@ -32,13 +32,20 @@ export const ZodiacModal: React.FC<ZodiacModalProps> = React.memo(
   ({ isOpen, onClose, isNight, activeZodiacId }) => {
     const zodiac = getZodiac(activeZodiacId);
     const imageSrc = getZodiacImage(zodiac.id);
+    const handleImageRef = React.useCallback((imageElement: HTMLImageElement | null) => {
+      if (imageElement) {
+        imageElement.onerror = () => {
+          imageElement.style.display = "none";
+        };
+      }
+    }, []);
 
     return (
       <Modal
         presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName={`relative w-full max-w-md overflow-hidden rounded-3.5xl border-3 shadow-2xl p-6 ${
+        panelClassName={`relative w-full max-w-md overflow-hidden rounded-[1.75rem] border-3 shadow-2xl p-6 ${
           isNight
             ? "bg-cosmic-bg-mid/95 border-cosmic-accent/70 text-cosmic-text"
             : "bg-amber-50/98 border-amber-300 text-slate-800"
@@ -71,34 +78,32 @@ export const ZodiacModal: React.FC<ZodiacModalProps> = React.memo(
                 : "text-amber-950"
             }`}
           >
-            Sternzeichen {zodiac.name}
+            Sternzeichen {zodiac.germanName}
           </h4>
 
           {/* Zodiac Image block */}
           <div className="my-5  relative group">
             <div
-              className={`absolute -inset-1 rounded-3.5xl bg-linear-to-r ${isNight ? "from-purple-500 to-cosmic-accent" : "from-amber-400 to-amber-500"} opacity-35 blur-md`}
+              className={`absolute -inset-1 rounded-[1.75rem] bg-linear-to-r ${isNight ? "from-purple-500 to-cosmic-accent" : "from-amber-400 to-amber-500"} opacity-35 blur-md`}
             ></div>
             <div
-              className={`relative p-3.5 rounded-3.5xl border-2 overflow-hidden flex items-center justify-center ${
+              className={`relative p-3.5 rounded-[1.75rem] border-2 overflow-hidden flex items-center justify-center ${
                 isNight ? "bg-cosmic-bg-deep/90 border-purple-500/20" : "bg-white border-amber-200"
               }`}
             >
               <img
+                ref={handleImageRef}
                 src={imageSrc}
-                alt={`Sternzeichen ${zodiac.name}`}
-                className="size-48  sm:w-56 h-56 object-contain rounded-2.5xl transition-transform duration-700 hover:rotate-3 select-none"
+                alt={`Sternzeichen ${zodiac.germanName}`}
+                className="size-48  sm:w-56 h-56 object-contain rounded-[1.25rem] transition-transform duration-700 hover:rotate-3 select-none"
                 referrerPolicy="no-referrer"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = "none";
-                }}
               />
             </div>
           </div>
 
           {/* In-depth description */}
           <div
-            className={`w-full p-4 rounded-2.5xl border-2 text-left mb-6 relative overflow-hidden ${
+            className={`w-full p-4 rounded-[1.25rem] border-2 text-left mb-6 relative overflow-hidden ${
               isNight
                 ? "bg-cosmic-surface-mid/75 border-purple-500/30 text-purple-100"
                 : "bg-white border-amber-100 text-amber-950"
@@ -109,7 +114,7 @@ export const ZodiacModal: React.FC<ZodiacModalProps> = React.memo(
             >
               Kosmische Aura
             </span>
-            <p className="font-sans font-bold text-xs/relaxed ">{zodiac.description}</p>
+            <p className="font-sans font-bold text-xs/relaxed ">{zodiac.germanDescription}</p>
 
             <div className={`h-px my-3 ${isNight ? "bg-purple-800/45" : "bg-amber-100"}`} />
 
@@ -123,7 +128,7 @@ export const ZodiacModal: React.FC<ZodiacModalProps> = React.memo(
                   isNight ? "text-amber-300 font-extrabold" : "text-amber-900 font-extrabold"
                 }
               >
-                {zodiac.bonusDesc}
+                {zodiac.germanBonusDesc}
               </span>
             </div>
           </div>

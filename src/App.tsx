@@ -5,7 +5,6 @@ import {
   PlanetTask,
   ActiveCosmicEvent,
   PlacedAnimal,
-  FloatingText,
   Achievement,
   GameSaveSnapshot,
 } from "./types";
@@ -62,7 +61,8 @@ import { useModalState } from "./hooks/useModalState";
 import { useWorkerVisibility } from "./hooks/useWorkerVisibility";
 import { useOfflineEarnings } from "./hooks/useOfflineEarnings";
 import { applyWorkerEvent, type WorkerEventHandlers } from "./game/applyWorkerEvent";
-import type { WorkerEvent } from "./game/protocol";
+import { isWorkerEvent, sendWorkerCommand } from "./game/workerClient";
+import { workerStateFromSave } from "./game/state";
 import { hotStore } from "./game/hotStore";
 import { effectsBus } from "./effects/effectsBus";
 import { EffectsLayer, setFxOverlayActive } from "./effects/EffectsProvider";
@@ -101,7 +101,6 @@ export default function App() {
   const [moonsCount, setMoonsCount] = useState<number>(0);
   const [purchasedUpgrades, setPurchasedUpgrades] = useState<string[]>([]);
   const [planetLevel, setPlanetLevel] = useState<number>(1);
-  const [planetExp, setPlanetExp] = useState<number>(0);
   const [planetTask, setPlanetTask] = useState<PlanetTask | undefined>(undefined);
   const [clicksCount, setClicksCount] = useState<number>(0);
   const [starClicksTriggered, setStarClicksTriggered] = useState<number>(0);
@@ -197,6 +196,17 @@ export default function App() {
   // re-merge it instead of wiping animals the player just placed (see hydrateClientStateFromSave).
   const liveEnclosureRef = useRef({ placedAnimals, animalLove, animalLastPet });
   liveEnclosureRef.current = { placedAnimals, animalLove, animalLastPet };
+  useEffect(() => {
+    if (!isLoaded) return;
+    sendWorkerCommand(workerRef.current, {
+      type: "SYNC_ENCLOSURE",
+      placedAnimals,
+      animalLove,
+      animalLastPet,
+      bowlLastFed,
+      bowlFedMinutesCredited,
+    });
+  }, [animalLastPet, animalLove, bowlFedMinutesCredited, bowlLastFed, isLoaded, placedAnimals]);
   const [autosaveNotification, setAutosaveNotification] = useState<{
     show: boolean;
     text: string;
@@ -220,11 +230,9 @@ export default function App() {
     },
     clickPower: 1,
     rawClickPower: 1,
-    xpMultiplier: 1.0,
     clickMultiplierForEvents: 1.0,
     starMultiplierForEvents: 1.0,
     animalMultiplierForEvents: 1.0,
-    xpEventMultiplier: 1.0,
     starPowerPerStar: 1.0,
     totalStarsLps: 0,
     totalAnimalsLps: 0,
@@ -232,7 +240,6 @@ export default function App() {
     totalLps: 0,
     totalAnimalsCount: 0,
     researchedUpgradesCount: 0,
-    planetExpNeeded: 1500,
     prestigeCount: 0,
     prestigeMultiplier: 1,
     moonsCount: 0,
@@ -323,8 +330,8 @@ export default function App() {
 
         setShootingStarsCount((prev) => {
           const nextCount = prev + actualReward;
-          workerRef.current?.postMessage({ type: "UPDATE_SHOOTING_STARS", count: nextCount });
-          workerRef.current?.postMessage({ type: "MISSION_CLAIMED" });
+          sendWorkerCommand(workerRef.current, { type: "UPDATE_SHOOTING_STARS", count: nextCount });
+          sendWorkerCommand(workerRef.current, { type: "MISSION_CLAIMED" });
           return nextCount;
         });
 
@@ -386,7 +393,7 @@ export default function App() {
   // routes the results into `lootboxResult` for the gacha wave reveal.
   const handleOpenLootboxes = useCallback((count: number) => {
     playTick();
-    workerRef.current?.postMessage({ type: "OPEN_LOOTBOXES", count });
+    sendWorkerCommand(workerRef.current, { type: "OPEN_LOOTBOXES", count });
   }, []);
 
   const handleApplyCosmetic = useCallback(
@@ -403,7 +410,7 @@ export default function App() {
   const handleUnlockCosmeticDirect = useCallback(
     (cosmeticId: string, cost: number) => {
       playTick();
-      workerRef.current?.postMessage({ type: "UNLOCK_COSMETIC_DIRECT", cosmeticId, cost });
+      sendWorkerCommand(workerRef.current, { type: "UNLOCK_COSMETIC_DIRECT", cosmeticId, cost });
       const pId = nextParticleId.current++;
       setFloatingTexts((prev) => [
         ...prev,
@@ -423,7 +430,7 @@ export default function App() {
   const handleUpgradeCosmeticRarity = useCallback(
     (cosmeticId: string, targetRarity: string, cost: number) => {
       playTick();
-      workerRef.current?.postMessage({
+      sendWorkerCommand(workerRef.current, {
         type: "UPGRADE_COSMETIC_RARITY",
         cosmeticId,
         targetRarity,
@@ -448,19 +455,13 @@ export default function App() {
   // Destructure calculation stats for ease of rendering in the TSX layout
   const upgradesSpecs = calculations.upgradesSpecs;
   const clickPower = calculations.clickPower;
-  const clickMultiplierForEvents = calculations.clickMultiplierForEvents;
   const starPowerPerStar = calculations.starPowerPerStar;
   const totalStarsLps = calculations.totalStarsLps;
   const totalAnimalsLps = calculations.totalAnimalsLps;
   const totalLps = calculations.totalLps;
   const totalAnimalsCount = calculations.totalAnimalsCount;
   const researchedUpgradesCount = calculations.researchedUpgradesCount;
-  const planetExpNeeded = calculations.planetExpNeeded;
   const unlockedAchievementsCount = calculations.unlockedAchievementsCount;
-  const activeConstellationsCount = Object.keys(constellations).reduce(
-    (sum, key) => sum + (constellations[key] || 0),
-    0,
-  );
 
   // Selector for pending claim rewards
   const completedUnclaimedMissionsCount = useMemo(() => {
@@ -491,6 +492,7 @@ export default function App() {
   } = useFirebaseSync();
   const activeSaveOwnerId = user?.uid ?? null;
   const currentSaveOwnerRef = useRef<string | null>(null);
+  const [hydrationRevision, setHydrationRevision] = useState(0);
 
   // Offline earnings (state + one-shot on-load check owned by the hook)
   const {
@@ -500,25 +502,16 @@ export default function App() {
     setOfflineLpsRate,
     offlineEarnedLife,
     setOfflineEarnedLife,
-  } = useOfflineEarnings(isLoaded, activeSaveOwnerId);
+  } = useOfflineEarnings(isLoaded, activeSaveOwnerId, hydrationRevision);
 
   // Defined here (after useOfflineEarnings) so the stable offline setters it depends on are already
   // in scope for the dependency array.
   const handleClaimOfflineEarnings = useCallback(
-    (earnedLife: number) => {
+    (_earnedLife: number) => {
       playBuy();
-
-      setLife((prevLife) => {
-        const updatedLife = prevLife + earnedLife;
-        setTotalLifeEarned((prevTotal) => {
-          const updatedTotalLife = prevTotal + earnedLife;
-          workerRef.current?.postMessage({
-            type: "INIT",
-            savedState: { life: updatedLife, totalLifeEarned: updatedTotalLife },
-          });
-          return updatedTotalLife;
-        });
-        return updatedLife;
+      sendWorkerCommand(workerRef.current, {
+        type: "CLAIM_OFFLINE_EARNINGS",
+        seconds: offlineSeconds,
       });
 
       setOfflineSeconds(0);
@@ -526,7 +519,13 @@ export default function App() {
       setOfflineEarnedLife(0);
       setShowOfflineModal(false);
     },
-    [setOfflineEarnedLife, setOfflineLpsRate, setOfflineSeconds, setShowOfflineModal],
+    [
+      offlineSeconds,
+      setOfflineEarnedLife,
+      setOfflineLpsRate,
+      setOfflineSeconds,
+      setShowOfflineModal,
+    ],
   );
 
   const resetHydratedClientState = useCallback(() => {
@@ -649,6 +648,11 @@ export default function App() {
               typeof savedRun.currentAct === "number"
                 ? savedRun.currentAct
                 : getActForStation(Math.max(1, savedRun.completedStations + 1)),
+            metaWinsAtStart: savedRun.metaWinsAtStart ?? rawSave.rogueliteMeta?.wins ?? 0,
+            unlockedPlanetSkinIdsAtStart:
+              savedRun.unlockedPlanetSkinIdsAtStart ??
+              rawSave.rogueliteMeta?.unlockedPlanetSkins ??
+              [],
             boss: {
               ...savedRun.boss,
               stage: savedRun.boss?.stage ?? "final",
@@ -679,10 +683,11 @@ export default function App() {
         previousOwnerId === ownerId,
       );
       setIsLoaded(false);
+      setHydrationRevision((revision) => revision + 1);
 
-      workerRef.current?.postMessage({
+      sendWorkerCommand(workerRef.current, {
         type: "INIT",
-        savedState,
+        savedState: workerStateFromSave(savedState),
       });
 
       if (savedState) {
@@ -699,9 +704,9 @@ export default function App() {
 
   useEffect(() => {
     const handleFirebaseLoad = (e: Event) => {
-      const data = (e as CustomEvent).detail;
-      if (data && workerRef.current) {
-        loadSaveIntoGame(data, currentSaveOwnerRef.current);
+      const detail = (e as CustomEvent<{ data: unknown; ownerId: string }>).detail;
+      if (detail?.data && workerRef.current) {
+        loadSaveIntoGame(detail.data, detail.ownerId);
       }
     };
     window.addEventListener("firebase-load-state", handleFirebaseLoad);
@@ -736,16 +741,21 @@ export default function App() {
       setPurchasedAnimals,
       setPurchasedUpgrades,
       setPlanetLevel,
-      setPlanetExp: gatedHot(setPlanetExp),
       setPlanetTask,
       setClicksCount,
       setStarClicksTriggered,
       setSuperClickCharge,
       setSuperClickArmed,
+      setPlacedAnimals,
+      setAnimalLove,
+      setAnimalLastPet,
+      setBowlLastFed,
+      setBowlFedMinutesCredited,
       setSecondsPlayed: gatedHot(setSecondsPlayed),
       setIsNight,
       setCycleProgress: gatedHot(setCycleProgress),
       setActiveEvent,
+      setActiveEventInstantClaimed,
       setEventTimeRemaining: gatedHot(setEventTimeRemaining),
       setPrestigeCount,
       setGalaxyShards,
@@ -782,7 +792,8 @@ export default function App() {
       nextParticleId,
     };
     worker.onmessage = (e) => {
-      const data = e.data as WorkerEvent;
+      if (!isWorkerEvent(e.data)) return;
+      const data = e.data;
       effectsBus.publish(data);
       if (data?.type === "STATE_UPDATE") {
         const ws = data.state;
@@ -790,7 +801,6 @@ export default function App() {
           life: ws.life,
           totalLifeEarned: ws.totalLifeEarned,
           secondsPlayed: ws.secondsPlayed,
-          planetExp: ws.planetExp,
           cycleProgress: ws.cycleProgress,
           eventTimeRemaining: ws.eventTimeRemaining,
         });
@@ -805,7 +815,7 @@ export default function App() {
 
     // Clean up worker
     return () => {
-      worker.postMessage({ type: "CLEANUP" });
+      sendWorkerCommand(worker, { type: "CLEANUP" });
       worker.terminate();
     };
   }, [nextParticleId, setFloatingTexts]);
@@ -830,17 +840,18 @@ export default function App() {
   const [activeEvent, setActiveEvent] = useState<string | null>(null);
   const [activeEventDecision, setActiveEventDecision] = useState<string | null>(null);
   const [activeEventDetails, setActiveEventDetails] = useState<ActiveCosmicEvent | null>(null);
+  const [activeEventInstantClaimed, setActiveEventInstantClaimed] = useState(false);
   const [eventTimeRemaining, setEventTimeRemaining] = useState<number>(120);
 
   const handleSelectEventDecision = useCallback((decision: string) => {
-    workerRef.current?.postMessage({
+    sendWorkerCommand(workerRef.current, {
       type: "SET_EVENT_DECISION",
       decision,
     });
   }, []);
 
   const handleBlackHoleGamble = useCallback((sacrificeType: "life" | "stars" | "dust") => {
-    workerRef.current?.postMessage({
+    sendWorkerCommand(workerRef.current, {
       type: "BLACK_HOLE_GAMBLE",
       sacrificeType,
     });
@@ -870,7 +881,7 @@ export default function App() {
         }
 
         if (inputBuffer.endsWith(targetCode)) {
-          workerRef.current?.postMessage({
+          sendWorkerCommand(workerRef.current, {
             type: "CHIPS_CHEAT",
           });
 
@@ -1044,12 +1055,19 @@ export default function App() {
       purchasedAnimals,
       purchasedUpgrades,
       planetLevel,
-      planetExp,
+      planetTask,
       clicksCount,
       starClicksTriggered,
       superClickCharge,
       superClickArmed,
       secondsPlayed,
+      isNight,
+      cycleProgress,
+      activeEvent,
+      activeEventDecision,
+      activeEventDetails,
+      activeEventInstantClaimed,
+      eventTimeRemaining,
       unlockedCosmetics,
       activeStarColor,
       activeAccessory,
@@ -1098,12 +1116,19 @@ export default function App() {
     purchasedAnimals,
     purchasedUpgrades,
     planetLevel,
-    planetExp,
+    planetTask,
     clicksCount,
     starClicksTriggered,
     superClickCharge,
     superClickArmed,
     secondsPlayed,
+    isNight,
+    cycleProgress,
+    activeEvent,
+    activeEventDecision,
+    activeEventDetails,
+    activeEventInstantClaimed,
+    eventTimeRemaining,
     unlockedCosmetics,
     activeStarColor,
     activeAccessory,
@@ -1169,10 +1194,19 @@ export default function App() {
           purchasedAnimals: s.purchasedAnimals,
           purchasedUpgrades: s.purchasedUpgrades,
           planetLevel: s.planetLevel,
-          planetExp: hot.planetExp,
+          planetTask: s.planetTask,
           clicksCount: s.clicksCount,
           starClicksTriggered: s.starClicksTriggered,
+          superClickCharge: s.superClickCharge,
+          superClickArmed: s.superClickArmed,
           secondsPlayed: hot.secondsPlayed,
+          isNight: s.isNight,
+          cycleProgress: hot.cycleProgress,
+          activeEvent: s.activeEvent,
+          activeEventDecision: s.activeEventDecision,
+          activeEventDetails: s.activeEventDetails,
+          activeEventInstantClaimed: s.activeEventInstantClaimed,
+          eventTimeRemaining: hot.eventTimeRemaining,
           unlockedCosmetics: s.unlockedCosmetics,
           activeStarColor: s.activeStarColor,
           activeAccessory: s.activeAccessory,
@@ -1230,7 +1264,8 @@ export default function App() {
 
           try {
             if (user) {
-              await saveStateToCloudRef.current(stateToSave);
+              const synced = await saveStateToCloudRef.current(stateToSave);
+              if (!synced) throw new Error("Cloud synchronization was skipped");
             }
             setTimeout(() => {
               setAutosaveNotification({
@@ -1321,41 +1356,16 @@ export default function App() {
   }, [purchasedAnimals, animalDefs, isLowMemory]);
 
   // Planet Click Event Handler
-  const handlePlanetClick = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      playPop();
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = e.clientX - rect.left - 20;
-      const y = e.clientY - rect.top - 20;
-
-      workerRef.current?.postMessage({ type: "CLICK", x, y });
-
-      const isKatze = activeZodiacId === "katze";
-      const critChance = isKatze ? 0.2 : 0.05;
-      const isCrit = Math.random() < critChance;
-      const critMult = isKatze ? 7 : 3;
-      const clickVal = isCrit ? clickPower * critMult : clickPower;
-      const actualClickLife = clickVal * clickMultiplierForEvents;
-      const pId = nextParticleId.current++;
-      setFloatingTexts((prev) => {
-        const next: FloatingText[] = [
-          ...prev,
-          {
-            id: pId,
-            x,
-            y,
-            text: isCrit
-              ? `+${formatCompactNumber(actualClickLife)} CRIT! ✨`
-              : `+${formatCompactNumber(actualClickLife)}`,
-            type: isCrit ? "crit-click" : "click",
-            createdAt: Date.now(),
-          },
-        ];
-        return next.length > 15 ? next.slice(next.length - 15) : next;
-      });
-    },
-    [activeZodiacId, clickPower, clickMultiplierForEvents, nextParticleId, setFloatingTexts],
-  );
+  const handlePlanetClick = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pointerX = e.clientX > 0 ? e.clientX - rect.left : rect.width / 2;
+    const pointerY = e.clientY > 0 ? e.clientY - rect.top : rect.height / 2;
+    sendWorkerCommand(workerRef.current, {
+      type: "CLICK",
+      x: pointerX - 20,
+      y: pointerY - 20,
+    });
+  }, []);
 
   // Buy cute star
   const starCost = useMemo(() => {
@@ -1374,7 +1384,6 @@ export default function App() {
       life,
       totalLifeEarned,
       secondsPlayed,
-      planetExp,
       planetLevel,
       prestigeCount,
       glitterDust,
@@ -1397,7 +1406,6 @@ export default function App() {
       life,
       totalLifeEarned,
       secondsPlayed,
-      planetExp,
       planetLevel,
       prestigeCount,
       glitterDust,
@@ -1421,45 +1429,39 @@ export default function App() {
   const handleBuyStar = useCallback(() => {
     if (life < starCost) return;
     playBuy();
-    workerRef.current?.postMessage({ type: "BUY_STAR", cost: starCost });
+    sendWorkerCommand(workerRef.current, { type: "BUY_STAR" });
   }, [life, starCost]);
 
   const handleInvestConstellation = useCallback(
     (constellationId: string, starsCost: number, moonsCost: number) => {
       playBuy();
-      workerRef.current?.postMessage({
+      if (starsCount < starsCost || moonsCount < moonsCost) return;
+      sendWorkerCommand(workerRef.current, {
         type: "INVEST_CONSTELLATION",
         constellationId,
-        starsCost,
-        moonsCost,
       });
     },
-    [],
+    [starsCount, moonsCount],
   );
-
-  const handleCraftItem = useCallback((recipeId: string, count: number = 1) => {
-    playUpgrade();
-    workerRef.current?.postMessage({ type: "CRAFT_ITEM", recipeId, count });
-  }, []);
 
   const handleCraftRecursive = useCallback((targetItemId: string, count: number = 1) => {
     playUpgrade();
-    workerRef.current?.postMessage({ type: "CRAFT_RECURSIVE", targetItemId, count });
+    sendWorkerCommand(workerRef.current, { type: "CRAFT_RECURSIVE", targetItemId, count });
   }, []);
 
   const handleUseCraftedItem = useCallback((itemId: string, count: number = 1) => {
     playPop();
-    workerRef.current?.postMessage({ type: "USE_CRAFTED_ITEM", itemId, count });
+    sendWorkerCommand(workerRef.current, { type: "USE_CRAFTED_ITEM", itemId, count });
   }, []);
 
   const handleSelectZodiac = useCallback((zodiacId: string) => {
     playPop();
-    workerRef.current?.postMessage({ type: "SET_ZODIAC", zodiacId });
+    sendWorkerCommand(workerRef.current, { type: "SET_ZODIAC", zodiacId });
   }, []);
 
   const handleMergeMoons = useCallback(() => {
     if (starsCount >= 50 && moonsCount < maxMoons) {
-      workerRef.current?.postMessage({ type: "MERGE_MOONS" });
+      sendWorkerCommand(workerRef.current, { type: "MERGE_MOONS" });
       playBuy();
       const textId = Date.now();
       setFloatingTexts((prev) => [
@@ -1480,7 +1482,7 @@ export default function App() {
     (animalId: string, cost: number, countToBuy: number) => {
       if (life < cost) return;
       playBuy();
-      workerRef.current?.postMessage({ type: "BUY_ANIMAL", animalId, cost, countToBuy });
+      sendWorkerCommand(workerRef.current, { type: "BUY_ANIMAL", animalId, count: countToBuy });
     },
     [life],
   );
@@ -1489,7 +1491,10 @@ export default function App() {
     (list: { id: string; cost: number; isGlitter: boolean }[]) => {
       if (list.length === 0) return;
       playUpgrade();
-      workerRef.current?.postMessage({ type: "BUY_UPGRADES_BATCH", upgradesList: list });
+      sendWorkerCommand(workerRef.current, {
+        type: "BUY_UPGRADES_BATCH",
+        upgradesList: list.map(({ id, isGlitter }) => ({ id, isGlitter })),
+      });
     },
     [],
   );
@@ -1498,7 +1503,7 @@ export default function App() {
     (id: string, cost: number) => {
       if (life < cost || purchasedUpgrades.includes(id)) return;
       playUpgrade();
-      workerRef.current?.postMessage({ type: "BUY_UPGRADE", id, cost });
+      sendWorkerCommand(workerRef.current, { type: "BUY_UPGRADE", id });
     },
     [life, purchasedUpgrades],
   );
@@ -1507,7 +1512,7 @@ export default function App() {
     (id: string, cost: number) => {
       if (galaxyShards < cost) return;
       playUpgrade();
-      workerRef.current?.postMessage({ type: "UPGRADE_ZODIAC_LEVEL", id, cost });
+      sendWorkerCommand(workerRef.current, { type: "UPGRADE_ZODIAC_LEVEL", id, cost });
     },
     [galaxyShards],
   );
@@ -1516,7 +1521,7 @@ export default function App() {
     (cost: number) => {
       if (galaxyShards < cost) return;
       playUpgrade();
-      workerRef.current?.postMessage({ type: "UPGRADE_SLUMMER_GLASS", cost });
+      sendWorkerCommand(workerRef.current, { type: "UPGRADE_SLUMMER_GLASS", cost });
     },
     [galaxyShards],
   );
@@ -1525,7 +1530,7 @@ export default function App() {
     (cost: number) => {
       if (galaxyShards < cost) return;
       playUpgrade();
-      workerRef.current?.postMessage({ type: "UPGRADE_CATALYST", cost });
+      sendWorkerCommand(workerRef.current, { type: "UPGRADE_CATALYST", cost });
     },
     [galaxyShards],
   );
@@ -1534,7 +1539,7 @@ export default function App() {
     (cost: number) => {
       if (galaxyShards < cost) return;
       playUpgrade();
-      workerRef.current?.postMessage({ type: "UPGRADE_DOUBLE_STELLAR", cost });
+      sendWorkerCommand(workerRef.current, { type: "UPGRADE_DOUBLE_STELLAR", cost });
     },
     [galaxyShards],
   );
@@ -1544,7 +1549,7 @@ export default function App() {
     playLevelUp();
     removeSave(currentSaveOwnerRef.current);
     writeMeta({ activeOwnerId: currentSaveOwnerRef.current });
-    workerRef.current?.postMessage({
+    sendWorkerCommand(workerRef.current, {
       type: "RESET",
     });
 
@@ -1559,12 +1564,12 @@ export default function App() {
 
   const handleEnterGlitchGalaxy = useCallback(() => {
     playLevelUp();
-    workerRef.current?.postMessage({ type: "ENTER_GLITCH_GALAXY" });
+    sendWorkerCommand(workerRef.current, { type: "ENTER_GLITCH_GALAXY" });
   }, []);
 
   const handleRepairGlitchGalaxy = useCallback(() => {
     playLevelUp();
-    workerRef.current?.postMessage({ type: "REPAIR_GLITCH_GALAXY" });
+    sendWorkerCommand(workerRef.current, { type: "REPAIR_GLITCH_GALAXY" });
   }, []);
 
   const handleConfirmPrestige = useCallback(() => {
@@ -1573,13 +1578,8 @@ export default function App() {
     if (inGlitchGalaxy) {
       handleRepairGlitchGalaxy();
     } else {
-      workerRef.current?.postMessage({ type: "PRESTIGE" });
+      sendWorkerCommand(workerRef.current, { type: "PRESTIGE" });
     }
-    setShootingStarsCount((prev) => {
-      const nextCount = prev + 1;
-      workerRef.current?.postMessage({ type: "UPDATE_SHOOTING_STARS", count: nextCount });
-      return nextCount;
-    });
     setShowPrestigeModal(false);
     setShowVoyageModal(false);
   }, [
@@ -1603,10 +1603,19 @@ export default function App() {
     purchasedAnimals,
     purchasedUpgrades,
     planetLevel,
-    planetExp,
+    planetTask,
     clicksCount,
     starClicksTriggered,
+    superClickCharge,
+    superClickArmed,
     secondsPlayed,
+    isNight,
+    cycleProgress,
+    activeEvent,
+    activeEventDecision,
+    activeEventDetails,
+    activeEventInstantClaimed,
+    eventTimeRemaining,
     unlockedCosmetics,
     activeStarColor,
     activeAccessory,
@@ -1653,10 +1662,13 @@ export default function App() {
     setActiveRogueliteRun(null);
     setRogueliteViewState("intro");
     if (result.grantedShards > 0) {
-      workerRef.current?.postMessage({ type: "ADD_GALAXY_SHARDS", amount: result.grantedShards });
+      sendWorkerCommand(workerRef.current, {
+        type: "ADD_GALAXY_SHARDS",
+        amount: result.grantedShards,
+      });
     }
     if (result.grantedGlitterDust > 0) {
-      workerRef.current?.postMessage({
+      sendWorkerCommand(workerRef.current, {
         type: "ADD_GLITTER_DUST",
         amount: result.grantedGlitterDust,
       });
@@ -1766,8 +1778,11 @@ export default function App() {
   }, [activeRogueliteRun, applyRogueliteFinalize, rogueliteMeta]);
 
   useEffect(() => {
-    if (!workerRef.current) return;
-    workerRef.current.postMessage({ type: showRogueliteScreen ? "PAUSE_TIMERS" : "RESUME_TIMERS" });
+    sendWorkerCommand(workerRef.current, {
+      type: "SET_PAUSED",
+      reason: "roguelite",
+      paused: showRogueliteScreen,
+    });
   }, [showRogueliteScreen]);
 
   // Warm the lazy modal chunks during idle time so first opens don't stall.
@@ -1865,16 +1880,13 @@ export default function App() {
                 offlineEarnedLife={offlineEarnedLife}
                 offlineSeconds={offlineSeconds}
                 openOfflineModal={openOfflineModal}
-                planetExp={planetExp}
-                planetExpNeeded={planetExpNeeded}
                 planetTask={planetTask}
                 moonsCount={moonsCount || 0}
-                starPowerPerStar={starPowerPerStar}
                 handlePlanetClick={handlePlanetClick}
                 superClickCharge={superClickCharge}
                 superClickArmed={superClickArmed}
                 activateSuperClick={() =>
-                  workerRef.current?.postMessage({ type: "ACTIVATE_SUPER_CLICK" })
+                  sendWorkerCommand(workerRef.current, { type: "ACTIVATE_SUPER_CLICK" })
                 }
                 activeStarColor={activeStarColor}
                 activeAccessory={activeAccessory}
@@ -1901,7 +1913,6 @@ export default function App() {
                 achievementsLength={achievements.length}
                 completedUnclaimedMissionsCount={completedUnclaimedMissionsCount}
                 shootingStarsCount={shootingStarsCount}
-                activeConstellationsCount={activeConstellationsCount}
               />
 
               {/* 4. Footer credits with minimalist elements */}
@@ -1979,7 +1990,6 @@ export default function App() {
                   handleBuyStar={handleBuyStar}
                   handleMergeMoons={handleMergeMoons}
                   handleInvestConstellation={handleInvestConstellation}
-                  handleCraftItem={handleCraftItem}
                   handleCraftRecursive={handleCraftRecursive}
                   handleClaimOfflineEarnings={handleClaimOfflineEarnings}
                   handleClaimMissionReward={handleClaimMissionReward}

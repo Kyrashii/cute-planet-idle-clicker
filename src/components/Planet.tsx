@@ -8,12 +8,9 @@ import { ROGUELITE_PLANET_SKINS } from "../roguelite/data";
 
 interface PlanetProps {
   level: number;
-  planetExp: number;
-  planetExpNeeded: number;
   planetTask?: PlanetTask;
   starsCount: number;
-  starPowerMultiplier: number;
-  onPlanetClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onPlanetClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   isNight?: boolean;
   activeStarColor?: string;
   activeAccessory?: string;
@@ -151,7 +148,7 @@ const STAR_STYLES: Record<
 };
 
 // Visual themes for the planet according to level
-export const PLANET_THEMES = [
+const PLANET_THEMES = [
   {
     levelRange: [1, 1],
     name: "Pastell-Eierchen-Planet",
@@ -579,11 +576,8 @@ const getMoonSkinGraphic = (skin: string) => {
 export const Planet: React.FC<PlanetProps> = React.memo(
   ({
     level,
-    planetExp,
-    planetExpNeeded,
     planetTask,
     starsCount,
-    starPowerMultiplier,
     onPlanetClick,
     isNight = true,
     activeStarColor = "default",
@@ -617,7 +611,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(
       for (let i = 0; i < maxRenderedStars; i++) {
         // Calculate randomized paths for orbit effect
         const distance = 132 + (i % 5) * 16; // concentric circles closer to planet
-        const duration = 10 + (i % 4) * 5 + Math.random() * 2; // timing in seconds
+        const duration = 10 + (i % 4) * 5 + ((i * 37) % 20) / 10; // timing in seconds
         const delay = -(i * 2.1); // stagger starting points
         const reverse = i % 2 === 0;
         arr.push({ id: i, distance, duration, delay, reverse });
@@ -736,8 +730,10 @@ export const Planet: React.FC<PlanetProps> = React.memo(
           </div>
 
           {/* Main Interactive Planet Wrapper */}
-          <motion.div
+          <motion.button
             id="planet-container"
+            type="button"
+            aria-label="Planetenenergie sammeln"
             whileTap={{ scale: 0.94 }}
             whileHover={{ scale: 1.03 }}
             transition={{ type: "spring", stiffness: 450, damping: 15 }}
@@ -771,12 +767,12 @@ export const Planet: React.FC<PlanetProps> = React.memo(
               {/* Render Active Cosmetic Accessory */}
               <PlanetAccessory activeAccessory={activeAccessory} />
             </svg>
-          </motion.div>
+          </motion.button>
         </div>
 
         {/* Planet Info Display & Level-Bar */}
         <div
-          className={`mt-6 flex flex-col items-center w-full max-w-md relative z-10 rounded-2.5xl p-6 border-3 transition-colors duration-500 shadow-md ${
+          className={`mt-6 flex flex-col items-center w-full max-w-md relative z-10 rounded-[1.25rem] p-6 border-3 transition-colors duration-500 shadow-md ${
             isNight
               ? "bg-cosmic-bg/95 border-cosmic-accent/60 text-cosmic-text"
               : "bg-amber-50/95 border-amber-300 text-slate-800"
@@ -830,7 +826,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(
                 isNight ? "text-purple-200" : "text-slate-800"
               }`}
             >
-              {planetTask ? planetTask.description : "Galaktische Aufgabe wird generiert..."}
+              {planetTask ? planetTask.germanDescription : "Galaktische Aufgabe wird generiert..."}
             </p>
 
             <div
@@ -881,7 +877,7 @@ export const Planet: React.FC<PlanetProps> = React.memo(
                 <span
                   className={isNight ? "text-amber-200 font-black" : "text-amber-950 font-black"}
                 >
-                  {zodiacObj.bonusDesc}
+                  {zodiacObj.germanBonusDesc}
                 </span>
                 <span
                   className={`text-[9px] uppercase font-black px-1.5 py-0.5 rounded ml-1 animate-pulse ${

@@ -1,20 +1,11 @@
-import { Animal } from "../types";
-
-export interface PlanetTask {
-  id: string;
-  name: string;
-  description: string;
-  type: string;
-  progress: number;
-  target: number;
-  targetAnimalId?: string;
-  isCumulative?: boolean; // If true, can be calculated instantly from current state
-}
+import type { Animal, PlanetTask } from "../types";
 
 export interface TaskTemplate {
   id: string;
   name: string;
+  germanName: string;
   description: (target: number, animalName?: string, animalEmoji?: string) => string;
+  germanDescription: (target: number, animalName?: string, animalEmoji?: string) => string;
   type: string;
   minLevel: number;
   targetFormula: (level: number, prestige: number) => number;
@@ -26,8 +17,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   // --- 1. Total Animals ---
   {
     id: "animals_count_tot",
-    name: "Kuscheloase",
-    description: (t) => `Erreiche insgesamt ${t} Tiere auf deinem Planeten.`,
+    name: "Cuddle Oasis",
+    germanName: "Kuscheloase",
+    description: (t) => `Have a total of ${t} animals on your planet.`,
+    germanDescription: (t) => `Erreiche insgesamt ${t} Tiere auf deinem Planeten.`,
     type: "animals_count",
     minLevel: 1,
     targetFormula: (lv, pr) => Math.floor((30 + lv * 20 + lv * lv * 1.5) * (1 + pr * 0.5)),
@@ -36,16 +29,20 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   // --- 2. Clicks (Planet Clicking) ---
   {
     id: "clicks_planet",
-    name: "Sternenbeben",
-    description: (t) => `Klicke ${t}-mal auf den Planeten, um ihn zu stimulieren.`,
+    name: "Starquake",
+    germanName: "Sternenbeben",
+    description: (t) => `Click the planet ${t} times to charge it with energy.`,
+    germanDescription: (t) => `Klicke ${t}-mal auf den Planeten, um ihn mit Energie zu versorgen.`,
     type: "clicks",
     minLevel: 1,
     targetFormula: (lv, pr) => Math.floor((40 + lv * 40 + lv * lv * lv * 0.1) * (1 + pr * 0.5)),
   },
   {
     id: "clicks_planet_rhythm",
-    name: "Herzens-Impuls",
-    description: (t) => `Fuehre ${t} rhythmische Klicks auf den Planeten aus.`,
+    name: "Heartbeat",
+    germanName: "Herzensimpuls",
+    description: (t) => `Perform ${t} rhythmic clicks on the planet.`,
+    germanDescription: (t) => `Führe ${t} rhythmische Klicks auf dem Planeten aus.`,
     type: "clicks",
     minLevel: 3,
     targetFormula: (lv, pr) => Math.floor((60 + lv * 50 + lv * lv * 3) * (1 + pr * 0.4)),
@@ -53,17 +50,21 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   // --- 3. No Click (Idle) ---
   {
     id: "no_click_duration",
-    name: "Stille Meditation",
-    description: (t) =>
-      `Lass den Planeten ${t} Sekunden lang in Ruhe Leben generieren, ohne zu klicken.`,
+    name: "Silent Meditation",
+    germanName: "Stille Meditation",
+    description: (t) => `Let the planet generate life for ${t} seconds without clicking.`,
+    germanDescription: (t) =>
+      `Lass den Planeten ${t} Sekunden lang Leben generieren, ohne zu klicken.`,
     type: "no_click_produce",
     minLevel: 1,
     targetFormula: (lv) => Math.min(180, Math.floor(30 + lv * 6)),
   },
   {
     id: "no_click_zen",
-    name: "Fliessendes Kosmos-Zen",
-    description: (t) => `Halte eine Meditationsphase von ${t} Sekunden ein (nicht klicken!).`,
+    name: "Flowing Cosmic Zen",
+    germanName: "Fließendes Kosmos-Zen",
+    description: (t) => `Meditate for ${t} seconds without clicking.`,
+    germanDescription: (t) => `Halte eine Meditationsphase von ${t} Sekunden ein, ohne zu klicken.`,
     type: "no_click_produce",
     minLevel: 8,
     targetFormula: (lv) => Math.min(240, Math.floor(45 + lv * 8)),
@@ -71,16 +72,20 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   // --- 4. Missions Claimed ---
   {
     id: "missions_completed_base",
-    name: "Missionsbereitschaft",
-    description: (t) => `Schliesse ${t} galaktische Missionen ueber das Funkterminal ab.`,
+    name: "Mission Readiness",
+    germanName: "Missionsbereitschaft",
+    description: (t) => `Complete ${t} galactic missions through the radio terminal.`,
+    germanDescription: (t) => `Schließe ${t} galaktische Missionen über das Funkterminal ab.`,
     type: "missions_completed",
     minLevel: 1,
     targetFormula: (lv, pr) => Math.max(1, Math.floor((1 + lv * 0.7) * (1 + pr * 0.3))),
   },
   {
     id: "missions_completed_master",
-    name: "Pioniersarbeit",
-    description: (t) => `Erfuelle ${t} Funk-Missionsauftraege.`,
+    name: "Pioneering Work",
+    germanName: "Pionierarbeit",
+    description: (t) => `Complete ${t} radio mission assignments.`,
+    germanDescription: (t) => `Erfülle ${t} Missionsaufträge über das Funkterminal.`,
     type: "missions_completed",
     minLevel: 10,
     targetFormula: (lv, pr) => Math.floor((3 + lv * 1.1) * (1 + pr * 0.3)),
@@ -88,16 +93,21 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   // --- 5. Events Won ---
   {
     id: "events_won_explorer",
-    name: "Phaenomen-Erforscher",
-    description: (t) => `Untersuche oder loese ${t} zufaellige Weltraum-Events erfolgreich.`,
+    name: "Phenomenon Explorer",
+    germanName: "Phänomen-Erforscher",
+    description: (t) => `Successfully investigate or resolve ${t} random space events.`,
+    germanDescription: (t) => `Untersuche oder löse ${t} zufällige Weltraumereignisse erfolgreich.`,
     type: "events_won",
     minLevel: 2,
     targetFormula: (lv, pr) => Math.max(1, Math.floor((1 + lv * 0.4) * (1 + pr * 0.2))),
   },
   {
     id: "events_won_guardian",
-    name: "Kosmischer Waechter",
-    description: (t) => `Stelle dich ${t} planetaren Ereignissen (z. B. Metoriten, Auroras).`,
+    name: "Cosmic Guardian",
+    germanName: "Kosmischer Wächter",
+    description: (t) => `Face ${t} planetary events, such as meteorites or auroras.`,
+    germanDescription: (t) =>
+      `Stelle dich ${t} planetaren Ereignissen, zum Beispiel Meteoriten oder Polarlichtern.`,
     type: "events_won",
     minLevel: 11,
     targetFormula: (lv, pr) => Math.max(2, Math.floor((2 + lv * 0.6) * (1 + pr * 0.2))),
@@ -105,16 +115,20 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   // --- 6. Star Clicks ---
   {
     id: "collect_stars_catcher",
-    name: "Sternenfaenger",
-    description: (t) => `Sammle ${t} herabfallende Sterne per Hand auf.`,
+    name: "Star Catcher",
+    germanName: "Sternenfänger",
+    description: (t) => `Collect ${t} falling stars by hand.`,
+    germanDescription: (t) => `Sammle ${t} herabfallende Sterne von Hand auf.`,
     type: "collect_stars",
     minLevel: 1,
     targetFormula: (lv, pr) => Math.floor((5 + lv * 4 + lv * lv * 0.2) * (1 + pr * 0.4)),
   },
   {
     id: "collect_stars_shower",
-    name: "Meteoritenschauer",
-    description: (t) => `Nutze Sternschnuppen, um ${t} Sterne aufzusammeln.`,
+    name: "Meteor Shower",
+    germanName: "Meteoritenschauer",
+    description: (t) => `Use shooting stars to collect ${t} stars.`,
+    germanDescription: (t) => `Nutze Sternschnuppen, um ${t} Sterne aufzusammeln.`,
     type: "collect_stars",
     minLevel: 9,
     targetFormula: (lv, pr) => Math.floor((15 + lv * 7 + lv * lv * 0.3) * (1 + pr * 0.4)),
@@ -122,16 +136,20 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   // --- 7. Alchemy & Crafting ---
   {
     id: "crafting_apprentice",
-    name: "Alchemie-Lehrling",
-    description: (t) => `Schmiede insgesamt ${t} Gegenstaende in der Synthese-Schmiede.`,
+    name: "Alchemy Apprentice",
+    germanName: "Alchemie-Lehrling",
+    description: (t) => `Craft a total of ${t} items in the synthesis forge.`,
+    germanDescription: (t) => `Stelle insgesamt ${t} Gegenstände in der Syntheseschmiede her.`,
     type: "crafting",
     minLevel: 1,
     targetFormula: (lv, pr) => Math.max(1, Math.floor((1 + lv * 0.6) * (1 + pr * 0.3))),
   },
   {
     id: "crafting_blacksmith",
-    name: "Kreatorkorona",
-    description: (t) => `Kombiniere Ressourcen, um ${t} veredelte Items herzustellen.`,
+    name: "Creator's Crown",
+    germanName: "Kreatorkrone",
+    description: (t) => `Combine resources to craft ${t} refined items.`,
+    germanDescription: (t) => `Kombiniere Ressourcen, um ${t} veredelte Gegenstände herzustellen.`,
     type: "crafting",
     minLevel: 10,
     targetFormula: (lv, pr) => Math.floor((3 + lv * 1.2) * (1 + pr * 0.3)),
@@ -139,27 +157,34 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   // --- 8. Glitter Dust & Moons ---
   {
     id: "glitter_dust_collector",
-    name: "Glitzer-Sammler",
+    name: "Glitter Collector",
+    germanName: "Glitzersammler",
     description: (t) =>
-      `Sammle ${t} Einheiten magischen Glitzerstaub auf dem Festgelaende oder durch Sternzeichen.`,
+      `Collect ${t} units of magical glitter dust at the fairground or through zodiac signs.`,
+    germanDescription: (t) =>
+      `Sammle ${t} Einheiten magischen Glitzerstaubs auf dem Festgelände oder durch Sternzeichen.`,
     type: "glitter_dust",
     minLevel: 1,
     targetFormula: (lv, pr) => Math.floor((10 + lv * 8 + lv * lv * 0.5) * (1 + pr * 0.5)),
   },
   {
     id: "merge_moons_astronomist",
-    name: "Satelliten-Verschmelzung",
-    description: (t) => `Verschmelze ${t}-mal kleine Monde zu groesseren Monden.`,
+    name: "Satellite Fusion",
+    germanName: "Satellitenverschmelzung",
+    description: (t) => `Merge small moons into larger moons ${t} times.`,
+    germanDescription: (t) => `Verschmelze ${t}-mal kleine Monde zu größeren Monden.`,
     type: "merge_moons",
     minLevel: 1,
     targetFormula: (lv, pr) => Math.max(1, Math.floor((1 + lv * 0.5) * (1 + pr * 0.2))),
   },
 
-  // --- 9. Specific Animal Targets (the remaining 35 tasks to reach exactly 50 target tasks!) ---
+  // --- 9. Specific Animal Targets (35 tasks, bringing the total to exactly 50) ---
   {
     id: "spec_bunny",
-    name: "Langohr-Treffen",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf dem Planeten.`,
+    name: "Long-Ear Gathering",
+    germanName: "Langohr-Treffen",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} on your planet.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf deinem Planeten.`,
     type: "buy_animal",
     minLevel: 1,
     targetFormula: (lv) => Math.floor(10 + lv * 8),
@@ -168,8 +193,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_chick",
-    name: "Futterzeit",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf dem Planeten.`,
+    name: "Feeding Time",
+    germanName: "Futterzeit",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} on your planet.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf deinem Planeten.`,
     type: "buy_animal",
     minLevel: 1,
     targetFormula: (lv) => Math.floor(8 + lv * 7),
@@ -178,8 +205,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_cat",
-    name: "Schnurrkonzert",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} fuer kosmische Beruhigung.`,
+    name: "Purring Concert",
+    germanName: "Schnurrkonzert",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} to spread cosmic calm.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} für kosmische Beruhigung.`,
     type: "buy_animal",
     minLevel: 2,
     targetFormula: (lv) => Math.floor(6 + lv * 6),
@@ -188,8 +217,11 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_frog",
-    name: "Froschkonzert",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e}, um Teiche zu besiedeln.`,
+    name: "Frog Concert",
+    germanName: "Froschkonzert",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} to populate the ponds.`,
+    germanDescription: (t, n, e) =>
+      `Besitze mindestens ${t}x ${n} ${e}, um die Teiche zu besiedeln.`,
     type: "buy_animal",
     minLevel: 3,
     targetFormula: (lv) => Math.floor(5 + lv * 5),
@@ -198,8 +230,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_koala",
-    name: "Eukalyptus-Ernte",
-    description: (t, n, e) => `Sorge fuer ${t}x ${n} ${e}, die genuesslich Blaetter knabbern.`,
+    name: "Eucalyptus Harvest",
+    germanName: "Eukalyptus-Ernte",
+    description: (t, n, e) => `Care for ${t}x ${n} ${e} happily munching on leaves.`,
+    germanDescription: (t, n, e) => `Sorge für ${t}x ${n} ${e}, die genüsslich Blätter knabbern.`,
     type: "buy_animal",
     minLevel: 4,
     targetFormula: (lv) => Math.floor(5 + lv * 4),
@@ -208,8 +242,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_panda",
-    name: "Bambushain",
-    description: (t, n, e) => `Lass ${t}x ${n} ${e} durch die Sternenwiesen rollen.`,
+    name: "Bamboo Grove",
+    germanName: "Bambushain",
+    description: (t, n, e) => `Let ${t}x ${n} ${e} roll across the starry meadows.`,
+    germanDescription: (t, n, e) => `Lass ${t}x ${n} ${e} durch die Sternenwiesen rollen.`,
     type: "buy_animal",
     minLevel: 5,
     targetFormula: (lv) => Math.floor(4 + lv * 3.5),
@@ -218,8 +254,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_unicorn",
-    name: "Regenbogen-Glanzen",
-    description: (t, n, e) => `Lass ${t}x ${n} ${e} ihre magischen Regenboegen spannen.`,
+    name: "Rainbow Glow",
+    germanName: "Regenbogenglanz",
+    description: (t, n, e) => `Let ${t}x ${n} ${e} create their magical rainbows.`,
+    germanDescription: (t, n, e) => `Lass ${t}x ${n} ${e} ihre magischen Regenbögen spannen.`,
     type: "buy_animal",
     minLevel: 6,
     targetFormula: (lv) => Math.floor(3 + lv * 3),
@@ -228,8 +266,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_hamster",
-    name: "Koerner-Hamstern",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} im Laufrad.`,
+    name: "Seed Hoard",
+    germanName: "Körnervorrat",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} running in their wheels.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} in ihren Laufrädern.`,
     type: "buy_animal",
     minLevel: 7,
     targetFormula: (lv) => Math.floor(3 + lv * 2.5),
@@ -238,8 +278,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_fox",
-    name: "Schlauer Fuchspfad",
-    description: (t, n, e) => `Locke ${t}x ${n} ${e} aus ihren Bauen auf den Planeten.`,
+    name: "Clever Fox Trail",
+    germanName: "Schlauer Fuchspfad",
+    description: (t, n, e) => `Lure ${t}x ${n} ${e} from their dens onto the planet.`,
+    germanDescription: (t, n, e) => `Locke ${t}x ${n} ${e} aus ihren Bauen auf den Planeten.`,
     type: "buy_animal",
     minLevel: 8,
     targetFormula: (lv) => Math.floor(3 + lv * 2.2),
@@ -248,8 +290,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_bear",
-    name: "Baerenstark",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} fuer einen Winterschlaf.`,
+    name: "Bear Power",
+    germanName: "Bärenstark",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} ready for hibernation.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} für den Winterschlaf.`,
     type: "buy_animal",
     minLevel: 9,
     targetFormula: (lv) => Math.floor(2 + lv * 1.8),
@@ -258,8 +302,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_alpaca",
-    name: "Flauschparade",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} fuer die Wollgewinnung.`,
+    name: "Fluff Parade",
+    germanName: "Flauschparade",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} for a wonderful wool harvest.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} für die Wollgewinnung.`,
     type: "buy_animal",
     minLevel: 10,
     targetFormula: (lv) => Math.floor(2 + lv * 1.5),
@@ -268,8 +314,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_penguin",
-    name: "Eisscholle",
-    description: (t, n, e) => `Lass ${t}x ${n} ${e} auf dem eisigen Pol des Planeten siedeln.`,
+    name: "Ice Floe",
+    germanName: "Eisscholle",
+    description: (t, n, e) => `Let ${t}x ${n} ${e} settle at the planet's icy pole.`,
+    germanDescription: (t, n, e) => `Lass ${t}x ${n} ${e} am eisigen Pol des Planeten siedeln.`,
     type: "buy_animal",
     minLevel: 11,
     targetFormula: (lv) => Math.floor(2 + lv * 1.2),
@@ -278,8 +326,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_sloth",
-    name: "Gemuetlichkeit",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} in den Sternenaesten.`,
+    name: "Cosy Living",
+    germanName: "Gemütlichkeit",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} among the starry branches.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} in den Sternenästen.`,
     type: "buy_animal",
     minLevel: 12,
     targetFormula: (lv) => Math.floor(1 + lv * 1.1),
@@ -288,8 +338,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_hedgehog",
-    name: "Glitzerstachel",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf deinen Moosflaechen.`,
+    name: "Glitter Spikes",
+    germanName: "Glitzerstachel",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} in your mossy fields.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf deinen Moosflächen.`,
     type: "buy_animal",
     minLevel: 13,
     targetFormula: (lv) => Math.floor(1 + lv * 1.0),
@@ -298,8 +350,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_seal",
-    name: "Robben-Klatschen",
-    description: (t, n, e) => `Sorge fuer mindestens ${t}x ${n} ${e} an deinen Kuesten.`,
+    name: "Seal Applause",
+    germanName: "Robbenklatschen",
+    description: (t, n, e) => `Care for at least ${t}x ${n} ${e} along your coasts.`,
+    germanDescription: (t, n, e) => `Sorge für mindestens ${t}x ${n} ${e} an deinen Küsten.`,
     type: "buy_animal",
     minLevel: 14,
     targetFormula: (lv) => Math.floor(1 + lv * 0.9),
@@ -308,8 +362,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_sheep",
-    name: "Wolkenschaf",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf den Flauschweiden.`,
+    name: "Cloud Sheep",
+    germanName: "Wolkenschaf",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} in the fluffy pastures.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf den Flauschweiden.`,
     type: "buy_animal",
     minLevel: 15,
     targetFormula: (lv) => Math.floor(1 + lv * 0.8),
@@ -318,8 +374,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_otter",
-    name: "Otter-Kuscheln",
-    description: (t, n, e) => `Fuehre ${t}x ${n} ${e} auf deinem Planeten ein.`,
+    name: "Otter Cuddles",
+    germanName: "Otterkuscheln",
+    description: (t, n, e) => `Welcome ${t}x ${n} ${e} to your planet.`,
+    germanDescription: (t, n, e) => `Siedle ${t}x ${n} ${e} auf deinem Planeten an.`,
     type: "buy_animal",
     minLevel: 16,
     targetFormula: (lv) => Math.floor(1 + lv * 0.7),
@@ -328,8 +386,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_deer",
-    name: "Hirschpfad",
-    description: (t, n, e) => `Bringe ${t}x ${n} ${e} in die waldigen Lichtungen.`,
+    name: "Deer Trail",
+    germanName: "Hirschpfad",
+    description: (t, n, e) => `Bring ${t}x ${n} ${e} to the woodland clearings.`,
+    germanDescription: (t, n, e) => `Bringe ${t}x ${n} ${e} in die bewaldeten Lichtungen.`,
     type: "buy_animal",
     minLevel: 17,
     targetFormula: (lv) => Math.floor(1 + lv * 0.6),
@@ -338,8 +398,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_dino",
-    name: "Urzeit-Rueckkehr",
-    description: (t, n, e) => `Zuechte mindestens ${t}x ${n} ${e} auf dem Planeten.`,
+    name: "Prehistoric Return",
+    germanName: "Urzeit-Rückkehr",
+    description: (t, n, e) => `Raise at least ${t}x ${n} ${e} on the planet.`,
+    germanDescription: (t, n, e) => `Züchte mindestens ${t}x ${n} ${e} auf dem Planeten.`,
     type: "buy_animal",
     minLevel: 18,
     targetFormula: (lv) => Math.floor(1 + lv * 0.5),
@@ -348,8 +410,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_duck",
-    name: "Quak-Konzert",
-    description: (t, n, e) => `Sorge fuer ein munteres Treiben mit ${t}x ${n} ${e}.`,
+    name: "Quacking Concert",
+    germanName: "Quakkonzert",
+    description: (t, n, e) => `Create a cheerful bustle with ${t}x ${n} ${e}.`,
+    germanDescription: (t, n, e) => `Sorge mit ${t}x ${n} ${e} für ein munteres Treiben.`,
     type: "buy_animal",
     minLevel: 19,
     targetFormula: (lv) => Math.floor(1 + lv * 0.4),
@@ -358,8 +422,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_ladybug",
-    name: "Glueckskaefer",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf Blaettern.`,
+    name: "Lucky Ladybugs",
+    germanName: "Glückskäfer",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} resting on leaves.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf den Blättern.`,
     type: "buy_animal",
     minLevel: 3,
     targetFormula: (lv) => Math.floor(3 + lv * 4),
@@ -368,8 +434,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_bee",
-    name: "Honig-Schatztruhe",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} fuer suessen Planetenhonig.`,
+    name: "Honey Treasure",
+    germanName: "Honigschatz",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} making sweet planetary honey.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} für süßen Planetenhonig.`,
     type: "buy_animal",
     minLevel: 4,
     targetFormula: (lv) => Math.floor(3 + lv * 3.5),
@@ -378,8 +446,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_pig",
-    name: "Glueckliches Quieken",
-    description: (t, n, e) => `Lass ${t}x ${n} ${e} froehlich im Matsch spielen.`,
+    name: "Happy Squeals",
+    germanName: "Glückliches Quieken",
+    description: (t, n, e) => `Let ${t}x ${n} ${e} play happily in the mud.`,
+    germanDescription: (t, n, e) => `Lass ${t}x ${n} ${e} fröhlich im Matsch spielen.`,
     type: "buy_animal",
     minLevel: 5,
     targetFormula: (lv) => Math.floor(2 + lv * 3),
@@ -388,8 +458,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_puppy",
-    name: "Tollpatschig",
-    description: (t, n, e) => `Bringe ${t}x ${n} ${e} zum Spielen auf den Planeten.`,
+    name: "Clumsy Playtime",
+    germanName: "Tollpatschiges Spiel",
+    description: (t, n, e) => `Bring ${t}x ${n} ${e} to the planet to play.`,
+    germanDescription: (t, n, e) => `Bringe ${t}x ${n} ${e} zum Spielen auf den Planeten.`,
     type: "buy_animal",
     minLevel: 6,
     targetFormula: (lv) => Math.floor(2 + lv * 2.8),
@@ -398,8 +470,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_squirrel",
-    name: "Nussvorrat",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} in den Wipfeln.`,
+    name: "Nut Stash",
+    germanName: "Nussvorrat",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} in the treetops.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} in den Wipfeln.`,
     type: "buy_animal",
     minLevel: 7,
     targetFormula: (lv) => Math.floor(2 + lv * 2.5),
@@ -408,8 +482,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_mouse",
-    name: "Kornkammer",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf Wiesenflaechen.`,
+    name: "Granary",
+    germanName: "Kornkammer",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} in the meadows.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf den Wiesen.`,
     type: "buy_animal",
     minLevel: 8,
     targetFormula: (lv) => Math.floor(2 + lv * 2.2),
@@ -418,8 +494,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_turtle",
-    name: "Gemaechliches Reisen",
-    description: (t, n, e) => `Lass ${t}x ${n} ${e} den Planeten in Ruhe erkunden.`,
+    name: "Leisurely Journey",
+    germanName: "Gemächliche Reise",
+    description: (t, n, e) => `Let ${t}x ${n} ${e} peacefully explore the planet.`,
+    germanDescription: (t, n, e) => `Lass ${t}x ${n} ${e} in Ruhe den Planeten erkunden.`,
     type: "buy_animal",
     minLevel: 9,
     targetFormula: (lv) => Math.floor(2 + lv * 2),
@@ -428,8 +506,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_owl",
-    name: "Nachtwache",
-    description: (t, n, e) => `Lass ${t}x ${n} ${e} ueber deinen Planeten wachen.`,
+    name: "Night Watch",
+    germanName: "Nachtwache",
+    description: (t, n, e) => `Let ${t}x ${n} ${e} watch over your planet.`,
+    germanDescription: (t, n, e) => `Lass ${t}x ${n} ${e} über deinen Planeten wachen.`,
     type: "buy_animal",
     minLevel: 10,
     targetFormula: (lv) => Math.floor(1 + lv * 1.8),
@@ -438,8 +518,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_dolphin",
-    name: "Wellenwellen",
-    description: (t, n, e) => `Lass ${t}x ${n} ${e} durch kosmische Gewaesser springen.`,
+    name: "Wave Dancers",
+    germanName: "Wellentanz",
+    description: (t, n, e) => `Let ${t}x ${n} ${e} leap through cosmic waters.`,
+    germanDescription: (t, n, e) => `Lass ${t}x ${n} ${e} durch kosmische Gewässer springen.`,
     type: "buy_animal",
     minLevel: 11,
     targetFormula: (lv) => Math.floor(1 + lv * 1.5),
@@ -448,8 +530,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_whale",
-    name: "Tiefseelieder",
-    description: (t, n, e) => `Sorge fuer mindestens ${t}x ${n} ${e} im Ozean des Planeten.`,
+    name: "Deep-Sea Songs",
+    germanName: "Tiefseelieder",
+    description: (t, n, e) => `Care for at least ${t}x ${n} ${e} in the planet's ocean.`,
+    germanDescription: (t, n, e) => `Sorge für mindestens ${t}x ${n} ${e} im Ozean des Planeten.`,
     type: "buy_animal",
     minLevel: 12,
     targetFormula: (lv) => Math.floor(1 + lv * 1.3),
@@ -458,8 +542,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_butterfly",
-    name: "Farbenpraechtig",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} in der Luft.`,
+    name: "Burst of Color",
+    germanName: "Farbenpracht",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} fluttering through the air.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} in der Luft.`,
     type: "buy_animal",
     minLevel: 13,
     targetFormula: (lv) => Math.floor(1 + lv * 1.2),
@@ -468,8 +554,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_elephant",
-    name: "Sanfte Riesen",
-    description: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf der weiten Savanne.`,
+    name: "Gentle Giants",
+    germanName: "Sanfte Riesen",
+    description: (t, n, e) => `Have at least ${t}x ${n} ${e} roaming the wide savanna.`,
+    germanDescription: (t, n, e) => `Besitze mindestens ${t}x ${n} ${e} auf der weiten Savanne.`,
     type: "buy_animal",
     minLevel: 14,
     targetFormula: (lv) => Math.floor(1 + lv * 1.1),
@@ -478,8 +566,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_tiger",
-    name: "Dschungelkoenig",
-    description: (t, n, e) => `Sorge fuer ${t}x ${n} ${e} in den verborgenen Bueschen.`,
+    name: "Jungle King",
+    germanName: "Dschungelkönig",
+    description: (t, n, e) => `Care for ${t}x ${n} ${e} among the hidden bushes.`,
+    germanDescription: (t, n, e) => `Sorge für ${t}x ${n} ${e} in den verborgenen Büschen.`,
     type: "buy_animal",
     minLevel: 15,
     targetFormula: (lv) => Math.floor(1 + lv * 1.0),
@@ -488,8 +578,10 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_lion",
-    name: "Sonnensympathy",
-    description: (t, n, e) => `Lass ${t}x ${n} ${e} in der warmen Planetenkrone thronen.`,
+    name: "Sunlit Pride",
+    germanName: "Sonnenrudel",
+    description: (t, n, e) => `Let ${t}x ${n} ${e} reign over the planet's warm crown.`,
+    germanDescription: (t, n, e) => `Lass ${t}x ${n} ${e} in der warmen Planetenkrone thronen.`,
     type: "buy_animal",
     minLevel: 16,
     targetFormula: (lv) => Math.floor(1 + lv * 0.9),
@@ -498,8 +590,11 @@ export const TASK_TEMPLATES: TaskTemplate[] = [
   },
   {
     id: "spec_monkey",
-    name: "Hangelspiel",
-    description: (t, n, e) => `Locke ${t}x ${n} ${e} in die fruchtigen Baumwipfel des Planeten.`,
+    name: "Canopy Games",
+    germanName: "Hangelspiel",
+    description: (t, n, e) => `Lure ${t}x ${n} ${e} into the planet's fruit-filled treetops.`,
+    germanDescription: (t, n, e) =>
+      `Locke ${t}x ${n} ${e} in die fruchtigen Baumwipfel des Planeten.`,
     type: "buy_animal",
     minLevel: 17,
     targetFormula: (lv) => Math.floor(1 + lv * 0.8),
@@ -522,7 +617,9 @@ export function rollTaskForLevel(
     return {
       id: fallbackTemplate.id,
       name: fallbackTemplate.name,
+      germanName: fallbackTemplate.germanName,
       description: fallbackTemplate.description(target),
+      germanDescription: fallbackTemplate.germanDescription(target),
       type: fallbackTemplate.type,
       progress: 0,
       target,
@@ -534,14 +631,17 @@ export function rollTaskForLevel(
   const target = Math.max(1, Math.round(template.targetFormula(level, prestige)));
 
   let animalName = "";
+  let germanAnimalName = "";
   let animalEmoji = "";
   if (template.targetAnimalId) {
     const animal = currentAnimalsList.find((a) => a.id === template.targetAnimalId);
     if (animal) {
-      animalName = animal.germanName;
+      animalName = animal.name;
+      germanAnimalName = animal.germanName;
       animalEmoji = animal.emoji;
     } else {
       animalName = template.targetAnimalId;
+      germanAnimalName = template.targetAnimalId;
       animalEmoji = "🐾";
     }
   }
@@ -549,7 +649,9 @@ export function rollTaskForLevel(
   return {
     id: template.id,
     name: template.name,
+    germanName: template.germanName,
     description: template.description(target, animalName, animalEmoji),
+    germanDescription: template.germanDescription(target, germanAnimalName, animalEmoji),
     type: template.type,
     progress: 0,
     target,

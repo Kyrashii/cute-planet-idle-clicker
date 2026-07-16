@@ -12,6 +12,8 @@ const AnimalGlyph = React.memo<{ def: Animal | undefined }>(({ def }) => {
 
   if (def?.image && !imgError) {
     return (
+      // Image fallback requires handling a non-interactive element's load failure.
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
       <img
         src={def.image}
         alt={def.emoji}

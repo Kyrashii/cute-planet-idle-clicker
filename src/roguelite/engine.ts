@@ -314,7 +314,7 @@ function actForStation(station: number): 1 | 2 | 3 {
   return getActForStation(station);
 }
 
-function weightedNodePool(station: number, meta: RogueliteMetaState, run: ActiveRogueliteRun) {
+function weightedNodePool(station: number, metaWins: number, run: ActiveRogueliteRun) {
   const hasNebelglas = run.activeRelicIds.includes("nebelglas");
   const pool: RogueliteNodeType[] = [
     "boon",
@@ -331,7 +331,7 @@ function weightedNodePool(station: number, meta: RogueliteMetaState, run: Active
   if (station >= 4) pool.push("elite");
   if (station >= 5) pool.push("merchant");
   if (station >= 7) pool.push("relic_vault");
-  if (meta.wins > 0 && station >= 10) pool.push("elite");
+  if (metaWins > 0 && station >= 10) pool.push("elite");
   if (station >= 12) pool.push("elite", "anomaly");
   if (station >= 18) pool.push("meteor", "boss_omen");
   if (station >= 24) pool.push("sacrifice", "relic_vault");
@@ -348,7 +348,7 @@ function makeNode(
   let nextRun = run;
   let chosenType = type;
   if (!chosenType) {
-    const pool = weightedNodePool(station, createRogueliteMetaState(), run);
+    const pool = weightedNodePool(station, run.metaWinsAtStart, run);
     let chosenIndex = 0;
     [nextRun, chosenIndex] = rollInt(nextRun, pool.length);
     chosenType = pool[chosenIndex]!;
@@ -461,8 +461,8 @@ function makeBoonChoices(run: ActiveRogueliteRun): [ActiveRogueliteRun, Roguelit
     usedCategories.add(boon.category);
     choices.push({
       id: boon.id,
-      title: boon.title,
-      description: boon.description,
+      title: boon.germanTitle,
+      description: boon.germanDescription,
       kind: "boon",
       effectLabel: `${boon.category} • ${boon.rarity}`,
       preview: getBoonPreview(boon),
@@ -475,8 +475,8 @@ function makeBoonChoices(run: ActiveRogueliteRun): [ActiveRogueliteRun, Roguelit
     fallback.forEach((boon) =>
       choices.push({
         id: boon.id,
-        title: boon.title,
-        description: boon.description,
+        title: boon.germanTitle,
+        description: boon.germanDescription,
         kind: "boon",
         effectLabel: `${boon.category} • ${boon.rarity}`,
         preview: getBoonPreview(boon),
@@ -932,7 +932,6 @@ function applyBoon(run: ActiveRogueliteRun, boon: RogueliteBoon): ActiveRoguelit
       stats.runPassive = Math.round(stats.runPassive * 2);
       break;
     case "animals_each_station":
-      stats.runPassive += 3;
       break;
     case "elite_passive_double":
       rewardState.rewardMultiplier += 0.12;
@@ -992,7 +991,6 @@ function applyBoon(run: ActiveRogueliteRun, boon: RogueliteBoon): ActiveRoguelit
       stats.runShield += 30;
       break;
     case "shield_each_station":
-      stats.runShield += 12;
       break;
     case "shield_burst_aoe":
       stats.bossDamage += Math.floor(stats.runShield / 8);
@@ -1020,7 +1018,7 @@ function applyBoon(run: ActiveRogueliteRun, boon: RogueliteBoon): ActiveRoguelit
       break;
     case "sacrifice_shield_power":
       stats.runClicks += 10;
-      stats.runShield = Math.max(0, stats.runShield - 12);
+      stats.runShield = Math.max(0, stats.runShield - 20);
       break;
     case "lose_life_legendary":
       stats.runLife = Math.max(1, Math.round(stats.runLife * 0.8));
@@ -1157,14 +1155,14 @@ function rollEventEncounter(
     nextRun,
     {
       id: randomId("event", nextRun.rngState + run.completedStations),
-      title: eventDef.title,
-      description: eventDef.description,
+      title: eventDef.germanTitle,
+      description: eventDef.germanDescription,
       nodeType: "event",
       danger: "medium",
       choices: eventDef.choices.map((choice) => ({
         id: choice.id,
-        title: choice.title,
-        description: choice.description,
+        title: choice.germanTitle,
+        description: choice.germanDescription,
         kind: "event",
         preview: eventChoicePreviews[choice.id],
       })),
@@ -1239,6 +1237,15 @@ function buildBossEncounter(run: ActiveRogueliteRun): RogueliteEncounter {
 }
 
 function afterEncounterResolved(run: ActiveRogueliteRun): ActiveRogueliteRun {
+  const recurringStats = { ...run.stats };
+  if (run.boons.some((boon) => boon.id === "animals_each_station")) {
+    recurringStats.runPassive += 1;
+  }
+  if (run.boons.some((boon) => boon.id === "shield_each_station")) {
+    recurringStats.runShield += 12;
+  }
+  run = { ...run, stats: recurringStats };
+
   if (run.stats.runLife <= 0) {
     return {
       ...run,
@@ -1359,6 +1366,8 @@ export function createNewRun(
     history: [],
     rewardState: createRewardState(),
     rewardPackage: null,
+    metaWinsAtStart: meta.wins,
+    unlockedPlanetSkinIdsAtStart: [...meta.unlockedPlanetSkins],
     bonusRerollsConsumed: meta.bonusRerolls,
     choiceCount: 0,
   };
@@ -1586,12 +1595,10 @@ function resolveSacrificeNode(run: ActiveRogueliteRun, choiceId: string): Active
   const stats = { ...run.stats };
   const rewardState = { ...run.rewardState };
   if (choiceId === "sacrifice_life") {
-    stats.runLife = Math.max(1, Math.round(stats.runLife * 0.8));
     rewardState.cursesTaken += 1;
     rewardState.bonusSkinRolls += 1;
     nextRun = applyBoon({ ...nextRun, stats, rewardState }, getBoon("lose_life_legendary"));
   } else if (choiceId === "sacrifice_shield") {
-    stats.runShield = Math.max(0, stats.runShield - 20);
     nextRun = applyBoon({ ...nextRun, stats, rewardState }, getBoon("sacrifice_shield_power"));
   } else {
     stats.crystalDust += 14;
@@ -1776,6 +1783,15 @@ function buildRewardPackage(run: ActiveRogueliteRun): RogueliteRewardPackage {
     if (relicChoices.length >= 3) break;
   }
 
+  const lockedSkins = ROGUELITE_PLANET_SKINS.filter(
+    (skin) => !run.unlockedPlanetSkinIdsAtStart.includes(skin.id),
+  );
+  const shouldGrantSkin = run.rewardState.guaranteedSkin || run.rewardState.bonusSkinRolls > 0;
+  const skinId =
+    shouldGrantSkin && lockedSkins.length > 0
+      ? lockedSkins[Math.abs(run.rngState) % lockedSkins.length].id
+      : undefined;
+
   return {
     shards,
     glitterDust:
@@ -1785,6 +1801,7 @@ function buildRewardPackage(run: ActiveRogueliteRun): RogueliteRewardPackage {
     relicChoiceIds: relicChoices,
     victoryType,
     rewardLabel: `${boss.name} besiegt • ${victoryType.replace("_", " ")} • ${run.runArchetype.title}`,
+    skinId,
   };
 }
 
@@ -1951,6 +1968,7 @@ export function selectVictoryRewards(
   return {
     ...run,
     selectedRewardRelicId: selectedRelicId,
+    selectedRewardSkinId: run.rewardPackage.skinId,
     phase: "completed",
     status: "completed",
   };
@@ -1963,6 +1981,7 @@ export function finalizeRun(
   if (run.status === "won" || (run.status === "completed" && run.rewardPackage)) {
     const rewardPackage = run.rewardPackage ?? buildRewardPackage(run);
     const selectedRelicId = run.selectedRewardRelicId ?? rewardPackage.relicChoiceIds[0];
+    const selectedSkinId = run.selectedRewardSkinId ?? rewardPackage.skinId;
     const nextMeta: RogueliteMetaState = {
       ...meta,
       totalRuns: meta.totalRuns + 1,
@@ -1972,6 +1991,9 @@ export function finalizeRun(
         ...meta.unlockedRelics.map((id) => getRelic(id)),
         getRelic(selectedRelicId),
       ]).map((relic) => relic.id),
+      unlockedPlanetSkins: selectedSkinId
+        ? Array.from(new Set([...meta.unlockedPlanetSkins, selectedSkinId]))
+        : [...meta.unlockedPlanetSkins],
       seenBosses: Array.from(new Set([...meta.seenBosses, run.boss.bossId])),
       shardRewardsClaimed: meta.shardRewardsClaimed + rewardPackage.shards,
       bonusRerolls: 0,
@@ -1982,6 +2004,7 @@ export function finalizeRun(
         shardsGained: rewardPackage.shards,
         glitterDustGained: rewardPackage.glitterDust,
         selectedRelicId,
+        selectedSkinId,
         rewardLabel: rewardPackage.rewardLabel,
         stationReached: ROGUELITE_TOTAL_STATIONS,
         victoryType: rewardPackage.victoryType,
@@ -1993,6 +2016,7 @@ export function finalizeRun(
       summary: nextMeta.lastRunSummary!,
       grantedShards: rewardPackage.shards,
       grantedGlitterDust: rewardPackage.glitterDust,
+      unlockedSkinId: selectedSkinId,
     };
   }
 

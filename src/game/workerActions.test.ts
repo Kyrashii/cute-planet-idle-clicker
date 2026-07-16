@@ -1,50 +1,16 @@
 import { describe, it, expect, vi } from "vitest";
 import { handleWorkerAction, type WorkerActionHelpers } from "./workerActions";
 import type { WorkerCommand, WorkerGameState, StatsResult } from "./protocol";
+import { createInitialWorkerState } from "./state";
 
 /** A complete, default worker state; override only the fields a test cares about. */
 function makeState(overrides: Partial<WorkerGameState> = {}): WorkerGameState {
-  return {
-    life: 0,
-    totalLifeEarned: 0,
-    starsCount: 0,
-    purchasedAnimals: {},
-    purchasedUpgrades: [],
-    planetLevel: 1,
-    planetExp: 0,
-    clicksCount: 0,
-    starClicksTriggered: 0,
-    secondsPlayed: 0,
-    isNight: true,
-    cycleProgress: 0,
-    activeEvent: null,
-    activeEventDecision: null,
-    activeEventDetails: null,
-    activeEventInstantClaimed: false,
-    eventTimeRemaining: 120,
-    prestigeCount: 0,
-    moonsCount: 0,
-    constellations: {},
-    unlockedCosmetics: [],
-    cosmeticRarityLevels: {},
-    glitterDust: 0,
-    shootingStarsCount: 0,
-    blackHoleSize: 1,
-    craftedItems: {},
-    zodiac: "katze",
-    galaxyShards: 0,
-    zodiacLevels: {},
-    slummerGlassLevel: 1,
-    catalystLevel: 0,
-    doubleStellarLevel: 0,
-    ...overrides,
-  };
+  return { ...createInitialWorkerState(), ...overrides };
 }
 
 function makeHelpers(): WorkerActionHelpers {
   return {
     getLpsAndStats: vi.fn(() => ({}) as unknown as StatsResult),
-    addPlanetExp: vi.fn(),
     setupActiveEvent: vi.fn(),
     updateTaskProgress: vi.fn(),
     broadcastStateUpdate: vi.fn(),
@@ -63,19 +29,16 @@ describe("handleWorkerAction", () => {
   describe("BUY_ANIMAL", () => {
     it("debits life, increments the animal count, and broadcasts", () => {
       const state = makeState({ life: 100 });
-      const helpers = dispatch(
-        { type: "BUY_ANIMAL", animalId: "bunny", cost: 60, countToBuy: 2 },
-        state,
-      );
+      const helpers = dispatch({ type: "BUY_ANIMAL", animalId: "bunny", count: 2 }, state);
 
-      expect(state.life).toBe(40);
+      expect(state.life).toBe(68);
       expect(state.purchasedAnimals.bunny).toBe(2);
       expect(helpers.broadcastStateUpdate).toHaveBeenCalled();
     });
 
     it("is a no-op when life is insufficient", () => {
       const state = makeState({ life: 10 });
-      const helpers = dispatch({ type: "BUY_ANIMAL", animalId: "bunny", cost: 60 }, state);
+      const helpers = dispatch({ type: "BUY_ANIMAL", animalId: "bunny", count: 1 }, state);
 
       expect(state.life).toBe(10);
       expect(state.purchasedAnimals.bunny).toBeUndefined();
@@ -86,7 +49,7 @@ describe("handleWorkerAction", () => {
   describe("BUY_UPGRADE", () => {
     it("debits life and records the upgrade once", () => {
       const state = makeState({ life: 100 });
-      dispatch({ type: "BUY_UPGRADE", id: "upg-click-1", cost: 60 }, state);
+      dispatch({ type: "BUY_UPGRADE", id: "upg-click-1" }, state);
 
       expect(state.life).toBe(40);
       expect(state.purchasedUpgrades).toEqual(["upg-click-1"]);
@@ -94,7 +57,7 @@ describe("handleWorkerAction", () => {
 
     it("does not re-buy an already-owned upgrade", () => {
       const state = makeState({ life: 100, purchasedUpgrades: ["upg-click-1"] });
-      const helpers = dispatch({ type: "BUY_UPGRADE", id: "upg-click-1", cost: 60 }, state);
+      const helpers = dispatch({ type: "BUY_UPGRADE", id: "upg-click-1" }, state);
 
       expect(state.life).toBe(100);
       expect(state.purchasedUpgrades).toEqual(["upg-click-1"]);
@@ -105,10 +68,36 @@ describe("handleWorkerAction", () => {
   describe("BUY_STAR", () => {
     it("grants one star per purchase when the double-stellar perk is inactive", () => {
       const state = makeState({ life: 500, doubleStellarLevel: 0 });
-      dispatch({ type: "BUY_STAR", cost: 100 }, state);
+      dispatch({ type: "BUY_STAR" }, state);
 
-      expect(state.life).toBe(400);
+      expect(state.life).toBe(450);
       expect(state.starsCount).toBe(1);
+    });
+  });
+
+  describe("transaction validation", () => {
+    it("rejects invalid animal IDs and non-positive counts", () => {
+      const state = makeState({ life: 1_000 });
+
+      dispatch({ type: "BUY_ANIMAL", animalId: "unknown", count: 1 }, state);
+      dispatch({ type: "BUY_ANIMAL", animalId: "bunny", count: -5 }, state);
+      dispatch({ type: "BUY_ANIMAL", animalId: "bunny", count: Number.NaN }, state);
+
+      expect(state.life).toBe(1_000);
+      expect(state.purchasedAnimals).toEqual({});
+    });
+
+    it("rejects unknown upgrade IDs", () => {
+      const state = makeState({ life: 1_000 });
+      dispatch({ type: "BUY_UPGRADE", id: "unknown-upgrade" }, state);
+      expect(state.purchasedUpgrades).toEqual([]);
+      expect(state.life).toBe(1_000);
+    });
+
+    it("rejects negative glitter spending", () => {
+      const state = makeState({ glitterDust: 50 });
+      dispatch({ type: "SPEND_GLITTER_DUST", amount: -10 }, state);
+      expect(state.glitterDust).toBe(50);
     });
   });
 
@@ -215,11 +204,10 @@ describe("handleWorkerAction", () => {
 
   describe("SET_PLANET_LEVEL", () => {
     it("sets the requested level and creates a fresh task", () => {
-      const state = makeState({ planetLevel: 3, planetExp: 999 });
+      const state = makeState({ planetLevel: 3 });
       const helpers = dispatch({ type: "SET_PLANET_LEVEL", level: 12 }, state);
 
       expect(state.planetLevel).toBe(12);
-      expect(state.planetExp).toBe(0);
       expect(state.planetTask).toBeDefined();
       expect(helpers.broadcastStateUpdate).toHaveBeenCalledWith(true);
     });
@@ -233,6 +221,67 @@ describe("handleWorkerAction", () => {
 
       expect(lowState.planetLevel).toBe(1);
       expect(highState.planetLevel).toBe(20);
+    });
+  });
+
+  describe("reset and prestige contracts", () => {
+    it("RESET clears every worker-owned field", () => {
+      const state = makeState({
+        life: 500,
+        totalLifeEarned: 900,
+        planetLevel: 12,
+        activeEvent: "aurora",
+        activeEventDecision: "collect",
+        activeEventInstantClaimed: true,
+        inGlitchGalaxy: true,
+        glitchPending: true,
+        unlockedGlitchGalaxy: true,
+        spentGalaxyShards: 7,
+        animalLove: { bunny: 300 },
+      });
+
+      dispatch({ type: "RESET" }, state);
+
+      expect(state).toMatchObject({
+        life: 0,
+        totalLifeEarned: 0,
+        planetLevel: 1,
+        activeEvent: null,
+        activeEventDecision: null,
+        activeEventInstantClaimed: false,
+        inGlitchGalaxy: false,
+        glitchPending: false,
+        unlockedGlitchGalaxy: false,
+        spentGalaxyShards: 0,
+        animalLove: {},
+      });
+      expect(state.planetTask).toBeDefined();
+    });
+
+    it("blocks prestige before its requirement", () => {
+      const state = makeState({ planetLevel: 5, life: 100, prestigeCount: 2 });
+      const helpers = dispatch({ type: "PRESTIGE" }, state);
+      expect(state.prestigeCount).toBe(2);
+      expect(helpers.broadcastStateUpdate).not.toHaveBeenCalled();
+    });
+
+    it("preserves lifetime totals across a valid prestige", () => {
+      const state = makeState({
+        planetLevel: 20,
+        totalLifeEarned: 123_000,
+        clicksCount: 55,
+        starClicksTriggered: 80,
+        prestigeCount: 2,
+      });
+      dispatch({ type: "PRESTIGE" }, state);
+      expect(state).toMatchObject({
+        planetLevel: 1,
+        totalLifeEarned: 123_000,
+        clicksCount: 55,
+        starClicksTriggered: 80,
+        prestigeCount: 3,
+        shootingStarsCount: 1,
+      });
     });
   });
 

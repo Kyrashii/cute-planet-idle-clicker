@@ -31,7 +31,24 @@ service cloud.firestore {
     // Schema Validation Helper for Game Save entity
     function isValidSave(data) {
       return data.userId is string &&
-             data.userId == request.auth.uid;
+             data.userId == request.auth.uid &&
+             data.version is number &&
+             data.lastSavedAt is number &&
+             data.life is number && data.life >= 0 &&
+             data.totalLifeEarned is number && data.totalLifeEarned >= 0 &&
+             data.starsCount is number && data.starsCount >= 0 &&
+             data.planetLevel is number && data.planetLevel >= 1 &&
+             data.clicksCount is number && data.clicksCount >= 0 &&
+             data.secondsPlayed is number && data.secondsPlayed >= 0 &&
+             data.purchasedAnimals is map &&
+             data.purchasedUpgrades is list && data.purchasedUpgrades.size() <= 256 &&
+             data.unlockedCosmetics is list && data.unlockedCosmetics.size() <= 512 &&
+             data.craftedItems is map &&
+             data.constellations is map &&
+             data.placedAnimals is list && data.placedAnimals.size() <= 20 &&
+             data.animalLove is map &&
+             data.zodiacLevels is map &&
+             data.rogueliteMeta is map;
     }
 
     // Schema Validation Helper for Leaderboard Entry entity

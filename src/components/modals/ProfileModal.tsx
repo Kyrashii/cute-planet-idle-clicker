@@ -81,7 +81,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = React.memo(
         presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-cosmic-bg-mid/95 border-3 border-amber-400 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-3.5xl"
+        panelClassName="bg-cosmic-bg-mid/95 border-3 border-amber-400 flex flex-col max-w-md w-full max-h-[85vh] shadow-2xl overflow-hidden text-cosmic-text rounded-[1.75rem]"
       >
         {/* Header */}
         <div className="p-4 sm:p-5 border-b-3 border-amber-400/60 bg-linear-to-r from-cosmic-surface via-cosmic-surface-hover to-cosmic-surface flex items-center justify-between shrink-0">

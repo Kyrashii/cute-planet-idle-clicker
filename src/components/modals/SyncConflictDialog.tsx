@@ -39,7 +39,7 @@ export const SyncConflictDialog: React.FC<SyncConflictDialogProps> = React.memo(
       <Modal
         isOpen={isOpen && mode === "account-switch"}
         onClose={onKeepCurrentAccount}
-        panelClassName="bg-cosmic-bg-mid/95 border-3 border-cosmic-accent rounded-3.5xl p-6.5 max-w-xl w-full shadow-2xl text-cosmic-text max-h-[90vh] overflow-y-auto"
+        panelClassName="bg-cosmic-bg-mid/95 border-3 border-cosmic-accent rounded-[1.75rem] p-6.5 max-w-xl w-full shadow-2xl text-cosmic-text max-h-[90vh] overflow-y-auto"
       >
         <div className="flex items-center gap-2.5">
           <Sparkles className="size-5  text-cosmic-accent" />

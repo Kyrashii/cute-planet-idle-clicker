@@ -161,7 +161,7 @@ export const MusicSettingsModal: React.FC<MusicSettingsModalProps> = React.memo(
             </h5>
 
             <div
-              className={`p-3.5 rounded-2.5xl border-2 space-y-3 transition-all ${
+              className={`p-3.5 rounded-[1.25rem] border-2 space-y-3 transition-all ${
                 isNight
                   ? "bg-cosmic-bg-mid/55 border-cosmic-accent/10"
                   : "bg-white/80 border-slate-200"
@@ -230,7 +230,7 @@ export const MusicSettingsModal: React.FC<MusicSettingsModalProps> = React.memo(
             </h5>
 
             <div
-              className={`p-3.5 rounded-2.5xl border-2 flex items-center justify-between gap-4 transition-all ${
+              className={`p-3.5 rounded-[1.25rem] border-2 flex items-center justify-between gap-4 transition-all ${
                 isNight
                   ? "bg-cosmic-bg-mid/55 border-cosmic-accent/10"
                   : "bg-white/80 border-slate-200"

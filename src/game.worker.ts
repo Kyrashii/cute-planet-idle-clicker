@@ -11,11 +11,13 @@ import {
   chargeSuperClick,
   getSuperClickConfig,
 } from "./game/superClick";
+import { createInitialWorkerState, hydrateWorkerState } from "./game/state";
 import type {
   WorkerCommand,
   WorkerEvent,
   WorkerGameState,
   StateUpdateEvent,
+  PauseReason,
 } from "./game/protocol";
 import type { Achievement } from "./types";
 
@@ -32,54 +34,14 @@ function generateAchievements() {
   return calcAchievements(state);
 }
 
-// Default initial state
-let state: WorkerGameState = {
-  life: 0,
-  totalLifeEarned: 0,
-  starsCount: 0,
-  purchasedAnimals: {},
-  purchasedUpgrades: [],
-  planetLevel: 1,
-  planetExp: 0,
-  planetTask: undefined,
-  clicksCount: 0,
-  starClicksTriggered: 0,
-  secondsPlayed: 0,
-  isNight: true,
-  cycleProgress: 0,
-  activeEvent: null,
-  activeEventDecision: null,
-  activeEventDetails: null,
-  activeEventInstantClaimed: false,
-  eventTimeRemaining: 120,
-  prestigeCount: 0,
-  moonsCount: 0,
-  constellations: {},
-  unlockedCosmetics: [],
-  cosmeticRarityLevels: {},
-  glitterDust: 0,
-  shootingStarsCount: 0,
-  blackHoleSize: 1,
-  craftedItems: {},
-  zodiac: "katze",
-  galaxyShards: 0,
-  zodiacLevels: {},
-  slummerGlassLevel: 1,
-  catalystLevel: 0,
-  doubleStellarLevel: 0,
-  inGlitchGalaxy: false,
-  glitchPending: false,
-  unlockedGlitchGalaxy: false,
-  spentGalaxyShards: 0,
-  glitchCooldown: false,
-  superClickCharge: 0,
-  superClickArmed: false,
-};
+let state: WorkerGameState = createInitialWorkerState();
 
 // Timers refs
 let gameTimerId: ReturnType<typeof setInterval> | null = null;
 // Timestamp when the tab was hidden (for batched catch-up on resume)
 let hiddenAt: number | null = null;
+let initialized = false;
+const pauseReasons = new Set<PauseReason>();
 
 // Roll helper to guarantee never calling the same zodiac twice in a row
 function rollNewZodiac(currentId?: string): string {
@@ -223,10 +185,6 @@ function syncIncrementalDeltas() {
   lastCheckedStars = currentStars;
 }
 
-function addPlanetExp(amount: number) {
-  // Silent legacy no-op since leveling is now entirely task-driven
-}
-
 let cachedAchievementsObj: Achievement[] = [];
 let lastAchievementsCalcTime = 0;
 
@@ -269,7 +227,6 @@ function broadcastStateUpdate(
       purchasedAnimals: state.purchasedAnimals,
       purchasedUpgrades: state.purchasedUpgrades,
       planetLevel: state.planetLevel,
-      planetExp: state.planetExp,
       planetTask: state.planetTask,
       clicksCount: state.clicksCount,
       starClicksTriggered: state.starClicksTriggered,
@@ -304,6 +261,11 @@ function broadcastStateUpdate(
       glitchCooldown: state.glitchCooldown || false,
       superClickCharge: state.superClickCharge || 0,
       superClickArmed: state.superClickArmed || false,
+      placedAnimals: state.placedAnimals || [],
+      animalLove: state.animalLove || {},
+      animalLastPet: state.animalLastPet || {},
+      bowlLastFed: state.bowlLastFed || 0,
+      bowlFedMinutesCredited: state.bowlFedMinutesCredited || 0,
     },
     calculations: {
       ...calculations,
@@ -314,6 +276,34 @@ function broadcastStateUpdate(
     msg.achievements = freshAchievements;
   }
   emit(msg);
+}
+
+function enrichActiveEventDetails() {
+  const details = state.activeEventDetails;
+  if (!details) return;
+
+  const eventData = COSMIC_EVENTS_POOL.find((event) => event.id === details.id);
+  if (!eventData) return;
+
+  state.activeEventDetails = {
+    ...details,
+    name: eventData.name,
+    germanName: eventData.germanName,
+    description: eventData.description,
+    germanDescription: eventData.germanDescription,
+    options: details.options.map((option) => {
+      const eventOption = eventData.options.find((candidate) => candidate.id === option.id);
+      if (!eventOption) return option;
+
+      return {
+        ...option,
+        name: eventOption.name,
+        germanName: eventOption.germanName,
+        description: eventOption.description,
+        germanDescription: eventOption.germanDescription,
+      };
+    }),
+  };
 }
 
 function setupActiveEvent(eventId?: string | null) {
@@ -345,12 +335,16 @@ function setupActiveEvent(eventId?: string | null) {
   state.activeEventDetails = {
     id: eventData.id,
     name: eventData.name,
+    germanName: eventData.germanName,
     description: eventData.description,
+    germanDescription: eventData.germanDescription,
     emoji: eventData.emoji,
     options: selectedOpts.map((opt) => ({
       id: opt.id,
       name: opt.name,
+      germanName: opt.germanName,
       description: opt.description,
+      germanDescription: opt.germanDescription,
       effectType: opt.effectType,
       bonusLife: opt.bonusLife,
       bonusStars: opt.bonusStars,
@@ -365,6 +359,7 @@ function setupActiveEvent(eventId?: string | null) {
 // ---------------------------------------------------------------------------
 function startTimers() {
   stopTimers();
+  if (!initialized || pauseReasons.size > 0) return;
 
   // 1. Core Incremental game tick (every 250ms instead of 100ms for extreme mobile performance)
   gameTimerId = setInterval(() => {
@@ -415,7 +410,6 @@ function startTimers() {
         starsCount: state.starsCount,
       });
 
-      addPlanetExp(state.starsCount * 1.0 * stats.xpMultiplier * stats.xpEventMultiplier);
       updated = true;
     }
 
@@ -429,7 +423,6 @@ function startTimers() {
         moonsCount: state.moonsCount,
       });
 
-      addPlanetExp(state.moonsCount * 15 * stats.xpMultiplier * stats.xpEventMultiplier);
       updated = true;
     }
 
@@ -515,15 +508,21 @@ function stopTimers() {
 addEventListener("message", (e: MessageEvent<WorkerCommand>) => {
   const data = e.data;
   if (!data || !data.type) return;
+  if (
+    !initialized &&
+    data.type !== "INIT" &&
+    data.type !== "SET_PAUSED" &&
+    data.type !== "CLEANUP"
+  ) {
+    return;
+  }
 
   switch (data.type) {
     case "INIT": {
-      if (data.savedState) {
-        state = {
-          ...state,
-          ...data.savedState,
-        };
-      }
+      stopTimers();
+      initialized = false;
+      state = hydrateWorkerState(data.savedState);
+      enrichActiveEventDetails();
       if (!state.planetTask) {
         state.planetTask = rollTaskForLevel(
           state.planetLevel,
@@ -531,13 +530,15 @@ addEventListener("message", (e: MessageEvent<WorkerCommand>) => {
           INITIAL_ANIMALS,
         );
       }
+      secondsNoClick = 0;
       lastCheckedGlitter = state.glitterDust || 0;
       lastCheckedStars = state.starsCount || 0;
-      if (!state.zodiac) {
-        state.zodiac = rollNewZodiac();
-      }
+      isSyncing = false;
+      cachedAchievementsObj = [];
+      lastAchievementsCalcTime = 0;
+      initialized = true;
       startTimers();
-      broadcastStateUpdate();
+      broadcastStateUpdate(true);
       break;
     }
     case "CLICK": {
@@ -554,7 +555,6 @@ addEventListener("message", (e: MessageEvent<WorkerCommand>) => {
       const clickVal = isCrit ? stats.clickPower * critMult : stats.clickPower;
 
       const actualClickLife = clickVal * stats.clickMultiplierForEvents;
-      const actualClickXP = 1.0 * stats.xpMultiplier * stats.xpEventMultiplier;
 
       state.life += actualClickLife;
       state.totalLifeEarned += actualClickLife;
@@ -635,11 +635,11 @@ addEventListener("message", (e: MessageEvent<WorkerCommand>) => {
       emit({
         type: "CLICK_EFFECT",
         actualClickLife,
+        isCritical: isCrit,
         x: data.x,
         y: data.y,
       });
 
-      addPlanetExp(actualClickXP);
       broadcastStateUpdate();
       break;
     }
@@ -651,64 +651,76 @@ addEventListener("message", (e: MessageEvent<WorkerCommand>) => {
       }
       break;
     }
-    case "PAUSE_TIMERS": {
-      stopTimers();
-      hiddenAt = Date.now();
-      break;
-    }
-    case "RESUME_TIMERS": {
-      if (hiddenAt !== null) {
-        const elapsedMs = Date.now() - hiddenAt;
+    case "SET_PAUSED": {
+      const wasPaused = pauseReasons.has(data.reason);
+      if (data.paused) {
+        pauseReasons.add(data.reason);
+        if (data.reason === "visibility" && !wasPaused) {
+          hiddenAt = Date.now();
+        }
+        stopTimers();
+        break;
+      }
+
+      if (!wasPaused) break;
+      pauseReasons.delete(data.reason);
+
+      if (data.reason === "visibility" && hiddenAt !== null && initialized) {
+        const elapsedSecs = Math.floor((Date.now() - hiddenAt) / 1000);
         hiddenAt = null;
-
-        const elapsedSecs = Math.floor(elapsedMs / 1000);
         if (elapsedSecs >= 1) {
-          const MAX_CATCHUP_SECS = 5 * 60 * 60;
-          const cappedSecs = Math.min(elapsedSecs, MAX_CATCHUP_SECS);
+          const cappedSecs = Math.min(elapsedSecs, 5 * 60 * 60);
+          const boostedSecs = state.activeEvent
+            ? Math.min(cappedSecs, Math.max(0, state.eventTimeRemaining))
+            : 0;
+          const normalSecs = cappedSecs - boostedSecs;
+          let lifeEarned = getLpsAndStats().totalLps * boostedSecs;
 
-          const stats = getLpsAndStats();
-          const lifeEarned = stats.totalLps * cappedSecs;
+          if (normalSecs > 0) {
+            const previousEvent = state.activeEvent;
+            const previousDecision = state.activeEventDecision;
+            const previousDetails = state.activeEventDetails;
+            state.activeEvent = null;
+            state.activeEventDecision = null;
+            state.activeEventDetails = null;
+            lifeEarned += getLpsAndStats().totalLps * normalSecs;
+            state.activeEvent = previousEvent;
+            state.activeEventDecision = previousDecision;
+            state.activeEventDetails = previousDetails;
+          }
+
           state.life += lifeEarned;
           state.totalLifeEarned += lifeEarned;
-
           state.secondsPlayed += cappedSecs;
 
-          const cycleUnits = cappedSecs * 4;
-          const constellMondhasenLvl = state.constellations?.mondhasen || 0;
-          let cycleProgress = state.cycleProgress;
-          let isNight = state.isNight;
-          let progressToAdd = cycleUnits * 0.4166667;
-          const nightMod = isNight ? 1 / (1 + constellMondhasenLvl * 0.25) : 1.0;
-          progressToAdd *= nightMod;
-          cycleProgress += progressToAdd;
-          const fullCycles = Math.floor(cycleProgress / 100);
-          if (fullCycles > 0) {
-            if (fullCycles % 2 === 1) isNight = !isNight;
-            cycleProgress = cycleProgress % 100;
+          if (state.activeEvent) {
+            state.eventTimeRemaining = Math.max(0, state.eventTimeRemaining - cappedSecs);
+            if (state.eventTimeRemaining === 0) {
+              state.activeEvent = null;
+              state.activeEventDecision = null;
+              state.activeEventDetails = null;
+              state.activeEventInstantClaimed = false;
+              state.eventTimeRemaining = 240;
+              emit({ type: "EVENT_TRIGGER", event: null, active: false });
+            }
           }
-          state.cycleProgress = cycleProgress;
-          state.isNight = isNight;
 
-          const xpFromStars =
-            state.starsCount * 1.0 * stats.xpMultiplier * stats.xpEventMultiplier * cappedSecs;
-          const xpFromMoons =
-            (state.moonsCount || 0) *
-            15 *
-            stats.xpMultiplier *
-            stats.xpEventMultiplier *
-            cappedSecs;
-          addPlanetExp(xpFromStars + xpFromMoons);
+          const constellMondhasenLvl = state.constellations?.mondhasen || 0;
+          const nightMod = state.isNight ? 1 / (1 + constellMondhasenLvl * 0.25) : 1;
+          const totalCycleProgress = state.cycleProgress + cappedSecs * 0.4166667 * nightMod;
+          const fullCycles = Math.floor(totalCycleProgress / 100);
+          if (fullCycles % 2 === 1) state.isNight = !state.isNight;
+          state.cycleProgress = totalCycleProgress % 100;
         }
       }
 
       startTimers();
-      broadcastStateUpdate(false);
+      if (initialized) broadcastStateUpdate(false);
       break;
     }
     default: {
       handleWorkerAction(data, state, {
         getLpsAndStats,
-        addPlanetExp,
         setupActiveEvent,
         updateTaskProgress,
         broadcastStateUpdate,

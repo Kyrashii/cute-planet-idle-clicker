@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React from "react";
 import { motion } from "motion/react";
 import { Coins, Gem, Crown, Frown, Sparkles } from "lucide-react";

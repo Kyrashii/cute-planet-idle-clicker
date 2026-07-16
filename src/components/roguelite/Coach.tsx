@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React from "react";
 import { motion } from "motion/react";
 import { MousePointerClick, PanelRight, Route } from "lucide-react";

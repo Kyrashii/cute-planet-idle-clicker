@@ -14,7 +14,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = React.memo(
         presentation="auto"
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName={`max-w-md w-full border-3 rounded-3.5xl p-6 sm:p-8 relative flex flex-col items-center text-center gap-5 shadow-2xl transition-all duration-500 selection:bg-transparent ${
+        panelClassName={`max-w-md w-full border-3 rounded-[1.75rem] p-6 sm:p-8 relative flex flex-col items-center text-center gap-5 shadow-2xl transition-all duration-500 selection:bg-transparent ${
           isNight
             ? "bg-cosmic-bg-mid/95 border-cosmic-accent text-cosmic-text shadow-[0_0_30px_rgba(202,165,254,0.15)]"
             : "bg-amber-50/95 border-amber-300 text-slate-800 shadow-[0_0_30px_rgba(217,119,6,0.1)]"
@@ -22,7 +22,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = React.memo(
       >
         {/* Cute floating icon badge */}
         <div
-          className={`size-16  rounded-2.5xl flex items-center justify-center text-4xl shadow-inner select-none animate-bounce ${
+          className={`size-16  rounded-[1.25rem] flex items-center justify-center text-4xl shadow-inner select-none animate-bounce ${
             isNight
               ? "bg-cosmic-surface-hover border-2 border-cosmic-accent/50"
               : "bg-amber-100 border-2 border-amber-300"
@@ -37,7 +37,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = React.memo(
               isNight ? "text-amber-350" : "text-amber-700 font-extrabold"
             }`}
           >
-            SYSTEM START & EINFUeHRUNG
+            SYSTEMSTART & EINFUeHRUNG
           </span>
           <h5
             className={`font-sans font-black text-sm/tight uppercase tracking-wide  ${
@@ -52,7 +52,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = React.memo(
             }`}
           >
             Tippe auf den <b>niedlichen Planeten</b> im Zentrum, um <b>Leben (💖)</b> zu sammeln und
-            EXP fuer seine Evolution zu generieren.
+            deine galaktischen Aufgaben voranzubringen.
             <br />
             <br />
             Kaufe niedliche, flauschige <b>Tiere</b>, die passiv Leben brueten, und hole leuchtende{" "}
@@ -60,8 +60,8 @@ export const TutorialModal: React.FC<TutorialModalProps> = React.memo(
             klicken!
             <br />
             <br />
-            Erforsche neue Upgrades wie den <b>Kosmischen Funken</b>, um deine Effizienz und deinen
-            evolutionaeren EXP-Ertrag ins Unendliche zu steigern!
+            Erforsche neue Upgrades, um deine Klickkraft sowie die Produktion deiner Tiere und
+            Sterne immer weiter zu steigern!
           </p>
         </div>
 

@@ -72,7 +72,9 @@ export interface FloatingText {
 export interface PlanetTask {
   id: string;
   name: string;
+  germanName: string;
   description: string;
+  germanDescription: string;
   type: string;
   progress: number;
   target: number;
@@ -96,8 +98,6 @@ export interface GameState {
   starLevel: number; // Star level determines clicking power per star
   purchasedUpgrades: string[]; // upgradeIds
   planetLevel: number;
-  planetExp: number;
-  planetExpNeeded: number;
   planetTask?: PlanetTask;
   unlockedCosmetics?: string[];
   activeStarColor?: string;
@@ -146,7 +146,9 @@ export interface GameState {
 export interface CosmicEventOption {
   id: string;
   name: string;
+  germanName: string;
   description: string;
+  germanDescription: string;
   effectType: string;
   bonusLife?: number;
   bonusStars?: number;
@@ -157,7 +159,9 @@ export interface CosmicEventOption {
 export interface ActiveCosmicEvent {
   id: string;
   name: string;
+  germanName: string;
   description: string;
+  germanDescription: string;
   emoji: string;
   options: CosmicEventOption[];
 }
@@ -177,12 +181,17 @@ export type GameSaveSnapshot = {
   purchasedAnimals?: Record<string, number>;
   purchasedUpgrades?: string[];
   planetLevel?: number;
-  planetExp?: number;
   planetTask?: PlanetTask;
   clicksCount?: number;
   starClicksTriggered?: number;
   secondsPlayed?: number;
   isNight?: boolean;
+  cycleProgress?: number;
+  activeEvent?: string | null;
+  activeEventDecision?: string | null;
+  activeEventDetails?: ActiveCosmicEvent | null;
+  activeEventInstantClaimed?: boolean;
+  eventTimeRemaining?: number;
   unlockedCosmetics?: string[];
   activeStarColor?: string;
   activeAccessory?: string;

@@ -82,7 +82,7 @@ export const FloatingTexts: React.FC<FloatingTextsProps> = React.memo(
               animate={{
                 opacity: 0,
                 y: item.y - 85,
-                x: item.x + (Math.random() * 40 - 20),
+                x: item.x + ((item.id * 17) % 41) - 20,
                 scale: [1, 1.2, 0.9],
               }}
               exit={{ opacity: 0 }}
@@ -90,7 +90,7 @@ export const FloatingTexts: React.FC<FloatingTextsProps> = React.memo(
               className="absolute pointer-events-none whitespace-nowrap"
             >
               {item.type === "click" && (
-                <div className="font-sans font-black text-2.5xl text-danger flex items-center gap-1 filter drop-shadow-[0_2px_4px_rgba(241,94,117,0.3)]">
+                <div className="font-sans font-black text-[1.75rem] text-danger flex items-center gap-1 filter drop-shadow-[0_2px_4px_rgba(241,94,117,0.3)]">
                   <Heart className="size-5  fill-brand-pink stroke-danger stroke-[2.5] inline animate-bounce" />{" "}
                   {item.text}
                 </div>

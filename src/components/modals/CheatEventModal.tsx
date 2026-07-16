@@ -42,28 +42,28 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
         id: "comet_tail",
         emoji: "☄️",
         title: "Eisiger Kometenschweif",
-        desc: "Massiver +800% Klick-Segen & epische Sternenbroesel-EXP!",
+        desc: "Starke Klick-Boni sowie direkte Sterne-, Glitzerstaub- und Lebensbelohnungen!",
         color: "border-red-500 hover:bg-red-500/10 text-red-100",
       },
       {
         id: "nebula_cloud",
         emoji: "☁️",
         title: "Interstellare Nebelwolke",
-        desc: "Sterne fliegen +550% schneller & 3x Planeten-EXP!",
+        desc: "Starke Tier- und Sternen-Boni sowie direkte Glitzerstaub- und Lebensbelohnungen!",
         color: "border-teal-400 hover:bg-teal-400/10 text-teal-100",
       },
       {
         id: "stella_nursery",
         emoji: "🍼",
         title: "Kosmische Sternenwiege",
-        desc: "Tiere brueten +550% passiv, reichlicher Kistensturz!",
+        desc: "Starke Tier- und Sternen-Boni sowie direkte Sterne-, Glitzerstaub- und Lebensbelohnungen!",
         color: "border-cyan-400 hover:bg-cyan-400/10 text-cyan-100",
       },
       {
         id: "hyper_star",
         emoji: "🌟",
         title: "Energetischer Helio-Sturm",
-        desc: "+400% Planeteneinnahmen & sagenhafte 6x EP-Generierung!",
+        desc: "Starke LPS- und Klick-Boni sowie direkte Sterne-, Glitzerstaub- und Lebensbelohnungen!",
         color: "border-amber-400 hover:bg-amber-400/10 text-amber-100",
       },
       {
@@ -79,7 +79,7 @@ export const CheatEventModal: React.FC<CheatEventModalProps> = React.memo(
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        panelClassName="bg-cosmic-bg-mid/95 border-3 border-cosmic-accent rounded-3.5xl p-6 max-w-md w-full shadow-[0_0_40px_rgba(171,159,210,0.25)] text-cosmic-accent relative overflow-hidden"
+        panelClassName="bg-cosmic-bg-mid/95 border-3 border-cosmic-accent rounded-[1.75rem] p-6 max-w-md w-full shadow-[0_0_40px_rgba(171,159,210,0.25)] text-cosmic-accent relative overflow-hidden"
       >
         {/* Background glow effects */}
         <div className="absolute -top-24 -left-24 size-48  rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />

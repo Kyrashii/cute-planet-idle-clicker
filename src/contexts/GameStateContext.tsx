@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * GameStateContext — live game scalars consumed by open modals.
  *
@@ -14,7 +15,6 @@ export interface GameStateValue {
   life: number;
   totalLifeEarned: number;
   secondsPlayed: number;
-  planetExp: number;
 
   // Level/prestige (rare, but tick-adjacent)
   planetLevel: number;

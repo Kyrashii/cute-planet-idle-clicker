@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import type { WorkerGameState } from "./protocol";
+import { createInitialWorkerState } from "./state";
 import { getLpsAndStats } from "./statsCalculator";
 
 /**
@@ -7,8 +9,8 @@ import { getLpsAndStats } from "./statsCalculator";
  * lookups) can be proven identical. Inline snapshots capture a stable subset of
  * the returned fields.
  */
-const pick = (state: unknown) => {
-  const s = getLpsAndStats(state) as Record<string, number>;
+const pick = (state: Partial<WorkerGameState>) => {
+  const s = getLpsAndStats({ ...createInitialWorkerState(), ...state });
   return {
     totalLps: s.totalLps,
     totalAnimalsLps: s.totalAnimalsLps,
@@ -16,10 +18,8 @@ const pick = (state: unknown) => {
     clickPower: s.clickPower,
     rawClickPower: s.rawClickPower,
     starPowerPerStar: s.starPowerPerStar,
-    xpMultiplier: s.xpMultiplier,
     totalAnimalsCount: s.totalAnimalsCount,
     researchedUpgradesCount: s.researchedUpgradesCount,
-    planetExpNeeded: s.planetExpNeeded,
   };
 };
 
@@ -28,7 +28,6 @@ describe("getLpsAndStats (characterization)", () => {
     expect(pick({})).toMatchInlineSnapshot(`
       {
         "clickPower": 1,
-        "planetExpNeeded": NaN,
         "rawClickPower": 1,
         "researchedUpgradesCount": 0,
         "starPowerPerStar": 1.5,
@@ -36,7 +35,6 @@ describe("getLpsAndStats (characterization)", () => {
         "totalAnimalsLps": 0,
         "totalLps": 0,
         "totalStarsLps": 0,
-        "xpMultiplier": 1,
       }
     `);
   });
@@ -59,7 +57,6 @@ describe("getLpsAndStats (characterization)", () => {
     expect(pick(state)).toMatchInlineSnapshot(`
       {
         "clickPower": 7,
-        "planetExpNeeded": 60000,
         "rawClickPower": 7,
         "researchedUpgradesCount": 5,
         "starPowerPerStar": 4.800000000000001,
@@ -67,7 +64,6 @@ describe("getLpsAndStats (characterization)", () => {
         "totalAnimalsLps": 23.25,
         "totalLps": 119.25000000000001,
         "totalStarsLps": 96.00000000000001,
-        "xpMultiplier": 1,
       }
     `);
   });
@@ -85,7 +81,6 @@ describe("getLpsAndStats (characterization)", () => {
     expect(pick(state)).toMatchInlineSnapshot(`
       {
         "clickPower": 11,
-        "planetExpNeeded": 5000,
         "rawClickPower": 4,
         "researchedUpgradesCount": 2,
         "starPowerPerStar": 1.6,
@@ -93,7 +88,6 @@ describe("getLpsAndStats (characterization)", () => {
         "totalAnimalsLps": 0.2,
         "totalLps": 0.2,
         "totalStarsLps": 0,
-        "xpMultiplier": 1,
       }
     `);
   });

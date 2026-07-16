@@ -1,5 +1,11 @@
 import type { Dispatch, SetStateAction } from "react";
-import type { PlanetTask, ActiveCosmicEvent, FloatingText, Achievement } from "../types";
+import type {
+  PlanetTask,
+  ActiveCosmicEvent,
+  FloatingText,
+  Achievement,
+  PlacedAnimal,
+} from "../types";
 import type {
   WorkerEvent,
   GlitchBenchmarks,
@@ -24,16 +30,21 @@ export interface WorkerEventHandlers {
   setPurchasedAnimals: Dispatch<SetStateAction<Record<string, number>>>;
   setPurchasedUpgrades: Dispatch<SetStateAction<string[]>>;
   setPlanetLevel: Dispatch<SetStateAction<number>>;
-  setPlanetExp: Dispatch<SetStateAction<number>>;
   setPlanetTask: Dispatch<SetStateAction<PlanetTask | undefined>>;
   setClicksCount: Dispatch<SetStateAction<number>>;
   setStarClicksTriggered: Dispatch<SetStateAction<number>>;
   setSuperClickCharge: Dispatch<SetStateAction<number>>;
   setSuperClickArmed: Dispatch<SetStateAction<boolean>>;
+  setPlacedAnimals: Dispatch<SetStateAction<PlacedAnimal[]>>;
+  setAnimalLove: Dispatch<SetStateAction<Record<string, number>>>;
+  setAnimalLastPet: Dispatch<SetStateAction<Record<string, number>>>;
+  setBowlLastFed: Dispatch<SetStateAction<number>>;
+  setBowlFedMinutesCredited: Dispatch<SetStateAction<number>>;
   setSecondsPlayed: Dispatch<SetStateAction<number>>;
   setIsNight: Dispatch<SetStateAction<boolean>>;
   setCycleProgress: Dispatch<SetStateAction<number>>;
   setActiveEvent: Dispatch<SetStateAction<string | null>>;
+  setActiveEventInstantClaimed: Dispatch<SetStateAction<boolean>>;
   setEventTimeRemaining: Dispatch<SetStateAction<number>>;
   setPrestigeCount: Dispatch<SetStateAction<number>>;
   setGalaxyShards: Dispatch<SetStateAction<number>>;
@@ -79,16 +90,21 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
     setPurchasedAnimals,
     setPurchasedUpgrades,
     setPlanetLevel,
-    setPlanetExp,
     setPlanetTask,
     setClicksCount,
     setStarClicksTriggered,
     setSuperClickCharge,
     setSuperClickArmed,
+    setPlacedAnimals,
+    setAnimalLove,
+    setAnimalLastPet,
+    setBowlLastFed,
+    setBowlFedMinutesCredited,
     setSecondsPlayed,
     setIsNight,
     setCycleProgress,
     setActiveEvent,
+    setActiveEventInstantClaimed,
     setEventTimeRemaining,
     setPrestigeCount,
     setGalaxyShards,
@@ -142,16 +158,34 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
         isArrEqual(prev, ws.purchasedUpgrades) ? prev : ws.purchasedUpgrades,
       );
       setPlanetLevel(ws.planetLevel);
-      setPlanetExp(ws.planetExp);
       setPlanetTask(ws.planetTask);
       setClicksCount(ws.clicksCount);
       setStarClicksTriggered(ws.starClicksTriggered);
       setSuperClickCharge(ws.superClickCharge);
       setSuperClickArmed(ws.superClickArmed);
+      setPlacedAnimals((prev) =>
+        prev.length === ws.placedAnimals.length &&
+        prev.every((animal, index) => {
+          const next = ws.placedAnimals[index];
+          return (
+            animal.id === next.id &&
+            animal.animalId === next.animalId &&
+            animal.x === next.x &&
+            animal.y === next.y
+          );
+        })
+          ? prev
+          : ws.placedAnimals,
+      );
+      setAnimalLove((prev) => (isObjEqual(prev, ws.animalLove) ? prev : ws.animalLove));
+      setAnimalLastPet((prev) => (isObjEqual(prev, ws.animalLastPet) ? prev : ws.animalLastPet));
+      setBowlLastFed(ws.bowlLastFed);
+      setBowlFedMinutesCredited(ws.bowlFedMinutesCredited);
       setSecondsPlayed(ws.secondsPlayed);
       setIsNight(ws.isNight);
       setCycleProgress(ws.cycleProgress);
       setActiveEvent(ws.activeEvent);
+      setActiveEventInstantClaimed(ws.activeEventInstantClaimed);
       setEventTimeRemaining(ws.eventTimeRemaining);
       setPrestigeCount(ws.prestigeCount || 0);
       if (ws.galaxyShards !== undefined) setGalaxyShards(ws.galaxyShards || 0);
@@ -193,7 +227,8 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
           prevCalculations.starPowerPerStar === data.calculations.starPowerPerStar &&
           prevCalculations.totalStarsLps === data.calculations.totalStarsLps &&
           prevCalculations.totalAnimalsLps === data.calculations.totalAnimalsLps &&
-          prevCalculations.researchedUpgradesCount === data.calculations.researchedUpgradesCount
+          prevCalculations.researchedUpgradesCount === data.calculations.researchedUpgradesCount &&
+          prevCalculations.unlockedAchievementsCount === data.calculations.unlockedAchievementsCount
         ) {
           return prevCalculations;
         }
@@ -203,16 +238,43 @@ export function applyWorkerEvent(data: WorkerEvent, h: WorkerEventHandlers): voi
       if (data.achievements !== undefined) {
         const next = data.achievements;
         setAchievements((prev) => {
-          const prevUnlocked = prev.filter((a) => a.isUnlocked).length;
-          const nextUnlocked = next.filter((a) => a.isUnlocked).length;
-          if (prevUnlocked === nextUnlocked && prev.length === next.length) {
-            return prev;
-          }
-          return next;
+          const unchanged =
+            prev.length === next.length &&
+            prev.every((achievement, index) => {
+              const candidate = next[index];
+              return (
+                achievement.id === candidate.id &&
+                achievement.progress === candidate.progress &&
+                achievement.target === candidate.target &&
+                achievement.isUnlocked === candidate.isUnlocked
+              );
+            });
+          return unchanged ? prev : next;
         });
       }
 
       setIsLoaded(true);
+      break;
+    }
+    case "CLICK_EFFECT": {
+      playPop();
+      const pId = nextParticleId.current++;
+      setFloatingTexts((prev) => {
+        const next: FloatingText[] = [
+          ...prev,
+          {
+            id: pId,
+            x: data.x,
+            y: data.y,
+            text: data.isCritical
+              ? `+${formatCompactNumber(data.actualClickLife)} CRIT! ✨`
+              : `+${formatCompactNumber(data.actualClickLife)}`,
+            type: data.isCritical ? "crit-click" : "click",
+            createdAt: Date.now(),
+          },
+        ];
+        return next.length > 15 ? next.slice(next.length - 15) : next;
+      });
       break;
     }
     case "SUPER_CLICK_TRIGGERED": {
